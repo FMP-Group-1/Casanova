@@ -97,8 +97,20 @@ public class melee : MonoBehaviour
             }
             
             attackType = Attack.Heavy;
-        }    
-        
+        }
+        //Heavy Attack
+        if( m_playerControls.Play.Whirlwind.triggered )
+        {
+            if( !swordEquipped )
+            {
+                animator.SetTrigger( "drawSword" );
+                // swordEquipped = true;
+            }
+
+            attackType = Attack.Heavy;
+            animator.SetTrigger( "whirlwind" );
+        }
+
         /*
         //Just equip sword if click attack from unarmed
 
