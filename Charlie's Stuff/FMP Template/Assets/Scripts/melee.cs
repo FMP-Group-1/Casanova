@@ -36,7 +36,6 @@ public class melee : MonoBehaviour
         Nothing,
         Light,
         Heavy,
-        Spell
     }
 
     private Attack attackType;
@@ -110,48 +109,57 @@ public class melee : MonoBehaviour
             attackType = Attack.Heavy;
             animator.SetTrigger( "whirlwind" );
         }
-
-        /*
-        //Just equip sword if click attack from unarmed
-
-        //Light Attack
-        if (m_playerControls.Play.LightAtatck.triggered)
+        //Whirlwind has been released
+        if (m_playerControls.Play.Whirlwind.ReadValue<float>() == 0)
         {
-            if (!swordEquipped)
+            animator.SetBool("whirlwindHeld", false);
+        }
+        else
+		{
+            animator.SetBool("whirlwindHeld", true);
+		}
+
+            /*
+            //Just equip sword if click attack from unarmed
+
+            //Light Attack
+            if (m_playerControls.Play.LightAtatck.triggered)
             {
-                if (!currentlyInTheProcessOfSheathing)
+                if (!swordEquipped)
                 {
-                    currentlyInTheProcessOfSheathing = true;
-                    animator.SetTrigger("drawSword");
-                    swordEquipped = true;
+                    if (!currentlyInTheProcessOfSheathing)
+                    {
+                        currentlyInTheProcessOfSheathing = true;
+                        animator.SetTrigger("drawSword");
+                        swordEquipped = true;
+                    }
+                }
+                else
+                {
+                    attackType = Attack.Light;
                 }
             }
-            else
+            //Heavy Attack
+            if (m_playerControls.Play.HeavyAttack.triggered)
             {
-                attackType = Attack.Light;
-            }
-        }
-        //Heavy Attack
-        if (m_playerControls.Play.HeavyAttack.triggered)
-        {
-            if (!swordEquipped)
-            {
-                if (!currentlyInTheProcessOfSheathing)
+                if (!swordEquipped)
                 {
-                    currentlyInTheProcessOfSheathing = true;
-                    animator.SetTrigger("drawSword");
-                    swordEquipped = true;
+                    if (!currentlyInTheProcessOfSheathing)
+                    {
+                        currentlyInTheProcessOfSheathing = true;
+                        animator.SetTrigger("drawSword");
+                        swordEquipped = true;
+                    }
+                }
+                else
+                {
+                    attackType = Attack.Heavy;
                 }
             }
-			else
-            {
-                attackType = Attack.Heavy;
-            }
-        }
-        */
+            */
 
-        //Could possibly replace timer with events on individual animations
-        if (timerCounting)
+            //Could possibly replace timer with events on individual animations
+            if (timerCounting)
         {
             timerIterator += Time.deltaTime;
         }
@@ -180,11 +188,10 @@ public class melee : MonoBehaviour
                     animator.SetTrigger("heavy");
                     break;
 
-                case Attack.Spell:
-
-                    animator.SetTrigger("miscAttack");
-                    animator.SetTrigger("spell");
+                case Attack.Nothing:
+                    Debug.Log("");
                     break;
+
             }
 
             //We are attacking
