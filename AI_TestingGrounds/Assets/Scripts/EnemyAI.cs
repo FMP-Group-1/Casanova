@@ -29,6 +29,7 @@ enum CollisionSide
     Right
 }
 
+// Enemy AI Script, will likely be reworked to use inheritance once base functionality is polished
 public class EnemyAI : MonoBehaviour
 {
     // For Testing nav movement, will need to switch to a form of player tracking when ready
@@ -102,7 +103,7 @@ public class EnemyAI : MonoBehaviour
     {
         DebugTextUpdate();
 
-        m_player.GetComponent<Player>().SetHitVisual( isAttackCollidingWithPlayer() );
+        m_player.GetComponent<Player>().SetHitVisual( IsAttackCollidingWithPlayer() );
 
         TestingInputs();
 
@@ -142,7 +143,7 @@ public class EnemyAI : MonoBehaviour
                 // Very basic detection for reaching destination, will need to be expanded upon
                 // i.e. in case of path being blocked
                 // Logic from https://answers.unity.com/questions/324589/how-can-i-tell-when-a-navmesh-has-reached-its-dest.html
-                if ( hasReachedDestination() )
+                if ( HasReachedDestination() )
                 {
                     SetAIState(AIState.Attacking);
                     //Debug.Log("Destination Reached");
@@ -161,7 +162,7 @@ public class EnemyAI : MonoBehaviour
             }
             case AIState.ReturningToPatrol:
             {
-                if ( hasReachedDestination() )
+                if ( HasReachedDestination() )
                 {
                     m_state = AIState.Patrolling;
                 }
@@ -259,7 +260,7 @@ public class EnemyAI : MonoBehaviour
         {
             case PatrolState.Patrol:
             {
-                if (hasReachedDestination())
+                if (HasReachedDestination())
                 {
                     if (m_patrolDestinationIndex >= m_patrolRoutePoints.Count - 1)
                     {
@@ -277,7 +278,7 @@ public class EnemyAI : MonoBehaviour
             }
             case PatrolState.ReversePatrol:
             {
-                if (hasReachedDestination())
+                if (HasReachedDestination())
                 {
                     if (m_patrolDestinationIndex <= 0)
                     {
@@ -317,7 +318,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    private bool hasReachedDestination()
+    private bool HasReachedDestination()
     {
         bool destinationReached = false;
 
@@ -362,7 +363,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    public bool isAttackCollidingWithPlayer()
+    public bool IsAttackCollidingWithPlayer()
     {
         bool isColliding = false;
 

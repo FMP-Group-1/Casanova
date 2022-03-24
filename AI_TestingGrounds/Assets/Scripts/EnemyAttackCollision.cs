@@ -9,6 +9,8 @@ enum HandType
     Right
 }
 
+// Class for detecting attack collision from zombie placeholder
+// Will likely be removed once a preferable method is implemented
 public class EnemyAttackCollision : MonoBehaviour
 {
     [SerializeField]

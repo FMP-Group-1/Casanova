@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Player script purely for testing AI Behaviour towards Player
+// Will be replaced by actual Player script later in project
 public class Player : MonoBehaviour
 {
     [SerializeField]
