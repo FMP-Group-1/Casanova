@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
 
-enum AIState
+public enum AIState
 {
     Idle,
     Sleeping,
@@ -74,9 +74,6 @@ public class EnemyAI : MonoBehaviour
     private BoxCollider m_leftHandCollider;
     private BoxCollider m_rightHandCollider;
 
-    private Text m_aiStateText;
-    private Text m_playerDetectedText;
-
     private void Awake()
     {
         m_navMeshAgent = GetComponent<NavMeshAgent>();
@@ -97,12 +94,9 @@ public class EnemyAI : MonoBehaviour
         }
 
         DisableCollision();
-        SetupDebugDisplay();
     }
     private void Update()
     {
-        DebugTextUpdate();
-
         m_player.GetComponent<Player>().SetHitVisual( IsAttackCollidingWithPlayer() );
 
         TestingInputs();
@@ -387,9 +381,14 @@ public class EnemyAI : MonoBehaviour
         m_detectionRangeVisualizer.transform.localScale = m_defaultScaleVector * m_detectionRange;
     }
 
-    private bool IsPlayerInRange()
+    public bool IsPlayerInRange()
     {
         return Vector3.Distance(gameObject.transform.position, m_player.transform.position) <= m_detectionRange;
+    }
+
+    public AIState GetState()
+    {
+        return m_state;
     }
 
     private void AIStartWalk()
@@ -432,12 +431,6 @@ public class EnemyAI : MonoBehaviour
         m_animController.ResetTrigger("Run");
     }
 
-    private void DebugTextUpdate()
-    {
-        m_aiStateText.text = "AI State: " + m_state;
-        m_playerDetectedText.text = "Player Detected: " + IsPlayerInRange();
-    }
-
     private void SetupPatrolRoutes()
     {
         // Adding patrol points to a list that the ai can use to follow
@@ -454,13 +447,6 @@ public class EnemyAI : MonoBehaviour
         {
             m_nextPatrolPoint = m_patrolRoutePoints[1];
         }
-    }
-
-    private void SetupDebugDisplay()
-    {
-        m_aiStateText = GameObject.Find("AIStateText").GetComponent<Text>();
-        m_playerDetectedText = GameObject.Find("PlayerDetectText").GetComponent<Text>();
-        //GameObject.Find("Canvas").SetActive(false);
     }
 
     private void TestingInputs()
