@@ -54,7 +54,7 @@ public class melee : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (m_playerControls.Play.SheatheUnsheathe.triggered)
+        if (m_playerControls.Combat.SheatheUnsheathe.triggered)
         {
             if (!currentlyInTheProcessOfSheathing)
             {
@@ -75,7 +75,7 @@ public class melee : MonoBehaviour
         
         //Attack straight from unarmed
         //Light Attack
-        if (m_playerControls.Play.LightAtatck.triggered)
+        if (m_playerControls.Combat.LightAtatck.triggered)
         {
             if (!swordEquipped)
             {
@@ -87,7 +87,7 @@ public class melee : MonoBehaviour
             
         }
         //Heavy Attack
-        if (m_playerControls.Play.HeavyAttack.triggered)
+        if (m_playerControls.Combat.HeavyAttack.triggered)
         {
             if (!swordEquipped)
             {
@@ -98,7 +98,7 @@ public class melee : MonoBehaviour
             attackType = Attack.Heavy;
         }
         //Heavy Attack
-        if( m_playerControls.Play.Whirlwind.triggered )
+        if( m_playerControls.Combat.Whirlwind.triggered )
         {
             if( !swordEquipped )
             {
@@ -110,7 +110,7 @@ public class melee : MonoBehaviour
             animator.SetTrigger( "whirlwind" );
         }
         //Whirlwind has been released
-        if (m_playerControls.Play.Whirlwind.ReadValue<float>() == 0)
+        if (m_playerControls.Combat.Whirlwind.ReadValue<float>() == 0)
         {
             animator.SetBool("whirlwindHeld", false);
         }
@@ -123,7 +123,7 @@ public class melee : MonoBehaviour
             //Just equip sword if click attack from unarmed
 
             //Light Attack
-            if (m_playerControls.Play.LightAtatck.triggered)
+            if (m_playerControls.Combat.LightAtatck.triggered)
             {
                 if (!swordEquipped)
                 {
@@ -140,7 +140,7 @@ public class melee : MonoBehaviour
                 }
             }
             //Heavy Attack
-            if (m_playerControls.Play.HeavyAttack.triggered)
+            if (m_playerControls.Combat.HeavyAttack.triggered)
             {
                 if (!swordEquipped)
                 {
