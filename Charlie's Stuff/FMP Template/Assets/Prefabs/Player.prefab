@@ -543,7 +543,7 @@ Transform:
   m_GameObject: {fileID: 1929624750612613347}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.69, y: 0.69, z: 0.69}
   m_Children:
   - {fileID: 7523105395072072407}
   - {fileID: 1103109977276869551}
@@ -623,6 +623,9 @@ MonoBehaviour:
   jumpHeight: 1
   gravityValue: -9.81
   rotationSpeed: 6
+  playerVelocity: {x: 0, y: 0, z: 0}
+  canMove: 1
+  canFall: 1
 --- !u!1 &2025464440008236145
 GameObject:
   m_ObjectHideFlags: 0
