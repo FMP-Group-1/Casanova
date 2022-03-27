@@ -29,7 +29,6 @@ public class melee : MonoBehaviour
 
     private bool isCurrentlyAttacking = false;
 
-    private bool collidersActive = false;
 
     private enum Attack
     {
@@ -193,7 +192,8 @@ public class melee : MonoBehaviour
                     break;
 
             }
-
+            GetComponent<PlayerController>().canMove = false;
+            GetComponent<PlayerController>().canFall = false;
             //We are attacking
             isCurrentlyAttacking = true;
             //Combo has begun
@@ -212,7 +212,6 @@ public class melee : MonoBehaviour
     void CollisionsStart()
 	{
         swordCollider.enabled = true;
-        collidersActive = true;
         //swordScript.setCollidersAcitve(collidersActive);
         isAttackingText.text = "Attacking";
     }
@@ -220,10 +219,13 @@ public class melee : MonoBehaviour
     void CollisionsEnd()
     {
         swordCollider.enabled = false;
-        collidersActive = false;
         //swordScript.setCollidersAcitve(collidersActive);
         isAttackingText.text = "Not Attacking";
         isCurrentlyAttacking = false;
+
+        GetComponent<PlayerController>().canMove = true;
+        GetComponent<PlayerController>().canFall = true;
+        GetComponent<PlayerController>().playerVelocity.y = 0f;
     }
     
 
