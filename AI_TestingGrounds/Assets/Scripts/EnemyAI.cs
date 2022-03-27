@@ -63,13 +63,16 @@ public class EnemyAI : MonoBehaviour
     // Player/Detection Relevant Variables
     private GameObject m_player;
     private CapsuleCollider m_playerCollider;
+
+    // Vision Detection Relevant Variables
     [SerializeField]
-    private bool m_showDetectionVisualizer = false;
+    private float m_viewRadius = 15.0f;    
     [SerializeField]
-    private float m_detectionRange = 5.0f;
+    [Range(0.0f,360.0f)]
+    private float m_viewAngle = 45.0f;
+
     [SerializeField]
-    private GameObject m_detectionRangeVisualizer;
-    private Vector3 m_defaultScaleVector = new Vector3(2.0f, 2.0f, 2.0f);
+    private LayerMask obstacleMask;
 
     private BoxCollider m_leftHandCollider;
     private BoxCollider m_rightHandCollider;
@@ -88,11 +91,6 @@ public class EnemyAI : MonoBehaviour
         m_leftHandCollider = GameObject.Find("Base HumanLArmPalm").GetComponent<BoxCollider>();
         m_rightHandCollider = GameObject.Find("Base HumanRArmPalm").GetComponent<BoxCollider>();
 
-        if ( m_detectionRangeVisualizer != null )
-        {
-            m_detectionRangeVisualizer.SetActive(m_showDetectionVisualizer);
-        }
-
         DisableCollision();
     }
     private void Update()
@@ -101,20 +99,14 @@ public class EnemyAI : MonoBehaviour
 
         TestingInputs();
 
-        // For Debugging/Testing Only
-        if ( m_showDetectionVisualizer )
-        {
-            ScaleDetectionVisualizer();
-        }
-
         switch ( m_state )
         {
             // Idle State
             case AIState.Idle:
             {
-                if ( IsPlayerInRange() )
+                if ( IsPlayerVisible() )
                 {
-                    SetAIState(AIState.Pursuing);
+                    //SetAIState(AIState.Pursuing);
                 }
                 break;
             }
@@ -147,9 +139,9 @@ public class EnemyAI : MonoBehaviour
             // Patrol Logic
             case AIState.Patrolling:
             {
-                if (IsPlayerInRange())
+                if (IsPlayerVisible())
                 {
-                    SetAIState(AIState.Pursuing);
+                    //SetAIState(AIState.Pursuing);
                 }
                 AIPatrol();
                 break;
@@ -166,22 +158,6 @@ public class EnemyAI : MonoBehaviour
             case AIState.Attacking:
             {
                 break;
-            }
-        }
-    }
-
-    private void OnValidate()
-    {
-        // Checking if Visualizer is ticked in inspector
-        if ( m_detectionRangeVisualizer != null )
-        {
-            if ( m_showDetectionVisualizer )
-            {
-                m_detectionRangeVisualizer.SetActive(true);
-            }
-            else if ( !m_showDetectionVisualizer )
-            {
-                m_detectionRangeVisualizer.SetActive(false);
             }
         }
     }
@@ -376,19 +352,53 @@ public class EnemyAI : MonoBehaviour
         return isColliding;
     }
 
-    private void ScaleDetectionVisualizer()
+    // DirFromAngle() and IsPlayerVisible() functions use logic from https://www.youtube.com/watch?v=rQG9aUWarwE
+    public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal )
     {
-        m_detectionRangeVisualizer.transform.localScale = m_defaultScaleVector * m_detectionRange;
+        if (!angleIsGlobal)
+        {
+            angleInDegrees += transform.eulerAngles.y;
+        }
+
+        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
 
-    public bool IsPlayerInRange()
+    public bool IsPlayerVisible()
     {
-        return Vector3.Distance(gameObject.transform.position, m_player.transform.position) <= m_detectionRange;
+        bool playerIsVisible = false;
+
+        // Checking if player is in range
+        if (Vector3.Distance(transform.position, m_player.transform.position) <= m_viewRadius)
+        {
+            // Once player is in range, getting the direction to the player and checking if it's within the AI's FOV
+            Vector3 dirToPlayer = (m_player.transform.position - transform.position).normalized;
+            if (Vector3.Angle(transform.forward, dirToPlayer) < m_viewAngle * 0.5f )
+            {
+                // Once player is in range and in FOV, using Raycast to check if any obstacles are in the way
+                float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
+                if (!Physics.Raycast(transform.position, dirToPlayer, distanceToPlayer, obstacleMask))
+                {
+                    playerIsVisible = true;
+                }
+            }
+        }
+
+        return playerIsVisible;
     }
 
     public AIState GetState()
     {
         return m_state;
+    }
+
+    public float GetViewRadius()
+    {
+        return m_viewRadius;
+    }
+
+    public float GetViewAngle()
+    {
+        return m_viewAngle;
     }
 
     private void AIStartWalk()

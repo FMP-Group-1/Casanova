@@ -33,6 +33,6 @@ public class AIDebugDisplay : MonoBehaviour
     private void DebugTextUpdate()
     {
         m_aiStateText.text = "AI State: " + m_aiDebugTarget.GetState();
-        m_playerDetectedText.text = "Player Detected: " + m_aiDebugTarget.IsPlayerInRange();
+        m_playerDetectedText.text = "Player Detected: " + m_aiDebugTarget.IsPlayerVisible();
     }
 }
