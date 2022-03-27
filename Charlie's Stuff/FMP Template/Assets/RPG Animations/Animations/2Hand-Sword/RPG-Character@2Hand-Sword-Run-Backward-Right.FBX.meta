@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 322adb187b75a0848857a892aacf048c
+guid: d65ec2c9f53fdc64b96afdffc672db1b
 ModelImporter:
   serializedVersion: 25
   internalIDToNameTable:
@@ -686,7 +686,7 @@ ModelImporter:
     second: RPG-Character-Mesh
   - first:
       74: 7400000
-    second: 2Hand-Sword-Run-Forward-Attack1
+    second: 2Hand-Sword-Run-Backward-Right
   - first:
       95: 9500000
     second: //RootNode
@@ -717,10 +717,7 @@ ModelImporter:
     rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
-    animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
-      might lower retargeting quality:\nNote: Activate translation DOF on avatar to
-      improve retargeting quality.\n\t'B_Spine' has translation animation that will
-      be discarded.\n\t'B_Spine1' has translation animation that will be discarded.\n"
+    animationImportWarnings: 
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -734,7 +731,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: 2Hand-Sword-Run-Forward-Attack1
+      name: 2Hand-Sword-Run-Backward-Right
       takeName: Take 001
       internalID: 7400000
       firstFrame: 0
@@ -745,8 +742,8 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
+      loopTime: 1
+      loopBlend: 1
       loopBlendOrientation: 1
       loopBlendPositionY: 1
       loopBlendPositionXZ: 0
@@ -767,13 +764,6 @@ ModelImporter:
         messageOptions: 0
       - time: 0.7279823
         functionName: FootL
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0.38607597
-        functionName: Hit
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

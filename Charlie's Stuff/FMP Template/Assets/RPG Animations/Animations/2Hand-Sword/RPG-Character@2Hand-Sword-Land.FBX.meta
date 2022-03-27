@@ -1,7 +1,7 @@
 fileFormatVersion: 2
-guid: 322adb187b75a0848857a892aacf048c
+guid: 37e4532405deab74581ed8fe01091a02
 ModelImporter:
-  serializedVersion: 25
+  serializedVersion: 19301
   internalIDToNameTable:
   - first:
       1: 100000
@@ -317,6 +317,9 @@ ModelImporter:
     second: RPG-Character-Mesh
   - first:
       1: 100208
+    second: Box001
+  - first:
+      1: 100210
     second: Exporter
   - first:
       4: 400000
@@ -632,6 +635,9 @@ ModelImporter:
     second: RPG-Character-Mesh
   - first:
       4: 400208
+    second: Box001
+  - first:
+      4: 400210
     second: Exporter
   - first:
       23: 2300000
@@ -649,6 +655,9 @@ ModelImporter:
       23: 2300008
     second: USP
   - first:
+      23: 2300010
+    second: Box001
+  - first:
       33: 3300000
     second: Mesh_Soldier_A
   - first:
@@ -663,6 +672,9 @@ ModelImporter:
   - first:
       33: 3300008
     second: USP
+  - first:
+      33: 3300010
+    second: Box001
   - first:
       43: 4300000
     second: Mesh_Soldier_A
@@ -685,8 +697,14 @@ ModelImporter:
       43: 4300012
     second: RPG-Character-Mesh
   - first:
+      43: 4300014
+    second: Box001
+  - first:
       74: 7400000
-    second: 2Hand-Sword-Run-Forward-Attack1
+    second: 2Hand-Sword-Land
+  - first:
+      74: 7400002
+    second: 2Hand-Sword-Jump
   - first:
       95: 9500000
     second: //RootNode
@@ -704,7 +722,7 @@ ModelImporter:
     second: ImportLogs
   externalObjects: {}
   materials:
-    importMaterials: 0
+    materialImportMode: 0
     materialName: 0
     materialSearch: 1
     materialLocation: 0
@@ -718,14 +736,14 @@ ModelImporter:
     rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
-      might lower retargeting quality:\nNote: Activate translation DOF on avatar to
-      improve retargeting quality.\n\t'B_Spine' has translation animation that will
-      be discarded.\n\t'B_Spine1' has translation animation that will be discarded.\n"
+      might lower retargeting quality:\nNote: Activate translation DOF on avatar
+      to improve retargeting quality.\n\t'B_Spine' has translation animation that
+      will be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
     importConstraints: 0
-    animationCompression: 0
+    animationCompression: 3
     animationRotationError: 0.5
     animationPositionError: 0.5
     animationScaleError: 0.5
@@ -734,11 +752,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: 2Hand-Sword-Run-Forward-Attack1
+      name: 2Hand-Sword-Land
       takeName: Take 001
       internalID: 7400000
-      firstFrame: 0
-      lastFrame: 24
+      firstFrame: 21
+      lastFrame: 34
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -758,22 +776,8 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.22047131
-        functionName: FootR
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0.7279823
-        functionName: FootL
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0.38607597
-        functionName: Hit
+      - time: 0
+        functionName: Land
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -790,10 +794,12 @@ ModelImporter:
     meshCompression: 0
     addColliders: 0
     useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
     importVisibility: 0
     importBlendShapes: 0
     importCameras: 0
     importLights: 0
+    fileIdsGeneration: 1
     swapUVChannels: 0
     generateSecondaryUV: 0
     useFileUnits: 1
@@ -820,7 +826,6 @@ ModelImporter:
     normalSmoothingSource: 0
   referencedClips: []
   importAnimation: 1
-  copyAvatar: 1
   humanDescription:
     serializedVersion: 3
     human:
@@ -1543,8 +1548,10 @@ ModelImporter:
     skeletonHasParents: 0
   lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: e57e9b8cd5e115f4f8d7736473e5c7fd,
     type: 3}
+  autoGenerateAvatarMappingIfUnspecified: 1
   animationType: 3
   humanoidOversampling: 1
+  avatarSetup: 2
   additionalBone: 0
   userData: 
   assetBundleName: 

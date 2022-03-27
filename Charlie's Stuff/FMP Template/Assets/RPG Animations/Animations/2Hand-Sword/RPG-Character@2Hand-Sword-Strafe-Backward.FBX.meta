@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 322adb187b75a0848857a892aacf048c
+guid: 49c8b0222c69c4441a9b6a085641e4eb
 ModelImporter:
   serializedVersion: 25
   internalIDToNameTable:
@@ -317,6 +317,12 @@ ModelImporter:
     second: RPG-Character-Mesh
   - first:
       1: 100208
+    second: Crossbow
+  - first:
+      1: 100210
+    second: 2Hand-Sword
+  - first:
+      1: 100212
     second: Exporter
   - first:
       4: 400000
@@ -632,6 +638,12 @@ ModelImporter:
     second: RPG-Character-Mesh
   - first:
       4: 400208
+    second: Crossbow
+  - first:
+      4: 400210
+    second: 2Hand-Sword
+  - first:
+      4: 400212
     second: Exporter
   - first:
       23: 2300000
@@ -649,6 +661,12 @@ ModelImporter:
       23: 2300008
     second: USP
   - first:
+      23: 2300010
+    second: Crossbow
+  - first:
+      23: 2300012
+    second: 2Hand-Sword
+  - first:
       33: 3300000
     second: Mesh_Soldier_A
   - first:
@@ -663,6 +681,12 @@ ModelImporter:
   - first:
       33: 3300008
     second: USP
+  - first:
+      33: 3300010
+    second: Crossbow
+  - first:
+      33: 3300012
+    second: 2Hand-Sword
   - first:
       43: 4300000
     second: Mesh_Soldier_A
@@ -685,8 +709,14 @@ ModelImporter:
       43: 4300012
     second: RPG-Character-Mesh
   - first:
+      43: 4300014
+    second: Crossbow
+  - first:
+      43: 4300016
+    second: 2Hand-Sword
+  - first:
       74: 7400000
-    second: 2Hand-Sword-Run-Forward-Attack1
+    second: 2Hand-Sword-Strafe-Backward
   - first:
       95: 9500000
     second: //RootNode
@@ -720,7 +750,7 @@ ModelImporter:
     animationImportWarnings: "\nClip 'Take 001' has import animation warnings that
       might lower retargeting quality:\nNote: Activate translation DOF on avatar to
       improve retargeting quality.\n\t'B_Spine' has translation animation that will
-      be discarded.\n\t'B_Spine1' has translation animation that will be discarded.\n"
+      be discarded.\n"
     animationRetargetingWarnings: 
     animationDoRetargetingWarnings: 0
     importAnimatedCustomProperties: 0
@@ -734,7 +764,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: 2Hand-Sword-Run-Forward-Attack1
+      name: 2Hand-Sword-Strafe-Backward
       takeName: Take 001
       internalID: 7400000
       firstFrame: 0
@@ -745,8 +775,8 @@ ModelImporter:
       cycleOffset: 0
       loop: 0
       hasAdditiveReferencePose: 0
-      loopTime: 0
-      loopBlend: 0
+      loopTime: 1
+      loopBlend: 1
       loopBlendOrientation: 1
       loopBlendPositionY: 1
       loopBlendPositionXZ: 0
@@ -758,22 +788,15 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.22047131
+      - time: 0
         functionName: FootR
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.7279823
+      - time: 0.5119285
         functionName: FootL
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0.38607597
-        functionName: Hit
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
