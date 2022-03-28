@@ -167,6 +167,7 @@ public class EnemyAI : MonoBehaviour
             // Attack
             case AIState.Attacking:
             {
+                transform.LookAt(m_player.transform);
                 break;
             }
         }
@@ -485,6 +486,7 @@ public class EnemyAI : MonoBehaviour
     {
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger("TakeHit");
+        DisableCollision();
     }
 
     private void RecoverFromHit()
@@ -512,8 +514,9 @@ public class EnemyAI : MonoBehaviour
 
     private void EndAttack()
     {
-        SetAIState(AIState.ReturningToPatrol);
-        m_navMeshAgent.destination = m_lastPointOnPatrol;
+        //SetAIState(AIState.ReturningToPatrol);
+        //m_navMeshAgent.destination = m_lastPointOnPatrol;
+        SetAIState(AIState.Pursuing);
     }
 
     public void TakeDamage( float damageToTake )
@@ -536,6 +539,9 @@ public class EnemyAI : MonoBehaviour
         if (m_playerDetectionEnabled)
         {
             SetAIState(AIState.Pursuing);
+
+            // Had to put this setter here to force path recalculation, otherwise AI would attack immediately.
+            m_navMeshAgent.SetDestination(m_player.transform.position);
         }
         else
         {
