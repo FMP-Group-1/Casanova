@@ -11,7 +11,8 @@ public enum AIState
     Pursuing,
     Patrolling,
     ReturningToPatrol,
-    Attacking
+    Attacking,
+    Dead
 }
 
 enum PatrolState
@@ -21,27 +22,24 @@ enum PatrolState
     Waiting
 }
 
-// Specific to Zombie Placeholder
-// May need tweaking once actual enemies are implemented
-enum CollisionSide
+public enum WakeTrigger
 {
-    Left,
-    Right
+    Attack,
+    Standard
 }
 
 // Enemy AI Script, will likely be reworked to use inheritance once base functionality is polished
 public class EnemyAI : MonoBehaviour
 {
-    // For Testing nav movement, will need to switch to a form of player tracking when ready
-    [SerializeField]
-    private Transform m_movePosTarget;
-
     private NavMeshAgent m_navMeshAgent;
     private AIState m_state = AIState.Idle;
+    private AIState m_stateBeforeHit = AIState.Idle;
     [SerializeField]
     private float m_walkSpeed = 1.5f;
     [SerializeField]
     private float m_runSpeed = 3.0f;
+    [SerializeField]
+    private float m_health = 100.0f;
 
     // Animation Relevant Variables
     private Animator m_animController;
@@ -52,7 +50,7 @@ public class EnemyAI : MonoBehaviour
     // Patrol Relevant Variables
     [SerializeField]
     private GameObject m_patrolRoute;
-    private PatrolState m_patrolState = PatrolState.Waiting;
+    private PatrolState m_patrolState = PatrolState.Patrol;
     private PatrolState m_lastPatrolState;
     private List<Transform> m_patrolRoutePoints = new List<Transform>();
     private Transform m_nextPatrolPoint;
@@ -68,6 +66,8 @@ public class EnemyAI : MonoBehaviour
     // Player/Detection Relevant Variables
     private GameObject m_player;
     private CapsuleCollider m_playerCollider;
+    [SerializeField]
+    private bool m_playerDetectionEnabled = true;
 
     // Vision Detection Relevant Variables
     [SerializeField]
@@ -125,10 +125,10 @@ public class EnemyAI : MonoBehaviour
             {
                 // Collision Detection/Hit Detection to go here
                 // Left Click test just to make sure enemy can detect from this state
-                if (Input.GetMouseButtonDown(0))
-                {
-                    AIStandUp();
-                }
+                //if (Input.GetMouseButtonDown(0))
+                //{
+                //    AIStandUp();
+                //}
                 break;
             }
             // Chase after target/player
@@ -160,71 +160,13 @@ public class EnemyAI : MonoBehaviour
             {
                 if ( HasReachedDestination() )
                 {
-                    m_state = AIState.Patrolling;
+                    SetAIState(AIState.Patrolling);
                 }
                 break;
             }
             // Attack
             case AIState.Attacking:
             {
-                break;
-            }
-        }
-    }
-
-    private void SetAIState( AIState stateToSet )
-    {
-        // If changing FROM patrol state, store the last position in the patrol route
-        if ( m_state == AIState.Patrolling )
-        {
-            m_lastPointOnPatrol = gameObject.transform.position;
-        }
-
-        m_state = stateToSet;
-        ResetAnimTriggers();
-
-        switch ( stateToSet )
-        {
-            case AIState.Idle:
-            {
-                AIStandStill();
-                break;
-            }
-            case AIState.Sleeping:
-            {
-                break;
-            }
-            case AIState.Pursuing:
-            {
-                m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
-                m_navMeshAgent.autoBraking = true;
-                AIStartRun();
-                break;
-            }
-            case AIState.Patrolling:
-            {
-                m_navMeshAgent.stoppingDistance = m_patrolStoppingDistance;
-
-                if ( m_patrolState == PatrolState.Patrol || m_patrolState == PatrolState.ReversePatrol )
-                {
-                    AIStartWalk();
-                }
-                else if ( m_patrolState == PatrolState.Waiting )
-                {
-                    AIStandStill();
-                }
-                break;
-            }
-            case AIState.ReturningToPatrol:
-            {
-                m_navMeshAgent.stoppingDistance = m_patrolStoppingDistance;
-                m_navMeshAgent.autoBraking = false;
-                AIStartWalk();
-                break;
-            }
-            case AIState.Attacking:
-            {
-                AIStartAttack();
                 break;
             }
         }
@@ -300,6 +242,70 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    private void SetAIState( AIState stateToSet )
+    {
+        // If changing FROM patrol state, store the last position in the patrol route
+        if (m_state == AIState.Patrolling)
+        {
+            m_lastPointOnPatrol = gameObject.transform.position;
+        }
+
+        m_state = stateToSet;
+        ResetAnimTriggers();
+
+        switch (stateToSet)
+        {
+            case AIState.Idle:
+            {
+                AIStandStill();
+                break;
+            }
+            case AIState.Sleeping:
+            {
+                break;
+            }
+            case AIState.Pursuing:
+            {
+                m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
+                m_navMeshAgent.autoBraking = true;
+                AIStartRun();
+                break;
+            }
+            case AIState.Patrolling:
+            {
+                m_navMeshAgent.destination = m_patrolRoutePoints[m_patrolDestinationIndex].position;
+                m_navMeshAgent.stoppingDistance = m_patrolStoppingDistance;
+
+                if (m_patrolState == PatrolState.Patrol || m_patrolState == PatrolState.ReversePatrol)
+                {
+                    AIStartWalk();
+                }
+                else if (m_patrolState == PatrolState.Waiting)
+                {
+                    AIStandStill();
+                }
+                break;
+            }
+            case AIState.ReturningToPatrol:
+            {
+                m_navMeshAgent.stoppingDistance = m_patrolStoppingDistance;
+                m_navMeshAgent.autoBraking = false;
+                AIStartWalk();
+                break;
+            }
+            case AIState.Attacking:
+            {
+                AIStartAttack();
+                break;
+            }
+            case AIState.Dead:
+            {
+                AISetToDead();
+                break;
+            }
+        }
+    }
+
     private bool HasReachedDestination()
     {
         bool destinationReached = false;
@@ -332,7 +338,7 @@ public class EnemyAI : MonoBehaviour
         m_weaponCollider.enabled = false;
     }
 
-    private void EnableCollision( CollisionSide sideToCollide )
+    private void EnableCollision()
     {
         m_weaponCollider.enabled = true;
     }
@@ -367,23 +373,42 @@ public class EnemyAI : MonoBehaviour
     {
         bool playerIsVisible = false;
 
-        // Checking if player is in range
-        if (Vector3.Distance(transform.position, m_player.transform.position) <= m_viewRadius)
+        if(m_playerDetectionEnabled)
         {
-            // Once player is in range, getting the direction to the player and checking if it's within the AI's FOV
-            Vector3 dirToPlayer = (m_player.transform.position - transform.position).normalized;
-            if (Vector3.Angle(transform.forward, dirToPlayer) < m_viewAngle * 0.5f )
+            // Checking if player is in range
+            if (Vector3.Distance(transform.position, m_player.transform.position) <= m_viewRadius)
             {
-                // Once player is in range and in FOV, using Raycast to check if any obstacles are in the way
-                float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
-                if (!Physics.Raycast(transform.position, dirToPlayer, distanceToPlayer, obstacleMask))
+                // Once player is in range, getting the direction to the player and checking if it's within the AI's FOV
+                Vector3 dirToPlayer = (m_player.transform.position - transform.position).normalized;
+                if (Vector3.Angle(transform.forward, dirToPlayer) < m_viewAngle * 0.5f )
                 {
-                    playerIsVisible = true;
+                    // Once player is in range and in FOV, using Raycast to check if any obstacles are in the way
+                    float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
+                    if (!Physics.Raycast(transform.position, dirToPlayer, distanceToPlayer, obstacleMask))
+                    {
+                        playerIsVisible = true;
+                    }
                 }
             }
         }
 
         return playerIsVisible;
+    }
+
+    public void WakeUpAI(WakeTrigger wakeTrigger)
+    {
+        switch ( wakeTrigger )
+        {
+            case WakeTrigger.Attack:
+            {
+                AIStandUp();
+                break;
+            }
+            case WakeTrigger.Standard:
+            {
+                break;
+            }
+        }
     }
 
     public AIState GetState()
@@ -399,6 +424,11 @@ public class EnemyAI : MonoBehaviour
     public float GetViewAngle()
     {
         return m_viewAngle;
+    }
+
+    public float GetHealth()
+    {
+        return m_health;
     }
 
     private void AIStartWalk()
@@ -443,6 +473,32 @@ public class EnemyAI : MonoBehaviour
         PauseAnimation();
     }
 
+    private void AISetToDead()
+    {
+        m_navMeshAgent.isStopped = true;
+        m_animController.SetTrigger("StandUp");
+        m_animController.Play("Standing Up", -1, 0.0f);
+        PauseAnimation();
+    }
+
+    private void AITakeHit()
+    {
+        m_navMeshAgent.isStopped = true;
+        m_animController.SetTrigger("TakeHit");
+    }
+
+    private void RecoverFromHit()
+    {
+        if (m_playerDetectionEnabled)
+        {
+            SetAIState(AIState.Pursuing);
+        }
+        else
+        {
+            SetAIState(m_stateBeforeHit);
+        }
+    }
+
     private void PauseAnimation()
     {
         m_prevAnimSpeed = m_animController.speed;
@@ -460,6 +516,33 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.destination = m_lastPointOnPatrol;
     }
 
+    public void TakeDamage( float damageToTake )
+    {
+        m_stateBeforeHit = m_state;
+
+        m_health -= damageToTake;
+
+        AITakeHit();
+
+        if ( m_health <= 0.0f )
+        {
+            m_health = 0.0f;
+            SetAIState(AIState.Dead);
+        }
+    }
+
+    public void ChangeStateFromWake()
+    {
+        if (m_playerDetectionEnabled)
+        {
+            SetAIState(AIState.Pursuing);
+        }
+        else
+        {
+            SetAIState(AIState.Patrolling);
+        }
+    }
+
     private void ResetAnimTriggers()
     {
         m_animController.ResetTrigger("Walk");
@@ -467,6 +550,7 @@ public class EnemyAI : MonoBehaviour
         m_animController.ResetTrigger("Attack");
         m_animController.ResetTrigger("Run");
         m_animController.ResetTrigger("StandUp");
+        m_animController.ResetTrigger("TakeHit");
     }
 
     private void SetupPatrolRoutes()
@@ -484,6 +568,7 @@ public class EnemyAI : MonoBehaviour
         if (m_patrolRoutePoints.Count >= 2)
         {
             m_nextPatrolPoint = m_patrolRoutePoints[1];
+            m_lastPointOnPatrol = m_nextPatrolPoint.position;
         }
     }
 
@@ -509,7 +594,6 @@ public class EnemyAI : MonoBehaviour
             SetAIState(AIState.Pursuing);
             ResetAnimTriggers();
             AIStartRun();
-            m_navMeshAgent.destination = m_movePosTarget.position;
         }
 
         // Start Sleeping Test Input

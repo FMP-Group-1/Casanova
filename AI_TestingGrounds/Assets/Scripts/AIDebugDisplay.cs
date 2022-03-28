@@ -10,6 +10,7 @@ public class AIDebugDisplay : MonoBehaviour
 
     private Text m_aiNameText;
     private Text m_aiStateText;
+    private Text m_aiHealth;
     private Text m_playerDetectedText;
     void Awake()
     {
@@ -25,6 +26,7 @@ public class AIDebugDisplay : MonoBehaviour
     {
         m_aiNameText = GameObject.Find("AINameText").GetComponent<Text>();
         m_aiStateText = GameObject.Find("AIStateText").GetComponent<Text>();
+        m_aiHealth = GameObject.Find("AIHealthText").GetComponent<Text>();
         m_playerDetectedText = GameObject.Find("PlayerDetectText").GetComponent<Text>();
 
         m_aiNameText.text = "AI: " + m_aiDebugTarget.name;
@@ -33,6 +35,7 @@ public class AIDebugDisplay : MonoBehaviour
     private void DebugTextUpdate()
     {
         m_aiStateText.text = "AI State: " + m_aiDebugTarget.GetState();
+        m_aiHealth.text = "AI Health: " + m_aiDebugTarget.GetHealth();
         m_playerDetectedText.text = "Player Detected: " + m_aiDebugTarget.IsPlayerVisible();
     }
 }
