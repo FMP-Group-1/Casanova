@@ -40,7 +40,7 @@ public class EnemyAI : MonoBehaviour
     private Animator m_animController;
     private AIState m_state = AIState.Idle;
     [SerializeField]
-    private float m_walkSpeed = 2.0f;
+    private float m_walkSpeed = 1.5f;
     [SerializeField]
     private float m_runSpeed = 5.0f;
 
@@ -66,10 +66,10 @@ public class EnemyAI : MonoBehaviour
 
     // Vision Detection Relevant Variables
     [SerializeField]
-    private float m_viewRadius = 15.0f;    
+    private float m_viewRadius = 7.5f;    
     [SerializeField]
     [Range(0.0f,360.0f)]
-    private float m_viewAngle = 45.0f;
+    private float m_viewAngle = 105.0f;
 
     [SerializeField]
     private LayerMask obstacleMask;
