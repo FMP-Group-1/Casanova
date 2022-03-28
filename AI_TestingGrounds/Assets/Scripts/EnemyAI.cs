@@ -37,12 +37,17 @@ public class EnemyAI : MonoBehaviour
     private Transform m_movePosTarget;
 
     private NavMeshAgent m_navMeshAgent;
-    private Animator m_animController;
     private AIState m_state = AIState.Idle;
     [SerializeField]
     private float m_walkSpeed = 1.5f;
     [SerializeField]
-    private float m_runSpeed = 5.0f;
+    private float m_runSpeed = 3.0f;
+
+    // Animation Relevant Variables
+    private Animator m_animController;
+    private float m_prevAnimSpeed;
+    [SerializeField]
+    private bool m_spawnAsleep = false;
 
     // Patrol Relevant Variables
     [SerializeField]
@@ -56,7 +61,7 @@ public class EnemyAI : MonoBehaviour
     private float m_patrolWaitTime = 2.5f;
     private int m_patrolDestinationIndex = 1;
     [SerializeField]
-    private float m_patrolStoppingDistance = 0.5f;
+    private float m_patrolStoppingDistance = 1.5f;
     [SerializeField]
     private float m_playerStoppingDistance = 2.0f;
 
@@ -74,8 +79,9 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private LayerMask obstacleMask;
 
-    private BoxCollider m_leftHandCollider;
-    private BoxCollider m_rightHandCollider;
+    [SerializeField]
+    private GameObject m_weapon;
+    private BoxCollider m_weaponCollider;
 
     private void Awake()
     {
@@ -88,11 +94,16 @@ public class EnemyAI : MonoBehaviour
 
         m_player = GameObject.FindGameObjectWithTag("Player");
         m_playerCollider = m_player.GetComponent<CapsuleCollider>();
-        m_leftHandCollider = GameObject.Find("Base HumanLArmPalm").GetComponent<BoxCollider>();
-        m_rightHandCollider = GameObject.Find("Base HumanRArmPalm").GetComponent<BoxCollider>();
+        m_weaponCollider = m_weapon.GetComponent<BoxCollider>();
 
         DisableCollision();
+
+        if (m_spawnAsleep)
+        {
+            AISetToPlayDead();
+        }
     }
+
     private void Update()
     {
         m_player.GetComponent<Player>().SetHitVisual( IsAttackCollidingWithPlayer() );
@@ -116,8 +127,7 @@ public class EnemyAI : MonoBehaviour
                 // Left Click test just to make sure enemy can detect from this state
                 if (Input.GetMouseButtonDown(0))
                 {
-                    Debug.Log("Wake Up Enemy");
-                    SetAIState(AIState.Idle);
+                    AIStandUp();
                 }
                 break;
             }
@@ -141,7 +151,7 @@ public class EnemyAI : MonoBehaviour
             {
                 if (IsPlayerVisible())
                 {
-                    //SetAIState(AIState.Pursuing);
+                    SetAIState(AIState.Pursuing);
                 }
                 AIPatrol();
                 break;
@@ -193,6 +203,8 @@ public class EnemyAI : MonoBehaviour
             }
             case AIState.Patrolling:
             {
+                m_navMeshAgent.stoppingDistance = m_patrolStoppingDistance;
+
                 if ( m_patrolState == PatrolState.Patrol || m_patrolState == PatrolState.ReversePatrol )
                 {
                     AIStartWalk();
@@ -317,20 +329,12 @@ public class EnemyAI : MonoBehaviour
 
     private void DisableCollision()
     {
-        m_leftHandCollider.enabled = false;
-        m_rightHandCollider.enabled = false;
+        m_weaponCollider.enabled = false;
     }
 
     private void EnableCollision( CollisionSide sideToCollide )
     {
-        if ( sideToCollide == CollisionSide.Left )
-        {
-            m_leftHandCollider.enabled = true;
-        }
-        else if ( sideToCollide == CollisionSide.Right )
-        {
-            m_rightHandCollider.enabled = true;
-        }
+        m_weaponCollider.enabled = true;
     }
 
     public bool IsAttackCollidingWithPlayer()
@@ -340,11 +344,7 @@ public class EnemyAI : MonoBehaviour
         // If using this method for actual collision, needs a collider.enabled check
         // But for demonstrating the collision, this is not present currently
 
-        if (m_leftHandCollider.bounds.Intersects(m_playerCollider.bounds))
-        {
-            isColliding = true;
-        }
-        if (m_rightHandCollider.bounds.Intersects(m_playerCollider.bounds))
+        if (m_weaponCollider.bounds.Intersects(m_playerCollider.bounds))
         {
             isColliding = true;
         }
@@ -427,6 +427,33 @@ public class EnemyAI : MonoBehaviour
         m_animController.SetTrigger("Attack");
     }
 
+    private void AIStandUp()
+    {
+        m_navMeshAgent.isStopped = true;
+        m_animController.SetTrigger("StandUp");
+        ResumeAnimation();
+    }
+
+    private void AISetToPlayDead()
+    {
+        m_navMeshAgent.isStopped = true;
+        m_animController.SetTrigger("StandUp");
+        m_animController.Play("Standing Up", -1, 0.0f);
+        SetAIState(AIState.Sleeping);
+        PauseAnimation();
+    }
+
+    private void PauseAnimation()
+    {
+        m_prevAnimSpeed = m_animController.speed;
+        m_animController.speed = 0.0f;
+    }
+
+    private void ResumeAnimation()
+    {
+        m_animController.speed = m_prevAnimSpeed;
+    }
+
     private void EndAttack()
     {
         SetAIState(AIState.ReturningToPatrol);
@@ -439,6 +466,7 @@ public class EnemyAI : MonoBehaviour
         m_animController.ResetTrigger("Idle");
         m_animController.ResetTrigger("Attack");
         m_animController.ResetTrigger("Run");
+        m_animController.ResetTrigger("StandUp");
     }
 
     private void SetupPatrolRoutes()
