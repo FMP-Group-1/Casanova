@@ -12,6 +12,7 @@ public enum AIState
     Patrolling,
     ReturningToPatrol,
     Attacking,
+    InCombat,
     Dead
 }
 
@@ -141,7 +142,7 @@ public class EnemyAI : MonoBehaviour
                 // Logic from https://answers.unity.com/questions/324589/how-can-i-tell-when-a-navmesh-has-reached-its-dest.html
                 if ( HasReachedDestination() )
                 {
-                    SetAIState(AIState.Attacking);
+                    SetAIState(AIState.InCombat);
                     //Debug.Log("Destination Reached");
                 }
                 break;
@@ -168,6 +169,11 @@ public class EnemyAI : MonoBehaviour
             case AIState.Attacking:
             {
                 transform.LookAt(m_player.transform);
+                break;
+            }
+            case AIState.InCombat:
+            {
+                AIStrafeLeft();
                 break;
             }
         }
@@ -243,6 +249,14 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    private void AIStrafeLeft()
+    {
+        // Basic start to strafe logic
+        Vector3 offset = transform.position - m_player.transform.position;
+        Vector3 dir = Vector3.Cross(offset, Vector3.up);
+        m_navMeshAgent.SetDestination(transform.position + dir);
+    }
+
     private void SetAIState( AIState stateToSet )
     {
         // If changing FROM patrol state, store the last position in the patrol route
@@ -297,6 +311,11 @@ public class EnemyAI : MonoBehaviour
             case AIState.Attacking:
             {
                 AIStartAttack();
+                break;
+            }
+            case AIState.InCombat:
+            {
+                AIStartWalk();
                 break;
             }
             case AIState.Dead:
@@ -374,6 +393,7 @@ public class EnemyAI : MonoBehaviour
     {
         bool playerIsVisible = false;
 
+        // Todo: Look into using sqr root distance checks for optimisation
         if(m_playerDetectionEnabled)
         {
             // Checking if player is in range
