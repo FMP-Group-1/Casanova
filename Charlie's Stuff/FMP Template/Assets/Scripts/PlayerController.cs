@@ -20,11 +20,19 @@ public class PlayerController : MonoBehaviour
 
 
     private CharacterController controller;
-    private Vector3 playerVelocity;
+    public Vector3 playerVelocity;
     private bool groundedPlayer;
     private Transform cameraMainTransform;
 
     private Animator animator;
+
+    public bool canMove;
+    public bool canFall;
+
+    //Used for animating
+    private float m_moveAmount;
+
+
 
     private void OnEnable()
 	{
@@ -47,6 +55,9 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+
+
+
         groundedPlayer = controller.isGrounded;
         if (groundedPlayer && playerVelocity.y < 0)
         {
@@ -57,10 +68,19 @@ public class PlayerController : MonoBehaviour
         //Movement.y is the Z value
         Vector3 move = new Vector3(movement.x, 0, movement.y);
 
+        //Get the absolute values of movement inputs (0-1) for use in a 1d Blend tree
+
+        m_moveAmount = Mathf.Clamp01(Mathf.Abs(movement.x) + Mathf.Abs(movement.y));
+
         //Move in direction of camera
         move = cameraMainTransform.forward * move.z + cameraMainTransform.right * move.x;
         move.y = 0f;
-        controller.Move(move * Time.deltaTime * playerSpeed);
+
+        if (canMove)
+        {
+            controller.Move(move * Time.deltaTime * playerSpeed);
+        }
+
 
         // Changes the height position of the player..
         if (jumpControl.action.triggered && groundedPlayer)
@@ -82,19 +102,23 @@ public class PlayerController : MonoBehaviour
 		}
 
         playerVelocity.y += gravityValue * Time.deltaTime;
-        controller.Move(playerVelocity * Time.deltaTime);
+
+
+        if (canFall)
+        {
+            controller.Move(playerVelocity * Time.deltaTime);
+        }
 
         //Rotate player when moving
         if (movement != Vector2.zero)
 		{
-            float targetAngle = cameraMainTransform.eulerAngles.y;
+            float targetAngle = Mathf.Atan2(movement.x, movement.y) * Mathf.Rad2Deg + cameraMainTransform.eulerAngles.y;
             Quaternion targetRotation = Quaternion.Euler(0f, targetAngle, 0f);
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
 		}
 
-        Debug.Log(movement);
+        Debug.Log(playerVelocity);
 
-        animator.SetFloat("forwardSpeed", movement.y);
-        animator.SetFloat("sidewaysSpeed", movement.x);
+        animator.SetFloat("forwardSpeed", m_moveAmount);
     }
 }

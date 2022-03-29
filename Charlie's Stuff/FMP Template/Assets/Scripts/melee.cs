@@ -20,16 +20,13 @@ public class melee : MonoBehaviour
     bool swordEquipped = true;
     bool currentlyInTheProcessOfSheathing = false;
 
-    float baseComboTimer = 0.4f;
-    float timerIterator = 0.0f;
-    bool timerCounting = false;
     private Animator animator;
 
     private PlayerControls m_playerControls;
 
-    private bool isCurrentlyAttacking = false;
+    
+    public bool canStartNextAttack = true;
 
-    private bool collidersActive = false;
 
     private enum Attack
     {
@@ -158,21 +155,11 @@ public class melee : MonoBehaviour
             }
             */
 
-            //Could possibly replace timer with events on individual animations
-            if (timerCounting)
-        {
-            timerIterator += Time.deltaTime;
-        }
 
-        if (timerIterator >= baseComboTimer)
-        {
-            timerIterator = baseComboTimer;
-            timerCounting = false;
-            animator.SetBool("comboActive", false);
-        }
 
-        //Basically, if you have reached the end of an attack, you are no longer attacking, but if "attackTyp" is not nothing, there's somehing queued up, so lets do it
-        if (!isCurrentlyAttacking && attackType != Attack.Nothing)
+
+        //Basically, if you have reached the end of an attack, you are no longer attacking, but if "attackType" is not nothing, there's somehing queued up, so lets do it
+        if (canStartNextAttack && attackType != Attack.Nothing)
         {
             // So we are not attacking YET, but we want to
 
@@ -193,15 +180,15 @@ public class melee : MonoBehaviour
                     break;
 
             }
-
+            GetComponent<PlayerController>().canMove = false;
+            GetComponent<PlayerController>().canFall = false;
             //We are attacking
-            isCurrentlyAttacking = true;
+            canStartNextAttack = false;
+            animator.SetTrigger("attacked");
             //Combo has begun
             animator.SetBool("comboActive", true);
-            //Reset combo counter
-            timerIterator = 0.0f;
-            //We are counting (Have to set true everytime sadly, even if already true. Probably faster than checking if it isn't all the time.
-            timerCounting = true;
+            
+            //Next queued attack is nothing, until we add one
             attackType = Attack.Nothing;
 
 
@@ -209,21 +196,20 @@ public class melee : MonoBehaviour
 
     }
 
-    void CollisionsStart()
+    public void CollisionsStart()
 	{
         swordCollider.enabled = true;
-        collidersActive = true;
         //swordScript.setCollidersAcitve(collidersActive);
-        isAttackingText.text = "Attacking";
+        //isAttackingText.text = "Attacking";
     }
 
-    void CollisionsEnd()
+    public void CollisionsEnd()
     {
         swordCollider.enabled = false;
-        collidersActive = false;
         //swordScript.setCollidersAcitve(collidersActive);
-        isAttackingText.text = "Not Attacking";
-        isCurrentlyAttacking = false;
+        //isAttackingText.text = "Not Attacking";
+        canStartNextAttack = true;
+
     }
     
 
@@ -245,6 +231,19 @@ public class melee : MonoBehaviour
         swordEquipped = false;
         realSword.SetActive(false);
         holsteredSword.SetActive(true);
+    }
+
+    public void EndCombo()
+    {
+        GetComponent<PlayerController>().playerVelocity.y = 0f;
+
+        GetComponent<PlayerController>().canFall = true;
+        GetComponent<PlayerController>().canMove = true;
+        animator.SetBool("comboActive", false);
+        //MAKE SURE IT'S AVAILABLE AGAIN. CURRENTLY BROKE
+        canStartNextAttack = true;
+
+
     }
 
 }
