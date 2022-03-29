@@ -24,7 +24,8 @@ public class melee : MonoBehaviour
 
     private PlayerControls m_playerControls;
 
-    private bool canStartNextAttack = true;
+    
+    public bool canStartNextAttack = true;
 
 
     private enum Attack
@@ -209,7 +210,6 @@ public class melee : MonoBehaviour
         //isAttackingText.text = "Not Attacking";
         canStartNextAttack = true;
 
-        GetComponent<PlayerController>().playerVelocity.y = 0f;
     }
     
 
@@ -234,11 +234,16 @@ public class melee : MonoBehaviour
     }
 
     public void EndCombo()
-	{
+    {
+        GetComponent<PlayerController>().playerVelocity.y = 0f;
 
         GetComponent<PlayerController>().canFall = true;
         GetComponent<PlayerController>().canMove = true;
         animator.SetBool("comboActive", false);
+        //MAKE SURE IT'S AVAILABLE AGAIN. CURRENTLY BROKE
+        canStartNextAttack = true;
+
+
     }
 
 }
