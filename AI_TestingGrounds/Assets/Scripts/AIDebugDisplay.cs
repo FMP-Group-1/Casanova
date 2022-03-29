@@ -10,6 +10,7 @@ public class AIDebugDisplay : MonoBehaviour
 
     private Text m_aiNameText;
     private Text m_aiStateText;
+    private Text m_aiSubstateText;
     private Text m_aiHealth;
     private Text m_playerDetectedText;
     void Awake()
@@ -26,6 +27,7 @@ public class AIDebugDisplay : MonoBehaviour
     {
         m_aiNameText = GameObject.Find("AINameText").GetComponent<Text>();
         m_aiStateText = GameObject.Find("AIStateText").GetComponent<Text>();
+        m_aiSubstateText = GameObject.Find("AISubstateText").GetComponent<Text>();
         m_aiHealth = GameObject.Find("AIHealthText").GetComponent<Text>();
         m_playerDetectedText = GameObject.Find("PlayerDetectText").GetComponent<Text>();
 
@@ -34,8 +36,26 @@ public class AIDebugDisplay : MonoBehaviour
 
     private void DebugTextUpdate()
     {
-        m_aiStateText.text = "AI State: " + m_aiDebugTarget.GetState();
+        AIState currentAIState = m_aiDebugTarget.GetState();
+
+        m_aiStateText.text = "AI State: " + currentAIState;
         m_aiHealth.text = "AI Health: " + m_aiDebugTarget.GetHealth();
         m_playerDetectedText.text = "Player Detected: " + m_aiDebugTarget.IsPlayerVisible();
+
+        if (currentAIState == AIState.InCombat || currentAIState == AIState.Patrolling)
+        {
+            if (currentAIState == AIState.InCombat)
+            {
+                m_aiSubstateText.text = "Combat State: " + m_aiDebugTarget.GetCombatState();
+            }
+            else if (currentAIState == AIState.Patrolling)
+            {
+                m_aiSubstateText.text = "Patrol State: " + m_aiDebugTarget.GetPatrolState();
+            }
+        }
+        else
+        {
+            m_aiSubstateText.text = "Substate: N/A";
+        }
     }
 }
