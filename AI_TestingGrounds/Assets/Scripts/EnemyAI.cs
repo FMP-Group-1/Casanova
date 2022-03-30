@@ -50,22 +50,20 @@ public class EnemyAI : MonoBehaviour
     private AIState m_state = AIState.Idle;
     private CombatState m_combatState = CombatState.Strafing;
     private AIState m_stateBeforeHit = AIState.Idle;
+    [Header("Movement Values")]
     [SerializeField]
     private float m_walkSpeed = 1.5f;
     [SerializeField]
-    private float m_strafeSpeed = 1.5f;
-    [SerializeField]
     private float m_runSpeed = 3.0f;
-    [SerializeField]
-    private float m_health = 100.0f;
 
     // Animation Relevant Variables
     private Animator m_animController;
     private float m_prevAnimSpeed;
-    [SerializeField]
-    private bool m_spawnAsleep = false;
 
     // Patrol Relevant Variables
+    [Header("Patrol Values")]
+    [SerializeField]
+    private bool m_spawnAsleep = false;
     [SerializeField]
     private GameObject m_patrolRoute;
     private PatrolState m_patrolState = PatrolState.Patrol;
@@ -78,22 +76,24 @@ public class EnemyAI : MonoBehaviour
     private int m_patrolDestinationIndex = 1;
     [SerializeField]
     private float m_patrolStoppingDistance = 1.5f;
-    [SerializeField]
-    private float m_playerStoppingDistance = 2.0f;
 
     // Player/Detection Relevant Variables
     private GameObject m_player;
     private CapsuleCollider m_playerCollider;
-    [SerializeField]
-    private bool m_playerDetectionEnabled = true;
 
     // Strafe Relevant Variables
+    [Header("Combat Values")]
+    [SerializeField]
+    private float m_health = 100.0f;
+    [SerializeField]
+    private float m_playerStoppingDistance = 1.75f;
     private StrafeDir m_strafeDir = StrafeDir.Left;
     [SerializeField]
-    private float m_minStrafeRange = 5.0f;
+    private float m_strafeSpeed = 1.5f;
     [SerializeField]
-    private float m_maxStrafeRange = 7.5f;
+    private float m_minStrafeRange = 3.0f;
     [SerializeField]
+    private float m_maxStrafeRange = 5.0f;
     private float m_strafeAtDist;
 
     // Combat Variables
@@ -103,20 +103,23 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private float m_maxAttackTime = 7.5f;
     private float m_timeSinceLastAttack = 0.0f;
+    [SerializeField]
+    private GameObject m_weapon;
+    private BoxCollider m_weaponCollider;
 
     // Vision Detection Relevant Variables
+    [Header("Player Detection Values")]
+    [SerializeField]
+    private bool m_playerDetectionEnabled = true;
     [SerializeField]
     private float m_viewRadius = 7.5f;    
     [SerializeField]
     [Range(0.0f,360.0f)]
-    private float m_viewAngle = 105.0f;
+    private float m_viewAngle = 145.0f;
 
     [SerializeField]
     private LayerMask m_obstacleMask;
 
-    [SerializeField]
-    private GameObject m_weapon;
-    private BoxCollider m_weaponCollider;
 
     private void Awake()
     {
@@ -306,6 +309,7 @@ public class EnemyAI : MonoBehaviour
 
                 if (HasReachedDestination())
                 {
+                    ResetAnimTriggers();
                     m_strafeDir = (StrafeDir)Random.Range(0, 2);
                     StartStrafeAnim(m_strafeDir);
                     m_combatState = CombatState.Strafing;
@@ -318,6 +322,7 @@ public class EnemyAI : MonoBehaviour
 
                 if (HasReachedDestination())
                 {
+                    ResetAnimTriggers();
                     StartAttackAnim();
                     m_combatState = CombatState.Attacking;
                 }
@@ -355,7 +360,6 @@ public class EnemyAI : MonoBehaviour
         if (distanceToPlayer > m_maxStrafeRange)
         {
             SetAIState(AIState.Pursuing);
-            m_navMeshAgent.updateRotation = true;
         }
         // Player moved closer than strafe range
         if (distanceToPlayer < m_minStrafeRange && m_combatState != CombatState.BackingUp)
@@ -363,6 +367,7 @@ public class EnemyAI : MonoBehaviour
             m_combatState = CombatState.BackingUp;
             Vector3 backDir = (transform.position - m_player.transform.position).normalized;
             m_navMeshAgent.destination = transform.position + (backDir * m_minStrafeRange);
+            ResetAnimTriggers();
             StartWalkBackAnim();
         }
     }
@@ -724,7 +729,10 @@ public class EnemyAI : MonoBehaviour
 
         m_health -= damageToTake;
 
-        PlayDamageAnim();
+        if ( m_state != AIState.Sleeping)
+        {
+            PlayDamageAnim();
+        }
 
         if ( m_health <= 0.0f )
         {

@@ -1596,19 +1596,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f82031eb2af621c44a1398667fde9281, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_movePosTarget: {fileID: 0}
   m_walkSpeed: 1.5
   m_runSpeed: 3
   m_spawnAsleep: 1
   m_patrolRoute: {fileID: 0}
   m_patrolStoppingDistance: 1.5
-  m_playerStoppingDistance: 2
+  m_health: 100
+  m_playerStoppingDistance: 1.75
+  m_strafeSpeed: 1.5
+  m_minStrafeRange: 3
+  m_maxStrafeRange: 5
+  m_minAttackTime: 3.5
+  m_maxAttackTime: 7.5
+  m_weapon: {fileID: 6846784145097682275}
+  m_playerDetectionEnabled: 1
   m_viewRadius: 7.5
-  m_viewAngle: 105
-  obstacleMask:
+  m_viewAngle: 145
+  m_obstacleMask:
     serializedVersion: 2
     m_Bits: 8
-  m_weapon: {fileID: 6846784145097682275}
 --- !u!195 &6036442217792160288
 NavMeshAgent:
   m_ObjectHideFlags: 0
