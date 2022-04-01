@@ -11,7 +11,6 @@ public enum AIState
     Pursuing,
     Patrolling,
     ReturningToPatrol,
-    Attacking,
     InCombat,
     Dead
 }
@@ -138,7 +137,7 @@ public class EnemyAI : MonoBehaviour
 
         if (m_spawnAsleep)
         {
-            SetToPlayDeadAnim();
+            SetAIState(AIState.Sleeping);
         }
 
         m_strafeAtDist = m_minStrafeRange + ((m_maxStrafeRange - m_minStrafeRange) * 0.5f);
@@ -157,18 +156,14 @@ public class EnemyAI : MonoBehaviour
             {
                 if ( IsPlayerVisible() )
                 {
+                    // Disabled Detection in Idle for now
                     //SetAIState(AIState.Pursuing);
                 }
                 break;
             }
             case AIState.Sleeping:
             {
-                // Collision Detection/Hit Detection to go here
-                // Left Click test just to make sure enemy can detect from this state
-                //if (Input.GetMouseButtonDown(0))
-                //{
-                //    AIStandUp();
-                //}
+
                 break;
             }
             // Chase after target/player
@@ -182,7 +177,6 @@ public class EnemyAI : MonoBehaviour
                 if ( IsInStrafeRange() )
                 {
                     SetAIState(AIState.InCombat);
-                    m_navMeshAgent.updateRotation = false;
                     //Debug.Log("Destination Reached");
                 }
                 break;
@@ -203,12 +197,6 @@ public class EnemyAI : MonoBehaviour
                 {
                     SetAIState(AIState.Patrolling);
                 }
-                break;
-            }
-            // Attack
-            case AIState.Attacking:
-            {
-                transform.LookAt(m_player.transform);
                 break;
             }
             case AIState.InCombat:
@@ -235,9 +223,7 @@ public class EnemyAI : MonoBehaviour
                 {
                     if (m_patrolDestinationIndex >= m_patrolRoutePoints.Count - 1)
                     {
-                        m_patrolState = PatrolState.Waiting;
-                        ResetAnimTriggers();
-                        StartIdleAnim();
+                        SetPatrolState(PatrolState.Waiting);
                     }
                     else
                     {
@@ -253,9 +239,7 @@ public class EnemyAI : MonoBehaviour
                 {
                     if (m_patrolDestinationIndex <= 0)
                     {
-                        m_patrolState = PatrolState.Waiting;
-                        ResetAnimTriggers();
-                        StartIdleAnim();
+                        SetPatrolState(PatrolState.Waiting);
                     }
                     else
                     {
@@ -273,16 +257,12 @@ public class EnemyAI : MonoBehaviour
                 {
                     if (m_patrolDestinationIndex >= m_patrolRoutePoints.Count - 1)
                     {
-                        m_patrolState = PatrolState.ReversePatrol;
+                        SetPatrolState(PatrolState.ReversePatrol);
                     }
                     else if (m_patrolDestinationIndex <= 0)
                     {
-                        m_patrolState = PatrolState.Patrol;
+                        SetPatrolState(PatrolState.Patrol);
                     }
-
-                    m_patrolTimer = 0.0f;
-                    ResetAnimTriggers();
-                    StartWalkAnim();
                 }
                 break;
             }
@@ -306,13 +286,11 @@ public class EnemyAI : MonoBehaviour
             {
                 AttackCheck();
                 StrafeRangeCheck();
+                transform.LookAt(m_player.transform.position);
 
                 if (HasReachedDestination())
                 {
-                    ResetAnimTriggers();
-                    m_strafeDir = (StrafeDir)Random.Range(0, 2);
-                    StartStrafeAnim(m_strafeDir);
-                    m_combatState = CombatState.Strafing;
+                    SetCombatState(CombatState.Strafing);
                 }
                 break;
             }
@@ -322,15 +300,13 @@ public class EnemyAI : MonoBehaviour
 
                 if (HasReachedDestination())
                 {
-                    ResetAnimTriggers();
-                    StartAttackAnim();
-                    m_combatState = CombatState.Attacking;
+                    SetCombatState(CombatState.Attacking);
                 }
                 break;
             }
             case CombatState.Attacking:
             {
-
+                transform.LookAt(m_player.transform.position);
                 break;
             }
         }
@@ -364,11 +340,7 @@ public class EnemyAI : MonoBehaviour
         // Player moved closer than strafe range
         if (distanceToPlayer < m_minStrafeRange && m_combatState != CombatState.BackingUp)
         {
-            m_combatState = CombatState.BackingUp;
-            Vector3 backDir = (transform.position - m_player.transform.position).normalized;
-            m_navMeshAgent.destination = transform.position + (backDir * m_minStrafeRange);
-            ResetAnimTriggers();
-            StartWalkBackAnim();
+            SetCombatState(CombatState.BackingUp);
         }
     }
 
@@ -376,8 +348,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (m_timeSinceLastAttack >= m_attackTimer)
         {
-            m_combatState = CombatState.MovingToAttack;
-            StartRunAnim();
+            SetCombatState(CombatState.MovingToAttack);
         }
     }
 
@@ -401,6 +372,7 @@ public class EnemyAI : MonoBehaviour
             }
             case AIState.Sleeping:
             {
+                SetToPlayDeadAnim();
                 break;
             }
             case AIState.Pursuing:
@@ -432,22 +404,74 @@ public class EnemyAI : MonoBehaviour
                 StartWalkAnim();
                 break;
             }
-            case AIState.Attacking:
-            {
-                StartAttackAnim();
-                break;
-            }
             case AIState.InCombat:
             {
-                m_strafeDir = (StrafeDir)Random.Range(0, 2);
-                StartStrafeAnim(m_strafeDir);
-                m_combatState = CombatState.Strafing;
+                SetCombatState(CombatState.Strafing);
                 m_attackTimer = Random.Range(m_minAttackTime, m_maxAttackTime);
                 break;
             }
             case AIState.Dead:
             {
                 StartDeathAnim();
+                break;
+            }
+        }
+    }
+
+    private void SetPatrolState(PatrolState stateToSet)
+    {
+        m_patrolState = stateToSet;
+        ResetAnimTriggers();
+
+        switch (stateToSet)
+        {
+            case PatrolState.Patrol:
+            {
+                StartWalkAnim();
+                break;
+            }
+            case PatrolState.ReversePatrol:
+            {
+                StartWalkAnim();
+                break;
+            }
+            case PatrolState.Waiting:
+            {
+                m_patrolTimer = 0.0f;
+                StartIdleAnim();
+                break;
+            }
+        }
+    }
+
+    private void SetCombatState(CombatState stateToSet)
+    {
+        m_combatState = stateToSet;
+        ResetAnimTriggers();
+
+        switch (stateToSet)
+        {
+            case CombatState.Strafing:
+            {
+                m_strafeDir = (StrafeDir)Random.Range(0, 2);
+                StartStrafeAnim(m_strafeDir);
+                break;
+            }
+            case CombatState.Attacking:
+            {
+                StartAttackAnim();
+                break;
+            }
+            case CombatState.MovingToAttack:
+            {
+                StartRunAnim();
+                break;
+            }
+            case CombatState.BackingUp:
+            {
+                Vector3 backDir = (transform.position - m_player.transform.position).normalized;
+                m_navMeshAgent.destination = transform.position + (backDir * m_minStrafeRange);
+                StartWalkBackAnim();
                 break;
             }
         }
@@ -533,6 +557,13 @@ public class EnemyAI : MonoBehaviour
     {
         bool playerIsVisible = false;
 
+        // If in combat, just return true since no point redoing detection
+        // Will need changing if de-aggro functionality is implemented
+        if (m_state == AIState.InCombat || m_state == AIState.Pursuing)
+        {
+            return true;
+        }
+
         // Todo: Look into using sqr root distance checks for optimisation
         if(m_playerDetectionEnabled)
         {
@@ -562,6 +593,7 @@ public class EnemyAI : MonoBehaviour
         {
             case WakeTrigger.Attack:
             {
+                // Todo: Maybe add "WakingUp" state?
                 StartStandUpAnim();
                 break;
             }
@@ -607,12 +639,14 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.isStopped = false;
         m_animController.SetTrigger("Walk");
         m_navMeshAgent.speed = m_walkSpeed;
+        m_navMeshAgent.updateRotation = true;
     }
 
     private void StartStrafeAnim( StrafeDir dirToStrafe )
     {
         m_navMeshAgent.isStopped = false;
         m_navMeshAgent.speed = m_strafeSpeed;
+        m_navMeshAgent.updateRotation = false;
 
         switch (dirToStrafe)
         {
@@ -634,6 +668,7 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.isStopped = false;
         m_animController.SetTrigger("WalkBack");
         m_navMeshAgent.speed = m_walkSpeed;
+        m_navMeshAgent.updateRotation = false;
     }
 
     private void StartRunAnim()
@@ -648,34 +683,35 @@ public class EnemyAI : MonoBehaviour
     {
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger("Idle");
+        m_navMeshAgent.updateRotation = true;
     }
 
     private void StartAttackAnim()
     {
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger("Attack");
+        m_navMeshAgent.updateRotation = false;
     }
 
     private void StartStandUpAnim()
     {
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger("StandUp");
-        ResumeAnimation();
+        m_navMeshAgent.updateRotation = false;
     }
 
     private void SetToPlayDeadAnim()
     {
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger("StandUp");
-        m_animController.Play("Standing Up", -1, 0.0f);
-        SetAIState(AIState.Sleeping);
-        PauseAnimation();
+        m_animController.SetTrigger("LayDown");
+        m_navMeshAgent.updateRotation = false;
     }
 
     private void StartDeathAnim()
     {
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger("Death");
+        m_navMeshAgent.updateRotation = false;
     }
 
     private void PlayDamageAnim()
@@ -697,6 +733,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    // Can possibly remove these pause and resume functions, but leave for now
     private void PauseAnimation()
     {
         m_prevAnimSpeed = m_animController.speed;
@@ -710,17 +747,9 @@ public class EnemyAI : MonoBehaviour
 
     private void EndAttack()
     {
-        //SetAIState(AIState.ReturningToPatrol);
-        //m_navMeshAgent.destination = m_lastPointOnPatrol;
-        //SetAIState(AIState.Pursuing);
-
-        m_combatState = CombatState.Strafing;
-        //Vector3 backDir = -transform.forward;
-        //m_navMeshAgent.destination = transform.position + (backDir * m_minStrafeRange);
+        SetCombatState(CombatState.Strafing);
         m_attackTimer = Random.Range(m_minAttackTime, m_maxAttackTime);
         m_timeSinceLastAttack = 0.0f;
-        m_navMeshAgent.updateRotation = false;
-        StartStrafeAnim( m_strafeDir );
     }
 
     public void TakeDamage( float damageToTake )
@@ -763,6 +792,7 @@ public class EnemyAI : MonoBehaviour
         m_animController.ResetTrigger("Attack");
         m_animController.ResetTrigger("Run");
         m_animController.ResetTrigger("StandUp");
+        m_animController.ResetTrigger("LayDown");
         m_animController.ResetTrigger("TakeHit");
         m_animController.ResetTrigger("StrafeLeft");
         m_animController.ResetTrigger("StrafeRight");
@@ -806,9 +836,9 @@ public class EnemyAI : MonoBehaviour
         // Start Pursuing Test Input
         if (Input.GetKeyDown(KeyCode.P))
         {
-            SetAIState(AIState.Pursuing);
-            ResetAnimTriggers();
-            StartRunAnim();
+            //SetAIState(AIState.Pursuing);
+            //ResetAnimTriggers();
+            //StartRunAnim();
         }
 
         // Start Sleeping Test Input
