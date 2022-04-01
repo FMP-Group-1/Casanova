@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UI;
 
 public enum AIState
 {
@@ -66,7 +65,6 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private GameObject m_patrolRoute;
     private PatrolState m_patrolState = PatrolState.Patrol;
-    private PatrolState m_lastPatrolState;
     private List<Transform> m_patrolRoutePoints = new List<Transform>();
     private Transform m_nextPatrolPoint;
     private Vector3 m_lastPointOnPatrol;
@@ -140,11 +138,12 @@ public class EnemyAI : MonoBehaviour
             SetAIState(AIState.Sleeping);
         }
 
-        m_strafeAtDist = m_minStrafeRange + ((m_maxStrafeRange - m_minStrafeRange) * 0.5f);
+        RandomiseStrafeRange();
     }
 
     private void Update()
     {
+        // Setting the player mat color to see if attack is colliding. Will need removing later on.
         m_player.GetComponent<Player>().SetHitVisual( IsAttackCollidingWithPlayer() );
 
         TestingInputs();
@@ -379,6 +378,7 @@ public class EnemyAI : MonoBehaviour
             {
                 m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
                 m_navMeshAgent.autoBraking = true;
+                RandomiseStrafeRange();
                 StartRunAnim();
                 break;
             }
@@ -475,6 +475,11 @@ public class EnemyAI : MonoBehaviour
                 break;
             }
         }
+    }
+
+    private void RandomiseStrafeRange()
+    {
+        m_strafeAtDist = Random.Range(m_minStrafeRange, m_maxStrafeRange);
     }
 
     private bool HasReachedDestination()
@@ -632,6 +637,11 @@ public class EnemyAI : MonoBehaviour
     public float GetHealth()
     {
         return m_health;
+    }
+
+    public float GetStrafeDist()
+    {
+        return m_strafeAtDist;
     }
 
     private void StartWalkAnim()
