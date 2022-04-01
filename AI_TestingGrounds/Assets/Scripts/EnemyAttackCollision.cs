@@ -19,7 +19,7 @@ public class EnemyAttackCollision : MonoBehaviour
     {
         if (other.gameObject.tag == "Player")
         {
-            Debug.Log("Player Hit");
+            //Debug.Log("Player Hit");
             m_boxCollider.enabled = false;
         }
     }

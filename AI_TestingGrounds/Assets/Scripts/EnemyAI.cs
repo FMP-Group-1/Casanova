@@ -24,6 +24,7 @@ public enum PatrolState
 public enum CombatState
 {
     Strafing,
+    MaintainDist,
     BackingUp,
     MovingToAttack,
     Attacking
@@ -277,20 +278,30 @@ public class EnemyAI : MonoBehaviour
             case CombatState.Strafing:
             {
                 AttackCheck();
-                Strafe();
                 StrafeRangeCheck();
+                Strafe();
                 break;
             }
-            case CombatState.BackingUp:
+            case CombatState.MaintainDist:
             {
                 AttackCheck();
                 StrafeRangeCheck();
                 transform.LookAt(m_player.transform.position);
+                break;
+            }
+            case CombatState.BackingUp:
+            {
+                BackUp();
+                AttackCheck();
+                StrafeRangeCheck();
+                transform.LookAt(m_player.transform.position);
 
-                if (HasReachedDestination())
+                // Todo: Disgusting check, fix asap
+                if (Vector3.Distance(m_player.transform.position, transform.position) > m_strafeAtDist)
                 {
-                    SetCombatState(CombatState.Strafing);
+                    StrafeOrMaintain();
                 }
+
                 break;
             }
             case CombatState.MovingToAttack:
@@ -308,46 +319,6 @@ public class EnemyAI : MonoBehaviour
                 transform.LookAt(m_player.transform.position);
                 break;
             }
-        }
-    }
-
-    private void Strafe()
-    {
-        Vector3 offset;
-        // Basic start to strafe logic
-        if ( m_strafeDir == StrafeDir.Left )
-        {
-            offset = m_player.transform.position - transform.position;
-        }
-        else
-        {
-            offset = transform.position - m_player.transform.position;
-        }
-        Vector3 dir = Vector3.Cross(offset, Vector3.up);
-        m_navMeshAgent.SetDestination(transform.position + dir);
-        transform.LookAt(m_player.transform.position);
-    }
-
-    private void StrafeRangeCheck()
-    {
-        float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
-
-        if (distanceToPlayer > m_maxStrafeRange)
-        {
-            SetAIState(AIState.Pursuing);
-        }
-        // Player moved closer than strafe range
-        if (distanceToPlayer < m_minStrafeRange && m_combatState != CombatState.BackingUp)
-        {
-            SetCombatState(CombatState.BackingUp);
-        }
-    }
-
-    private void AttackCheck()
-    {
-        if (m_timeSinceLastAttack >= m_attackTimer)
-        {
-            SetCombatState(CombatState.MovingToAttack);
         }
     }
 
@@ -406,7 +377,8 @@ public class EnemyAI : MonoBehaviour
             }
             case AIState.InCombat:
             {
-                SetCombatState(CombatState.Strafing);
+                //SetCombatState(CombatState.Strafing);
+                StrafeOrMaintain();
                 m_attackTimer = Random.Range(m_minAttackTime, m_maxAttackTime);
                 break;
             }
@@ -457,6 +429,11 @@ public class EnemyAI : MonoBehaviour
                 StartStrafeAnim(m_strafeDir);
                 break;
             }
+            case CombatState.MaintainDist:
+            {
+                StartCombatIdleAnim();
+                break;
+            }
             case CombatState.Attacking:
             {
                 StartAttackAnim();
@@ -464,16 +441,79 @@ public class EnemyAI : MonoBehaviour
             }
             case CombatState.MovingToAttack:
             {
+                m_navMeshAgent.destination = m_player.transform.position;
                 StartRunAnim();
                 break;
             }
             case CombatState.BackingUp:
             {
+                RandomiseStrafeRange();
+
                 Vector3 backDir = (transform.position - m_player.transform.position).normalized;
-                m_navMeshAgent.destination = transform.position + (backDir * m_minStrafeRange);
+                m_navMeshAgent.destination = m_player.transform.position + (backDir * m_strafeAtDist);
                 StartWalkBackAnim();
                 break;
             }
+        }
+    }
+
+    private void Strafe()
+    {
+        Vector3 offset;
+        // Basic start to strafe logic
+        if (m_strafeDir == StrafeDir.Left)
+        {
+            offset = m_player.transform.position - transform.position;
+        }
+        else
+        {
+            offset = transform.position - m_player.transform.position;
+        }
+        Vector3 dir = Vector3.Cross(offset, Vector3.up);
+        m_navMeshAgent.SetDestination(transform.position + dir);
+        transform.LookAt(m_player.transform.position);
+    }
+
+    private void BackUp()
+    {
+        Vector3 dir = (transform.position - m_player.transform.position).normalized;
+        m_navMeshAgent.SetDestination(transform.position + (dir * 2.0f));
+        transform.LookAt(m_player.transform.position);
+    }
+
+    private void StrafeRangeCheck()
+    {
+        float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
+
+        if (distanceToPlayer > m_maxStrafeRange)
+        {
+            SetAIState(AIState.Pursuing);
+        }
+        // Player moved closer than strafe range
+        if (distanceToPlayer < m_minStrafeRange && m_combatState != CombatState.BackingUp)
+        {
+            SetCombatState(CombatState.BackingUp);
+        }
+    }
+
+    private void AttackCheck()
+    {
+        if (m_timeSinceLastAttack >= m_attackTimer)
+        {
+            SetCombatState(CombatState.MovingToAttack);
+        }
+    }
+
+    private void StrafeOrMaintain()
+    {
+        int strafeOrMaintain = Random.Range(0, 2);
+        if (strafeOrMaintain == 0)
+        {
+            SetCombatState(CombatState.Strafing);
+        }
+        else
+        {
+            SetCombatState(CombatState.MaintainDist);
         }
     }
 
@@ -487,7 +527,7 @@ public class EnemyAI : MonoBehaviour
         bool destinationReached = false;
 
         // Just using detection based on distance for now, will need better logic for broken nav paths
-        if (m_navMeshAgent.remainingDistance <= m_navMeshAgent.stoppingDistance)
+        if (m_navMeshAgent.remainingDistance < m_navMeshAgent.stoppingDistance)
         {
             destinationReached = true;
         }
@@ -514,7 +554,7 @@ public class EnemyAI : MonoBehaviour
         bool inStrafeRange = false;
 
         // Just using detection based on distance for now, will need better logic for broken nav paths
-        if (m_navMeshAgent.remainingDistance <= m_strafeAtDist)
+        if (m_navMeshAgent.remainingDistance < m_strafeAtDist)
         {
             inStrafeRange = true;
         }
@@ -696,6 +736,13 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.updateRotation = true;
     }
 
+    private void StartCombatIdleAnim()
+    {
+        m_navMeshAgent.isStopped = true;
+        m_animController.SetTrigger("CombatIdle");
+        m_navMeshAgent.updateRotation = false;
+    }
+
     private void StartAttackAnim()
     {
         m_navMeshAgent.isStopped = true;
@@ -757,7 +804,7 @@ public class EnemyAI : MonoBehaviour
 
     private void EndAttack()
     {
-        SetCombatState(CombatState.Strafing);
+        SetCombatState(CombatState.BackingUp);
         m_attackTimer = Random.Range(m_minAttackTime, m_maxAttackTime);
         m_timeSinceLastAttack = 0.0f;
     }
@@ -806,6 +853,7 @@ public class EnemyAI : MonoBehaviour
         m_animController.ResetTrigger("TakeHit");
         m_animController.ResetTrigger("StrafeLeft");
         m_animController.ResetTrigger("StrafeRight");
+        m_animController.ResetTrigger("CombatIdle");
     }
 
     private void SetupPatrolRoutes()
