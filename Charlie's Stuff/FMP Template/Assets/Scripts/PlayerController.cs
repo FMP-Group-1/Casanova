@@ -26,8 +26,9 @@ public class PlayerController : MonoBehaviour
 
     private Animator animator;
 
-    public bool canMove;
-    public bool canFall;
+    public bool canMove = true;
+    public bool canFall = true;
+    public bool canRotate = true;
 
     //Used for animating
     private float m_moveAmount;
@@ -55,21 +56,21 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-
-
-
+        //Use the character Controller's isGrounded functionality to fill a member
         groundedPlayer = controller.isGrounded;
         if (groundedPlayer && playerVelocity.y < 0)
         {
             playerVelocity.y = 0f;
         }
 
+        //Just the input values, put into a member variable
         Vector2 movement = movementControl.action.ReadValue<Vector2>();
-        //Movement.y is the Z value
+
+        //Vector of what direction to move based on the inputs. Y is in the Z area, as the above
+        //vector2 holds the Z in it's second value
         Vector3 move = new Vector3(movement.x, 0, movement.y);
 
         //Get the absolute values of movement inputs (0-1) for use in a 1d Blend tree
-
         m_moveAmount = Mathf.Clamp01(Mathf.Abs(movement.x) + Mathf.Abs(movement.y));
 
         //Move in direction of camera
@@ -110,14 +111,26 @@ public class PlayerController : MonoBehaviour
         }
 
         //Rotate player when moving
-        if (movement != Vector2.zero)
-		{
-            float targetAngle = Mathf.Atan2(movement.x, movement.y) * Mathf.Rad2Deg + cameraMainTransform.eulerAngles.y;
-            Quaternion targetRotation = Quaternion.Euler(0f, targetAngle, 0f);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
-		}
 
-        Debug.Log(playerVelocity);
+        //If you are moving at all
+        if( movement != Vector2.zero )
+        {
+            animator.SetBool( "moving", true );
+            if( canRotate )
+            {
+                float targetAngle = Mathf.Atan2(movement.x, movement.y) * Mathf.Rad2Deg + cameraMainTransform.eulerAngles.y;
+                Quaternion targetRotation = Quaternion.Euler(0f, targetAngle, 0f);
+                transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * rotationSpeed );
+
+            }
+        }
+        else
+		{
+
+            animator.SetBool( "moving", false );
+        }
+
+        //Debug.Log(playerVelocity);
 
         animator.SetFloat("forwardSpeed", m_moveAmount);
     }

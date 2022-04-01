@@ -70,14 +70,14 @@ public class melee : MonoBehaviour
             }
         }
         
-        //Attack straight from unarmed
+        //Attack straight from unarmed. No Blend Animation
         //Light Attack
         if (m_playerControls.Combat.LightAtatck.triggered)
         {
+            //So Sword is NOT equipped
             if (!swordEquipped)
             {
-                animator.SetTrigger("drawSword");
-                //swordEquipped = true;
+                swordEquipped = true;
             }
             
             attackType = Attack.Light;
@@ -86,21 +86,21 @@ public class melee : MonoBehaviour
         //Heavy Attack
         if (m_playerControls.Combat.HeavyAttack.triggered)
         {
-            if (!swordEquipped)
+            //So Sword is NOT equipped
+            if( !swordEquipped )
             {
-                animator.SetTrigger("drawSword");
-               // swordEquipped = true;
+                swordEquipped = true;
             }
-            
+
             attackType = Attack.Heavy;
         }
         //Heavy Attack
         if( m_playerControls.Combat.Whirlwind.triggered )
         {
+            //So Sword is NOT equipped
             if( !swordEquipped )
             {
-                animator.SetTrigger( "drawSword" );
-                // swordEquipped = true;
+                swordEquipped = true;
             }
 
             attackType = Attack.Heavy;
@@ -115,47 +115,6 @@ public class melee : MonoBehaviour
 		{
             animator.SetBool("whirlwindHeld", true);
 		}
-
-            /*
-            //Just equip sword if click attack from unarmed
-
-            //Light Attack
-            if (m_playerControls.Combat.LightAtatck.triggered)
-            {
-                if (!swordEquipped)
-                {
-                    if (!currentlyInTheProcessOfSheathing)
-                    {
-                        currentlyInTheProcessOfSheathing = true;
-                        animator.SetTrigger("drawSword");
-                        swordEquipped = true;
-                    }
-                }
-                else
-                {
-                    attackType = Attack.Light;
-                }
-            }
-            //Heavy Attack
-            if (m_playerControls.Combat.HeavyAttack.triggered)
-            {
-                if (!swordEquipped)
-                {
-                    if (!currentlyInTheProcessOfSheathing)
-                    {
-                        currentlyInTheProcessOfSheathing = true;
-                        animator.SetTrigger("drawSword");
-                        swordEquipped = true;
-                    }
-                }
-                else
-                {
-                    attackType = Attack.Heavy;
-                }
-            }
-            */
-
-
 
 
         //Basically, if you have reached the end of an attack, you are no longer attacking, but if "attackType" is not nothing, there's somehing queued up, so lets do it
@@ -182,6 +141,8 @@ public class melee : MonoBehaviour
             }
             GetComponent<PlayerController>().canMove = false;
             GetComponent<PlayerController>().canFall = false;
+            GetComponent<PlayerController>().canRotate = false;
+
             //We are attacking
             canStartNextAttack = false;
             animator.SetTrigger("attacked");
@@ -239,8 +200,9 @@ public class melee : MonoBehaviour
 
         GetComponent<PlayerController>().canFall = true;
         GetComponent<PlayerController>().canMove = true;
+        GetComponent<PlayerController>().canRotate = true;
         animator.SetBool("comboActive", false);
-        //MAKE SURE IT'S AVAILABLE AGAIN. CURRENTLY BROKE
+        //MAKE SURE IT'S AVAILABLE AGAIN. CURRENTLY BROKE a bit This is duplicated
         canStartNextAttack = true;
 
 
