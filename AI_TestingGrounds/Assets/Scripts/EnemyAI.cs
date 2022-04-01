@@ -881,9 +881,6 @@ public class EnemyAI : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
         {
             SetAIState(AIState.Patrolling);
-            m_patrolState = PatrolState.Patrol;
-            ResetAnimTriggers();
-            StartWalkAnim();
             if (m_patrolRoute != null)
             {
                 m_navMeshAgent.destination = m_patrolRoutePoints[m_patrolDestinationIndex].position;
@@ -892,12 +889,12 @@ public class EnemyAI : MonoBehaviour
         }
 
         // Start Pursuing Test Input
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            //SetAIState(AIState.Pursuing);
-            //ResetAnimTriggers();
-            //StartRunAnim();
-        }
+        //if (Input.GetKeyDown(KeyCode.P))
+        //{
+        //    SetAIState(AIState.Pursuing);
+        //    ResetAnimTriggers();
+        //    StartRunAnim();
+        //}
 
         // Start Sleeping Test Input
         //if (Input.GetKeyDown(KeyCode.S))
