@@ -292,7 +292,6 @@ public class EnemyAI : MonoBehaviour
             case CombatState.BackingUp:
             {
                 BackUp();
-                AttackCheck();
                 StrafeRangeCheck();
                 transform.LookAt(m_player.transform.position);
 
@@ -301,6 +300,9 @@ public class EnemyAI : MonoBehaviour
                 {
                     StrafeOrMaintain();
                 }
+
+                // AttackCheck needs to be put here because it was causing a loop higher up
+                AttackCheck();
 
                 break;
             }
@@ -448,9 +450,6 @@ public class EnemyAI : MonoBehaviour
             case CombatState.BackingUp:
             {
                 RandomiseStrafeRange();
-
-                Vector3 backDir = (transform.position - m_player.transform.position).normalized;
-                m_navMeshAgent.destination = m_player.transform.position + (backDir * m_strafeAtDist);
                 StartWalkBackAnim();
                 break;
             }
@@ -493,6 +492,7 @@ public class EnemyAI : MonoBehaviour
         if (distanceToPlayer < m_minStrafeRange && m_combatState != CombatState.BackingUp)
         {
             SetCombatState(CombatState.BackingUp);
+            Debug.Log("Test");
         }
     }
 
