@@ -45,6 +45,8 @@ enum StrafeDir
 // Enemy AI Script, will likely be reworked to use inheritance once base functionality is polished
 public class EnemyAI : MonoBehaviour
 {
+    private AIManager m_aiManager;
+
     private NavMeshAgent m_navMeshAgent;
     private AIState m_state = AIState.Idle;
     private CombatState m_combatState = CombatState.Strafing;
@@ -873,6 +875,11 @@ public class EnemyAI : MonoBehaviour
             m_nextPatrolPoint = m_patrolRoutePoints[1];
             m_lastPointOnPatrol = m_nextPatrolPoint.position;
         }
+    }
+
+    public void SetAIManagerRef(AIManager aiManagerRef)
+    {
+        m_aiManager = aiManagerRef;
     }
 
     private void TestingInputs()
