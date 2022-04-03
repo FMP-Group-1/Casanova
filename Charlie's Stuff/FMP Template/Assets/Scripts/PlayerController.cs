@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerController : MonoBehaviour
@@ -33,6 +34,7 @@ public class PlayerController : MonoBehaviour
     //Used for animating
     private float m_moveAmount;
 
+    private bool movingWithAtatck = false;
 
 
     private void OnEnable()
@@ -133,5 +135,25 @@ public class PlayerController : MonoBehaviour
         //Debug.Log(playerVelocity);
 
         animator.SetFloat("forwardSpeed", m_moveAmount);
+
+
+
+
+        while (movingWithAtatck)
+		{
+            controller.Move(new Vector3(0f, 0f, difference * Time.deltaTime));
+        }
     }
+
+    //Move with an Attack
+    public IEnumerator MoveWithAttack(float targetDistance)
+	{
+        float beginPoint = transform.position.z;
+        float difference = targetDistance - beginPoint;
+
+        yield return new WaitForSeconds(0.2f);
+    }
+
+  
+
 }
