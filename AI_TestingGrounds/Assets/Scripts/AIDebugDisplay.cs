@@ -58,7 +58,7 @@ public class AIDebugDisplay : MonoBehaviour
         }
         else
         {
-            m_aiSubstateText.text = "Substate: N/A";
+            m_aiSubstateText.text = "Substate: None Active";
         }
     }
 }

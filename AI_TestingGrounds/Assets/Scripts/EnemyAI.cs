@@ -7,7 +7,6 @@ public enum AIState
 {
     Idle,
     Sleeping,
-    Pursuing,
     Patrolling,
     ReturningToPatrol,
     InCombat,
@@ -23,6 +22,7 @@ public enum PatrolState
 
 public enum CombatState
 {
+    Pursuing,
     Strafing,
     MaintainDist,
     BackingUp,
@@ -168,27 +168,12 @@ public class EnemyAI : MonoBehaviour
 
                 break;
             }
-            // Chase after target/player
-            case AIState.Pursuing:
-            {
-                m_navMeshAgent.destination = m_player.transform.position;
-
-                // Very basic detection for reaching destination, will need to be expanded upon
-                // i.e. in case of path being blocked
-                // Logic from https://answers.unity.com/questions/324589/how-can-i-tell-when-a-navmesh-has-reached-its-dest.html
-                if ( IsInStrafeRange() )
-                {
-                    SetAIState(AIState.InCombat);
-                    //Debug.Log("Destination Reached");
-                }
-                break;
-            }
             // Patrol Logic
             case AIState.Patrolling:
             {
                 if (IsPlayerVisible())
                 {
-                    SetAIState(AIState.Pursuing);
+                    SetAIState(AIState.InCombat);
                 }
                 PatrolUpdate();
                 break;
@@ -277,6 +262,21 @@ public class EnemyAI : MonoBehaviour
 
         switch ( m_combatState )
         {
+            // Chase after target/player
+            case CombatState.Pursuing:
+            {
+                m_navMeshAgent.destination = m_player.transform.position;
+
+                // Very basic detection for reaching destination, will need to be expanded upon
+                // i.e. in case of path being blocked
+                // Logic from https://answers.unity.com/questions/324589/how-can-i-tell-when-a-navmesh-has-reached-its-dest.html
+                if (IsInStrafeRange())
+                {
+                    SetCombatState(CombatState.Strafing);
+                    //Debug.Log("Destination Reached");
+                }
+                break;
+            }
             case CombatState.Strafing:
             {
                 AttackCheck();
@@ -349,14 +349,6 @@ public class EnemyAI : MonoBehaviour
                 SetToPlayDeadAnim();
                 break;
             }
-            case AIState.Pursuing:
-            {
-                m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
-                m_navMeshAgent.autoBraking = true;
-                RandomiseStrafeRange();
-                StartRunAnim();
-                break;
-            }
             case AIState.Patrolling:
             {
                 m_navMeshAgent.destination = m_patrolRoutePoints[m_patrolDestinationIndex].position;
@@ -381,9 +373,7 @@ public class EnemyAI : MonoBehaviour
             }
             case AIState.InCombat:
             {
-                //SetCombatState(CombatState.Strafing);
-                StrafeOrMaintain();
-                m_attackTimer = Random.Range(m_minAttackTime, m_maxAttackTime);
+                SetCombatState(CombatState.Pursuing);
                 break;
             }
             case AIState.Dead:
@@ -427,6 +417,14 @@ public class EnemyAI : MonoBehaviour
 
         switch (stateToSet)
         {
+            case CombatState.Pursuing:
+            {
+                m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
+                m_navMeshAgent.autoBraking = true;
+                RandomiseStrafeRange();
+                StartRunAnim();
+                break;
+            }
             case CombatState.Strafing:
             {
                 m_strafeDir = (StrafeDir)Random.Range(0, 2);
@@ -488,7 +486,7 @@ public class EnemyAI : MonoBehaviour
 
         if (distanceToPlayer > m_maxStrafeRange)
         {
-            SetAIState(AIState.Pursuing);
+            SetCombatState(CombatState.Pursuing);
         }
         // Player moved closer than strafe range
         if (distanceToPlayer < m_minStrafeRange && m_combatState != CombatState.BackingUp)
@@ -606,7 +604,7 @@ public class EnemyAI : MonoBehaviour
 
         // If in combat, just return true since no point redoing detection
         // Will need changing if de-aggro functionality is implemented
-        if (m_state == AIState.InCombat || m_state == AIState.Pursuing)
+        if (m_state == AIState.InCombat)
         {
             return true;
         }
@@ -782,9 +780,10 @@ public class EnemyAI : MonoBehaviour
 
     private void RecoverFromHit()
     {
+        // Todo: Refactor this
         if (m_playerDetectionEnabled)
         {
-            SetAIState(AIState.Pursuing);
+            SetAIState(AIState.InCombat);
         }
         else
         {
@@ -833,7 +832,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (m_playerDetectionEnabled)
         {
-            SetAIState(AIState.Pursuing);
+            SetAIState(AIState.InCombat);
 
             // Had to put this setter here to force path recalculation, otherwise AI would attack immediately.
             m_navMeshAgent.SetDestination(m_player.transform.position);
