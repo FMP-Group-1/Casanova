@@ -4,9 +4,21 @@ using UnityEngine;
 
 public class AIManager : MonoBehaviour
 {
+    private GameObject m_player;
+
     private List<EnemyAI> m_enemyList = new List<EnemyAI>();
     private List<EnemyAI> m_activeAttackers = new List<EnemyAI>();
     private List<EnemyAI> m_passiveAttackers = new List<EnemyAI>();
+
+    [SerializeField]
+    [Min(0)]
+    private int m_attackZones = 10;
+    [SerializeField]
+    private float m_activeAttackerMinDist = 3.0f;
+    [SerializeField]
+    private float m_activeAttackerMaxDist = 5.0f;
+    [SerializeField]
+    private float m_passiveAttackerMaxDist = 10.0f;
 
     [SerializeField]
     private int m_maxActiveAttackers = 3;
@@ -14,6 +26,8 @@ public class AIManager : MonoBehaviour
     void Start()
     {
         RegisterEnemies();
+
+        m_player = GameObject.FindGameObjectWithTag("Player");
     }
 
     void Update()
@@ -51,10 +65,12 @@ public class AIManager : MonoBehaviour
             if (m_activeAttackers.Count < m_maxActiveAttackers)
             {
                 m_activeAttackers.Add(enemyToRegister);
+                enemyToRegister.SetAttackingType(AttackingType.Passive);
             }
             else
             {
                 m_passiveAttackers.Add(enemyToRegister);
+                enemyToRegister.SetAttackingType(AttackingType.Passive);
             }
         }
     }
@@ -82,6 +98,7 @@ public class AIManager : MonoBehaviour
         if (!m_activeAttackers.Contains(enemy))
         {
             m_activeAttackers.Add(enemy);
+            enemy.SetAttackingType(AttackingType.Active);
         }
     }
 
@@ -95,6 +112,7 @@ public class AIManager : MonoBehaviour
         if (!m_passiveAttackers.Contains(enemy))
         {
             m_passiveAttackers.Add(enemy);
+            enemy.SetAttackingType(AttackingType.Passive);
         }
     }
 
@@ -110,5 +128,75 @@ public class AIManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    public int GetAttackZonesNum()
+    {
+        return m_attackZones;
+    }
+
+    public float GetActiveAttackerMinDist()
+    {
+        return m_activeAttackerMinDist;
+    }
+
+    public float GetActiveAttackerMaxDist()
+    {
+        return m_activeAttackerMaxDist;
+    }
+
+    public float GetPassiveAttackerMaxDist()
+    {
+        return m_passiveAttackerMaxDist;
+    }
+
+    public float FindAttackSection(EnemyAI enemyToCheck)
+    {
+        // Messy equation, needs refactoring, but basic logic works
+        Vector3 enemyPos = enemyToCheck.gameObject.transform.position;
+
+        Vector3 dirFromPlayer = (enemyPos - m_player.transform.position).normalized;
+        float angle = Vector3.SignedAngle(enemyPos, dirFromPlayer, Vector3.up);
+
+        if (angle < 0.0f)
+        {
+            angle = 360.0f - angle * -1.0f;
+        }
+
+        float sectionAngle = 360.0f / m_attackZones;
+
+        return (int)(angle / sectionAngle);
+    }
+
+    public Vector3 RandomiseAttackPosForEnemy(EnemyAI enemy)
+    {
+        float anglePerZone = 360.0f / m_attackZones;
+        float dist = m_activeAttackerMaxDist;
+
+        int attackZone = Random.Range(0, m_attackZones);
+        float randomAngle = Random.Range(anglePerZone * attackZone, anglePerZone * (attackZone + 1));
+
+        Vector3 dirToAttackZone = DirFromAngle(randomAngle, true, m_player);
+
+        if (enemy.GetAttackingType() == AttackingType.Active)
+        {
+            dist = Random.Range(m_activeAttackerMinDist, m_activeAttackerMaxDist);
+        }
+        else if (enemy.GetAttackingType() == AttackingType.Passive)
+        {
+            dist = Random.Range(m_activeAttackerMaxDist, m_passiveAttackerMaxDist);
+        }
+
+        return m_player.transform.position + (dirToAttackZone * dist);
+    }
+
+    public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject gameObject )
+    {
+        if (!angleIsGlobal)
+        {
+            angleInDegrees += gameObject.transform.eulerAngles.y;
+        }
+
+        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
 }

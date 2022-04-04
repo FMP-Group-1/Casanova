@@ -36,6 +36,12 @@ public enum WakeTrigger
     Standard
 }
 
+public enum AttackingType
+{
+    Passive,
+    Active
+}
+
 enum StrafeDir
 {
     Left,
@@ -81,12 +87,14 @@ public class EnemyAI : MonoBehaviour
     private GameObject m_player;
     private CapsuleCollider m_playerCollider;
 
-    // Strafe Relevant Variables
+    // Combat Relevant Variables
     [Header("Combat Values")]
     [SerializeField]
     private float m_health = 100.0f;
     [SerializeField]
     private float m_playerStoppingDistance = 1.75f;
+    [SerializeField]
+    private bool m_canStrafe = true;
     private StrafeDir m_strafeDir = StrafeDir.Left;
     [SerializeField]
     private float m_strafeSpeed = 1.5f;
@@ -95,9 +103,9 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private float m_maxStrafeRange = 5.0f;
     private float m_strafeAtDist;
-
-    // Combat Variables
     private float m_attackTimer;
+    [SerializeField]
+    private bool m_canAttack = true;
     [SerializeField]
     private float m_minAttackTime = 3.5f;
     [SerializeField]
@@ -106,6 +114,8 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private GameObject m_weapon;
     private BoxCollider m_weaponCollider;
+    private Vector3 m_attackZonePos;
+    private AttackingType m_currentAttackingType = AttackingType.Passive;
 
     // Vision Detection Relevant Variables
     [Header("Player Detection Values")]
@@ -265,14 +275,15 @@ public class EnemyAI : MonoBehaviour
             // Chase after target/player
             case CombatState.Pursuing:
             {
-                m_navMeshAgent.destination = m_player.transform.position;
+                //m_navMeshAgent.destination = m_player.transform.position;
+                m_navMeshAgent.destination = m_attackZonePos;
 
                 // Very basic detection for reaching destination, will need to be expanded upon
                 // i.e. in case of path being blocked
                 // Logic from https://answers.unity.com/questions/324589/how-can-i-tell-when-a-navmesh-has-reached-its-dest.html
-                if (IsInStrafeRange())
+                if (HasReachedDestination())
                 {
-                    SetCombatState(CombatState.Strafing);
+                    SetCombatState(CombatState.MaintainDist);
                     //Debug.Log("Destination Reached");
                 }
                 break;
@@ -374,6 +385,10 @@ public class EnemyAI : MonoBehaviour
             case AIState.InCombat:
             {
                 SetCombatState(CombatState.Pursuing);
+
+                // Registering the enemy as an attacker with the manager
+                m_aiManager.RegisterAttacker(this);
+
                 break;
             }
             case AIState.Dead:
@@ -419,6 +434,8 @@ public class EnemyAI : MonoBehaviour
         {
             case CombatState.Pursuing:
             {
+                m_attackZonePos = m_aiManager.RandomiseAttackPosForEnemy(this);
+
                 m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
                 m_navMeshAgent.autoBraking = true;
                 RandomiseStrafeRange();
@@ -498,7 +515,7 @@ public class EnemyAI : MonoBehaviour
 
     private void AttackCheck()
     {
-        if (m_timeSinceLastAttack >= m_attackTimer)
+        if (m_timeSinceLastAttack >= m_attackTimer && m_canAttack)
         {
             SetCombatState(CombatState.MovingToAttack);
         }
@@ -506,14 +523,21 @@ public class EnemyAI : MonoBehaviour
 
     private void StrafeOrMaintain()
     {
-        int strafeOrMaintain = Random.Range(0, 2);
-        if (strafeOrMaintain == 0)
-        {
-            SetCombatState(CombatState.Strafing);
-        }
-        else
+        if (!m_canStrafe)
         {
             SetCombatState(CombatState.MaintainDist);
+        }
+        else
+        { 
+            int strafeOrMaintain = Random.Range(0, 2);
+            if (strafeOrMaintain == 0)
+            {
+                SetCombatState(CombatState.Strafing);
+            }
+            else
+            {
+                SetCombatState(CombatState.MaintainDist);
+            }
         }
     }
 
@@ -589,6 +613,17 @@ public class EnemyAI : MonoBehaviour
 
     // DirFromAngle() and IsPlayerVisible() functions use logic from https://www.youtube.com/watch?v=rQG9aUWarwE
     public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal )
+    {
+        if (!angleIsGlobal)
+        {
+            angleInDegrees += transform.eulerAngles.y;
+        }
+
+        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
+    }
+
+    // Overloaded DirFromAngle to allow getting the direction from a specified object's position
+    public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject dirFromObject )
     {
         if (!angleIsGlobal)
         {
@@ -881,6 +916,16 @@ public class EnemyAI : MonoBehaviour
         m_aiManager = aiManagerRef;
     }
 
+    public AttackingType GetAttackingType()
+    {
+        return m_currentAttackingType;
+    }
+
+    public void SetAttackingType(AttackingType typeToSet)
+    {
+        m_currentAttackingType = typeToSet;
+    }
+
     private void TestingInputs()
     {
         // Start Patrolling Test Input
@@ -895,12 +940,10 @@ public class EnemyAI : MonoBehaviour
         }
 
         // Start Pursuing Test Input
-        //if (Input.GetKeyDown(KeyCode.P))
-        //{
-        //    SetAIState(AIState.Pursuing);
-        //    ResetAnimTriggers();
-        //    StartRunAnim();
-        //}
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            SetAIState(AIState.InCombat);
+        }
 
         // Start Sleeping Test Input
         //if (Input.GetKeyDown(KeyCode.S))
