@@ -23,25 +23,25 @@ public class enemyHit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public void GetHit()
-	{
-        StartCoroutine(Flash());
+    {
+        StartCoroutine( Flash() );
     }
 
     private IEnumerator Flash()
     {
         hitText.text = "Hit";
         thisRenderer.material.color = hitColour;
-        yield return new WaitForSeconds(.1f);
+        yield return new WaitForSeconds( .1f );
         thisRenderer.material.color = defaultColour;
         hitText.text = "";
 
     }
 
-    private void OnCollisionEnter(Collision collision)
+    private void OnCollisionEnter( Collision collision )
     {
         //Debug.Log("Called from Enemy OnCollision");
     }
