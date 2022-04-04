@@ -2,12 +2,17 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 
-public class PlayerControllerRigidBody : MonoBehaviour
+public class PlayerControllerRigidbody : MonoBehaviour
 {
     [SerializeField]
     private InputActionReference movementControl;
     [SerializeField]
     private InputActionReference jumpControl;
+
+    private Animator animator;
+    private Rigidbody m_rb;
+
+    private Transform cameraMainTransform;
 
     [SerializeField]
     private float playerSpeed = 2.0f;
@@ -18,23 +23,19 @@ public class PlayerControllerRigidBody : MonoBehaviour
     [SerializeField]
     private float rotationSpeed = 4f;
 
-    private Vector3 m_playerMovementInput;
+    private bool groundedPlayer = true;
 
 
-    private Rigidbody m_rigidbody;
-    private CharacterController controller;
-    public Vector3 playerVelocity;
-    private bool groundedPlayer;
-    private Transform cameraMainTransform;
 
-    private Animator animator;
+    //Used for animating
+    private float m_moveAmount;
+
 
     public bool canMove = true;
     public bool canFall = true;
     public bool canRotate = true;
 
-    //Used for animating
-    private float m_moveAmount;
+    //Move with Attacks
 
     private bool movingWithAttack = false;
 
@@ -43,7 +44,6 @@ public class PlayerControllerRigidBody : MonoBehaviour
 
     private Vector3 positionAtAttack;
     private Vector3 targetForAttack;
-
 
 
     private void OnEnable()
@@ -58,71 +58,58 @@ public class PlayerControllerRigidBody : MonoBehaviour
         jumpControl.action.Disable();
     }
 
+
     private void Start()
-    {
-        m_rigidbody = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
-        controller = gameObject.GetComponent<CharacterController>();
+	{
+        m_rb = GetComponent<Rigidbody>();
         cameraMainTransform = Camera.main.transform;
+        animator = GetComponent<Animator>();
+    }
+	private void FixedUpdate()
+    {
+        MovePlayer();
+
+        //Falling
+        if ( canFall )
+        {
+            //RB velocity add gravity value relative, just to Y
+            m_rb.velocity += new Vector3( 0, gravityValue * Time.deltaTime, 0 );
+        }
     }
 
-    void Update()
-    {
-        //Use the character Controller's isGrounded functionality to fill a member
-        groundedPlayer = controller.isGrounded;
-        if ( groundedPlayer && playerVelocity.y < 0 )
-        {
-            playerVelocity.y = 0f;
-        }
+	private void Update()
+	{
 
+        Jump();
+    }
+
+	private void MovePlayer()
+	{
         //Just the input values, put into a member variable
         Vector2 movement = movementControl.action.ReadValue<Vector2>();
 
-        //Vector of what direction to move based on the inputs. Y is in the Z area, as the above
-        //vector2 holds the Z in it's second value
+        //Vector of what direction we would move based on the inputs.
+        //Y is in the Z area, as the above vector2 holds the Z in it's second value
         Vector3 move = new Vector3( movement.x, 0, movement.y );
+
 
         //Get the absolute values of movement inputs (0-1) for use in a 1d Blend tree
         m_moveAmount = Mathf.Clamp01( Mathf.Abs( movement.x ) + Mathf.Abs( movement.y ) );
 
         //Move in direction of camera
-        move = cameraMainTransform.forward * move.z + cameraMainTransform.right * move.x;
-        move.y = 0f;
+        //move = cameraMainTransform.forward * move.z + cameraMainTransform.right * move.x;
+        //move.y = 0f;
 
+        Debug.Log( movement );
+        ////////////////////////////////////////////
+        ///Move Player
         if ( canMove )
         {
-            controller.Move( move * Time.deltaTime * playerSpeed );
+            //Vector3 moveVector = transform.TransformDirection( move ) * playerSpeed;
+            Vector3 moveVector = transform.forward * m_moveAmount * playerSpeed;
+            //Rigidbody Velocity based on the movement set up in update
+            m_rb.velocity = new Vector3( moveVector.x, m_rb.velocity.y, moveVector.z );
         }
-
-
-        // Changes the height position of the player..
-        if ( jumpControl.action.triggered && groundedPlayer )
-        {
-            //Jumped
-            animator.SetTrigger( "jumped" );
-            playerVelocity.y += Mathf.Sqrt( jumpForce * -3.0f * gravityValue );
-        }
-
-        if ( !groundedPlayer )
-        {
-
-            animator.SetBool( "inAir", true );
-        }
-        else
-        {
-            //Landed
-            animator.SetBool( "inAir", false );
-        }
-
-        playerVelocity.y += gravityValue * Time.deltaTime;
-
-
-        if ( canFall )
-        {
-            controller.Move( playerVelocity * Time.deltaTime );
-        }
-
-        //Rotate player when moving
 
         //If you are moving at all
         if ( movement != Vector2.zero )
@@ -138,31 +125,34 @@ public class PlayerControllerRigidBody : MonoBehaviour
         }
         else
         {
-
             animator.SetBool( "moving", false );
         }
 
-        //Debug.Log(playerVelocity);
-
         animator.SetFloat( "forwardSpeed", m_moveAmount );
-
     }
 
+    private void Jump()
+	{
+        // Changes the height position of the player..
+        if ( jumpControl.action.triggered && groundedPlayer )
+        {
+            //Jumped
+            animator.SetTrigger( "jumped" );
+            m_rb.AddForce( Vector3.up * jumpForce, ForceMode.Impulse );
+            ////////////////////////////////////////////
+        }
 
+        if ( !groundedPlayer )
+        {
 
-    /*public void MoveWithAttack( AnimationEvent animationEvent )
-    {
-        movingWithAtatck = true;
-        moveWithAttackDistance = animationEvent.floatParameter;
-        //Convert into to a float. the int is in hundreths of a second (0.14 = 14)
-        moveWithAttackTime = ( float )animationEvent.intParameter / 100;
-
-
-        positionAtAttack = transform.position;
-        targetForAttack = new Vector3( 0, 0, transform.position.z + moveWithAttackDistance );
-
-    }*/
-
+            animator.SetBool( "inAir", true );
+        }
+        else
+        {
+            //Landed
+            animator.SetBool( "inAir", false );
+        }
+    }
     public IEnumerator MoveWithAttack( AnimationEvent animationEvent )
     {
         Vector3 forwardDirection = transform.forward;
@@ -172,11 +162,10 @@ public class PlayerControllerRigidBody : MonoBehaviour
         moveWithAttackDistance = animationEvent.floatParameter;
         //Convert into to a float. the int is in hundreths of a second (0.14 = 14)
         moveWithAttackTime = ( float )animationEvent.intParameter / 100;
-        targetForAttack = new Vector3( transform.position.x + moveWithAttackDistance * forwardDirection.x, transform.position.y , transform.position.z + moveWithAttackDistance * forwardDirection.z );
+        targetForAttack = new Vector3( transform.position.x + moveWithAttackDistance * forwardDirection.x, transform.position.y, transform.position.y + moveWithAttackDistance * forwardDirection.z );
 
 
-
-
+        
         float elapsedTime = 0;
         Vector3 startingPos = transform.position;
 
@@ -190,13 +179,16 @@ public class PlayerControllerRigidBody : MonoBehaviour
                 //The minimum allowable tolerance varies with the speed of the object and the framerate. 
                 // 2 * tolerance must be >= moveSpeed / framerate or the object will jump right over the stop.
                 float newSpeed = moveWithAttackDistance / moveWithAttackTime;
-                offset = offset.normalized * newSpeed;
                 //normalize it and account for movement speed.
-                controller.Move( offset * Time.deltaTime );
-                //actually move the character.
+                //controller.Move( offset * Time.deltaTime );
+
+                Vector3 moveVector = transform.forward * newSpeed;
+                //Rigidbody Velocity based on the movement set up in update
+                //m_rb.velocity = new Vector3( moveVector.x, m_rb.velocity.y, moveVector.z );
+                m_rb.MovePosition( transform.position * newSpeed * Time.deltaTime );
+
             }
-            //controller.Move( startingPos );
-           // transform.position = Vector3.Lerp( startingPos, targetForAttack, ( elapsedTime / moveWithAttackTime ) );
+            //transform.position = Vector3.Lerp( startingPos, targetForAttack, ( elapsedTime / moveWithAttackTime ) );
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
@@ -206,8 +198,9 @@ public class PlayerControllerRigidBody : MonoBehaviour
     }
     private void EndMoveWithAttack()
     {
+        m_rb.velocity = Vector3.zero;
+
         movingWithAttack = false;
 
     }
-
 }

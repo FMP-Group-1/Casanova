@@ -22,6 +22,7 @@ public class melee : MonoBehaviour
 
     private PlayerControls m_playerControls;
 
+    private PlayerControllerRigidbody m_playerController;
 
     public bool canStartNextAttack = true;
 
@@ -39,6 +40,8 @@ public class melee : MonoBehaviour
     void Start()
     {
         m_playerControls = new PlayerControls();
+
+        m_playerController = GetComponent<PlayerControllerRigidbody>();
 
         m_playerControls.Enable();
         animator = GetComponent<Animator>();
@@ -137,9 +140,9 @@ public class melee : MonoBehaviour
                     break;
 
             }
-            GetComponent<PlayerController>().canMove = false;
-            GetComponent<PlayerController>().canFall = false;
-            GetComponent<PlayerController>().canRotate = false;
+            m_playerController.canMove = false;
+            m_playerController.canFall = false;
+            m_playerController.canRotate = false;
 
             //We are attacking
             canStartNextAttack = false;
@@ -194,11 +197,11 @@ public class melee : MonoBehaviour
 
     public void EndCombo()
     {
-        GetComponent<PlayerController>().playerVelocity.y = 0f;
+        //m_playerController.playerVelocity.y = 0f;
 
-        GetComponent<PlayerController>().canFall = true;
-        GetComponent<PlayerController>().canMove = true;
-        GetComponent<PlayerController>().canRotate = true;
+        m_playerController.canFall = true;
+        m_playerController.canMove = true;
+        m_playerController.canRotate = true;
         animator.SetBool( "comboActive", false );
         //MAKE SURE IT'S AVAILABLE AGAIN. CURRENTLY BROKE a bit This is duplicated
         canStartNextAttack = true;
