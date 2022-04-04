@@ -2,9 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 
-[RequireComponent( typeof( CharacterController ) )] 
-
-public class PlayerController : MonoBehaviour
+public class PlayerControllerRigidBody : MonoBehaviour
 {
     [SerializeField]
     private InputActionReference movementControl;
@@ -22,6 +20,8 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 m_playerMovementInput;
 
+
+    private Rigidbody m_rigidbody;
     private CharacterController controller;
     public Vector3 playerVelocity;
     private bool groundedPlayer;
@@ -60,6 +60,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        m_rigidbody = GetComponent<Rigidbody>();
         animator = GetComponent<Animator>();
         controller = gameObject.GetComponent<CharacterController>();
         cameraMainTransform = Camera.main.transform;
@@ -171,7 +172,7 @@ public class PlayerController : MonoBehaviour
         moveWithAttackDistance = animationEvent.floatParameter;
         //Convert into to a float. the int is in hundreths of a second (0.14 = 14)
         moveWithAttackTime = ( float )animationEvent.intParameter / 100;
-        targetForAttack = new Vector3( transform.position.x + moveWithAttackDistance * forwardDirection.x, transform.position.y, transform.position.z + moveWithAttackDistance * forwardDirection.z );
+        targetForAttack = new Vector3( transform.position.x + moveWithAttackDistance * forwardDirection.x, transform.position.y , transform.position.z + moveWithAttackDistance * forwardDirection.z );
 
 
 
@@ -195,7 +196,7 @@ public class PlayerController : MonoBehaviour
                 //actually move the character.
             }
             //controller.Move( startingPos );
-            // transform.position = Vector3.Lerp( startingPos, targetForAttack, ( elapsedTime / moveWithAttackTime ) );
+           // transform.position = Vector3.Lerp( startingPos, targetForAttack, ( elapsedTime / moveWithAttackTime ) );
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
