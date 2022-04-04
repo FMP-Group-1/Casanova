@@ -117,7 +117,93 @@ public class PlayerController : MonoBehaviour
             transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
 		}
 
+<<<<<<< Updated upstream
         Debug.Log(playerVelocity);
+=======
+        //If you are moving at all
+        if ( movement != Vector2.zero )
+        {
+            animator.SetBool( "moving", true );
+            if ( canRotate )
+            {
+                float targetAngle = Mathf.Atan2( movement.x, movement.y ) * Mathf.Rad2Deg + cameraMainTransform.eulerAngles.y;
+                Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
+                transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * rotationSpeed );
+
+            }
+        }
+        else
+        {
+
+            animator.SetBool( "moving", false );
+        }
+
+        //Debug.Log(playerVelocity);
+
+        animator.SetFloat( "forwardSpeed", m_moveAmount );
+
+    }
+
+
+
+    /*public void MoveWithAttack( AnimationEvent animationEvent )
+    {
+        movingWithAtatck = true;
+        moveWithAttackDistance = animationEvent.floatParameter;
+        //Convert into to a float. the int is in hundreths of a second (0.14 = 14)
+        moveWithAttackTime = ( float )animationEvent.intParameter / 100;
+
+
+        positionAtAttack = transform.position;
+        targetForAttack = new Vector3( 0, 0, transform.position.z + moveWithAttackDistance );
+
+    }*/
+
+    public IEnumerator MoveWithAttack( AnimationEvent animationEvent )
+    {
+        Vector3 forwardDirection = transform.forward;
+
+
+        movingWithAttack = true;
+        moveWithAttackDistance = animationEvent.floatParameter;
+        //Convert into to a float. the int is in hundreths of a second (0.14 = 14)
+        moveWithAttackTime = ( float )animationEvent.intParameter / 100;
+        targetForAttack = new Vector3( transform.position.x + moveWithAttackDistance * forwardDirection.x, transform.position.y , transform.position.z + moveWithAttackDistance * forwardDirection.z );
+
+
+
+
+        float elapsedTime = 0;
+        Vector3 startingPos = transform.position;
+
+        while ( elapsedTime < moveWithAttackTime )
+        {
+
+            Vector3 offset = targetForAttack - transform.position;
+            if ( offset.magnitude > .1f )
+            {
+                //If we're further away than .1 unit, move towards the target.
+                //The minimum allowable tolerance varies with the speed of the object and the framerate. 
+                // 2 * tolerance must be >= moveSpeed / framerate or the object will jump right over the stop.
+                float newSpeed = moveWithAttackDistance / moveWithAttackTime;
+                offset = offset.normalized * newSpeed;
+                //normalize it and account for movement speed.
+                controller.Move( offset * Time.deltaTime );
+                //actually move the character.
+            }
+            //controller.Move( startingPos );
+           // transform.position = Vector3.Lerp( startingPos, targetForAttack, ( elapsedTime / moveWithAttackTime ) );
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        transform.position = targetForAttack;
+
+
+    }
+    private void EndMoveWithAttack()
+    {
+        movingWithAttack = false;
+>>>>>>> Stashed changes
 
         animator.SetFloat("forwardSpeed", m_moveAmount);
     }
