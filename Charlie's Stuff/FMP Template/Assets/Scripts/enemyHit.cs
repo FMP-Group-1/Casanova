@@ -11,6 +11,14 @@ public class enemyHit : MonoBehaviour
 
     Renderer thisRenderer;
 
+    public Text hitText;
+
+
+    public float invulnerableTime = 0.3f;
+
+    public bool canBeHit = true;
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,14 +34,29 @@ public class enemyHit : MonoBehaviour
 
     public void GetHit()
     {
-        StartCoroutine( Flash() );
+        if ( canBeHit )
+        {
+            canBeHit = false;
+
+            StartCoroutine( Flash() );
+            StartCoroutine( ResetTimer() );
+        }
     }
 
     private IEnumerator Flash()
     {
+        hitText.text = "Hit";
         thisRenderer.material.color = hitColour;
         yield return new WaitForSeconds( .1f );
         thisRenderer.material.color = defaultColour;
+        hitText.text = "";
+
+    }
+
+    private IEnumerator ResetTimer()
+    {
+        yield return new WaitForSeconds( invulnerableTime );
+        canBeHit = true;
 
     }
 
