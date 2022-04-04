@@ -528,7 +528,7 @@ GameObject:
   - component: {fileID: 1799965102}
   - component: {fileID: 1192537186}
   m_Layer: 0
-  m_Name: Player
+  m_Name: Player - Character Controller
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -582,11 +582,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf523ddfe827cfc45b53fdc419102136, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isAttackingText: {fileID: 0}
   holsteredSword: {fileID: 5343772324142468776}
   realSword: {fileID: 3453189484767739316}
   swordScript: {fileID: 4577819289340533507}
   swordCollider: {fileID: 7264367494939340644}
+  canStartNextAttack: 1
 --- !u!143 &1799965102
 CharacterController:
   m_ObjectHideFlags: 0
@@ -626,6 +626,7 @@ MonoBehaviour:
   playerVelocity: {x: 0, y: 0, z: 0}
   canMove: 1
   canFall: 1
+  canRotate: 1
 --- !u!1 &2025464440008236145
 GameObject:
   m_ObjectHideFlags: 0

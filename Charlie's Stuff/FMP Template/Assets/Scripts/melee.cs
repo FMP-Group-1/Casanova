@@ -6,8 +6,6 @@ using UnityEngine.UI;
 public class melee : MonoBehaviour
 {
     [SerializeField]
-    private Text isAttackingText;
-    [SerializeField]
     private GameObject holsteredSword;
     [SerializeField]
     private GameObject realSword;

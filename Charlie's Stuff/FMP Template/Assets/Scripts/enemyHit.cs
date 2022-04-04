@@ -11,8 +11,6 @@ public class enemyHit : MonoBehaviour
 
     Renderer thisRenderer;
 
-    public Text hitText;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -33,11 +31,9 @@ public class enemyHit : MonoBehaviour
 
     private IEnumerator Flash()
     {
-        hitText.text = "Hit";
         thisRenderer.material.color = hitColour;
         yield return new WaitForSeconds( .1f );
         thisRenderer.material.color = defaultColour;
-        hitText.text = "";
 
     }
 
