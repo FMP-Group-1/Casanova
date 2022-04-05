@@ -60,31 +60,31 @@ public class PlayerControllerRigidbody : MonoBehaviour
 
 
     private void Start()
-	{
+    {
         m_rb = GetComponent<Rigidbody>();
         cameraMainTransform = Camera.main.transform;
         animator = GetComponent<Animator>();
     }
-	private void FixedUpdate()
+    private void FixedUpdate()
     {
         MovePlayer();
 
         //Falling
-        if ( canFall )
+        if( canFall )
         {
             //RB velocity add gravity value relative, just to Y
             m_rb.velocity += new Vector3( 0, gravityValue * Time.deltaTime, 0 );
         }
     }
 
-	private void Update()
-	{
+    private void Update()
+    {
 
         Jump();
     }
 
-	private void MovePlayer()
-	{
+    private void MovePlayer()
+    {
         //Just the input values, put into a member variable
         Vector2 movement = movementControl.action.ReadValue<Vector2>();
 
@@ -103,7 +103,7 @@ public class PlayerControllerRigidbody : MonoBehaviour
         Debug.Log( movement );
         ////////////////////////////////////////////
         ///Move Player
-        if ( canMove )
+        if( canMove )
         {
             //Vector3 moveVector = transform.TransformDirection( move ) * playerSpeed;
             Vector3 moveVector = transform.forward * m_moveAmount * playerSpeed;
@@ -112,10 +112,10 @@ public class PlayerControllerRigidbody : MonoBehaviour
         }
 
         //If you are moving at all
-        if ( movement != Vector2.zero )
+        if( movement != Vector2.zero )
         {
             animator.SetBool( "moving", true );
-            if ( canRotate )
+            if( canRotate )
             {
                 float targetAngle = Mathf.Atan2( movement.x, movement.y ) * Mathf.Rad2Deg + cameraMainTransform.eulerAngles.y;
                 Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
@@ -132,9 +132,9 @@ public class PlayerControllerRigidbody : MonoBehaviour
     }
 
     private void Jump()
-	{
+    {
         // Changes the height position of the player..
-        if ( jumpControl.action.triggered && groundedPlayer )
+        if( jumpControl.action.triggered && groundedPlayer )
         {
             //Jumped
             animator.SetTrigger( "jumped" );
@@ -142,7 +142,7 @@ public class PlayerControllerRigidbody : MonoBehaviour
             ////////////////////////////////////////////
         }
 
-        if ( !groundedPlayer )
+        if( !groundedPlayer )
         {
 
             animator.SetBool( "inAir", true );
@@ -161,19 +161,19 @@ public class PlayerControllerRigidbody : MonoBehaviour
         movingWithAttack = true;
         moveWithAttackDistance = animationEvent.floatParameter;
         //Convert into to a float. the int is in hundreths of a second (0.14 = 14)
-        moveWithAttackTime = ( float )animationEvent.intParameter / 100;
+        moveWithAttackTime = ( float ) animationEvent.intParameter / 100;
         targetForAttack = new Vector3( transform.position.x + moveWithAttackDistance * forwardDirection.x, transform.position.y, transform.position.y + moveWithAttackDistance * forwardDirection.z );
 
 
-        
+
         float elapsedTime = 0;
         Vector3 startingPos = transform.position;
 
-        while ( elapsedTime < moveWithAttackTime )
+        while( elapsedTime < moveWithAttackTime )
         {
 
             Vector3 offset = targetForAttack - transform.position;
-            if ( offset.magnitude > .1f )
+            if( offset.magnitude > .1f )
             {
                 //If we're further away than .1 unit, move towards the target.
                 //The minimum allowable tolerance varies with the speed of the object and the framerate. 
