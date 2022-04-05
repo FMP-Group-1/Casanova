@@ -145,64 +145,49 @@ public class PlayerController : MonoBehaviour
         animator.SetFloat( "forwardSpeed", m_moveAmount );
 
     }
+    /*
+   public IEnumerator MoveWithAttack( AnimationEvent animationEvent )
+   {
+      Vector3 forwardDirection = transform.forward;
 
 
-
-    /*public void MoveWithAttack( AnimationEvent animationEvent )
-    {
-        movingWithAtatck = true;
-        moveWithAttackDistance = animationEvent.floatParameter;
-        //Convert into to a float. the int is in hundreths of a second (0.14 = 14)
-        moveWithAttackTime = ( float )animationEvent.intParameter / 100;
-
-
-        positionAtAttack = transform.position;
-        targetForAttack = new Vector3( 0, 0, transform.position.z + moveWithAttackDistance );
-
-    }*/
-
-    public IEnumerator MoveWithAttack( AnimationEvent animationEvent )
-    {
-        Vector3 forwardDirection = transform.forward;
-
-
-        movingWithAttack = true;
-        moveWithAttackDistance = animationEvent.floatParameter;
-        //Convert into to a float. the int is in hundreths of a second (0.14 = 14)
-        moveWithAttackTime = ( float )animationEvent.intParameter / 100;
-        targetForAttack = new Vector3( transform.position.x + moveWithAttackDistance * forwardDirection.x, transform.position.y, transform.position.z + moveWithAttackDistance * forwardDirection.z );
+       movingWithAttack = true;
+       moveWithAttackDistance = animationEvent.floatParameter;
+       //Convert into to a float. the int is in hundreths of a second (0.14 = 14)
+       moveWithAttackTime = ( float )animationEvent.intParameter / 100;
+       targetForAttack = new Vector3( transform.position.x + moveWithAttackDistance * forwardDirection.x, transform.position.y, transform.position.z + moveWithAttackDistance * forwardDirection.z );
 
 
 
 
-        float elapsedTime = 0;
-        Vector3 startingPos = transform.position;
+       float elapsedTime = 0;
+       Vector3 startingPos = transform.position;
 
-        while ( elapsedTime < moveWithAttackTime )
-        {
+       while ( elapsedTime < moveWithAttackTime )
+       {
 
-            Vector3 offset = targetForAttack - transform.position;
-            if ( offset.magnitude > .1f )
-            {
-                //If we're further away than .1 unit, move towards the target.
-                //The minimum allowable tolerance varies with the speed of the object and the framerate. 
-                // 2 * tolerance must be >= moveSpeed / framerate or the object will jump right over the stop.
-                float newSpeed = moveWithAttackDistance / moveWithAttackTime;
-                offset = offset.normalized * newSpeed;
-                //normalize it and account for movement speed.
-                controller.Move( offset * Time.deltaTime );
-                //actually move the character.
-            }
-            //controller.Move( startingPos );
-            // transform.position = Vector3.Lerp( startingPos, targetForAttack, ( elapsedTime / moveWithAttackTime ) );
-            elapsedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-        //transform.position = targetForAttack;
+           Vector3 offset = targetForAttack - transform.position;
+           if ( offset.magnitude > .1f )
+           {
+               //If we're further away than .1 unit, move towards the target.
+               //The minimum allowable tolerance varies with the speed of the object and the framerate. 
+               // 2 * tolerance must be >= moveSpeed / framerate or the object will jump right over the stop.
+               float newSpeed = moveWithAttackDistance / moveWithAttackTime;
+               offset = offset.normalized * newSpeed;
+               //normalize it and account for movement speed.
+               controller.Move( offset * Time.deltaTime );
+               //actually move the character.
+           }
+           //controller.Move( startingPos );
+           // transform.position = Vector3.Lerp( startingPos, targetForAttack, ( elapsedTime / moveWithAttackTime ) );
+           elapsedTime += Time.deltaTime;
+           yield return new WaitForEndOfFrame();
+       }
+       //transform.position = targetForAttack;
+   
 
-
-    }
-    private void EndMoveWithAttack()
+}*/
+private void EndMoveWithAttack()
     {
         movingWithAttack = false;
 

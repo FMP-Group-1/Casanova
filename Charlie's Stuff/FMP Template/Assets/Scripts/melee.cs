@@ -121,6 +121,8 @@ public class melee : MonoBehaviour
         //Basically, if you have reached the end of an attack, you are no longer attacking, but if "attackType" is not nothing, there's somehing queued up, so lets do it
         if ( canStartNextAttack && attackType != Attack.Nothing )
         {
+            //Rotation stuff needs to go around here??????
+
             // So we are not attacking YET, but we want to
 
             switch ( attackType )
@@ -197,14 +199,14 @@ public class melee : MonoBehaviour
 
     public void EndCombo()
     {
-        //m_playerController.playerVelocity.y = 0f;
+        m_playerController.playerVelocity.y = 0f;
 
         m_playerController.canFall = true;
         m_playerController.canMove = true;
         m_playerController.canRotate = true;
         animator.SetBool( "comboActive", false );
         //MAKE SURE IT'S AVAILABLE AGAIN. CURRENTLY BROKE a bit This is duplicated
-        canStartNextAttack = true;
+        //canStartNextAttack = true;
 
 
     }
