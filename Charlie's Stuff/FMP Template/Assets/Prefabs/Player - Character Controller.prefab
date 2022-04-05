@@ -524,9 +524,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1264587700047008345}
   - component: {fileID: 5146658918576719907}
-  - component: {fileID: 1929624750612613346}
   - component: {fileID: 1799965102}
   - component: {fileID: 1192537186}
+  - component: {fileID: 8678363535553858087}
   m_Layer: 0
   m_Name: Player - Character Controller
   m_TagString: Player
@@ -570,23 +570,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!114 &1929624750612613346
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1929624750612613347}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bf523ddfe827cfc45b53fdc419102136, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  holsteredSword: {fileID: 5343772324142468776}
-  realSword: {fileID: 3453189484767739316}
-  swordScript: {fileID: 4577819289340533507}
-  swordCollider: {fileID: 7264367494939340644}
-  canStartNextAttack: 1
 --- !u!143 &1799965102
 CharacterController:
   m_ObjectHideFlags: 0
@@ -602,7 +585,7 @@ CharacterController:
   m_Radius: 0.5
   m_SlopeLimit: 45
   m_StepOffset: 0.3
-  m_SkinWidth: 0.08
+  m_SkinWidth: 1
   m_MinMoveDistance: 0
   m_Center: {x: 0, y: 1.3, z: 0}
 --- !u!114 &1192537186
@@ -614,19 +597,36 @@ MonoBehaviour:
   m_GameObject: {fileID: 1929624750612613347}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9107b83b5574d4d4788fc0b59d8a6511, type: 3}
+  m_Script: {fileID: 11500000, guid: 611de15752cd70d45888eba308826f29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   movementControl: {fileID: 2691785763913772774, guid: 718be9eb4c7d2ee4198df765b1d66ceb, type: 3}
   jumpControl: {fileID: 7058330660807564182, guid: 718be9eb4c7d2ee4198df765b1d66ceb, type: 3}
-  playerSpeed: 5
+  playerSpeed: 2
   jumpForce: 1
   gravityValue: -9.81
-  rotationSpeed: 6
+  rotationSpeed: 4
   playerVelocity: {x: 0, y: 0, z: 0}
   canMove: 1
   canFall: 1
   canRotate: 1
+--- !u!114 &8678363535553858087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1929624750612613347}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca186c01b51b3c94eb1c806ef0651e9d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  holsteredSword: {fileID: 5343772324142468776}
+  realSword: {fileID: 3453189484767739316}
+  swordScript: {fileID: 4577819289340533507}
+  swordCollider: {fileID: 7264367494939340644}
+  canStartNextAttack: 1
 --- !u!1 &2025464440008236145
 GameObject:
   m_ObjectHideFlags: 0
@@ -1443,7 +1443,7 @@ GameObject:
   - component: {fileID: 3412169439842167554}
   - component: {fileID: 77936305650162808}
   m_Layer: 0
-  m_Name: Sword
+  m_Name: Holstered Sword
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2119,7 +2119,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2280562355253068397, guid: 6e8890e6564362a4cbbdcb465eedc233, type: 3}
       propertyPath: m_Name
-      value: Sword
+      value: Real Sword
       objectReference: {fileID: 0}
     - target: {fileID: 2280562355253068397, guid: 6e8890e6564362a4cbbdcb465eedc233, type: 3}
       propertyPath: m_TagString

@@ -75,6 +75,28 @@ public class PlayerControllerRigidbody : MonoBehaviour
             //RB velocity add gravity value relative, just to Y
             m_rb.velocity += new Vector3( 0, gravityValue * Time.deltaTime, 0 );
         }
+
+
+        //if Moving with an attack
+        if( movingWithAttack )
+        {
+            Vector3 offset = targetForAttack - transform.position;
+            if( offset.magnitude > .1f )
+            {
+                //If we're further away than .1 unit, move towards the target.
+                //The minimum allowable tolerance varies with the speed of the object and the framerate. 
+                // 2 * tolerance must be >= moveSpeed / framerate or the object will jump right over the stop.
+                float newSpeed = moveWithAttackDistance / moveWithAttackTime;
+                //normalize it and account for movement speed.
+                //controller.Move( offset * Time.deltaTime );
+
+                Vector3 moveVector = transform.forward * newSpeed;
+                //Rigidbody Velocity based on the movement set up in update
+                //m_rb.velocity = new Vector3( moveVector.x, m_rb.velocity.y, moveVector.z );
+                //m_rb.MovePosition( transform.position + transform.forward * newSpeed * Time.deltaTime );
+                
+            }
+        }
     }
 
     private void Update()
@@ -87,6 +109,7 @@ public class PlayerControllerRigidbody : MonoBehaviour
     {
         //Just the input values, put into a member variable
         Vector2 movement = movementControl.action.ReadValue<Vector2>();
+        //movement = new Vector2(0,1);
 
         //Vector of what direction we would move based on the inputs.
         //Y is in the Z area, as the above vector2 holds the Z in it's second value
@@ -95,12 +118,12 @@ public class PlayerControllerRigidbody : MonoBehaviour
 
         //Get the absolute values of movement inputs (0-1) for use in a 1d Blend tree
         m_moveAmount = Mathf.Clamp01( Mathf.Abs( movement.x ) + Mathf.Abs( movement.y ) );
-
+        // m_moveAmount = 1;
         //Move in direction of camera
         //move = cameraMainTransform.forward * move.z + cameraMainTransform.right * move.x;
         //move.y = 0f;
-
-        Debug.Log( movement );
+        Debug.Log( m_moveAmount );
+        //Debug.Log( movement );
         ////////////////////////////////////////////
         ///Move Player
         if( canMove )
@@ -108,7 +131,15 @@ public class PlayerControllerRigidbody : MonoBehaviour
             //Vector3 moveVector = transform.TransformDirection( move ) * playerSpeed;
             Vector3 moveVector = transform.forward * m_moveAmount * playerSpeed;
             //Rigidbody Velocity based on the movement set up in update
-            m_rb.velocity = new Vector3( moveVector.x, m_rb.velocity.y, moveVector.z );
+            Vector3 targetPosition = new Vector3( 0, 0, ((transform.position.z + playerSpeed) * m_moveAmount))* Time.deltaTime;
+            // new Vector3( moveVector.x, m_rb.velocity.y, moveVector.z );
+
+
+            Vector3 newPosition = transform.position + move * playerSpeed * Time.deltaTime;
+            m_rb.MovePosition( newPosition );
+
+
+           // m_rb.MovePosition( transform.position + targetPosition );
         }
 
         //If you are moving at all
@@ -153,7 +184,7 @@ public class PlayerControllerRigidbody : MonoBehaviour
             animator.SetBool( "inAir", false );
         }
     }
-    public IEnumerator MoveWithAttack( AnimationEvent animationEvent )
+    public void MoveWithAttack( AnimationEvent animationEvent )
     {
         Vector3 forwardDirection = transform.forward;
 
@@ -162,43 +193,15 @@ public class PlayerControllerRigidbody : MonoBehaviour
         moveWithAttackDistance = animationEvent.floatParameter;
         //Convert into to a float. the int is in hundreths of a second (0.14 = 14)
         moveWithAttackTime = ( float ) animationEvent.intParameter / 100;
-        targetForAttack = new Vector3( transform.position.x + moveWithAttackDistance * forwardDirection.x, transform.position.y, transform.position.y + moveWithAttackDistance * forwardDirection.z );
-
-
-
-        float elapsedTime = 0;
-        Vector3 startingPos = transform.position;
-
-        while( elapsedTime < moveWithAttackTime )
-        {
-
-            Vector3 offset = targetForAttack - transform.position;
-            if( offset.magnitude > .1f )
-            {
-                //If we're further away than .1 unit, move towards the target.
-                //The minimum allowable tolerance varies with the speed of the object and the framerate. 
-                // 2 * tolerance must be >= moveSpeed / framerate or the object will jump right over the stop.
-                float newSpeed = moveWithAttackDistance / moveWithAttackTime;
-                //normalize it and account for movement speed.
-                //controller.Move( offset * Time.deltaTime );
-
-                Vector3 moveVector = transform.forward * newSpeed;
-                //Rigidbody Velocity based on the movement set up in update
-                //m_rb.velocity = new Vector3( moveVector.x, m_rb.velocity.y, moveVector.z );
-                m_rb.MovePosition( transform.position * newSpeed * Time.deltaTime );
-
-            }
-            //transform.position = Vector3.Lerp( startingPos, targetForAttack, ( elapsedTime / moveWithAttackTime ) );
-            elapsedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-        transform.position = targetForAttack;
-
+        targetForAttack = new Vector3( transform.position.x + moveWithAttackDistance * forwardDirection.x, transform.position.y, transform.position.z + moveWithAttackDistance * forwardDirection.z );
 
     }
     private void EndMoveWithAttack()
     {
         m_rb.velocity = Vector3.zero;
+
+        //Set pos to where you wanted (just to make sure it's perfect
+        //transform.position = targetForAttack;
 
         movingWithAttack = false;
 
