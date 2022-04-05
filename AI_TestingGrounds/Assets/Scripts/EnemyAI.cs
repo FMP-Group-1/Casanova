@@ -27,6 +27,7 @@ public enum CombatState
     Strafing,
     MaintainDist,
     BackingUp,
+    MovingToZone,
     MovingToAttack,
     Attacking
 }
@@ -120,6 +121,10 @@ public class EnemyAI : MonoBehaviour
     private BoxCollider m_weaponCollider;
     private Vector3 m_attackZonePos;
     private AttackingType m_currentAttackingType = AttackingType.Passive;
+    private AttackZone m_currentAttackZone;
+    private AttackZone m_occupiedAttackZone;
+    private float m_attackZoneCheckInterval = 5.0f;
+    private float m_attackZoneTimer = 0.0f;
 
     // Vision Detection Relevant Variables
     [Header("Player Detection Values")]
@@ -169,6 +174,8 @@ public class EnemyAI : MonoBehaviour
         m_player.GetComponent<Player>().SetHitVisual( IsAttackCollidingWithPlayer() );
 
         TestingInputs();
+
+        AttackZoneCheck();
 
         switch ( m_state )
         {
@@ -279,26 +286,31 @@ public class EnemyAI : MonoBehaviour
     {
         m_timeSinceLastAttack += Time.deltaTime;
 
+        //TimedAttackZoneCheck();
+
         switch ( m_combatState )
         {
             // Chase after target/player
             case CombatState.Pursuing:
             {
-                //m_navMeshAgent.destination = m_player.transform.position;
-                m_navMeshAgent.destination = m_attackZonePos;
+                m_navMeshAgent.destination = m_player.transform.position;
+                //m_navMeshAgent.destination = m_attackZonePos;
 
                 // Very basic detection for reaching destination, will need to be expanded upon
                 // i.e. in case of path being blocked
                 // Logic from https://answers.unity.com/questions/324589/how-can-i-tell-when-a-navmesh-has-reached-its-dest.html
-                if (HasReachedDestination())
+                if (IsInStrafeRange())
                 {
                     SetCombatState(CombatState.MaintainDist);
+                    SetAttackZone(m_aiManager.FindAttackZone(this));
                     //Debug.Log("Destination Reached");
                 }
                 break;
             }
             case CombatState.Strafing:
             {
+                TimedAttackZoneCheck();
+
                 AttackCheck();
                 StrafeRangeCheck();
                 Strafe();
@@ -306,6 +318,8 @@ public class EnemyAI : MonoBehaviour
             }
             case CombatState.MaintainDist:
             {
+                TimedAttackZoneCheck();
+
                 AttackCheck();
                 StrafeRangeCheck();
                 transform.LookAt(m_player.transform.position);
@@ -335,6 +349,15 @@ public class EnemyAI : MonoBehaviour
                 if (HasReachedDestination())
                 {
                     SetCombatState(CombatState.Attacking);
+                }
+                break;
+            }
+            case CombatState.MovingToZone:
+            {
+                if (HasReachedDestination())
+                {
+                    SetCombatState(CombatState.MaintainDist);
+                    //Debug.Log("Destination Reached");
                 }
                 break;
             }
@@ -470,6 +493,11 @@ public class EnemyAI : MonoBehaviour
             case CombatState.MovingToAttack:
             {
                 m_navMeshAgent.destination = m_player.transform.position;
+                StartRunAnim();
+                break;
+            }
+            case CombatState.MovingToZone:
+            {
                 StartRunAnim();
                 break;
             }
@@ -675,6 +703,56 @@ public class EnemyAI : MonoBehaviour
         }
 
         return playerIsVisible;
+    }
+
+    private void AttackZoneCheck()
+    {
+        m_currentAttackZone = m_aiManager.FindAttackZone(this);
+    }
+
+    private void TimedAttackZoneCheck()
+    {
+        m_attackZoneTimer += Time.deltaTime;
+
+        if (m_attackZoneTimer >= m_attackZoneCheckInterval)
+        {
+            m_attackZoneTimer = 0.0f;
+
+            if (m_currentAttackZone != m_occupiedAttackZone)
+            {
+                if (m_currentAttackZone != null)
+                {
+                    if (!m_currentAttackZone.IsOccupied())
+                    {
+                        // Occupy current zone
+                        if (m_occupiedAttackZone != null)
+                        { 
+                            m_occupiedAttackZone.EmptyZone();
+                        }
+
+                        m_occupiedAttackZone = m_currentAttackZone;
+                        m_occupiedAttackZone.SetOccupant(this);
+                    }
+                    else
+                    {
+                        // Return to occupied zone
+                        m_navMeshAgent.destination = m_aiManager.RandomiseAttackPosForEnemy(this, m_occupiedAttackZone.GetZoneNum());
+                        SetCombatState(CombatState.MovingToZone);
+                    }
+                }
+                else
+                {
+                    // Return to occupied zone
+                    m_navMeshAgent.destination = m_aiManager.RandomiseAttackPosForEnemy(this, m_occupiedAttackZone.GetZoneNum());
+                    SetCombatState(CombatState.MovingToZone);
+                }
+            }
+        }
+    }
+
+    private bool IsInAssignedZone()
+    {
+        return m_currentAttackZone == m_occupiedAttackZone;
     }
 
     private void WakeTriggerCheck()
@@ -951,6 +1029,26 @@ public class EnemyAI : MonoBehaviour
         m_strafeDist = distance;
     }
 
+    public AttackZone GetAttackZone()
+    {
+        return m_currentAttackZone;
+    }
+
+    public void SetAttackZone(AttackZone zoneToSet)
+    {
+        m_currentAttackZone = zoneToSet;
+    }
+
+    public AttackZone GetOccupiedAttackZone()
+    {
+        return m_occupiedAttackZone;
+    }
+
+    public void SetOccupiedAttackZone( AttackZone zoneToSet )
+    {
+        m_occupiedAttackZone = zoneToSet;
+    }
+
     private void TestingInputs()
     {
         // Start Patrolling Test Input
@@ -967,7 +1065,18 @@ public class EnemyAI : MonoBehaviour
         // Start Pursuing Test Input
         if (Input.GetKeyDown(KeyCode.P))
         {
-            SetAIState(AIState.InCombat);
+            //SetAIState(AIState.InCombat);
+            int zoneNum = Random.Range(0, m_aiManager.GetAttackZonesNum());
+
+            if (m_occupiedAttackZone != null)
+            {
+              m_occupiedAttackZone.EmptyZone();
+            }
+            m_occupiedAttackZone = m_aiManager.GetAttackZoneByNum(zoneNum, ZoneType.Passive);
+            m_occupiedAttackZone.SetOccupant(this);
+            SetCombatState(CombatState.MovingToZone);
+            m_navMeshAgent.destination = m_aiManager.RandomiseAttackPosForEnemy(this, zoneNum);
+
         }
 
         // Start Sleeping Test Input

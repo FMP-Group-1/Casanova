@@ -14,6 +14,8 @@ public class AIDebugDisplay : MonoBehaviour
     private Text m_aiHealth;
     private Text m_playerDetectedText;
     private Text m_strafeAtDistText;
+    private Text m_attackZoneText;
+    private Text m_occupiedZoneText;
     void Awake()
     {
         SetupDebugDisplay();
@@ -32,6 +34,8 @@ public class AIDebugDisplay : MonoBehaviour
         m_aiHealth = GameObject.Find("AIHealthText").GetComponent<Text>();
         m_playerDetectedText = GameObject.Find("PlayerDetectText").GetComponent<Text>();
         m_strafeAtDistText = GameObject.Find("StrafeDistText").GetComponent<Text>();
+        m_attackZoneText = GameObject.Find("AttackZoneText").GetComponent<Text>();
+        m_occupiedZoneText = GameObject.Find("OccupiedZoneText").GetComponent<Text>();
 
         m_aiNameText.text = "AI: " + m_aiDebugTarget.name;
     }
@@ -44,6 +48,26 @@ public class AIDebugDisplay : MonoBehaviour
         m_aiHealth.text = "AI Health: " + m_aiDebugTarget.GetHealth();
         m_playerDetectedText.text = "Player Detected: " + m_aiDebugTarget.IsPlayerVisible();
         m_strafeAtDistText.text = "Strafe Distance: " + m_aiDebugTarget.GetStrafeDist();
+
+        if (m_aiDebugTarget.GetAttackZone() != null)
+        {
+            AttackZone attackZone = m_aiDebugTarget.GetAttackZone();
+            m_attackZoneText.text = "Attack Zone: " + attackZone.GetZoneType() + " " + attackZone.GetZoneNum();
+        }
+        else
+        {
+            m_attackZoneText.text = "Attack Zone: None";
+        }
+
+        if (m_aiDebugTarget.GetOccupiedAttackZone() != null)
+        {
+            AttackZone attackZone = m_aiDebugTarget.GetOccupiedAttackZone();
+            m_occupiedZoneText.text = "Occupied Zone: " + attackZone.GetZoneType() + " " + attackZone.GetZoneNum();
+        }
+        else
+        {
+            m_occupiedZoneText.text = "Occupied Zone: None";
+        }
 
         if (currentAIState == AIState.InCombat || currentAIState == AIState.Patrolling)
         {

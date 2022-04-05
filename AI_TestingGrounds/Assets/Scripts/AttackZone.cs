@@ -8,11 +8,14 @@ public class AttackZone
 {
     private bool m_isOccupied = false;
     private ZoneType m_zoneType = ZoneType.Active;
+    private EnemyAI m_occupant;
+    private int m_zoneNum;
 
-    public AttackZone(bool isOccupied, ZoneType zoneType)
+    public AttackZone(bool isOccupied, ZoneType zoneType, int zoneNum)
     {
         m_isOccupied = isOccupied;
         m_zoneType = zoneType;
+        m_zoneNum = zoneNum;
     }
 
     public bool IsOccupied()
@@ -25,6 +28,16 @@ public class AttackZone
         m_isOccupied = isOccupied;
     }
 
+    public int GetZoneNum()
+    {
+        return m_zoneNum;
+    }
+
+    public void SetZoneNum(int zoneNum)
+    {
+        m_zoneNum = zoneNum;
+    }
+
     public ZoneType GetZoneType()
     {
         return m_zoneType;
@@ -33,5 +46,20 @@ public class AttackZone
     public void SetZoneType(ZoneType typeToSet)
     {
         m_zoneType = typeToSet;
+    }
+
+    public EnemyAI GetOccupant()
+    {
+        return m_occupant;
+    }
+
+    public void SetOccupant( EnemyAI occupantToSet )
+    {
+        m_occupant = occupantToSet;
+    }
+
+    public void EmptyZone()
+    {
+        m_occupant = null;
     }
 }

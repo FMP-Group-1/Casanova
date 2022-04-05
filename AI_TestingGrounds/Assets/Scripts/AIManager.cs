@@ -22,6 +22,8 @@ public class AIManager : MonoBehaviour
     [SerializeField]
     private float m_passiveAttackerMaxDist = 10.0f;
 
+    private float m_sectionHalfAngle;
+
     [SerializeField]
     private int m_maxActiveAttackers = 3;
     
@@ -35,16 +37,19 @@ public class AIManager : MonoBehaviour
 
     void Update()
     {
-        Debug.Log("AIManager: Current Zone: " + FindAttackZone(m_enemyList[0]).GetZoneType());
+
     }
 
+    // Todo: Create Attack Zone Manager, separate attack zone logic from this manager
     private void SetupAttackZones()
     {
         for ( int i = 0; i < m_attackZonesNum; i++)
         {
-            m_activeAttackZones.Add(new AttackZone(false, ZoneType.Active));
-            m_passiveAttackZones.Add(new AttackZone(false, ZoneType.Passive));
+            m_activeAttackZones.Add(new AttackZone(false, ZoneType.Active, i));
+            m_passiveAttackZones.Add(new AttackZone(false, ZoneType.Passive, i));
         }
+
+        m_sectionHalfAngle = (360.0f / m_attackZonesNum) * 0.5f;
     }
 
     private void RegisterEnemies()
@@ -184,14 +189,26 @@ public class AIManager : MonoBehaviour
     {
         // Messy equation, needs refactoring, but basic logic works
         Vector3 enemyPos = enemyToCheck.gameObject.transform.position;
+        Vector3 playerPos = m_player.transform.position;
 
-        Vector3 dirFromPlayer = (enemyPos - m_player.transform.position).normalized;
-        float angle = Vector3.SignedAngle(enemyPos, dirFromPlayer, Vector3.up);
+        enemyPos.y = 0.0f;
+        playerPos.y = 0.0f;
+
+        Vector3 dirFromPlayer = (enemyPos - playerPos).normalized;
+        float angle = Vector3.SignedAngle(dirFromPlayer, Vector3.forward, Vector3.up);
+
+        // Todo: In BIG need of refactor
+
+        //Debug.Log("Zone Angle: " + angle);
+
+        angle += m_sectionHalfAngle;
 
         if (angle < 0.0f)
         {
             angle = 360.0f - angle * -1.0f;
         }
+
+        Debug.Log("Zone Angle: " + angle);
 
         float sectionAngle = 360.0f / m_attackZonesNum;
 
@@ -209,7 +226,7 @@ public class AIManager : MonoBehaviour
             }
         }
 
-        // Todo: Refactor this function to not use null returns
+        // Todo: Refactor this function to not use null returns (maybe, kind of useful atm)
         return null;
     }
 
@@ -221,7 +238,31 @@ public class AIManager : MonoBehaviour
         int attackZone = Random.Range(0, m_attackZonesNum);
         float randomAngle = Random.Range(anglePerZone * attackZone, anglePerZone * (attackZone + 1));
 
-        Vector3 dirToAttackZone = DirFromAngle(randomAngle, true, m_player);
+        Vector3 dirToAttackZone = DirFromAngle(randomAngle - m_sectionHalfAngle, true, m_player);
+
+        if (enemy.GetAttackingType() == AttackingType.Active)
+        {
+            dist = Random.Range(m_activeAttackerMinDist, m_activeAttackerMaxDist);
+        }
+        else if (enemy.GetAttackingType() == AttackingType.Passive)
+        {
+            dist = Random.Range(m_activeAttackerMaxDist, m_passiveAttackerMaxDist);
+        }
+
+        //enemy.SetStrafeDist(dist);
+
+        return m_player.transform.position + (dirToAttackZone * dist);
+    }
+
+    // Overload of above function to get pos for a specific zone
+    public Vector3 RandomiseAttackPosForEnemy( EnemyAI enemy, int zoneToUse )
+    {
+        float anglePerZone = 360.0f / m_attackZonesNum;
+        float dist = m_activeAttackerMaxDist;
+
+        float randomAngle = Random.Range(anglePerZone * zoneToUse, anglePerZone * (zoneToUse + 1));
+
+        Vector3 dirToAttackZone = DirFromAngle(randomAngle - m_sectionHalfAngle, true, m_player);
 
         if (enemy.GetAttackingType() == AttackingType.Active)
         {
@@ -245,5 +286,26 @@ public class AIManager : MonoBehaviour
         }
 
         return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
+    }
+
+    public AttackZone GetAttackZoneByNum(int num, ZoneType zoneType)
+    {
+        AttackZone zoneToReturn = null;
+
+        switch (zoneType)
+        {
+            case ZoneType.Passive:
+            {
+                zoneToReturn = m_passiveAttackZones[num];
+                break;
+            }
+            case ZoneType.Active:
+            {
+                zoneToReturn = m_activeAttackZones[num];
+                break;
+            }
+        }
+
+        return zoneToReturn;
     }
 }
