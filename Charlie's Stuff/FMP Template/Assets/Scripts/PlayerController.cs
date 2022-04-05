@@ -198,7 +198,7 @@ public class PlayerController : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        transform.position = targetForAttack;
+        //transform.position = targetForAttack;
 
 
     }

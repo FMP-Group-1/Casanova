@@ -2184,8 +2184,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1854528720}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.66, y: 1.205, z: 6.2815}
-  m_LocalScale: {x: 2.1421, y: 2.4101257, z: 2.1097186}
+  m_LocalPosition: {x: -0.66, y: 1.205, z: 1.71}
+  m_LocalScale: {x: 2.1421, y: 2.4101257, z: 0.06620733}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 10
@@ -2821,7 +2821,12 @@ MonoBehaviour:
   realSword: {fileID: 629631358697428360}
   swordScript: {fileID: 8745636050736552394}
   swordCollider: {fileID: 6696328632255500923}
+  swordEquipped: 1
+  currentlyInTheProcessOfSheathing: 0
+  animator: {fileID: 0}
+  m_playerController: {fileID: 0}
   canStartNextAttack: 1
+  attackType: 0
 --- !u!4 &2691118932485868202
 Transform:
   m_ObjectHideFlags: 0
