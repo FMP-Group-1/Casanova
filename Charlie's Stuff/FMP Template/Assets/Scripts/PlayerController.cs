@@ -137,7 +137,6 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-
             animator.SetBool( "moving", false );
         }
 
@@ -199,7 +198,7 @@ public class PlayerController : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return new WaitForEndOfFrame();
         }
-        transform.position = targetForAttack;
+        //transform.position = targetForAttack;
 
 
     }
