@@ -7,6 +7,7 @@ public enum AIState
 {
     Idle,
     Sleeping,
+    Waking,
     Patrolling,
     ReturningToPatrol,
     InCombat,
@@ -72,6 +73,9 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private bool m_spawnAsleep = false;
     [SerializeField]
+    private GameObject m_wakeTriggerObj;
+    private BoxCollider m_wakeTrigger;
+    [SerializeField]
     private GameObject m_patrolRoute;
     private PatrolState m_patrolState = PatrolState.Patrol;
     private List<Transform> m_patrolRoutePoints = new List<Transform>();
@@ -102,7 +106,7 @@ public class EnemyAI : MonoBehaviour
     private float m_minStrafeRange = 3.0f;
     [SerializeField]
     private float m_maxStrafeRange = 5.0f;
-    private float m_strafeAtDist;
+    private float m_strafeDist;
     private float m_attackTimer;
     [SerializeField]
     private bool m_canAttack = true;
@@ -152,6 +156,11 @@ public class EnemyAI : MonoBehaviour
         }
 
         RandomiseStrafeRange();
+
+        if (m_wakeTriggerObj != null)
+        {
+            m_wakeTrigger = m_wakeTriggerObj.GetComponent<BoxCollider>();
+        }
     }
 
     private void Update()
@@ -175,7 +184,7 @@ public class EnemyAI : MonoBehaviour
             }
             case AIState.Sleeping:
             {
-
+                WakeTriggerCheck();
                 break;
             }
             // Patrol Logic
@@ -308,8 +317,8 @@ public class EnemyAI : MonoBehaviour
                 StrafeRangeCheck();
                 transform.LookAt(m_player.transform.position);
 
-                // Todo: Disgusting check, fix asap
-                if (Vector3.Distance(m_player.transform.position, transform.position) > m_strafeAtDist)
+                // Todo: Optimise this check
+                if (Vector3.Distance(m_player.transform.position, transform.position) > m_strafeDist)
                 {
                     StrafeOrMaintain();
                 }
@@ -509,7 +518,7 @@ public class EnemyAI : MonoBehaviour
         if (distanceToPlayer < m_minStrafeRange && m_combatState != CombatState.BackingUp)
         {
             SetCombatState(CombatState.BackingUp);
-            Debug.Log("Test");
+            //Debug.Log("Test");
         }
     }
 
@@ -543,7 +552,7 @@ public class EnemyAI : MonoBehaviour
 
     private void RandomiseStrafeRange()
     {
-        m_strafeAtDist = Random.Range(m_minStrafeRange, m_maxStrafeRange);
+        m_strafeDist = Random.Range(m_minStrafeRange, m_maxStrafeRange);
     }
 
     private bool HasReachedDestination()
@@ -578,7 +587,7 @@ public class EnemyAI : MonoBehaviour
         bool inStrafeRange = false;
 
         // Just using detection based on distance for now, will need better logic for broken nav paths
-        if (m_navMeshAgent.remainingDistance < m_strafeAtDist)
+        if (m_navMeshAgent.remainingDistance < m_strafeDist)
         {
             inStrafeRange = true;
         }
@@ -647,8 +656,9 @@ public class EnemyAI : MonoBehaviour
         // Todo: Look into using sqr root distance checks for optimisation
         if(m_playerDetectionEnabled)
         {
+            Vector3 distance = transform.position - m_player.transform.position;
             // Checking if player is in range
-            if (Vector3.Distance(transform.position, m_player.transform.position) <= m_viewRadius)
+            if (distance.sqrMagnitude <= m_viewRadius * m_viewRadius)
             {
                 // Once player is in range, getting the direction to the player and checking if it's within the AI's FOV
                 Vector3 dirToPlayer = (m_player.transform.position - transform.position).normalized;
@@ -667,18 +677,28 @@ public class EnemyAI : MonoBehaviour
         return playerIsVisible;
     }
 
+    private void WakeTriggerCheck()
+    {
+        if (m_wakeTrigger.bounds.Intersects(m_playerCollider.bounds))
+        {
+            WakeUpAI(WakeTrigger.Standard);
+        }
+    }
+
     public void WakeUpAI(WakeTrigger wakeTrigger)
     {
         switch ( wakeTrigger )
         {
             case WakeTrigger.Attack:
             {
-                // Todo: Maybe add "WakingUp" state?
+                SetAIState(AIState.Waking);
                 StartStandUpAnim();
                 break;
             }
             case WakeTrigger.Standard:
             {
+                SetAIState(AIState.Waking);
+                StartStandUpAnim();
                 break;
             }
         }
@@ -716,7 +736,7 @@ public class EnemyAI : MonoBehaviour
 
     public float GetStrafeDist()
     {
-        return m_strafeAtDist;
+        return m_strafeDist;
     }
 
     private void StartWalkAnim()
@@ -924,6 +944,11 @@ public class EnemyAI : MonoBehaviour
     public void SetAttackingType(AttackingType typeToSet)
     {
         m_currentAttackingType = typeToSet;
+    }
+
+    public void SetStrafeDist(float distance)
+    {
+        m_strafeDist = distance;
     }
 
     private void TestingInputs()

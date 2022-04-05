@@ -9,10 +9,12 @@ public class AIManager : MonoBehaviour
     private List<EnemyAI> m_enemyList = new List<EnemyAI>();
     private List<EnemyAI> m_activeAttackers = new List<EnemyAI>();
     private List<EnemyAI> m_passiveAttackers = new List<EnemyAI>();
+    private List<AttackZone> m_activeAttackZones = new List<AttackZone>();
+    private List<AttackZone> m_passiveAttackZones = new List<AttackZone>();
 
     [SerializeField]
     [Min(0)]
-    private int m_attackZones = 10;
+    private int m_attackZonesNum = 10;
     [SerializeField]
     private float m_activeAttackerMinDist = 3.0f;
     [SerializeField]
@@ -26,13 +28,23 @@ public class AIManager : MonoBehaviour
     void Start()
     {
         RegisterEnemies();
+        SetupAttackZones();
 
         m_player = GameObject.FindGameObjectWithTag("Player");
     }
 
     void Update()
     {
+        Debug.Log("AIManager: Current Zone: " + FindAttackZone(m_enemyList[0]).GetZoneType());
+    }
 
+    private void SetupAttackZones()
+    {
+        for ( int i = 0; i < m_attackZonesNum; i++)
+        {
+            m_activeAttackZones.Add(new AttackZone(false, ZoneType.Active));
+            m_passiveAttackZones.Add(new AttackZone(false, ZoneType.Passive));
+        }
     }
 
     private void RegisterEnemies()
@@ -132,7 +144,7 @@ public class AIManager : MonoBehaviour
 
     public int GetAttackZonesNum()
     {
-        return m_attackZones;
+        return m_attackZonesNum;
     }
 
     public float GetActiveAttackerMinDist()
@@ -150,7 +162,25 @@ public class AIManager : MonoBehaviour
         return m_passiveAttackerMaxDist;
     }
 
-    public float FindAttackSection(EnemyAI enemyToCheck)
+    //public float FindAttackSection(EnemyAI enemyToCheck)
+    //{
+    //    // Messy equation, needs refactoring, but basic logic works
+    //    Vector3 enemyPos = enemyToCheck.gameObject.transform.position;
+
+    //    Vector3 dirFromPlayer = (enemyPos - m_player.transform.position).normalized;
+    //    float angle = Vector3.SignedAngle(enemyPos, dirFromPlayer, Vector3.up);
+
+    //    if (angle < 0.0f)
+    //    {
+    //        angle = 360.0f - angle * -1.0f;
+    //    }
+
+    //    float sectionAngle = 360.0f / m_attackZonesNum;
+
+    //    return (int)(angle / sectionAngle);
+    //}
+
+    public AttackZone FindAttackZone( EnemyAI enemyToCheck )
     {
         // Messy equation, needs refactoring, but basic logic works
         Vector3 enemyPos = enemyToCheck.gameObject.transform.position;
@@ -163,17 +193,32 @@ public class AIManager : MonoBehaviour
             angle = 360.0f - angle * -1.0f;
         }
 
-        float sectionAngle = 360.0f / m_attackZones;
+        float sectionAngle = 360.0f / m_attackZonesNum;
 
-        return (int)(angle / sectionAngle);
+        float dist = Vector3.Distance(enemyToCheck.transform.position, m_player.transform.position);
+
+        if (dist > m_activeAttackerMinDist && dist < m_passiveAttackerMaxDist )
+        {
+            if (dist < m_activeAttackerMaxDist)
+            {
+                return m_activeAttackZones[(int)(angle / sectionAngle)];
+            }
+            else
+            {
+                return m_passiveAttackZones[(int)(angle / sectionAngle)];
+            }
+        }
+
+        // Todo: Refactor this function to not use null returns
+        return null;
     }
 
     public Vector3 RandomiseAttackPosForEnemy(EnemyAI enemy)
     {
-        float anglePerZone = 360.0f / m_attackZones;
+        float anglePerZone = 360.0f / m_attackZonesNum;
         float dist = m_activeAttackerMaxDist;
 
-        int attackZone = Random.Range(0, m_attackZones);
+        int attackZone = Random.Range(0, m_attackZonesNum);
         float randomAngle = Random.Range(anglePerZone * attackZone, anglePerZone * (attackZone + 1));
 
         Vector3 dirToAttackZone = DirFromAngle(randomAngle, true, m_player);
@@ -186,6 +231,8 @@ public class AIManager : MonoBehaviour
         {
             dist = Random.Range(m_activeAttackerMaxDist, m_passiveAttackerMaxDist);
         }
+
+        //enemy.SetStrafeDist(dist);
 
         return m_player.transform.position + (dirToAttackZone * dist);
     }

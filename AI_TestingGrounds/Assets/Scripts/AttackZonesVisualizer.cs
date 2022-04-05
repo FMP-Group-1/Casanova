@@ -7,7 +7,7 @@ using UnityEditor;
 // Logic from https://www.youtube.com/watch?v=rQG9aUWarwE
 
 [CustomEditor(typeof(AIManager))]
-public class EnemyPositionVisualizer : Editor
+public class AttackZonesVisualizer : Editor
 {
     void OnSceneGUI()
     {

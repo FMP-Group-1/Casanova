@@ -7,7 +7,7 @@ using UnityEditor;
 // Logic from https://www.youtube.com/watch?v=rQG9aUWarwE
 
 [CustomEditor (typeof (EnemyAI))]
-public class FieldOfViewEditor : Editor
+public class ConeDetectionVisualizer : Editor
 {
     void OnSceneGUI()
     {
