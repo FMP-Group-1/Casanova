@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class meleeCC : MonoBehaviour
+public class melee : MonoBehaviour
 {
     [SerializeField]
     private GameObject holsteredSword;
