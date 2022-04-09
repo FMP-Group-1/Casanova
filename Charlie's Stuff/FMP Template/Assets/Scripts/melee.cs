@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class melee : MonoBehaviour
 {
-    [SerializeField]
-    private GameObject holsteredSword;
+    //[SerializeField]
+    //private GameObject holsteredSword;
     [SerializeField]
     private GameObject realSword;
 
@@ -52,7 +52,7 @@ public class melee : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if ( m_playerControls.Combat.SheatheUnsheathe.triggered )
+        /*if ( m_playerControls.Combat.SheatheUnsheathe.triggered )
         {
             if ( !currentlyInTheProcessOfSheathing )
             {
@@ -69,7 +69,7 @@ public class melee : MonoBehaviour
                     // swordEquipped = true;
                 }
             }
-        }
+        }*/
 
         //Attack straight from unarmed. No Blend Animation
         //Light Attack
@@ -176,7 +176,7 @@ public class melee : MonoBehaviour
 
     }
 
-
+    /*
     public void endSheathing()
     {
         currentlyInTheProcessOfSheathing = false;
@@ -196,7 +196,7 @@ public class melee : MonoBehaviour
         realSword.SetActive( false );
         holsteredSword.SetActive( true );
     }
-
+    */
     public void EndCombo()
     {
         m_playerController.playerVelocity.y = 0f;

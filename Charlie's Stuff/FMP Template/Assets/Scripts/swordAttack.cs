@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class swordAttack : MonoBehaviour
 {
-    public Text collidingText;
     // Start is called before the first frame update
     void Start()
     {
