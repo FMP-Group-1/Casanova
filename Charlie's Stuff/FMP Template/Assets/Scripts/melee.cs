@@ -26,6 +26,9 @@ public class melee : MonoBehaviour
 
     public bool canStartNextAttack = true;
 
+    public Text ordertext;
+
+    bool canEndCombo = true;
 
     private enum Attack
     {
@@ -199,16 +202,33 @@ public class melee : MonoBehaviour
     */
     public void EndCombo()
     {
-        m_playerController.playerVelocity.y = 0f;
+		if( !animator.IsInTransition(0) )
+        {
 
-        m_playerController.canFall = true;
-        m_playerController.canMove = true;
-        m_playerController.canRotate = true;
-        animator.SetBool( "comboActive", false );
-        //MAKE SURE IT'S AVAILABLE AGAIN. CURRENTLY BROKE a bit This is duplicated
-        //canStartNextAttack = true;
+            ordertext.text += "\nEnd\n";
+            m_playerController.playerVelocity.y = 0f;
 
+            m_playerController.canFall = true;
+            m_playerController.canMove = true;
+            m_playerController.canRotate = true;
+            animator.SetBool( "comboActive", false );
+            //MAKE SURE IT'S AVAILABLE AGAIN. CURRENTLY BROKE a bit This is duplicated
+            //canStartNextAttack = true;
+
+        }
+		else
+		{
+            ordertext.text += "\nthis attack was started on a transitiony state";
+        }
+		
 
     }
+
+    public void VeryBeginingOfAttack()
+	{
+       //canEndCombo = false;
+
+        ordertext.text += "\nBegin";
+	}
 
 }
