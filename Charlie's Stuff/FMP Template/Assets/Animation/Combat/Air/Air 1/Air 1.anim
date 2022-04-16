@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: New Light 1
+  m_Name: Air 1
   serializedVersion: 6
   m_Legacy: 0
   m_Compressed: 0
@@ -33349,15 +33349,8 @@ AnimationClip:
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.016666668
-    functionName: MoveWithAttack
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 3.5
-    intParameter: 13
-    messageOptions: 0
-  - time: 0.23333333
-    functionName: EndMoveWithAttack
+  - time: 0
+    functionName: VeryBeginingOfAttack
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

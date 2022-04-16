@@ -164,15 +164,11 @@ public class melee : MonoBehaviour
     public void CollisionsStart()
     {
         swordCollider.enabled = true;
-        //swordScript.setCollidersAcitve(collidersActive);
-        //isAttackingText.text = "Attacking";
     }
 
     public void CollisionsEnd()
     {
         swordCollider.enabled = false;
-        //swordScript.setCollidersAcitve(collidersActive);
-        //isAttackingText.text = "Not Attacking";
         canStartNextAttack = true;
 
     }
@@ -203,7 +199,7 @@ public class melee : MonoBehaviour
 		if( !animator.IsInTransition(0) )
         {
 
-            comboDebugText.text += "\nEnd\n";
+            //comboDebugText.text += "\nEnd\n";
             m_playerController.playerVelocity.y = 0f;
 
             m_playerController.canFall = true;
@@ -216,15 +212,15 @@ public class melee : MonoBehaviour
         }
 		else
 		{
-            comboDebugText.text += "\nthis attack was started on a transitiony state";
+            //comboDebugText.text += "\nthis attack was started on a transitiony state";
         }
 		
 
     }
-
+    
     public void VeryBeginingOfAttack()
 	{
-        comboDebugText.text += "\nBegin";
+        //comboDebugText.text += "\nBegin";
 	}
 
 }
