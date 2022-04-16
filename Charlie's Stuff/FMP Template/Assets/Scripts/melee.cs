@@ -26,9 +26,7 @@ public class melee : MonoBehaviour
 
     public bool canStartNextAttack = true;
 
-    public Text ordertext;
-
-    bool canEndCombo = true;
+    public Text comboDebugText;
 
     private enum Attack
     {
@@ -205,7 +203,7 @@ public class melee : MonoBehaviour
 		if( !animator.IsInTransition(0) )
         {
 
-            ordertext.text += "\nEnd\n";
+            comboDebugText.text += "\nEnd\n";
             m_playerController.playerVelocity.y = 0f;
 
             m_playerController.canFall = true;
@@ -218,7 +216,7 @@ public class melee : MonoBehaviour
         }
 		else
 		{
-            ordertext.text += "\nthis attack was started on a transitiony state";
+            comboDebugText.text += "\nthis attack was started on a transitiony state";
         }
 		
 
@@ -226,9 +224,7 @@ public class melee : MonoBehaviour
 
     public void VeryBeginingOfAttack()
 	{
-       //canEndCombo = false;
-
-        ordertext.text += "\nBegin";
+        comboDebugText.text += "\nBegin";
 	}
 
 }
