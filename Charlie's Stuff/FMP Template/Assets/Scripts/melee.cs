@@ -7,8 +7,8 @@ public class melee : MonoBehaviour
 {
     //[SerializeField]
     //private GameObject holsteredSword;
-    [SerializeField]
-    private GameObject realSword;
+    //[SerializeField]
+    //private GameObject realSword;
 
     [SerializeField]
     private swordAttack swordScript;
