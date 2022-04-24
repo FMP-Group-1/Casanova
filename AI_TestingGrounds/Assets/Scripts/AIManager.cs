@@ -9,11 +9,10 @@ public class AIManager : MonoBehaviour
     private List<EnemyAI> m_enemyList = new List<EnemyAI>();
     private List<EnemyAI> m_activeAttackers = new List<EnemyAI>();
     private List<EnemyAI> m_passiveAttackers = new List<EnemyAI>();
-    private List<AttackZone> m_activeAttackZones = new List<AttackZone>();
-    private List<AttackZone> m_passiveAttackZones = new List<AttackZone>();
+    private AttackZoneManager m_attackZoneManager;
 
     [SerializeField]
-    [Min(0)]
+    [Range(0, 30)]
     private int m_attackZonesNum = 10;
     [SerializeField]
     private float m_activeAttackerMinDist = 3.0f;
@@ -22,34 +21,23 @@ public class AIManager : MonoBehaviour
     [SerializeField]
     private float m_passiveAttackerMaxDist = 10.0f;
 
-    private float m_sectionHalfAngle;
+    [SerializeField]
+    private float m_zoneDistanceBuffer = 2.0f;
 
     [SerializeField]
     private int m_maxActiveAttackers = 3;
     
     void Start()
     {
-        RegisterEnemies();
-        SetupAttackZones();
-
         m_player = GameObject.FindGameObjectWithTag("Player");
+        m_attackZoneManager = new AttackZoneManager(this);
+
+        RegisterEnemies();
     }
 
     void Update()
     {
 
-    }
-
-    // Todo: Create Attack Zone Manager, separate attack zone logic from this manager
-    private void SetupAttackZones()
-    {
-        for ( int i = 0; i < m_attackZonesNum; i++)
-        {
-            m_activeAttackZones.Add(new AttackZone(false, ZoneType.Active, i));
-            m_passiveAttackZones.Add(new AttackZone(false, ZoneType.Passive, i));
-        }
-
-        m_sectionHalfAngle = (360.0f / m_attackZonesNum) * 0.5f;
     }
 
     private void RegisterEnemies()
@@ -62,6 +50,7 @@ public class AIManager : MonoBehaviour
             {
                 m_enemyList.Add(enemyScript);
                 enemyScript.SetAIManagerRef(this);
+                enemyScript.SetAttackZoneManagerRef(m_attackZoneManager);
             }
             else
             {
@@ -167,145 +156,8 @@ public class AIManager : MonoBehaviour
         return m_passiveAttackerMaxDist;
     }
 
-    //public float FindAttackSection(EnemyAI enemyToCheck)
-    //{
-    //    // Messy equation, needs refactoring, but basic logic works
-    //    Vector3 enemyPos = enemyToCheck.gameObject.transform.position;
-
-    //    Vector3 dirFromPlayer = (enemyPos - m_player.transform.position).normalized;
-    //    float angle = Vector3.SignedAngle(enemyPos, dirFromPlayer, Vector3.up);
-
-    //    if (angle < 0.0f)
-    //    {
-    //        angle = 360.0f - angle * -1.0f;
-    //    }
-
-    //    float sectionAngle = 360.0f / m_attackZonesNum;
-
-    //    return (int)(angle / sectionAngle);
-    //}
-
-    public AttackZone FindAttackZone( EnemyAI enemyToCheck )
+    public float GetZoneDistanceBuffer()
     {
-        // Messy equation, needs refactoring, but basic logic works
-        Vector3 enemyPos = enemyToCheck.gameObject.transform.position;
-        Vector3 playerPos = m_player.transform.position;
-
-        enemyPos.y = 0.0f;
-        playerPos.y = 0.0f;
-
-        Vector3 dirFromPlayer = (enemyPos - playerPos).normalized;
-        float angle = Vector3.SignedAngle(dirFromPlayer, Vector3.forward, Vector3.up);
-
-        // Todo: In BIG need of refactor
-
-        //Debug.Log("Zone Angle: " + angle);
-
-        angle += m_sectionHalfAngle;
-
-        if (angle < 0.0f)
-        {
-            angle = 360.0f - angle * -1.0f;
-        }
-
-        Debug.Log("Zone Angle: " + angle);
-
-        float sectionAngle = 360.0f / m_attackZonesNum;
-
-        float dist = Vector3.Distance(enemyToCheck.transform.position, m_player.transform.position);
-
-        if (dist > m_activeAttackerMinDist && dist < m_passiveAttackerMaxDist )
-        {
-            if (dist < m_activeAttackerMaxDist)
-            {
-                return m_activeAttackZones[(int)(angle / sectionAngle)];
-            }
-            else
-            {
-                return m_passiveAttackZones[(int)(angle / sectionAngle)];
-            }
-        }
-
-        // Todo: Refactor this function to not use null returns (maybe, kind of useful atm)
-        return null;
-    }
-
-    public Vector3 RandomiseAttackPosForEnemy(EnemyAI enemy)
-    {
-        float anglePerZone = 360.0f / m_attackZonesNum;
-        float dist = m_activeAttackerMaxDist;
-
-        int attackZone = Random.Range(0, m_attackZonesNum);
-        float randomAngle = Random.Range(anglePerZone * attackZone, anglePerZone * (attackZone + 1));
-
-        Vector3 dirToAttackZone = DirFromAngle(randomAngle - m_sectionHalfAngle, true, m_player);
-
-        if (enemy.GetAttackingType() == AttackingType.Active)
-        {
-            dist = Random.Range(m_activeAttackerMinDist, m_activeAttackerMaxDist);
-        }
-        else if (enemy.GetAttackingType() == AttackingType.Passive)
-        {
-            dist = Random.Range(m_activeAttackerMaxDist, m_passiveAttackerMaxDist);
-        }
-
-        //enemy.SetStrafeDist(dist);
-
-        return m_player.transform.position + (dirToAttackZone * dist);
-    }
-
-    // Overload of above function to get pos for a specific zone
-    public Vector3 RandomiseAttackPosForEnemy( EnemyAI enemy, int zoneToUse )
-    {
-        float anglePerZone = 360.0f / m_attackZonesNum;
-        float dist = m_activeAttackerMaxDist;
-
-        float randomAngle = Random.Range(anglePerZone * zoneToUse, anglePerZone * (zoneToUse + 1));
-
-        Vector3 dirToAttackZone = DirFromAngle(randomAngle - m_sectionHalfAngle, true, m_player);
-
-        if (enemy.GetAttackingType() == AttackingType.Active)
-        {
-            dist = Random.Range(m_activeAttackerMinDist, m_activeAttackerMaxDist);
-        }
-        else if (enemy.GetAttackingType() == AttackingType.Passive)
-        {
-            dist = Random.Range(m_activeAttackerMaxDist, m_passiveAttackerMaxDist);
-        }
-
-        //enemy.SetStrafeDist(dist);
-
-        return m_player.transform.position + (dirToAttackZone * dist);
-    }
-
-    public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject gameObject )
-    {
-        if (!angleIsGlobal)
-        {
-            angleInDegrees += gameObject.transform.eulerAngles.y;
-        }
-
-        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
-    }
-
-    public AttackZone GetAttackZoneByNum(int num, ZoneType zoneType)
-    {
-        AttackZone zoneToReturn = null;
-
-        switch (zoneType)
-        {
-            case ZoneType.Passive:
-            {
-                zoneToReturn = m_passiveAttackZones[num];
-                break;
-            }
-            case ZoneType.Active:
-            {
-                zoneToReturn = m_activeAttackZones[num];
-                break;
-            }
-        }
-
-        return zoneToReturn;
+        return m_zoneDistanceBuffer;
     }
 }
