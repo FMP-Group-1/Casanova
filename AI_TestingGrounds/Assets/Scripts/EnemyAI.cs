@@ -28,6 +28,7 @@ public enum CombatState
     StrafingToZone,
     RadialRunToZone,
     MaintainDist,
+    ClosingDist,
     BackingUp,
     MovingToZone,
     MovingToAttack,
@@ -114,6 +115,8 @@ public class EnemyAI : MonoBehaviour
     private float m_checkForAIDist = 2.0f;
     [SerializeField]
     private float m_checkForAIAngles = 45.0f;
+    [SerializeField]
+    private float m_AIAvoidanceDist = 1.5f;
     private float m_strafeDist;
     private float m_attackTimer;
     [SerializeField]
@@ -193,9 +196,6 @@ public class EnemyAI : MonoBehaviour
             // Idle State
             case AIState.Idle:
             {
-                // Todo: Remove when done testing
-                RadialObstructionCheck();
-
                 if ( IsPlayerVisible() )
                 {
                     // Disabled Detection in Idle for now
@@ -319,6 +319,11 @@ public class EnemyAI : MonoBehaviour
 
                     if (currentAttackZone != null && currentAttackZone.IsAvailable())
                     {
+                        if (m_occupiedAttackZone != null)
+                        {
+                            m_occupiedAttackZone.EmptyZone();
+                        }
+
                         SetCombatState(CombatState.MaintainDist);
                         SetAttackZone(currentAttackZone);
                         SetOccupiedAttackZone(m_currentAttackZone);
@@ -336,53 +341,74 @@ public class EnemyAI : MonoBehaviour
             {
                 TimedAttackZoneCheck();
 
-                AttackCheck();
-                StrafeRangeCheck();
                 Strafe();
+
+                StrafeRangeCheck();
+                AttackCheck();
                 break;
             }
             case CombatState.StrafingToZone:
             {
-                StrafeZoneCheck();
-
-                AttackCheck();
-                StrafeRangeCheck();
                 Strafe();
 
+                StrafeRangeCheck();
+
                 RadialObstructionCheck();
+                StrafeZoneCheck();
+                AttackCheck();
                 break;
             }
             case CombatState.RadialRunToZone:
             {
-                RadialZoneCheck();
-
-                AttackCheck();
-                StrafeRangeCheck();
                 RadialRun();
 
+                StrafeRangeCheck();
+
                 RadialObstructionCheck();
+                RadialZoneCheck();
+                AttackCheck();
                 break;
             }
             case CombatState.MaintainDist:
             {
                 TimedAttackZoneCheck();
 
-                AttackCheck();
-                StrafeRangeCheck();
                 transform.LookAt(m_player.transform.position);
+
+                StrafeRangeCheck();
+                AttackCheck();
+                break;
+            }
+            case CombatState.ClosingDist:
+            {
+                m_navMeshAgent.destination = m_player.transform.position;
+
+                StrafeRangeCheck();
+
+                // Todo: Optimise this check
+                if (Vector3.Distance(m_player.transform.position, transform.position) < m_strafeDist)
+                {
+                    StrafeOrMaintain();
+                }
+
+                // AttackCheck needs to be put here because it was causing a loop higher up
+                AttackCheck();
+
                 break;
             }
             case CombatState.BackingUp:
             {
-                BackUp();
-                StrafeRangeCheck();
-                transform.LookAt(m_player.transform.position);
-
                 // Todo: Optimise this check
                 if (Vector3.Distance(m_player.transform.position, transform.position) > m_strafeDist)
                 {
                     StrafeOrMaintain();
+                    return;
                 }
+
+                BackUp();
+                StrafeRangeCheck();
+                transform.LookAt(m_player.transform.position);
+
 
                 // AttackCheck needs to be put here because it was causing a loop higher up
                 AttackCheck();
@@ -463,10 +489,10 @@ public class EnemyAI : MonoBehaviour
             }
             case AIState.InCombat:
             {
-                SetCombatState(CombatState.Pursuing);
 
                 // Registering the enemy as an attacker with the manager
                 m_aiManager.RegisterAttacker(this);
+                SetCombatState(CombatState.Pursuing);
 
                 break;
             }
@@ -560,6 +586,12 @@ public class EnemyAI : MonoBehaviour
                 StartRunAnim();
                 break;
             }
+            case CombatState.ClosingDist:
+            {
+                RandomiseStrafeRange();
+                StartWalkAnim();
+                break;
+            }
             case CombatState.BackingUp:
             {
                 RandomiseStrafeRange();
@@ -612,8 +644,21 @@ public class EnemyAI : MonoBehaviour
     private void StrafeRangeCheck()
     {
         float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
+        float maxStrafeRange = 0.0f;
+        float minStrafeRange = 0.0f;
 
-        if (distanceToPlayer > m_maxStrafeRange)
+        if (m_currentAttackingType == AttackingType.Passive)
+        {
+            maxStrafeRange = m_aiManager.GetPassiveAttackerMaxDist();
+            minStrafeRange = m_aiManager.GetActiveAttackerMaxDist();
+        }
+        else
+        {
+            maxStrafeRange = m_aiManager.GetActiveAttackerMaxDist();
+            minStrafeRange = m_aiManager.GetActiveAttackerMinDist();
+        }
+
+        if (distanceToPlayer > maxStrafeRange)
         {
             if (m_occupiedAttackZone != null)
             {
@@ -622,7 +667,7 @@ public class EnemyAI : MonoBehaviour
             SetCombatState(CombatState.Pursuing);
         }
         // Player moved closer than strafe range
-        if (distanceToPlayer < m_minStrafeRange && m_combatState != CombatState.BackingUp)
+        if (distanceToPlayer < minStrafeRange && m_combatState != CombatState.BackingUp)
         {
             if (m_occupiedAttackZone != null)
             {
@@ -643,27 +688,27 @@ public class EnemyAI : MonoBehaviour
 
     private void StrafeOrMaintain()
     {
-        if (!m_canStrafe)
+        if (m_currentAttackZone == m_occupiedAttackZone)
         {
             SetCombatState(CombatState.MaintainDist);
         }
         else
-        { 
-            int strafeOrMaintain = Random.Range(0, 2);
-            if (strafeOrMaintain == 0)
-            {
-                SetCombatState(CombatState.Strafing);
-            }
-            else
-            {
-                SetCombatState(CombatState.MaintainDist);
-            }
+        {
+            m_combatState = CombatState.RadialRunToZone;
+            StartRunAnim();
         }
     }
 
     private void RandomiseStrafeRange()
     {
-        m_strafeDist = Random.Range(m_aiManager.GetActiveAttackerMaxDist(), m_aiManager.GetPassiveAttackerMaxDist()) + m_aiManager.GetActiveAttackerMinDist();
+        if (m_currentAttackingType == AttackingType.Passive)
+        {
+            m_strafeDist = Random.Range(m_aiManager.GetActiveAttackerMaxDist(), m_aiManager.GetPassiveAttackerMaxDist()) + m_aiManager.GetActiveAttackerMinDist();
+        }
+        else
+        {
+            m_strafeDist = Random.Range(m_aiManager.GetActiveAttackerMinDist(), m_aiManager.GetActiveAttackerMaxDist());
+        }
     }
 
     private bool HasReachedDestination()
@@ -806,6 +851,17 @@ public class EnemyAI : MonoBehaviour
 
             if (m_currentAttackZone != m_occupiedAttackZone)
             {
+                // Todo: Make AttackZone use same enum for attacking types
+                if (m_currentAttackZone.GetZoneType() == ZoneType.Active && m_currentAttackingType != AttackingType.Active)
+                {
+                    SetCombatState(CombatState.BackingUp);
+                    return;
+                }
+                else if (m_currentAttackZone.GetZoneType() == ZoneType.Passive && m_currentAttackingType != AttackingType.Passive)
+                {
+                    SetCombatState(CombatState.ClosingDist);
+                    return;
+                }
                 if (m_currentAttackZone != null)
                 {
                     if (!m_currentAttackZone.IsOccupied())
@@ -887,23 +943,35 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
-        // Todo: Change angle of raycast based on whether it's strafing or radial running for more accurate check
-        if (Physics.Raycast(castFrom, dir, m_checkForAIDist, m_aiMask))
+        // Three raycasts to check if AI is walking into another AI
+        if (Physics.Raycast(castFrom, dir, m_checkForAIDist, m_aiMask) ||
+            Physics.Raycast(castFrom, dir + DirFromAngle(-m_checkForAIAngles, false), m_checkForAIDist, m_aiMask) ||
+            Physics.Raycast(castFrom, dir + DirFromAngle(m_checkForAIAngles, false), m_checkForAIDist, m_aiMask))
         {
-            Debug.Log("Front Hit");
-            //StartWalkBackAnim();
-            //// Todo: Make the change of strafe distance a member variable
-            //// Also, add logic for deciding whether to back up or move forward
-            //m_strafeDist += 2.0f;
-            //m_combatState = CombatState.BackingUp;
-        }
-        if (Physics.Raycast(castFrom, dir + DirFromAngle(-m_checkForAIAngles, false), m_checkForAIDist, m_aiMask))
-        {
-            Debug.Log("Left Hit");
-        }
-        if (Physics.Raycast(castFrom, dir + DirFromAngle(m_checkForAIAngles, false), m_checkForAIDist, m_aiMask))
-        {
-            Debug.Log("Right Hit");
+            float currentZoneHalfDist = 0.0f;
+
+            // Finding the distance to compare with the current strafe distance to determine whether the AI should move backwards or forwards
+            if (m_currentAttackingType == AttackingType.Passive)
+            {
+                currentZoneHalfDist = m_aiManager.GetActiveAttackerMaxDist() + ((m_aiManager.GetPassiveAttackerMaxDist() - m_aiManager.GetActiveAttackerMaxDist()) * 0.5f);
+            }
+            else
+            {
+                currentZoneHalfDist = m_aiManager.GetActiveAttackerMinDist() + ((m_aiManager.GetActiveAttackerMaxDist() - m_aiManager.GetActiveAttackerMinDist()) * 0.5f);
+            }
+
+            if (m_strafeDist > currentZoneHalfDist)
+            {
+                StartWalkAnim();
+                m_strafeDist -= m_AIAvoidanceDist;
+                m_combatState = CombatState.ClosingDist;
+            }
+            else
+            {
+                StartWalkBackAnim();
+                m_strafeDist += m_AIAvoidanceDist;
+                m_combatState = CombatState.BackingUp;
+            }
         }
     }
 

@@ -120,6 +120,44 @@ public class AttackZoneManager
         return m_player.transform.position + (dirToAttackZone * dist);
     }
 
+    public Vector3 GetAttackPosByZoneAndDist( EnemyAI enemy, int zoneToUse, float dist )
+    {
+        float anglePerZone = 360.0f / m_attackZonesNum;
+
+        float randomAngle = Random.Range((anglePerZone * zoneToUse) + m_aiManager.GetZoneDistanceBuffer(), (anglePerZone * (zoneToUse + 1)) - m_aiManager.GetZoneDistanceBuffer());
+
+        Vector3 dirToAttackZone = DirFromAngle(randomAngle - m_sectionHalfAngle, true, m_player);
+
+        return m_player.transform.position + (dirToAttackZone * dist);
+    }
+
+    public int GetZoneNumByAngle( EnemyAI enemy )
+    {
+        Vector3 enemyPos = enemy.gameObject.transform.position;
+        Vector3 playerPos = m_player.transform.position;
+
+        enemyPos.y = 0.0f;
+        playerPos.y = 0.0f;
+
+        Vector3 dirFromPlayer = (enemyPos - playerPos).normalized;
+        float angle = Vector3.SignedAngle(dirFromPlayer, Vector3.forward, Vector3.down);
+
+        // Todo: In BIG need of refactor
+
+        //Debug.Log("Zone Angle: " + angle);
+
+        angle += m_sectionHalfAngle;
+
+        if (angle < 0.0f)
+        {
+            angle = 360.0f - angle * -1.0f;
+        }
+
+        float sectionAngle = 360.0f / m_attackZonesNum;
+
+        return (int)(angle / sectionAngle);
+    }
+
     public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject gameObject )
     {
         if (!angleIsGlobal)

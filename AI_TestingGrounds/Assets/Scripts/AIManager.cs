@@ -71,7 +71,7 @@ public class AIManager : MonoBehaviour
             if (m_activeAttackers.Count < m_maxActiveAttackers)
             {
                 m_activeAttackers.Add(enemyToRegister);
-                enemyToRegister.SetAttackingType(AttackingType.Passive);
+                enemyToRegister.SetAttackingType(AttackingType.Active);
             }
             else
             {
