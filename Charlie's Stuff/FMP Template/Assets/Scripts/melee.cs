@@ -26,8 +26,6 @@ public class melee : MonoBehaviour
 
     public bool canStartNextAttack = true;
 
-    public Text comboDebugText;
-
     private enum Attack
     {
         Nothing,
@@ -222,11 +220,6 @@ public class melee : MonoBehaviour
 		
 
     }
-    
-    public void VeryBeginingOfAttack()
-	{
-        //comboDebugText.text += "\nBegin";
-	}
 
     //Target angle is not actually where you will end up! It is the point you are looking, so it could be 180 degrees away, we are not going that far
     void Rotate()
