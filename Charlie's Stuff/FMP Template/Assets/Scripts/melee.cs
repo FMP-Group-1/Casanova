@@ -5,12 +5,10 @@ using UnityEngine.UI;
 
 public class melee : MonoBehaviour
 {
-    [SerializeField]
-    private Text isAttackingText;
-    [SerializeField]
-    private GameObject holsteredSword;
-    [SerializeField]
-    private GameObject realSword;
+    //[SerializeField]
+    //private GameObject holsteredSword;
+    //[SerializeField]
+    //private GameObject realSword;
 
     [SerializeField]
     private swordAttack swordScript;
@@ -20,16 +18,15 @@ public class melee : MonoBehaviour
     bool swordEquipped = true;
     bool currentlyInTheProcessOfSheathing = false;
 
-    float baseComboTimer = 0.4f;
-    float timerIterator = 0.0f;
-    bool timerCounting = false;
     private Animator animator;
 
     private PlayerControls m_playerControls;
 
-    private bool isCurrentlyAttacking = false;
+    private PlayerController m_playerController;
 
-    private bool collidersActive = false;
+    public bool canStartNextAttack = true;
+
+    public Text comboDebugText;
 
     private enum Attack
     {
@@ -45,206 +42,214 @@ public class melee : MonoBehaviour
     {
         m_playerControls = new PlayerControls();
 
+        m_playerController = GetComponent<PlayerController>();
+
         m_playerControls.Enable();
         animator = GetComponent<Animator>();
     }
 
 
 
+
     // Update is called once per frame
     void Update()
     {
-        if (m_playerControls.Play.SheatheUnsheathe.triggered)
+        /*if ( m_playerControls.Combat.SheatheUnsheathe.triggered )
         {
-            if (!currentlyInTheProcessOfSheathing)
+            if ( !currentlyInTheProcessOfSheathing )
             {
                 currentlyInTheProcessOfSheathing = true;
 
-                if (swordEquipped)
+                if ( swordEquipped )
                 {
-                    animator.SetTrigger("sheatheSword");
-                   // swordEquipped = false;
+                    animator.SetTrigger( "sheatheSword" );
+                    // swordEquipped = false;
                 }
                 else
                 {
-                    animator.SetTrigger("drawSword");
-                   // swordEquipped = true;
+                    animator.SetTrigger( "drawSword" );
+                    // swordEquipped = true;
                 }
             }
-        }
-        
-        //Attack straight from unarmed
+        }*/
+
+        //Attack straight from unarmed. No Blend Animation
         //Light Attack
-        if (m_playerControls.Play.LightAtatck.triggered)
+        if ( m_playerControls.Combat.LightAtatck.triggered )
         {
-            if (!swordEquipped)
+            //So Sword is NOT equipped
+            if ( !swordEquipped )
             {
-                animator.SetTrigger("drawSword");
-                //swordEquipped = true;
+                swordEquipped = true;
             }
-            
+
             attackType = Attack.Light;
-            
+
         }
         //Heavy Attack
-        if (m_playerControls.Play.HeavyAttack.triggered)
+        if ( m_playerControls.Combat.HeavyAttack.triggered )
         {
-            if (!swordEquipped)
+            //So Sword is NOT equipped
+            if ( !swordEquipped )
             {
-                animator.SetTrigger("drawSword");
-               // swordEquipped = true;
+                swordEquipped = true;
             }
-            
+
             attackType = Attack.Heavy;
         }
         //Heavy Attack
-        if( m_playerControls.Play.Whirlwind.triggered )
+        if ( m_playerControls.Combat.Whirlwind.triggered )
         {
-            if( !swordEquipped )
+            //So Sword is NOT equipped
+            if ( !swordEquipped )
             {
-                animator.SetTrigger( "drawSword" );
-                // swordEquipped = true;
+                swordEquipped = true;
             }
 
             attackType = Attack.Heavy;
             animator.SetTrigger( "whirlwind" );
         }
         //Whirlwind has been released
-        if (m_playerControls.Play.Whirlwind.ReadValue<float>() == 0)
+        if ( m_playerControls.Combat.Whirlwind.ReadValue<float>() == 0 )
         {
-            animator.SetBool("whirlwindHeld", false);
+            animator.SetBool( "whirlwindHeld", false );
         }
         else
-		{
-            animator.SetBool("whirlwindHeld", true);
-		}
-
-            /*
-            //Just equip sword if click attack from unarmed
-
-            //Light Attack
-            if (m_playerControls.Play.LightAtatck.triggered)
-            {
-                if (!swordEquipped)
-                {
-                    if (!currentlyInTheProcessOfSheathing)
-                    {
-                        currentlyInTheProcessOfSheathing = true;
-                        animator.SetTrigger("drawSword");
-                        swordEquipped = true;
-                    }
-                }
-                else
-                {
-                    attackType = Attack.Light;
-                }
-            }
-            //Heavy Attack
-            if (m_playerControls.Play.HeavyAttack.triggered)
-            {
-                if (!swordEquipped)
-                {
-                    if (!currentlyInTheProcessOfSheathing)
-                    {
-                        currentlyInTheProcessOfSheathing = true;
-                        animator.SetTrigger("drawSword");
-                        swordEquipped = true;
-                    }
-                }
-                else
-                {
-                    attackType = Attack.Heavy;
-                }
-            }
-            */
-
-            //Could possibly replace timer with events on individual animations
-            if (timerCounting)
         {
-            timerIterator += Time.deltaTime;
+            animator.SetBool( "whirlwindHeld", true );
         }
 
-        if (timerIterator >= baseComboTimer)
-        {
-            timerIterator = baseComboTimer;
-            timerCounting = false;
-            animator.SetBool("comboActive", false);
-        }
+        Rotate();
 
-        //Basically, if you have reached the end of an attack, you are no longer attacking, but if "attackTyp" is not nothing, there's somehing queued up, so lets do it
-        if (!isCurrentlyAttacking && attackType != Attack.Nothing)
+        //Basically, if you have reached the end of an attack, you are no longer attacking, but if "attackType" is not nothing, there's somehing queued up, so lets do it
+        if ( canStartNextAttack && attackType != Attack.Nothing )
         {
+            //Rotation stuff needs to go around here??????
+            Vector3 targetDirection = m_playerController.GetMoveDirection();
             // So we are not attacking YET, but we want to
 
-            switch (attackType)
+            //Stop being able to move or fall or rotate because we are in an attack
+            m_playerController.canMove = false;
+            m_playerController.canFall = false;
+            m_playerController.canRotate = false;
+
+            //We are attacking
+            canStartNextAttack = false;
+            animator.SetTrigger( "attacked" );
+            //Combo has begun
+            animator.SetBool( "comboActive", true );
+
+            //What attack type?
+            switch ( attackType )
             {
                 case Attack.Light:
 
-                    animator.SetTrigger("light");
+                    animator.SetTrigger( "light" );
                     break;
 
                 case Attack.Heavy:
 
-                    animator.SetTrigger("heavy");
+                    animator.SetTrigger( "heavy" );
+					break;
+
+				case Attack.Nothing:
+                    Debug.Log( "You've reset the Attack type to nothing before executing the attack you dumb ass" );
                     break;
 
-                case Attack.Nothing:
-                    Debug.Log("");
-                    break;
+			}
 
-            }
 
-            //We are attacking
-            isCurrentlyAttacking = true;
-            //Combo has begun
-            animator.SetBool("comboActive", true);
-            //Reset combo counter
-            timerIterator = 0.0f;
-            //We are counting (Have to set true everytime sadly, even if already true. Probably faster than checking if it isn't all the time.
-            timerCounting = true;
-            attackType = Attack.Nothing;
-
+			//Next queued attack is nothing, until we add one
+			attackType = Attack.Nothing;
 
         }
 
     }
 
-    void CollisionsStart()
-	{
+    public void CollisionsStart()
+    {
         swordCollider.enabled = true;
-        collidersActive = true;
-        //swordScript.setCollidersAcitve(collidersActive);
-        isAttackingText.text = "Attacking";
     }
 
-    void CollisionsEnd()
+    public void CollisionsEnd()
     {
         swordCollider.enabled = false;
-        collidersActive = false;
-        //swordScript.setCollidersAcitve(collidersActive);
-        isAttackingText.text = "Not Attacking";
-        isCurrentlyAttacking = false;
-    }
-    
+        canStartNextAttack = true;
 
+    }
+
+    /*
     public void endSheathing()
-	{
+    {
         currentlyInTheProcessOfSheathing = false;
-	}
+    }
 
     public void EquipSword()
     {
         swordEquipped = true;
-        realSword.SetActive(true);
-        holsteredSword.SetActive(false);
+        realSword.SetActive( true );
+        holsteredSword.SetActive( false );
     }
 
     public void SheatheSword()
-	{
+    {
 
         swordEquipped = false;
-        realSword.SetActive(false);
-        holsteredSword.SetActive(true);
+        realSword.SetActive( false );
+        holsteredSword.SetActive( true );
     }
+    */
+    public void EndCombo()
+    {
+		if( !animator.IsInTransition(0) )
+        {
 
+            //comboDebugText.text += "\nEnd\n";
+            m_playerController.playerVelocity.y = 0f;
+
+            m_playerController.canFall = true;
+            m_playerController.canMove = true;
+            m_playerController.canRotate = true;
+            animator.SetBool( "comboActive", false );
+            //MAKE SURE IT'S AVAILABLE AGAIN. CURRENTLY BROKE a bit This is duplicated
+            //canStartNextAttack = true;
+
+        }
+		else
+		{
+            //comboDebugText.text += "\nthis attack was started on a transitiony state";
+        }
+		
+
+    }
+    
+    public void VeryBeginingOfAttack()
+	{
+        //comboDebugText.text += "\nBegin";
+	}
+
+    //Target angle is not actually where you will end up! It is the point you are looking, so it could be 180 degrees away, we are not going that far
+    void Rotate()
+	{
+        //Cap to how far can rotate;
+        float maxRotate = 40;
+        float rotationSpeed = 4f;
+        Transform cameraMainTransform = Camera.main.transform;
+
+        Vector2 playerInput = m_playerController.GetPlayerInput();
+
+        float targetAngle = Mathf.Atan2( playerInput.x, playerInput.y ) * Mathf.Rad2Deg + cameraMainTransform.eulerAngles.y;
+        Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
+        // We have the TARGET angle, where we really are wanting to go, but we don't wanna go that far.
+
+        Debug.Log( "Target Angle:  " + targetAngle );
+        Debug.Log( "Current Angle: " + transform.rotation.eulerAngles.y ); 
+
+
+
+
+        //transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * rotationSpeed );
+
+        //yield return null;
+	}
 }
