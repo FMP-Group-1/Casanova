@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 
-[RequireComponent( typeof( CharacterController ) )] 
+[RequireComponent( typeof( CharacterController ) )]
 
 public class PlayerController : MonoBehaviour
 {
@@ -20,8 +20,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float rotationSpeed = 4f;
 
-    private Vector3 m_playerMovementInput;
-
     private CharacterController controller;
     public Vector3 playerVelocity;
     private bool groundedPlayer;
@@ -35,14 +33,6 @@ public class PlayerController : MonoBehaviour
 
     //Used for animating
     private float m_moveAmount;
-
-    private bool movingWithAttack = false;
-
-    private float moveWithAttackDistance;
-    private float moveWithAttackTime;
-
-    private Vector3 positionAtAttack;
-    private Vector3 targetForAttack;
 
 
 
@@ -65,6 +55,32 @@ public class PlayerController : MonoBehaviour
         cameraMainTransform = Camera.main.transform;
     }
 
+    public Vector2 GetPlayerInput()
+	{
+        //The input values for Forward and Right, put into a member variable
+        return movementControl.action.ReadValue<Vector2>();
+    }
+
+    public Vector3 GetMoveDirection()
+    {
+
+        //Vector of what direction to move based on the inputs. Y is in the Z area, as the above
+        //Holds the Z in it's Y value
+        Vector3 move = new Vector3( GetPlayerInput().x, 0, GetPlayerInput().y );
+
+        //Get the absolute values of movement inputs (0-1) for use in a 1d Blend tree
+        m_moveAmount = Mathf.Clamp01( Mathf.Abs( GetPlayerInput().x ) + Mathf.Abs( GetPlayerInput().y ) );
+
+        //Move is now based on the camera angle
+        move = cameraMainTransform.forward * move.z + cameraMainTransform.right * move.x;
+        move.y = 0f;
+        //Move is now the direction I want to go
+
+        animator.SetFloat( "forwardSpeed", m_moveAmount );
+
+        return move;
+    }
+
     void Update()
     {
         //Use the character Controller's isGrounded functionality to fill a member
@@ -74,23 +90,30 @@ public class PlayerController : MonoBehaviour
             playerVelocity.y = 0f;
         }
 
-        //Just the input values, put into a member variable
-        Vector2 movement = movementControl.action.ReadValue<Vector2>();
 
-        //Vector of what direction to move based on the inputs. Y is in the Z area, as the above
-        //vector2 holds the Z in it's second value
-        Vector3 move = new Vector3( movement.x, 0, movement.y );
+        Vector3 moveDirection = GetMoveDirection();
 
-        //Get the absolute values of movement inputs (0-1) for use in a 1d Blend tree
-        m_moveAmount = Mathf.Clamp01( Mathf.Abs( movement.x ) + Mathf.Abs( movement.y ) );
+        //Debug.Log( moveDirection );
 
-        //Move in direction of camera
-        move = cameraMainTransform.forward * move.z + cameraMainTransform.right * move.x;
-        move.y = 0f;
 
-        if ( canMove )
+
+        //If you're even touching Inputs
+        if ( GetPlayerInput() != Vector2.zero )
         {
-            controller.Move( move * Time.deltaTime * playerSpeed );
+            if ( canMove )
+            {
+                //We are touching inputs AND we can move so, move
+                controller.Move( moveDirection * Time.deltaTime * playerSpeed );
+            }
+
+            //Rotate player when moving, not when Idle
+            if ( canRotate )
+            {
+                float targetAngle = Mathf.Atan2( GetPlayerInput().x, GetPlayerInput().y ) * Mathf.Rad2Deg + cameraMainTransform.eulerAngles.y;
+                Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
+                transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * rotationSpeed );
+
+            }
         }
 
 
@@ -121,76 +144,12 @@ public class PlayerController : MonoBehaviour
             controller.Move( playerVelocity * Time.deltaTime );
         }
 
-        //Rotate player when moving
-
-        //If you are moving at all
-        if ( movement != Vector2.zero )
-        {
-            animator.SetBool( "moving", true );
-            if ( canRotate )
-            {
-                float targetAngle = Mathf.Atan2( movement.x, movement.y ) * Mathf.Rad2Deg + cameraMainTransform.eulerAngles.y;
-                Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
-                transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * rotationSpeed );
-
-            }
-        }
-        else
-        {
-            animator.SetBool( "moving", false );
-        }
 
         //Debug.Log(playerVelocity);
 
-        animator.SetFloat( "forwardSpeed", m_moveAmount );
 
     }
-    /*
-   public IEnumerator MoveWithAttack( AnimationEvent animationEvent )
-   {
-      Vector3 forwardDirection = transform.forward;
 
 
-       movingWithAttack = true;
-       moveWithAttackDistance = animationEvent.floatParameter;
-       //Convert into to a float. the int is in hundreths of a second (0.14 = 14)
-       moveWithAttackTime = ( float )animationEvent.intParameter / 100;
-       targetForAttack = new Vector3( transform.position.x + moveWithAttackDistance * forwardDirection.x, transform.position.y, transform.position.z + moveWithAttackDistance * forwardDirection.z );
-
-
-
-
-       float elapsedTime = 0;
-       Vector3 startingPos = transform.position;
-
-       while ( elapsedTime < moveWithAttackTime )
-       {
-
-           Vector3 offset = targetForAttack - transform.position;
-           if ( offset.magnitude > .1f )
-           {
-               //If we're further away than .1 unit, move towards the target.
-               //The minimum allowable tolerance varies with the speed of the object and the framerate. 
-               // 2 * tolerance must be >= moveSpeed / framerate or the object will jump right over the stop.
-               float newSpeed = moveWithAttackDistance / moveWithAttackTime;
-               offset = offset.normalized * newSpeed;
-               //normalize it and account for movement speed.
-               controller.Move( offset * Time.deltaTime );
-               //actually move the character.
-           }
-           //controller.Move( startingPos );
-           // transform.position = Vector3.Lerp( startingPos, targetForAttack, ( elapsedTime / moveWithAttackTime ) );
-           elapsedTime += Time.deltaTime;
-           yield return new WaitForEndOfFrame();
-       }
-       //transform.position = targetForAttack;
-   
-
-}*/
-private void EndMoveWithAttack()
-    {
-        movingWithAttack = false;
-
-    }
 
 }

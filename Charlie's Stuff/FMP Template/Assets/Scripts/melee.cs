@@ -7,8 +7,8 @@ public class melee : MonoBehaviour
 {
     //[SerializeField]
     //private GameObject holsteredSword;
-    [SerializeField]
-    private GameObject realSword;
+    //[SerializeField]
+    //private GameObject realSword;
 
     [SerializeField]
     private swordAttack swordScript;
@@ -26,6 +26,7 @@ public class melee : MonoBehaviour
 
     public bool canStartNextAttack = true;
 
+    public Text comboDebugText;
 
     private enum Attack
     {
@@ -46,6 +47,7 @@ public class melee : MonoBehaviour
         m_playerControls.Enable();
         animator = GetComponent<Animator>();
     }
+
 
 
 
@@ -117,31 +119,16 @@ public class melee : MonoBehaviour
             animator.SetBool( "whirlwindHeld", true );
         }
 
+        Rotate();
 
         //Basically, if you have reached the end of an attack, you are no longer attacking, but if "attackType" is not nothing, there's somehing queued up, so lets do it
         if ( canStartNextAttack && attackType != Attack.Nothing )
         {
             //Rotation stuff needs to go around here??????
-
+            Vector3 targetDirection = m_playerController.GetMoveDirection();
             // So we are not attacking YET, but we want to
 
-            switch ( attackType )
-            {
-                case Attack.Light:
-
-                    animator.SetTrigger( "light" );
-                    break;
-
-                case Attack.Heavy:
-
-                    animator.SetTrigger( "heavy" );
-                    break;
-
-                case Attack.Nothing:
-                    Debug.Log( "" );
-                    break;
-
-            }
+            //Stop being able to move or fall or rotate because we are in an attack
             m_playerController.canMove = false;
             m_playerController.canFall = false;
             m_playerController.canRotate = false;
@@ -152,9 +139,28 @@ public class melee : MonoBehaviour
             //Combo has begun
             animator.SetBool( "comboActive", true );
 
-            //Next queued attack is nothing, until we add one
-            attackType = Attack.Nothing;
+            //What attack type?
+            switch ( attackType )
+            {
+                case Attack.Light:
 
+                    animator.SetTrigger( "light" );
+                    break;
+
+                case Attack.Heavy:
+
+                    animator.SetTrigger( "heavy" );
+					break;
+
+				case Attack.Nothing:
+                    Debug.Log( "You've reset the Attack type to nothing before executing the attack you dumb ass" );
+                    break;
+
+			}
+
+
+			//Next queued attack is nothing, until we add one
+			attackType = Attack.Nothing;
 
         }
 
@@ -163,15 +169,11 @@ public class melee : MonoBehaviour
     public void CollisionsStart()
     {
         swordCollider.enabled = true;
-        //swordScript.setCollidersAcitve(collidersActive);
-        //isAttackingText.text = "Attacking";
     }
 
     public void CollisionsEnd()
     {
         swordCollider.enabled = false;
-        //swordScript.setCollidersAcitve(collidersActive);
-        //isAttackingText.text = "Not Attacking";
         canStartNextAttack = true;
 
     }
@@ -199,16 +201,55 @@ public class melee : MonoBehaviour
     */
     public void EndCombo()
     {
-        m_playerController.playerVelocity.y = 0f;
+		if( !animator.IsInTransition(0) )
+        {
 
-        m_playerController.canFall = true;
-        m_playerController.canMove = true;
-        m_playerController.canRotate = true;
-        animator.SetBool( "comboActive", false );
-        //MAKE SURE IT'S AVAILABLE AGAIN. CURRENTLY BROKE a bit This is duplicated
-        //canStartNextAttack = true;
+            //comboDebugText.text += "\nEnd\n";
+            m_playerController.playerVelocity.y = 0f;
 
+            m_playerController.canFall = true;
+            m_playerController.canMove = true;
+            m_playerController.canRotate = true;
+            animator.SetBool( "comboActive", false );
+            //MAKE SURE IT'S AVAILABLE AGAIN. CURRENTLY BROKE a bit This is duplicated
+            //canStartNextAttack = true;
+
+        }
+		else
+		{
+            //comboDebugText.text += "\nthis attack was started on a transitiony state";
+        }
+		
 
     }
+    
+    public void VeryBeginingOfAttack()
+	{
+        //comboDebugText.text += "\nBegin";
+	}
 
+    //Target angle is not actually where you will end up! It is the point you are looking, so it could be 180 degrees away, we are not going that far
+    void Rotate()
+	{
+        //Cap to how far can rotate;
+        float maxRotate = 40;
+        float rotationSpeed = 4f;
+        Transform cameraMainTransform = Camera.main.transform;
+
+        Vector2 playerInput = m_playerController.GetPlayerInput();
+
+        float targetAngle = Mathf.Atan2( playerInput.x, playerInput.y ) * Mathf.Rad2Deg + cameraMainTransform.eulerAngles.y;
+        Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
+        // We have the TARGET angle, where we really are wanting to go, but we don't wanna go that far.
+
+        Debug.Log( "Target Angle:  " + targetAngle );
+        Debug.Log( "Current Angle: " + transform.rotation.eulerAngles.y ); 
+
+
+
+
+        //transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * rotationSpeed );
+
+        //yield return null;
+	}
 }
