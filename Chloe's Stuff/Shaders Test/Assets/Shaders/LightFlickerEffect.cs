@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-// Written by Steve Streeting 2017
+// Written by Steve Streeting 2017 
 // License: CC0 Public Domain http://creativecommons.org/publicdomain/zero/1.0/
 
 /// <summary>
