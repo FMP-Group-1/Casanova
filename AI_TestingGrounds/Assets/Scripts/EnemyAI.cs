@@ -102,15 +102,21 @@ public class EnemyAI : MonoBehaviour
     private float m_health = 100.0f;
     [SerializeField]
     private float m_playerStoppingDistance = 1.75f;
+    //[SerializeField]
+    //private bool m_canStrafe = true;
+    private float m_delayBeforeStrafe = 0.0f;
+    private float m_timeUntilStrafe = 0.0f;
     [SerializeField]
-    private bool m_canStrafe = true;
+    private float m_minDelayBeforeStrafe = 6.0f;
+    [SerializeField]
+    private float m_maxDelayBeforeStrafe = 10.0f;
     private StrafeDir m_strafeDir = StrafeDir.Left;
     [SerializeField]
     private float m_strafeSpeed = 1.5f;
-    [SerializeField]
-    private float m_minStrafeRange = 3.0f;
-    [SerializeField]
-    private float m_maxStrafeRange = 5.0f;
+    //[SerializeField]
+    //private float m_minStrafeRange = 3.0f;
+    //[SerializeField]
+    //private float m_maxStrafeRange = 5.0f;
     [SerializeField]
     private float m_checkForAIDist = 2.0f;
     [SerializeField]
@@ -120,7 +126,7 @@ public class EnemyAI : MonoBehaviour
     private float m_strafeDist;
     private float m_attackTimer;
     [SerializeField]
-    private bool m_canAttack = true;
+    private bool m_attackEnabled = true;
     [SerializeField]
     private float m_minAttackTime = 3.5f;
     [SerializeField]
@@ -134,7 +140,7 @@ public class EnemyAI : MonoBehaviour
     private AttackZone m_currentAttackZone;
     private AttackZone m_occupiedAttackZone;
     private float m_attackZoneCheckInterval = 5.0f;
-    private float m_attackZoneTimer = 0.0f;    
+    private float m_attackZoneTimer = 0.0f;
     private float m_strafeZoneCheckInterval = 2.0f;
     private float m_strafeZoneTimer = 0.0f;
 
@@ -143,9 +149,9 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     private bool m_playerDetectionEnabled = true;
     [SerializeField]
-    private float m_viewRadius = 7.5f;    
+    private float m_viewRadius = 7.5f;
     [SerializeField]
-    [Range(0.0f,360.0f)]
+    [Range(0.0f, 360.0f)]
     private float m_viewAngle = 145.0f;
 
     [SerializeField]
@@ -185,18 +191,21 @@ public class EnemyAI : MonoBehaviour
     private void Update()
     {
         // Setting the player mat color to see if attack is colliding. Will need removing later on.
-        m_player.GetComponent<Player>().SetHitVisual( IsAttackCollidingWithPlayer() );
+        if (m_combatState == CombatState.Attacking)
+        {
+            m_player.GetComponent<Player>().SetHitVisual(IsAttackCollidingWithPlayer());
+        }
 
         TestingInputs();
 
         AttackZoneCheck();
 
-        switch ( m_state )
+        switch (m_state)
         {
             // Idle State
             case AIState.Idle:
             {
-                if ( IsPlayerVisible() )
+                if (IsPlayerVisible())
                 {
                     // Disabled Detection in Idle for now
                     //SetAIState(AIState.Pursuing);
@@ -220,7 +229,7 @@ public class EnemyAI : MonoBehaviour
             }
             case AIState.ReturningToPatrol:
             {
-                if ( HasReachedDestination() )
+                if (HasReachedDestination())
                 {
                     SetAIState(AIState.Patrolling);
                 }
@@ -298,11 +307,15 @@ public class EnemyAI : MonoBehaviour
 
     private void CombatUpdate()
     {
-        m_timeSinceLastAttack += Time.deltaTime;
+        // If to help space out attacks a bit more
+        if (m_aiManager.CanAttack() && m_combatState != CombatState.Pursuing && m_currentAttackingType == AttackingType.Active)
+        {
+            m_timeSinceLastAttack += Time.deltaTime;
+        }
 
         //TimedAttackZoneCheck();
 
-        switch ( m_combatState )
+        switch (m_combatState)
         {
             // Chase after target/player
             case CombatState.Pursuing:
@@ -375,7 +388,9 @@ public class EnemyAI : MonoBehaviour
 
                 transform.LookAt(m_player.transform.position);
 
+                // Todo: Rename StrafeRangeCheck to something more appropriate as it has little to do with strafing
                 StrafeRangeCheck();
+                TimedBeginStrafeCheck();
                 AttackCheck();
                 break;
             }
@@ -504,7 +519,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    private void SetPatrolState(PatrolState stateToSet)
+    private void SetPatrolState( PatrolState stateToSet )
     {
         m_patrolState = stateToSet;
         ResetAnimTriggers();
@@ -530,7 +545,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    private void SetCombatState(CombatState stateToSet)
+    private void SetCombatState( CombatState stateToSet )
     {
         m_combatState = stateToSet;
         ResetAnimTriggers();
@@ -567,6 +582,7 @@ public class EnemyAI : MonoBehaviour
             }
             case CombatState.MaintainDist:
             {
+                m_timeUntilStrafe = Random.Range(m_minDelayBeforeStrafe, m_maxDelayBeforeStrafe);
                 StartCombatIdleAnim();
                 break;
             }
@@ -643,6 +659,7 @@ public class EnemyAI : MonoBehaviour
 
     private void StrafeRangeCheck()
     {
+        // This function needs to be renamed as it's not a strafe check
         float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
         float maxStrafeRange = 0.0f;
         float minStrafeRange = 0.0f;
@@ -680,9 +697,10 @@ public class EnemyAI : MonoBehaviour
 
     private void AttackCheck()
     {
-        if (m_timeSinceLastAttack >= m_attackTimer && m_canAttack)
+        if (m_timeSinceLastAttack >= m_attackTimer && m_aiManager.CanAttack() && m_attackEnabled && m_currentAttackingType == AttackingType.Active)
         {
             SetCombatState(CombatState.MovingToAttack);
+            m_aiManager.SetCanAttack(false);
         }
     }
 
@@ -813,7 +831,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         // Todo: Look into using sqr root distance checks for optimisation
-        if(m_playerDetectionEnabled)
+        if (m_playerDetectionEnabled)
         {
             Vector3 distance = transform.position - m_player.transform.position;
             // Checking if player is in range
@@ -821,7 +839,7 @@ public class EnemyAI : MonoBehaviour
             {
                 // Once player is in range, getting the direction to the player and checking if it's within the AI's FOV
                 Vector3 dirToPlayer = (m_player.transform.position - transform.position).normalized;
-                if (Vector3.Angle(transform.forward, dirToPlayer) < m_viewAngle * 0.5f )
+                if (Vector3.Angle(transform.forward, dirToPlayer) < m_viewAngle * 0.5f)
                 {
                     // Once player is in range and in FOV, using Raycast to check if any obstacles are in the way
                     float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
@@ -868,7 +886,7 @@ public class EnemyAI : MonoBehaviour
                     {
                         // Occupy current zone
                         if (m_occupiedAttackZone != null)
-                        { 
+                        {
                             m_occupiedAttackZone.EmptyZone();
                         }
 
@@ -893,6 +911,17 @@ public class EnemyAI : MonoBehaviour
                     SetCombatState(CombatState.StrafingToZone);
                 }
             }
+        }
+    }
+
+    private void TimedBeginStrafeCheck()
+    {
+        m_delayBeforeStrafe += Time.deltaTime;
+
+        if ( m_delayBeforeStrafe > m_timeUntilStrafe )
+        {
+            SetCombatState(CombatState.StrafingToZone);
+            m_delayBeforeStrafe = 0.0f;
         }
     }
 
@@ -1004,9 +1033,9 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    public void WakeUpAI(WakeTrigger wakeTrigger)
+    public void WakeUpAI( WakeTrigger wakeTrigger )
     {
-        switch ( wakeTrigger )
+        switch (wakeTrigger)
         {
             case WakeTrigger.Attack:
             {
@@ -1192,6 +1221,9 @@ public class EnemyAI : MonoBehaviour
         SetCombatState(CombatState.BackingUp);
         m_attackTimer = Random.Range(m_minAttackTime, m_maxAttackTime);
         m_timeSinceLastAttack = 0.0f;
+
+        // Todo: Placeholder logic to demonstrate attacking. Replace with better logic
+        m_aiManager.SetCanAttack(true);
     }
 
     public void TakeDamage( float damageToTake )
@@ -1200,12 +1232,12 @@ public class EnemyAI : MonoBehaviour
 
         m_health -= damageToTake;
 
-        if ( m_state != AIState.Sleeping)
+        if (m_state != AIState.Sleeping)
         {
             PlayDamageAnim();
         }
 
-        if ( m_health <= 0.0f )
+        if (m_health <= 0.0f)
         {
             m_health = 0.0f;
             SetAIState(AIState.Dead);
@@ -1260,12 +1292,12 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    public void SetAIManagerRef(AIManager aiManagerRef)
+    public void SetAIManagerRef( AIManager aiManagerRef )
     {
         m_aiManager = aiManagerRef;
     }
 
-    public void SetAttackZoneManagerRef(AttackZoneManager attackZoneManager)
+    public void SetAttackZoneManagerRef( AttackZoneManager attackZoneManager )
     {
         m_attackZoneManager = attackZoneManager;
     }
@@ -1275,12 +1307,12 @@ public class EnemyAI : MonoBehaviour
         return m_currentAttackingType;
     }
 
-    public void SetAttackingType(AttackingType typeToSet)
+    public void SetAttackingType( AttackingType typeToSet )
     {
         m_currentAttackingType = typeToSet;
     }
 
-    public void SetStrafeDist(float distance)
+    public void SetStrafeDist( float distance )
     {
         m_strafeDist = distance;
     }
@@ -1300,7 +1332,7 @@ public class EnemyAI : MonoBehaviour
         return m_currentAttackZone;
     }
 
-    public void SetAttackZone(AttackZone zoneToSet)
+    public void SetAttackZone( AttackZone zoneToSet )
     {
         m_currentAttackZone = zoneToSet;
     }

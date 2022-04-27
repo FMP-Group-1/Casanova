@@ -188,4 +188,14 @@ public class AttackZoneManager
 
         return zoneToReturn;
     }
+
+    public List<AttackZone> GetPassiveAttackZones()
+    {
+        return m_passiveAttackZones;
+    }
+
+    public List<AttackZone> GetActiveAttackZones()
+    {
+        return m_activeAttackZones;
+    }
 }

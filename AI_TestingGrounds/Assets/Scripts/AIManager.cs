@@ -11,6 +11,8 @@ public class AIManager : MonoBehaviour
     private List<EnemyAI> m_passiveAttackers = new List<EnemyAI>();
     private AttackZoneManager m_attackZoneManager;
 
+    private bool m_canAttack = true;
+
     [SerializeField]
     [Range(0, 30)]
     private int m_attackZonesNum = 10;
@@ -58,7 +60,7 @@ public class AIManager : MonoBehaviour
             }
         }
 
-        Debug.Log("AIManager: Enemies in list: " + m_enemyList.Count);
+        //Debug.Log("AIManager: Enemies in list: " + m_enemyList.Count);
     }
 
     // Register an enemy as an attacker
@@ -136,6 +138,11 @@ public class AIManager : MonoBehaviour
         return false;
     }
 
+    public AttackZoneManager GetAttackZoneManager()
+    {
+        return m_attackZoneManager;
+    }
+
     public int GetAttackZonesNum()
     {
         return m_attackZonesNum;
@@ -159,5 +166,15 @@ public class AIManager : MonoBehaviour
     public float GetZoneDistanceBuffer()
     {
         return m_zoneDistanceBuffer;
+    }
+
+    public bool CanAttack()
+    {
+        return m_canAttack;
+    }
+
+    public void SetCanAttack(bool canAttack)
+    {
+        m_canAttack = canAttack;
     }
 }

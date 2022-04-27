@@ -3,10 +3,31 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+public enum DebugType
+{
+    AI,
+    Zone,
+    None
+}
+
 public class AIDebugDisplay : MonoBehaviour
 {
-    [SerializeField]
-    private EnemyAI m_aiDebugTarget;
+    private DebugType m_debugType = DebugType.None;
+    private GameObject m_aiDebugHolder;
+    private GameObject m_zoneDebugHolder;
+
+    private List<GameObject> m_aiList = new List<GameObject>();
+    private EnemyAI m_targetAI;
+
+    private int m_currentAiNum = 0;
+
+    private List<AttackZone> m_passiveAttackZones = new List<AttackZone>();
+    private List<AttackZone> m_activeAttackZones = new List<AttackZone>();
+    private AttackZone m_targetZone;
+    private AttackingType m_targetZoneType = AttackingType.Passive;
+    private AttackZoneManager m_attackZoneManager;
+
+    private int m_currentAttackZoneNum = 0;
 
     private Text m_aiNameText;
     private Text m_aiStateText;
@@ -16,17 +37,43 @@ public class AIDebugDisplay : MonoBehaviour
     private Text m_strafeAtDistText;
     private Text m_attackZoneText;
     private Text m_occupiedZoneText;
-    void Awake()
+
+    private Text m_zoneNameText;
+    private Text m_zoneOccupantText;
+    private Text m_zoneObstructedText;
+    void Start()
     {
-        SetupDebugDisplay();
+        m_aiDebugHolder = GameObject.Find("AIDebugHolder");
+        m_zoneDebugHolder = GameObject.Find("ZoneDebugHolder");
+        SetupAIDebugDisplay();
+        SetupZoneDebugDisplay();
+
+        SetDebugType(DebugType.None);
     }
 
     void Update()
     {
-        DebugTextUpdate();
+        ToggleDebugType();
+
+        switch (m_debugType)
+        {
+            case DebugType.AI:
+            {
+                ChangeAITarget();
+                AIDebugTextUpdate();
+
+                break;
+            }
+            case DebugType.Zone:
+            {
+                ChangeZoneTarget();
+                ZoneDebugUpdate();
+                break;
+            }
+        }
     }
 
-    private void SetupDebugDisplay()
+    private void SetupAIDebugDisplay()
     {
         m_aiNameText = GameObject.Find("AINameText").GetComponent<Text>();
         m_aiStateText = GameObject.Find("AIStateText").GetComponent<Text>();
@@ -37,21 +84,38 @@ public class AIDebugDisplay : MonoBehaviour
         m_attackZoneText = GameObject.Find("AttackZoneText").GetComponent<Text>();
         m_occupiedZoneText = GameObject.Find("OccupiedZoneText").GetComponent<Text>();
 
-        m_aiNameText.text = "AI: " + m_aiDebugTarget.name;
+        m_aiList.AddRange(GameObject.FindGameObjectsWithTag("Enemy"));
+
+        m_targetAI = m_aiList[m_currentAiNum].GetComponent<EnemyAI>();
+
+        SetAIDebugTarget(m_currentAiNum);
     }
 
-    private void DebugTextUpdate()
+    private void SetupZoneDebugDisplay()
     {
-        AIState currentAIState = m_aiDebugTarget.GetState();
+        m_zoneNameText = GameObject.Find("ZoneNameText").GetComponent<Text>();
+        m_zoneOccupantText = GameObject.Find("OccupiedByText").GetComponent<Text>();
+        m_zoneObstructedText = GameObject.Find("ObstructedText").GetComponent<Text>();
+
+        m_attackZoneManager = GameObject.Find("AIManager").GetComponent<AIManager>().GetAttackZoneManager();
+        m_passiveAttackZones.AddRange(m_attackZoneManager.GetPassiveAttackZones());
+        m_activeAttackZones.AddRange(m_attackZoneManager.GetActiveAttackZones());
+
+        SetZoneTarget(m_currentAttackZoneNum);
+    }
+
+    private void AIDebugTextUpdate()
+    {
+        AIState currentAIState = m_targetAI.GetState();
 
         m_aiStateText.text = "AI State: " + currentAIState;
-        m_aiHealth.text = "AI Health: " + m_aiDebugTarget.GetHealth();
-        m_playerDetectedText.text = "Player Detected: " + m_aiDebugTarget.IsPlayerVisible();
-        m_strafeAtDistText.text = "Strafe Distance: " + m_aiDebugTarget.GetStrafeDist();
+        m_aiHealth.text = "AI Health: " + m_targetAI.GetHealth();
+        m_playerDetectedText.text = "Player Detected: " + m_targetAI.IsPlayerVisible();
+        m_strafeAtDistText.text = "Strafe Distance: " + m_targetAI.GetStrafeDist();
 
-        if (m_aiDebugTarget.GetAttackZone() != null)
+        if (m_targetAI.GetAttackZone() != null)
         {
-            AttackZone attackZone = m_aiDebugTarget.GetAttackZone();
+            AttackZone attackZone = m_targetAI.GetAttackZone();
             m_attackZoneText.text = "Attack Zone: " + attackZone.GetZoneType() + " " + attackZone.GetZoneNum();
         }
         else
@@ -59,9 +123,9 @@ public class AIDebugDisplay : MonoBehaviour
             m_attackZoneText.text = "Attack Zone: None";
         }
 
-        if (m_aiDebugTarget.GetOccupiedAttackZone() != null)
+        if (m_targetAI.GetOccupiedAttackZone() != null)
         {
-            AttackZone attackZone = m_aiDebugTarget.GetOccupiedAttackZone();
+            AttackZone attackZone = m_targetAI.GetOccupiedAttackZone();
             m_occupiedZoneText.text = "Occupied Zone: " + attackZone.GetZoneType() + " " + attackZone.GetZoneNum();
         }
         else
@@ -73,16 +137,156 @@ public class AIDebugDisplay : MonoBehaviour
         {
             if (currentAIState == AIState.InCombat)
             {
-                m_aiSubstateText.text = "Combat State: " + m_aiDebugTarget.GetCombatState();
+                m_aiSubstateText.text = "Combat State: " + m_targetAI.GetCombatState();
             }
             else if (currentAIState == AIState.Patrolling)
             {
-                m_aiSubstateText.text = "Patrol State: " + m_aiDebugTarget.GetPatrolState();
+                m_aiSubstateText.text = "Patrol State: " + m_targetAI.GetPatrolState();
             }
         }
         else
         {
             m_aiSubstateText.text = "Substate: None Active";
+        }
+    }
+
+    private void ZoneDebugUpdate()
+    {
+        m_zoneNameText.text = "Zone: " + m_targetZoneType + " " + m_targetZone.GetZoneNum();
+        m_zoneObstructedText.text = "Is Obstructed: " + m_targetZone.IsObstructed();
+        if (m_targetZone.IsOccupied())
+        {
+            m_zoneOccupantText.text = "Occupied By: " + m_targetZone.GetOccupant().gameObject.name;
+        }
+        else
+        {
+            m_zoneOccupantText.text = "No Occupant";
+        }
+    }
+
+    private void ChangeZoneTarget()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            if (m_currentAttackZoneNum != 0)
+            {
+                m_currentAttackZoneNum--;
+                SetZoneTarget(m_currentAttackZoneNum);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            if (m_currentAttackZoneNum != m_passiveAttackZones.Count - 1)
+            {
+                m_currentAttackZoneNum++;
+                SetZoneTarget(m_currentAttackZoneNum);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            if (m_targetZoneType == AttackingType.Passive)
+            {
+                m_targetZoneType = AttackingType.Active;
+                SetZoneTarget(m_currentAttackZoneNum);
+            }
+            else
+            {
+                m_targetZoneType = AttackingType.Passive;
+                SetZoneTarget(m_currentAttackZoneNum);
+            }
+        }
+    }
+
+    private void SetZoneTarget(int targetNum)
+    {
+        if (m_targetZoneType == AttackingType.Passive)
+        {
+            m_targetZone = m_passiveAttackZones[targetNum];
+        }
+        else
+        {
+            m_targetZone = m_activeAttackZones[targetNum];
+        }
+
+        m_zoneNameText.text = "Zone: " + m_targetZoneType + " " + m_targetZone.GetZoneNum();
+    }
+
+    private void ChangeAITarget()
+    {
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            if (m_currentAiNum != 0)
+            {
+                m_currentAiNum--;
+                SetAIDebugTarget(m_currentAiNum);
+            }
+        }
+        if(Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            if (m_currentAiNum != m_aiList.Count - 1)
+            {
+                m_currentAiNum++;
+                SetAIDebugTarget(m_currentAiNum);
+            }
+        }
+    }
+
+    private void SetAIDebugTarget(int targetNum)
+    {
+        m_targetAI = m_aiList[targetNum].GetComponent<EnemyAI>();
+        m_aiNameText.text = "AI: " + m_aiList[targetNum].name;
+    }
+
+    private void SetDebugType(DebugType typeToSet)
+    {
+        switch (typeToSet)
+        {
+            case DebugType.AI:
+            {
+                m_zoneDebugHolder.SetActive(false);
+                m_aiDebugHolder.SetActive(true);
+                m_debugType = DebugType.AI;
+                break;
+            }
+            case DebugType.Zone:
+            {
+                m_aiDebugHolder.SetActive(false);
+                m_zoneDebugHolder.SetActive(true);
+                m_debugType = DebugType.Zone;
+                break;
+            }
+            case DebugType.None:
+            {
+                m_aiDebugHolder.SetActive(false);
+                m_zoneDebugHolder.SetActive(false);
+                m_debugType = DebugType.None;
+                break;
+            }
+        }
+    }
+
+    private void ToggleDebugType()
+    {
+        if (Input.GetKeyDown(KeyCode.F12))
+        {
+            switch (m_debugType)
+            {
+                case DebugType.AI:
+                {
+                    SetDebugType(DebugType.Zone);
+                    break;
+                }
+                case DebugType.Zone:
+                {
+                    SetDebugType(DebugType.None);
+                    break;
+                }
+                case DebugType.None:
+                {
+                    SetDebugType(DebugType.AI);
+                    break;
+                }
+            }
         }
     }
 }
