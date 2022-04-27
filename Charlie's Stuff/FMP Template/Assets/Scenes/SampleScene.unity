@@ -968,7 +968,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1565317370}
   - component: {fileID: 1565317369}
-  - component: {fileID: 1565317368}
   - component: {fileID: 1565317367}
   m_Layer: 0
   m_Name: Point Light (1)
@@ -993,18 +992,6 @@ MonoBehaviour:
   minIntensity: 0
   maxIntensity: 3.5
   smoothing: 21
---- !u!114 &1565317368
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1565317366}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02ed6fcfe5b0aaa48a64b0281a44ac4b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!108 &1565317369
 Light:
   m_ObjectHideFlags: 0
@@ -1734,7 +1721,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 205384983033413686}
-  m_LocalRotation: {x: 0.15614165, y: -4.1007436e-10, z: -6.484377e-11, w: 0.9877347}
+  m_LocalRotation: {x: 0.15614165, y: 4.1007436e-10, z: 6.484377e-11, w: 0.9877347}
   m_LocalPosition: {x: 3.789589, y: 18.99, z: -8.965549}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -3187,7 +3174,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 529130851429287292}
-  m_LocalRotation: {x: 0.1740822, y: -0.0000000038924606, z: 6.881146e-10, w: 0.98473114}
+  m_LocalRotation: {x: 0.17408219, y: 0.000000025711826, z: -0.0000000045453734, w: 0.98473114}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -3278,7 +3265,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 529130851770757192}
-  m_LocalRotation: {x: 0.13819699, y: 0.000000008520641, z: -0.000000001188935, w: 0.9904048}
+  m_LocalRotation: {x: 0.13819699, y: -0.000000008520641, z: 0.000000001188935, w: 0.9904048}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
