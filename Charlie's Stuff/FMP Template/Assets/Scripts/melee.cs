@@ -218,6 +218,10 @@ public class melee : MonoBehaviour
         Debug.Log( "Target Angle:  " + targetAngle );
 
 
+        //Quaternion MoveDirection = Quaternion.Euler(m_playerController.GetMoveDirection());
+
+
+        //Need to make it based on inputs.
 
         StartCoroutine(Rotate( targetRotation ) );
     }
@@ -248,12 +252,11 @@ public class melee : MonoBehaviour
 
     //Target angle is not actually where you will end up! It is the point you are looking, so it could be 180 degrees away, we are not going that far
     IEnumerator Rotate( Quaternion targetRotation )
-	{
-       while(transform.rotation != targetRotation )
-		{
-
-            transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, 1f );
-
+    {
+        float inTime = 0.2f; ;
+        for( var t = 0f; t < 1; t += Time.deltaTime / inTime )
+        {
+            transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, t );
             yield return null;
         }
 	}
