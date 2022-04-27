@@ -26,6 +26,8 @@ public class melee : MonoBehaviour
 
     public bool canStartNextAttack = true;
 
+    public Text comboDebugText;
+
     private enum Attack
     {
         Nothing,
@@ -117,7 +119,6 @@ public class melee : MonoBehaviour
             animator.SetBool( "whirlwindHeld", true );
         }
 
-        Rotate();
 
         //Basically, if you have reached the end of an attack, you are no longer attacking, but if "attackType" is not nothing, there's somehing queued up, so lets do it
         if ( canStartNextAttack && attackType != Attack.Nothing )
@@ -166,11 +167,13 @@ public class melee : MonoBehaviour
 
     public void CollisionsStart()
     {
+        comboDebugText.text += "\nColl. Start\n";
         swordCollider.enabled = true;
     }
 
     public void CollisionsEnd()
     {
+        comboDebugText.text += "\nColl. End\n";
         swordCollider.enabled = false;
         canStartNextAttack = true;
 
@@ -197,32 +200,8 @@ public class melee : MonoBehaviour
         holsteredSword.SetActive( true );
     }
     */
-    public void EndCombo()
-    {
-		if( !animator.IsInTransition(0) )
-        {
 
-            //comboDebugText.text += "\nEnd\n";
-            m_playerController.playerVelocity.y = 0f;
-
-            m_playerController.canFall = true;
-            m_playerController.canMove = true;
-            m_playerController.canRotate = true;
-            animator.SetBool( "comboActive", false );
-            //MAKE SURE IT'S AVAILABLE AGAIN. CURRENTLY BROKE a bit This is duplicated
-            //canStartNextAttack = true;
-
-        }
-		else
-		{
-            //comboDebugText.text += "\nthis attack was started on a transitiony state";
-        }
-		
-
-    }
-
-    //Target angle is not actually where you will end up! It is the point you are looking, so it could be 180 degrees away, we are not going that far
-    void Rotate()
+    private void AttackBegin()
 	{
         //Cap to how far can rotate;
         float maxRotate = 40;
@@ -235,14 +214,47 @@ public class melee : MonoBehaviour
         Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
         // We have the TARGET angle, where we really are wanting to go, but we don't wanna go that far.
 
+        Debug.Log( "Current Angle: " + transform.rotation.eulerAngles.y );
         Debug.Log( "Target Angle:  " + targetAngle );
-        Debug.Log( "Current Angle: " + transform.rotation.eulerAngles.y ); 
 
 
 
+        StartCoroutine(Rotate( targetRotation ) );
+    }
 
-        //transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * rotationSpeed );
+    public void EndCombo()
+    {
+		if( !animator.IsInTransition(0) )
+        {
 
-        //yield return null;
+            comboDebugText.text = "\nEnd\n";
+            m_playerController.playerVelocity.y = 0f;
+
+            m_playerController.canFall = true;
+            m_playerController.canMove = true;
+            m_playerController.canRotate = true;
+            animator.SetBool( "comboActive", false );
+            //MAKE SURE IT'S AVAILABLE AGAIN. CURRENTLY BROKE a bit This is duplicated
+            //canStartNextAttack = true;
+
+        }
+		else
+		{
+            comboDebugText.text += "\nthis attack was started on a transitiony state";
+        }
+		
+
+    }
+
+    //Target angle is not actually where you will end up! It is the point you are looking, so it could be 180 degrees away, we are not going that far
+    IEnumerator Rotate( Quaternion targetRotation )
+	{
+       while(transform.rotation != targetRotation )
+		{
+
+            transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, 1f );
+
+            yield return null;
+        }
 	}
 }
