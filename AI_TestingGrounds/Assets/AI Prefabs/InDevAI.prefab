@@ -1598,23 +1598,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_walkSpeed: 1.5
   m_runSpeed: 3
-  m_spawnAsleep: 1
+  m_spawnAsleep: 0
+  m_wakeTriggerObj: {fileID: 0}
   m_patrolRoute: {fileID: 0}
   m_patrolStoppingDistance: 1.5
   m_health: 100
   m_playerStoppingDistance: 1.75
+  m_minDelayBeforeStrafe: 6
+  m_maxDelayBeforeStrafe: 10
   m_strafeSpeed: 1.5
-  m_minStrafeRange: 3
-  m_maxStrafeRange: 5
-  m_minAttackTime: 3.5
+  m_checkForAIDist: 1
+  m_checkForAIAngles: 45
+  m_AIAvoidanceDist: 1.5
+  m_attackEnabled: 1
+  m_minAttackTime: 4.5
   m_maxAttackTime: 7.5
   m_weapon: {fileID: 6846784145097682275}
   m_playerDetectionEnabled: 1
   m_viewRadius: 7.5
-  m_viewAngle: 145
+  m_viewAngle: 160
   m_obstacleMask:
     serializedVersion: 2
     m_Bits: 8
+  m_aiMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!195 &6036442217792160288
 NavMeshAgent:
   m_ObjectHideFlags: 0
