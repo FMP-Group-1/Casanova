@@ -25,8 +25,16 @@ public class Player : MonoBehaviour
     [Range(0.0f, 100.0f)]
     private float m_damage = 15.0f;
 
+
+
+    //New Input System Shit
+    private DeanControls m_inputs;
+
     void Awake()
     {
+
+        m_inputs = new DeanControls();
+
         m_animController = GetComponent<Animator>();
         m_playerRenderer = transform.Find("Alpha_Surface").GetComponent<Renderer>();
         m_defaultColor = m_playerRenderer.material.color;
@@ -36,6 +44,11 @@ public class Player : MonoBehaviour
         DisableCollision();
 
         Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    private void OnEnable()
+    {
+        m_inputs.Enable();
     }
 
     void Update()
@@ -55,24 +68,26 @@ public class Player : MonoBehaviour
                 ResetAnimTriggers();
                 StandStill();
             }
-            if (Input.GetKey(KeyCode.W))
+            Vector2 moveInputs = m_inputs.PlayerControls.MovePlayer.ReadValue<Vector2>();
+
+            if (moveInputs.y > 0)
             {
                 transform.position += transform.forward * ( m_moveSpeed * Time.deltaTime);
             }
-            if (Input.GetKey(KeyCode.S))
+            if (moveInputs.y < 0)
             {
                 transform.position -= transform.forward * (m_moveSpeed * Time.deltaTime);
             }
-            if (Input.GetKey(KeyCode.D))
+            if (moveInputs.x > 0)
             {
                 transform.position += transform.right * (m_moveSpeed * Time.deltaTime);
             }
-            if (Input.GetKey(KeyCode.A))
+            if (moveInputs.x < 0)
             {
                 transform.position -= transform.right * (m_moveSpeed * Time.deltaTime);
             }
-
-            if (Input.GetMouseButtonDown(0))
+           
+            if (m_inputs.PlayerControls.LeftClick.triggered)
             {
                 ResetAnimTriggers();
                 StartAttack();
@@ -81,7 +96,7 @@ public class Player : MonoBehaviour
             }
         }
 
-        transform.Rotate(0.0f, (Input.GetAxis("Mouse X") * (m_rotateSpeed * Time.deltaTime)), 0.0f);
+        //transform.Rotate(0.0f, (Input.GetAxis("Mouse X") * (m_rotateSpeed * Time.deltaTime)), 0.0f);
 
     }
 
@@ -89,7 +104,9 @@ public class Player : MonoBehaviour
     {
         bool playerIsMoving = false;
 
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.A))
+
+
+        if (m_inputs.PlayerControls.MovePlayer.ReadValue<Vector2>() != Vector2.zero)
         {
             playerIsMoving = true;
         }

@@ -183,8 +183,17 @@ public class EnemyAI : MonoBehaviour
     private LayerMask m_aiMask;
 
 
+
+    //New Input System Shit
+    private DeanControls m_inputs;
+
     private void Awake()
     {
+
+        //Actuall Make the controls
+        m_inputs = new DeanControls();
+
+
         m_navMeshAgent = GetComponent<NavMeshAgent>();
         m_animController = GetComponent<Animator>();
 
@@ -209,6 +218,11 @@ public class EnemyAI : MonoBehaviour
         {
             m_wakeTrigger = m_wakeTriggerObj.GetComponent<BoxCollider>();
         }
+    }
+
+    private void OnEnable()
+    {
+        m_inputs.Enable();
     }
 
     private void Update()
@@ -1374,7 +1388,7 @@ public class EnemyAI : MonoBehaviour
     private void TestingInputs()
     {
         // Start Patrolling Test Input
-        if (Input.GetKeyDown(KeyCode.Space))
+        if( m_inputs.Debug.AI_Move.triggered ) 
         {
             SetAIState(AIState.Patrolling);
             if (m_patrolRoute != null)
@@ -1385,7 +1399,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         // Start Pursuing Test Input
-        if (Input.GetKeyDown(KeyCode.P))
+        if (m_inputs.Debug.AI_Combat.triggered)
         {
             SetAIState(AIState.InCombat);
 

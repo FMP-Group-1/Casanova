@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;
 
 public enum DebugType
 {
@@ -42,6 +43,18 @@ public class AIDebugDisplay : MonoBehaviour
     private Text m_zoneNameText;
     private Text m_zoneOccupantText;
     private Text m_zoneObstructedText;
+
+    //Input Shenanigans
+    [SerializeField]
+    private InputActionReference m_f12Pressed;
+    [SerializeField]
+    private InputActionReference m_arrowKeys;
+
+    private void OnEnable()
+    {
+        m_f12Pressed.action.Enable();
+        m_arrowKeys.action.Enable();
+    }
     void Start()
     {
         m_aiDebugHolder = GameObject.Find("AIDebugHolder");
@@ -167,7 +180,7 @@ public class AIDebugDisplay : MonoBehaviour
 
     private void ChangeZoneTarget()
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (m_arrowKeys.action.ReadValue<Vector2>().x < 0)
         {
             if (m_currentAttackZoneNum != 0)
             {
@@ -175,7 +188,7 @@ public class AIDebugDisplay : MonoBehaviour
                 SetZoneTarget(m_currentAttackZoneNum);
             }
         }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (m_arrowKeys.action.ReadValue<Vector2>().x > 0)
         {
             if (m_currentAttackZoneNum != m_passiveAttackZones.Count - 1)
             {
@@ -183,7 +196,7 @@ public class AIDebugDisplay : MonoBehaviour
                 SetZoneTarget(m_currentAttackZoneNum);
             }
         }
-        if (Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.DownArrow))
+        if (m_arrowKeys.action.ReadValue<Vector2>().y > 0 || m_arrowKeys.action.ReadValue<Vector2>().y < 0)
         {
             if (m_targetZoneType == AttackingType.Passive)
             {
@@ -214,7 +227,7 @@ public class AIDebugDisplay : MonoBehaviour
 
     private void ChangeAITarget()
     {
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (m_arrowKeys.action.ReadValue<Vector2>().x < 0)
         {
             if (m_currentAiNum != 0)
             {
@@ -222,8 +235,8 @@ public class AIDebugDisplay : MonoBehaviour
                 SetAIDebugTarget(m_currentAiNum);
             }
         }
-        if(Input.GetKeyDown(KeyCode.RightArrow))
-        {
+        if (m_arrowKeys.action.ReadValue<Vector2>().x > 0)
+            {
             if (m_currentAiNum != m_aiList.Count - 1)
             {
                 m_currentAiNum++;
@@ -268,7 +281,7 @@ public class AIDebugDisplay : MonoBehaviour
 
     private void ToggleDebugType()
     {
-        if (Input.GetKeyDown(KeyCode.F12))
+        if (m_f12Pressed.action.triggered)
         {
             switch (m_debugType)
             {
