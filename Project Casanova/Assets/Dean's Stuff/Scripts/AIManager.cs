@@ -39,7 +39,7 @@ public class AIManager : MonoBehaviour
 
     void Update()
     {
-
+        m_attackZoneManager.Update();
     }
 
     private void RegisterEnemies()

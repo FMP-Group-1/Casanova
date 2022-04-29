@@ -11,6 +11,9 @@ public class AttackZoneManager
     private int m_attackZonesNum;
 
     private float m_sectionHalfAngle;
+    private float m_anglePerSection;
+
+    private int m_currentZoneNumToCheck = 0;
 
     public AttackZoneManager(AIManager aiManager)
     {
@@ -22,15 +25,24 @@ public class AttackZoneManager
 
         SetupAttackZones();
     }
+
+    public void Update()
+    {
+        m_activeAttackZones[m_currentZoneNumToCheck].CheckForObstruction();
+        m_passiveAttackZones[m_currentZoneNumToCheck].CheckForObstruction();
+    }
     private void SetupAttackZones()
     {
+        m_anglePerSection = 360.0f / m_attackZonesNum;
+        m_sectionHalfAngle = m_anglePerSection * 0.5f;
+
         for (int i = 0; i < m_attackZonesNum; i++)
         {
             m_activeAttackZones.Add(new AttackZone(false, ZoneType.Active, i));
+            m_activeAttackZones[i].SetBounds(m_anglePerSection * i, m_anglePerSection * (i + 1), m_aiManager.GetActiveAttackerMinDist(), m_aiManager.GetActiveAttackerMaxDist(), m_anglePerSection);
             m_passiveAttackZones.Add(new AttackZone(false, ZoneType.Passive, i));
+            m_passiveAttackZones[i].SetBounds(m_anglePerSection * i, m_anglePerSection * (i + 1), m_aiManager.GetActiveAttackerMaxDist(), m_aiManager.GetPassiveAttackerMaxDist(), m_anglePerSection);
         }
-
-        m_sectionHalfAngle = (360.0f / m_attackZonesNum) * 0.5f;
     }
 
     public AttackZone FindAttackZone( EnemyAI enemyToCheck )

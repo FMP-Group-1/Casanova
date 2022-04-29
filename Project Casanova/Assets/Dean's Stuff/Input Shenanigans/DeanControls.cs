@@ -68,7 +68,7 @@ public partial class @DeanControls : IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""2a45a5b2-cafe-4ad2-a60e-92ff9cc49318"",
-                    ""path"": ""<Keyboard>/space"",
+                    ""path"": ""<Keyboard>/o"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
