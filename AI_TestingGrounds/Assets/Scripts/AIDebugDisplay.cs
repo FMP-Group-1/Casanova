@@ -10,6 +10,7 @@ public enum DebugType
     None
 }
 
+// Todo: Script needs to either be renamed, or split into 2 to separate AI debug from Zone debug
 public class AIDebugDisplay : MonoBehaviour
 {
     private DebugType m_debugType = DebugType.None;
