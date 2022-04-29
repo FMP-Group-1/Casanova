@@ -60,13 +60,15 @@ public class EnemyAI : MonoBehaviour
     private AttackZoneManager m_attackZoneManager;
 
     private NavMeshAgent m_navMeshAgent;
-    private AIState m_state = AIState.Idle;
+    private AIState m_mainState = AIState.Idle;
     private CombatState m_combatState = CombatState.Strafing;
     private AIState m_stateBeforeHit = AIState.Idle;
     [Header("Movement Values")]
     [SerializeField]
+    [Tooltip("The walk speed of the AI")]
     private float m_walkSpeed = 1.5f;
     [SerializeField]
+    [Tooltip("The run speed of the AI")]
     private float m_runSpeed = 3.0f;
 
     // Animation Relevant Variables
@@ -76,11 +78,14 @@ public class EnemyAI : MonoBehaviour
     // Patrol Relevant Variables
     [Header("Patrol Values")]
     [SerializeField]
+    [Tooltip("Should the AI spawn asleep?")]
     private bool m_spawnAsleep = false;
     [SerializeField]
+    [Tooltip("The trigger zone which will wake the AI when the player enters it")]
     private GameObject m_wakeTriggerObj;
     private BoxCollider m_wakeTrigger;
     [SerializeField]
+    [Tooltip("The GameObject which holds the position objects for patrolling")]
     private GameObject m_patrolRoute;
     private PatrolState m_patrolState = PatrolState.Patrol;
     private List<Transform> m_patrolRoutePoints = new List<Transform>();
@@ -90,6 +95,7 @@ public class EnemyAI : MonoBehaviour
     private float m_patrolWaitTime = 2.5f;
     private int m_patrolDestinationIndex = 1;
     [SerializeField]
+    [Tooltip("The distance the AI will stop from the patrol points")]
     private float m_patrolStoppingDistance = 1.5f;
 
     // Player/Detection Relevant Variables
@@ -99,40 +105,52 @@ public class EnemyAI : MonoBehaviour
     // Combat Relevant Variables
     [Header("Combat Values")]
     [SerializeField]
+    [Tooltip("The total health of the AI")]
     private float m_health = 100.0f;
     [SerializeField]
+    [Tooltip("The distance from the player that the AI will stop")]
     private float m_playerStoppingDistance = 1.75f;
     //[SerializeField]
     //private bool m_canStrafe = true;
     private float m_delayBeforeStrafe = 0.0f;
     private float m_timeUntilStrafe = 0.0f;
     [SerializeField]
+    [Tooltip("The minimum time the AI will stand still in combat before strafing")]
     private float m_minDelayBeforeStrafe = 6.0f;
     [SerializeField]
+    [Tooltip("The maximum time the AI will stand still in combat before strafing")]
     private float m_maxDelayBeforeStrafe = 10.0f;
     private StrafeDir m_strafeDir = StrafeDir.Left;
     [SerializeField]
+    [Tooltip("The strafing speed of the AI")]
     private float m_strafeSpeed = 1.5f;
     //[SerializeField]
     //private float m_minStrafeRange = 3.0f;
     //[SerializeField]
     //private float m_maxStrafeRange = 5.0f;
     [SerializeField]
+    [Tooltip("The distance the AI will check for other obstructing AI during combat")]
     private float m_checkForAIDist = 2.0f;
     [SerializeField]
+    [Tooltip("The angles the AI will check for other obstructing AI during combat")]
     private float m_checkForAIAngles = 45.0f;
     [SerializeField]
+    [Tooltip("The distance the AI will move away when attempting to avoid other AI")]
     private float m_AIAvoidanceDist = 1.5f;
     private float m_strafeDist;
     private float m_attackTimer;
     [SerializeField]
+    [Tooltip("Whether the AI can attack. For debugging")]
     private bool m_attackEnabled = true;
     [SerializeField]
+    [Tooltip("The minimum time that has to pass before an actively attacking AI can attack")]
     private float m_minAttackTime = 3.5f;
     [SerializeField]
+    [Tooltip("The maximum time that can pass before an actively attacking AI will attack")]
     private float m_maxAttackTime = 7.5f;
     private float m_timeSinceLastAttack = 0.0f;
     [SerializeField]
+    [Tooltip("The weapon object which should have a box collider attached for attack collisions")]
     private GameObject m_weapon;
     private BoxCollider m_weaponCollider;
     private Vector3 m_attackZonePos;
@@ -147,16 +165,21 @@ public class EnemyAI : MonoBehaviour
     // Vision Detection Relevant Variables
     [Header("Player Detection Values")]
     [SerializeField]
+    [Tooltip("Whether the AI can detect the player. For debugging")]
     private bool m_playerDetectionEnabled = true;
     [SerializeField]
+    [Tooltip("The range that the AI can detect the player")]
     private float m_viewRadius = 7.5f;
     [SerializeField]
     [Range(0.0f, 360.0f)]
+    [Tooltip("The angle that the AI can detect the player AKA field of view")]
     private float m_viewAngle = 145.0f;
 
     [SerializeField]
+    [Tooltip("The layer mask for obstacles")]
     private LayerMask m_obstacleMask;
     [SerializeField]
+    [Tooltip("The layer mask for AI")]
     private LayerMask m_aiMask;
 
 
@@ -191,7 +214,7 @@ public class EnemyAI : MonoBehaviour
     private void Update()
     {
         // Setting the player mat color to see if attack is colliding. Will need removing later on.
-        if (m_combatState == CombatState.Attacking)
+        if (m_mainState == AIState.InCombat && m_combatState == CombatState.Attacking)
         {
             m_player.GetComponent<Player>().SetHitVisual(IsAttackCollidingWithPlayer());
         }
@@ -200,7 +223,7 @@ public class EnemyAI : MonoBehaviour
 
         AttackZoneCheck();
 
-        switch (m_state)
+        switch (m_mainState)
         {
             // Idle State
             case AIState.Idle:
@@ -460,12 +483,12 @@ public class EnemyAI : MonoBehaviour
     private void SetAIState( AIState stateToSet )
     {
         // If changing FROM patrol state, store the last position in the patrol route
-        if (m_state == AIState.Patrolling)
+        if (m_mainState == AIState.Patrolling)
         {
             m_lastPointOnPatrol = gameObject.transform.position;
         }
 
-        m_state = stateToSet;
+        m_mainState = stateToSet;
         ResetAnimTriggers();
 
         switch (stateToSet)
@@ -789,9 +812,10 @@ public class EnemyAI : MonoBehaviour
         // If using this method for actual collision, needs a collider.enabled check
         // But for demonstrating the collision, this is not present currently
 
-        if (m_weaponCollider.bounds.Intersects(m_playerCollider.bounds))
+        if (m_weaponCollider.bounds.Intersects(m_playerCollider.bounds) && m_weaponCollider.enabled)
         {
             isColliding = true;
+            m_weaponCollider.enabled = false;
         }
 
         return isColliding;
@@ -825,7 +849,7 @@ public class EnemyAI : MonoBehaviour
 
         // If in combat, just return true since no point redoing detection
         // Will need changing if de-aggro functionality is implemented
-        if (m_state == AIState.InCombat)
+        if (m_mainState == AIState.InCombat)
         {
             return true;
         }
@@ -1054,7 +1078,7 @@ public class EnemyAI : MonoBehaviour
 
     public AIState GetState()
     {
-        return m_state;
+        return m_mainState;
     }
 
     public CombatState GetCombatState()
@@ -1228,11 +1252,11 @@ public class EnemyAI : MonoBehaviour
 
     public void TakeDamage( float damageToTake )
     {
-        m_stateBeforeHit = m_state;
+        m_stateBeforeHit = m_mainState;
 
         m_health -= damageToTake;
 
-        if (m_state != AIState.Sleeping)
+        if (m_mainState != AIState.Sleeping)
         {
             PlayDamageAnim();
         }
