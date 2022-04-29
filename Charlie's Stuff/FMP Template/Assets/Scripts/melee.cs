@@ -26,7 +26,7 @@ public class melee : MonoBehaviour
 
     public bool canStartNextAttack = true;
 
-    public Text comboDebugText;
+    //public Text comboDebugText;
 
     private enum Attack
     {
@@ -167,13 +167,13 @@ public class melee : MonoBehaviour
 
     public void CollisionsStart()
     {
-        comboDebugText.text += "\nColl. Start\n";
+        //comboDebugText.text += "\nColl. Start\n";
         swordCollider.enabled = true;
     }
 
     public void CollisionsEnd()
     {
-        comboDebugText.text += "\nColl. End\n";
+        //comboDebugText.text += "\nColl. End\n";
         swordCollider.enabled = false;
         canStartNextAttack = true;
 
@@ -231,7 +231,7 @@ public class melee : MonoBehaviour
 		if( !animator.IsInTransition(0) )
         {
 
-            comboDebugText.text = "\nEnd\n";
+            //comboDebugText.text = "\nEnd\n";
             m_playerController.playerVelocity.y = 0f;
 
             m_playerController.canFall = true;
@@ -244,7 +244,7 @@ public class melee : MonoBehaviour
         }
 		else
 		{
-            comboDebugText.text += "\nthis attack was started on a transitiony state";
+            //comboDebugText.text += "\nthis attack was started on a transitiony state";
         }
 		
 
