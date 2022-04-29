@@ -223,7 +223,7 @@ public class melee : MonoBehaviour
 
         //Need to make it based on inputs.
 
-        //StartCoroutine(Rotate( targetRotation ) );
+        StartCoroutine(Rotate( targetRotation ) );
     }
 
     public void EndCombo()
