@@ -42,6 +42,7 @@ public class AttackZoneManager
     public void Update()
     {
         // Using this update function to sequentially check for obstruction in zones
+        //m_passiveAttackZones[0].CheckForObstruction(m_obsCheckChildArray);
 
         m_activeAttackZones[m_currentZoneNumToCheck].CheckForObstruction();
         m_passiveAttackZones[m_currentZoneNumToCheck].CheckForObstruction();
@@ -235,6 +236,11 @@ public class AttackZoneManager
     public List<AttackZone> GetActiveAttackZones()
     {
         return m_activeAttackZones;
+    }
+
+    public int GetTotalZonesNum()
+    {
+        return m_attackZonesNum;
     }
 
     public float GetAnglePerSection()

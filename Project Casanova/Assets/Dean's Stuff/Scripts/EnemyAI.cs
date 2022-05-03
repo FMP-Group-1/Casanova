@@ -716,6 +716,47 @@ public class EnemyAI : MonoBehaviour
         transform.LookAt(m_player.transform.position);
     }
 
+    private bool AdjacentZoneIsAvailable()
+    {
+        bool zoneAvailable = false;
+        int nextZoneNum;
+
+        if (m_strafeDir == StrafeDir.Left)
+        {
+            nextZoneNum = m_currentAttackZone.GetZoneNum() + 1 % m_attackZoneManager.GetTotalZonesNum();
+        }
+        else
+        {
+            nextZoneNum = m_currentAttackZone.GetZoneNum() - 1;
+
+            if (nextZoneNum < 0)
+            {
+                nextZoneNum = m_attackZoneManager.GetTotalZonesNum() - 1;
+            }
+        }
+
+        if (m_currentAttackingType == AttackingType.Passive)
+        {
+            if (!m_attackZoneManager.GetAttackZoneByNum(nextZoneNum, ZoneType.Passive).IsObstructed() &&
+                !m_attackZoneManager.GetAttackZoneByNum(nextZoneNum, ZoneType.Passive).IsOccupied())
+            {
+                zoneAvailable = true;
+            }
+
+        }
+        else
+        {
+            if (!m_attackZoneManager.GetAttackZoneByNum(nextZoneNum, ZoneType.Active).IsObstructed() &&
+                !m_attackZoneManager.GetAttackZoneByNum(nextZoneNum, ZoneType.Active).IsOccupied())
+            {
+                zoneAvailable = true;
+            }
+
+        }
+
+        return zoneAvailable;
+    }
+
     private void StrafeRangeCheck()
     {
         // This function needs to be renamed as it's not a strafe check
@@ -1295,19 +1336,22 @@ public class EnemyAI : MonoBehaviour
 
     public void TakeDamage( float damageToTake )
     {
-        m_stateBeforeHit = m_mainState;
-
-        m_health -= damageToTake;
-
-        if (m_mainState != AIState.Sleeping)
+        if (m_mainState != AIState.Dead)
         {
-            PlayDamageAnim();
-        }
+            m_stateBeforeHit = m_mainState;
 
-        if (m_health <= 0.0f)
-        {
-            m_health = 0.0f;
-            SetAIState(AIState.Dead);
+            m_health -= damageToTake;
+
+            if (m_mainState != AIState.Sleeping)
+            {
+                PlayDamageAnim();
+            }
+
+            if (m_health <= 0.0f)
+            {
+                m_health = 0.0f;
+                SetAIState(AIState.Dead);
+            }
         }
     }
 
@@ -1430,7 +1474,10 @@ public class EnemyAI : MonoBehaviour
         // Start Pursuing Test Input
         if (m_inputs.Debug.AI_Combat.triggered)
         {
-            SetAIState(AIState.InCombat);
+            if (m_mainState != AIState.Dead)
+            {
+                SetAIState(AIState.InCombat);
+            }
 
             //int zoneNum = Random.Range(0, m_aiManager.GetAttackZonesNum());
 

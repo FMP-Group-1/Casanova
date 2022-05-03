@@ -110,7 +110,10 @@ public class AIDebugDisplay : MonoBehaviour
 
         m_aiList.AddRange(GameObject.FindGameObjectsWithTag("Enemy"));
 
-        m_targetAI = m_aiList[m_currentAiNum].GetComponent<EnemyAI>();
+        if (m_aiList.Count > 0)
+        {
+            m_targetAI = m_aiList[m_currentAiNum].GetComponent<EnemyAI>();
+        }
 
         SetAIDebugTarget(m_currentAiNum);
     }

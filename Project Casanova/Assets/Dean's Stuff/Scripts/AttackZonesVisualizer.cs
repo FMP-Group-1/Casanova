@@ -64,6 +64,10 @@ public class AttackZonesVisualizer : Editor
             {
                 Handles.color = transRed;
             }
+            else
+            {
+                Handles.color = transGreen;
+            }
 
             Handles.DrawSolidArc(player.transform.position, Vector3.up, DirFromAngle(passiveZone.GetAngleStart(), true, player), angle,  passiveZone.GetEndDist());
 

@@ -23,6 +23,8 @@ public class AttackZone
     private float m_zoneAngleEnd;
     private float m_zoneDistStart;
     private float m_zoneDistEnd;
+    private float m_obstructionDistBuffer = 0.7f;
+    private float m_obstructionAngBuffer = 2.0f;
 
     public AttackZone(bool isOccupied, ZoneType zoneType, int zoneNum)
     {
@@ -126,11 +128,13 @@ public class AttackZone
         Vector3[] pointArray = new Vector3[5];
 
         // Manually setting positions, as mentioned above needs rework, just did this to get the main logic working
-        pointArray[0] = m_player.transform.position + DirFromAngle(m_zoneAngleStart, true, m_player) * m_zoneDistStart;
-        pointArray[1] = m_player.transform.position + DirFromAngle(m_zoneAngleStart, true, m_player) * m_zoneDistEnd;
-        pointArray[2] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd, true, m_player) * m_zoneDistStart;
-        pointArray[3] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd, true, m_player) * m_zoneDistEnd;
-        pointArray[4] = m_player.transform.position + DirFromAngle((m_zoneDistEnd - m_zoneDistStart) * 0.5f, true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
+        pointArray[0] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
+        pointArray[1] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
+        pointArray[2] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
+        pointArray[3] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
+
+        // Center point, needs more working out
+        pointArray[4] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - (m_zoneAngleSize * 0.5f), true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
 
         for (int i = 0; i < pointArray.Length; i++)
         {
@@ -153,11 +157,13 @@ public class AttackZone
         Vector3[] pointArray = new Vector3[5];
 
         // Manually setting positions, as mentioned above needs rework, just did this to get the main logic working
-        pointArray[0] = m_player.transform.position + DirFromAngle(m_zoneAngleStart, true, m_player) * m_zoneDistStart;
-        pointArray[1] = m_player.transform.position + DirFromAngle(m_zoneAngleStart, true, m_player) * m_zoneDistEnd;
-        pointArray[2] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd, true, m_player) * m_zoneDistStart;
-        pointArray[3] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd, true, m_player) * m_zoneDistEnd;
-        pointArray[4] = m_player.transform.position + DirFromAngle((m_zoneDistEnd - m_zoneDistStart) * 0.5f, true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
+        pointArray[0] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
+        pointArray[1] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
+        pointArray[2] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
+        pointArray[3] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
+
+        // Center point, needs more working out
+        pointArray[4] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - (m_zoneAngleSize * 0.5f), true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
 
         // Using this function to set the position of the debug objects as a way to visualize where these points are
         ObsCheckPoints(pointArray, objectArray);
