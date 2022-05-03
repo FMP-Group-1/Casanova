@@ -15,6 +15,11 @@ public class AttackZonesVisualizer : Editor
         AIManager aiManager = GameObject.Find("AIManager").GetComponent<AIManager>();
         GameObject player = GameObject.FindGameObjectWithTag("Player");
 
+        if (EditorApplication.isPlaying)
+        {
+            DrawSolidZones(aiManager, player);
+        }
+
         // Drawing the initial zone arcs
         Handles.color = Color.red;
         Handles.DrawWireArc(player.transform.position, Vector3.up, Vector3.forward, 360.0f, aiManager.GetActiveAttackerMinDist());
@@ -38,6 +43,41 @@ public class AttackZonesVisualizer : Editor
         {
             Vector3 lineAngle = DirFromAngle(((360.0f / aiManager.GetAttackZonesNum()) * i) - sectionHalf, true, player);
             Handles.DrawLine(player.transform.position + lineAngle * aiManager.GetActiveAttackerMaxDist(), player.transform.position + lineAngle * aiManager.GetPassiveAttackerMaxDist());
+        }
+    }
+
+    private void DrawSolidZones(AIManager aiManager, GameObject player)
+    {
+        Color transRed = new Color(255, 0, 0, 0.1f);
+        Color transGreen = new Color(0, 255, 0, 0.1f);
+
+        Handles.color = transGreen;
+
+        float angle = aiManager.GetAttackZoneManager().GetAnglePerSection();
+
+        for (int i = 0; i < aiManager.GetAttackZonesNum(); i++)
+        {
+            AttackZone passiveZone = aiManager.GetAttackZoneManager().GetAttackZoneByNum(i, ZoneType.Passive);
+            AttackZone activeZone = aiManager.GetAttackZoneManager().GetAttackZoneByNum(i, ZoneType.Active);
+
+            if (passiveZone.IsObstructed())
+            {
+                Handles.color = transRed;
+            }
+
+            Handles.DrawSolidArc(player.transform.position, Vector3.up, DirFromAngle(passiveZone.GetAngleStart(), true, player), angle,  passiveZone.GetEndDist());
+
+            if (activeZone.IsObstructed())
+            {
+                Handles.color = transRed;
+            }
+            else
+            {
+                Handles.color = transGreen;
+            }
+
+            Handles.DrawSolidArc(player.transform.position, Vector3.up, DirFromAngle(activeZone.GetAngleStart(), true, player), angle, activeZone.GetEndDist());
+
         }
     }
 

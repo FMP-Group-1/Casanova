@@ -43,17 +43,27 @@ public class AIDebugDisplay : MonoBehaviour
     private Text m_zoneNameText;
     private Text m_zoneOccupantText;
     private Text m_zoneObstructedText;
+    private Text m_angleStartText;
+    private Text m_angleEndText;
 
-    //Input Shenanigans
     [SerializeField]
     private InputActionReference m_f12Pressed;
     [SerializeField]
-    private InputActionReference m_arrowKeys;
+    private InputActionReference m_lArrow;    
+    [SerializeField]
+    private InputActionReference m_rArrow;
+    [SerializeField]
+    private InputActionReference m_downArrow;
+    [SerializeField]
+    private InputActionReference m_upArrow;
 
     private void OnEnable()
     {
         m_f12Pressed.action.Enable();
-        m_arrowKeys.action.Enable();
+        m_lArrow.action.Enable();
+        m_rArrow.action.Enable();
+        m_downArrow.action.Enable();
+        m_upArrow.action.Enable();
     }
     void Start()
     {
@@ -110,6 +120,8 @@ public class AIDebugDisplay : MonoBehaviour
         m_zoneNameText = GameObject.Find("ZoneNameText").GetComponent<Text>();
         m_zoneOccupantText = GameObject.Find("OccupiedByText").GetComponent<Text>();
         m_zoneObstructedText = GameObject.Find("ObstructedText").GetComponent<Text>();
+        m_angleStartText = GameObject.Find("AngleStartText").GetComponent<Text>();
+        m_angleEndText = GameObject.Find("AngleEndText").GetComponent<Text>();
 
         m_attackZoneManager = GameObject.Find("AIManager").GetComponent<AIManager>().GetAttackZoneManager();
         m_passiveAttackZones.AddRange(m_attackZoneManager.GetPassiveAttackZones());
@@ -168,6 +180,9 @@ public class AIDebugDisplay : MonoBehaviour
     {
         m_zoneNameText.text = "Zone: " + m_targetZoneType + " " + m_targetZone.GetZoneNum();
         m_zoneObstructedText.text = "Is Obstructed: " + m_targetZone.IsObstructed();
+        m_angleStartText.text = "Angle Start: " + m_targetZone.GetAngleStart();
+        m_angleEndText.text = "Angle End: " + m_targetZone.GetAngleEnd();
+
         if (m_targetZone.IsOccupied())
         {
             m_zoneOccupantText.text = "Occupied By: " + m_targetZone.GetOccupant().gameObject.name;
@@ -181,7 +196,7 @@ public class AIDebugDisplay : MonoBehaviour
     private void ChangeZoneTarget()
     {
         // Inputs for cycling debug target, could use a refactor
-        if (m_arrowKeys.action.ReadValue<Vector2>().x < 0)
+        if (m_lArrow.action.triggered)
         {
             if (m_currentAttackZoneNum != 0)
             {
@@ -189,7 +204,7 @@ public class AIDebugDisplay : MonoBehaviour
                 SetZoneTarget(m_currentAttackZoneNum);
             }
         }
-        if (m_arrowKeys.action.ReadValue<Vector2>().x > 0)
+        if (m_rArrow.action.triggered)
         {
             if (m_currentAttackZoneNum != m_passiveAttackZones.Count - 1)
             {
@@ -197,7 +212,7 @@ public class AIDebugDisplay : MonoBehaviour
                 SetZoneTarget(m_currentAttackZoneNum);
             }
         }
-        if (m_arrowKeys.action.ReadValue<Vector2>().y > 0 || m_arrowKeys.action.ReadValue<Vector2>().y < 0)
+        if (m_upArrow.action.triggered || m_downArrow.action.triggered)
         {
             if (m_targetZoneType == AttackingType.Passive)
             {
@@ -229,7 +244,7 @@ public class AIDebugDisplay : MonoBehaviour
     private void ChangeAITarget()
     {
         // Inputs for cycling debug target, could use a refactor
-        if (m_arrowKeys.action.ReadValue<Vector2>().x < 0)
+        if (m_lArrow.action.triggered)
         {
             if (m_currentAiNum != 0)
             {
@@ -237,7 +252,7 @@ public class AIDebugDisplay : MonoBehaviour
                 SetAIDebugTarget(m_currentAiNum);
             }
         }
-        if (m_arrowKeys.action.ReadValue<Vector2>().x > 0)
+        if (m_rArrow.action.triggered)
             {
             if (m_currentAiNum != m_aiList.Count - 1)
             {

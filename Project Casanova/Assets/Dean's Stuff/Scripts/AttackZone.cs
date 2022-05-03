@@ -138,7 +138,7 @@ public class AttackZone
             if (!NavMesh.SamplePosition(pointArray[i], out NavMeshHit hit, m_navMeshCheckDist, NavMesh.AllAreas))
             {
                 // If point is not valid on navmesh          
-                Debug.Log("Zone: " + m_zoneType + " " + m_zoneNum + " NavMesh Invalid");
+                //Debug.Log("Zone: " + m_zoneType + " " + m_zoneNum + " NavMesh Invalid");
                 m_isObstructed = true;
                 return;
             }
@@ -168,7 +168,7 @@ public class AttackZone
             if (!NavMesh.SamplePosition(pointArray[i], out NavMeshHit hit, m_navMeshCheckDist, NavMesh.AllAreas))
             {
                 // If point is not valid on navmesh          
-                Debug.Log("Zone: " + m_zoneType + " " + m_zoneNum + " NavMesh Invalid");
+                //Debug.Log("Zone: " + m_zoneType + " " + m_zoneNum + " NavMesh Invalid");
                 m_isObstructed = true;
                 return;
             }

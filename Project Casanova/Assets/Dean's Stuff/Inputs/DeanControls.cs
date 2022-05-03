@@ -55,10 +55,37 @@ public partial class @DeanControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Arrows"",
-                    ""type"": ""PassThrough"",
+                    ""name"": ""L_Arrow"",
+                    ""type"": ""Button"",
                     ""id"": ""11a98b12-581f-4b9f-ae37-f4f38bbb707c"",
-                    ""expectedControlType"": ""Vector2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""R_Arrow"",
+                    ""type"": ""Button"",
+                    ""id"": ""3e60b028-fe21-41bf-8fa3-3254813376d7"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Down_Arrow"",
+                    ""type"": ""Button"",
+                    ""id"": ""d48f31c0-54a8-4424-a460-74a2e4e6a694"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Up_Arrow"",
+                    ""type"": ""Button"",
+                    ""id"": ""0972756d-701a-4d9c-b1a5-32d99815f700"",
+                    ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
@@ -99,59 +126,48 @@ public partial class @DeanControls : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""2D Vector"",
-                    ""id"": ""ed507c93-a708-4378-ac33-76c09083b22a"",
-                    ""path"": ""2DVector"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Arrows"",
-                    ""isComposite"": true,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": ""up"",
-                    ""id"": ""3724e5dd-d2f6-4525-aef7-d72e4a960a06"",
-                    ""path"": ""<Keyboard>/upArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Arrows"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""down"",
-                    ""id"": ""603e69eb-7d60-4337-b7ad-527e002a146a"",
-                    ""path"": ""<Keyboard>/downArrow"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Arrows"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": ""left"",
-                    ""id"": ""354d66ad-46e6-406d-b324-0213600d4924"",
+                    ""name"": """",
+                    ""id"": ""357f9d1c-6f92-4d02-912e-caaa55f604e1"",
                     ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Arrows"",
+                    ""action"": ""L_Arrow"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": true
+                    ""isPartOfComposite"": false
                 },
                 {
-                    ""name"": ""right"",
-                    ""id"": ""2fdb3061-d9a4-4d68-a85d-7e4ef6adef86"",
+                    ""name"": """",
+                    ""id"": ""5f19a9e0-7004-496c-9434-7cf23d7c231c"",
                     ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Arrows"",
+                    ""action"": ""R_Arrow"",
                     ""isComposite"": false,
-                    ""isPartOfComposite"": true
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ebcb18e7-48a1-4d3a-8287-b3ce7749b440"",
+                    ""path"": ""<Keyboard>/downArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Down_Arrow"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""e32ac4c5-4144-4779-a3b0-77020ac4e482"",
+                    ""path"": ""<Keyboard>/upArrow"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Up_Arrow"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -255,7 +271,10 @@ public partial class @DeanControls : IInputActionCollection2, IDisposable
         m_Debug_AI_Move = m_Debug.FindAction("AI_Move", throwIfNotFound: true);
         m_Debug_AI_Combat = m_Debug.FindAction("AI_Combat", throwIfNotFound: true);
         m_Debug_Menu = m_Debug.FindAction("Menu", throwIfNotFound: true);
-        m_Debug_Arrows = m_Debug.FindAction("Arrows", throwIfNotFound: true);
+        m_Debug_L_Arrow = m_Debug.FindAction("L_Arrow", throwIfNotFound: true);
+        m_Debug_R_Arrow = m_Debug.FindAction("R_Arrow", throwIfNotFound: true);
+        m_Debug_Down_Arrow = m_Debug.FindAction("Down_Arrow", throwIfNotFound: true);
+        m_Debug_Up_Arrow = m_Debug.FindAction("Up_Arrow", throwIfNotFound: true);
         // PlayerControls
         m_PlayerControls = asset.FindActionMap("PlayerControls", throwIfNotFound: true);
         m_PlayerControls_MovePlayer = m_PlayerControls.FindAction("MovePlayer", throwIfNotFound: true);
@@ -322,7 +341,10 @@ public partial class @DeanControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Debug_AI_Move;
     private readonly InputAction m_Debug_AI_Combat;
     private readonly InputAction m_Debug_Menu;
-    private readonly InputAction m_Debug_Arrows;
+    private readonly InputAction m_Debug_L_Arrow;
+    private readonly InputAction m_Debug_R_Arrow;
+    private readonly InputAction m_Debug_Down_Arrow;
+    private readonly InputAction m_Debug_Up_Arrow;
     public struct DebugActions
     {
         private @DeanControls m_Wrapper;
@@ -330,7 +352,10 @@ public partial class @DeanControls : IInputActionCollection2, IDisposable
         public InputAction @AI_Move => m_Wrapper.m_Debug_AI_Move;
         public InputAction @AI_Combat => m_Wrapper.m_Debug_AI_Combat;
         public InputAction @Menu => m_Wrapper.m_Debug_Menu;
-        public InputAction @Arrows => m_Wrapper.m_Debug_Arrows;
+        public InputAction @L_Arrow => m_Wrapper.m_Debug_L_Arrow;
+        public InputAction @R_Arrow => m_Wrapper.m_Debug_R_Arrow;
+        public InputAction @Down_Arrow => m_Wrapper.m_Debug_Down_Arrow;
+        public InputAction @Up_Arrow => m_Wrapper.m_Debug_Up_Arrow;
         public InputActionMap Get() { return m_Wrapper.m_Debug; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -349,9 +374,18 @@ public partial class @DeanControls : IInputActionCollection2, IDisposable
                 @Menu.started -= m_Wrapper.m_DebugActionsCallbackInterface.OnMenu;
                 @Menu.performed -= m_Wrapper.m_DebugActionsCallbackInterface.OnMenu;
                 @Menu.canceled -= m_Wrapper.m_DebugActionsCallbackInterface.OnMenu;
-                @Arrows.started -= m_Wrapper.m_DebugActionsCallbackInterface.OnArrows;
-                @Arrows.performed -= m_Wrapper.m_DebugActionsCallbackInterface.OnArrows;
-                @Arrows.canceled -= m_Wrapper.m_DebugActionsCallbackInterface.OnArrows;
+                @L_Arrow.started -= m_Wrapper.m_DebugActionsCallbackInterface.OnL_Arrow;
+                @L_Arrow.performed -= m_Wrapper.m_DebugActionsCallbackInterface.OnL_Arrow;
+                @L_Arrow.canceled -= m_Wrapper.m_DebugActionsCallbackInterface.OnL_Arrow;
+                @R_Arrow.started -= m_Wrapper.m_DebugActionsCallbackInterface.OnR_Arrow;
+                @R_Arrow.performed -= m_Wrapper.m_DebugActionsCallbackInterface.OnR_Arrow;
+                @R_Arrow.canceled -= m_Wrapper.m_DebugActionsCallbackInterface.OnR_Arrow;
+                @Down_Arrow.started -= m_Wrapper.m_DebugActionsCallbackInterface.OnDown_Arrow;
+                @Down_Arrow.performed -= m_Wrapper.m_DebugActionsCallbackInterface.OnDown_Arrow;
+                @Down_Arrow.canceled -= m_Wrapper.m_DebugActionsCallbackInterface.OnDown_Arrow;
+                @Up_Arrow.started -= m_Wrapper.m_DebugActionsCallbackInterface.OnUp_Arrow;
+                @Up_Arrow.performed -= m_Wrapper.m_DebugActionsCallbackInterface.OnUp_Arrow;
+                @Up_Arrow.canceled -= m_Wrapper.m_DebugActionsCallbackInterface.OnUp_Arrow;
             }
             m_Wrapper.m_DebugActionsCallbackInterface = instance;
             if (instance != null)
@@ -365,9 +399,18 @@ public partial class @DeanControls : IInputActionCollection2, IDisposable
                 @Menu.started += instance.OnMenu;
                 @Menu.performed += instance.OnMenu;
                 @Menu.canceled += instance.OnMenu;
-                @Arrows.started += instance.OnArrows;
-                @Arrows.performed += instance.OnArrows;
-                @Arrows.canceled += instance.OnArrows;
+                @L_Arrow.started += instance.OnL_Arrow;
+                @L_Arrow.performed += instance.OnL_Arrow;
+                @L_Arrow.canceled += instance.OnL_Arrow;
+                @R_Arrow.started += instance.OnR_Arrow;
+                @R_Arrow.performed += instance.OnR_Arrow;
+                @R_Arrow.canceled += instance.OnR_Arrow;
+                @Down_Arrow.started += instance.OnDown_Arrow;
+                @Down_Arrow.performed += instance.OnDown_Arrow;
+                @Down_Arrow.canceled += instance.OnDown_Arrow;
+                @Up_Arrow.started += instance.OnUp_Arrow;
+                @Up_Arrow.performed += instance.OnUp_Arrow;
+                @Up_Arrow.canceled += instance.OnUp_Arrow;
             }
         }
     }
@@ -418,7 +461,10 @@ public partial class @DeanControls : IInputActionCollection2, IDisposable
         void OnAI_Move(InputAction.CallbackContext context);
         void OnAI_Combat(InputAction.CallbackContext context);
         void OnMenu(InputAction.CallbackContext context);
-        void OnArrows(InputAction.CallbackContext context);
+        void OnL_Arrow(InputAction.CallbackContext context);
+        void OnR_Arrow(InputAction.CallbackContext context);
+        void OnDown_Arrow(InputAction.CallbackContext context);
+        void OnUp_Arrow(InputAction.CallbackContext context);
     }
     public interface IPlayerControlsActions
     {

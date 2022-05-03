@@ -42,9 +42,15 @@ public class AttackZoneManager
     public void Update()
     {
         // Using this update function to sequentially check for obstruction in zones
-        // Todo: add increment functionality to check each zone one at a time
-        m_activeAttackZones[m_currentZoneNumToCheck].CheckForObstruction(m_obsCheckChildArray);
+
+        m_activeAttackZones[m_currentZoneNumToCheck].CheckForObstruction();
         m_passiveAttackZones[m_currentZoneNumToCheck].CheckForObstruction();
+
+        m_currentZoneNumToCheck++;
+        if (m_currentZoneNumToCheck >= m_aiManager.GetAttackZonesNum())
+        {
+            m_currentZoneNumToCheck = 0;
+        }
     }
     private void SetupAttackZones()
     {
@@ -229,5 +235,10 @@ public class AttackZoneManager
     public List<AttackZone> GetActiveAttackZones()
     {
         return m_activeAttackZones;
+    }
+
+    public float GetAnglePerSection()
+    {
+        return m_anglePerSection;
     }
 }
