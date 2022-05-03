@@ -180,6 +180,7 @@ public class AIDebugDisplay : MonoBehaviour
 
     private void ChangeZoneTarget()
     {
+        // Inputs for cycling debug target, could use a refactor
         if (m_arrowKeys.action.ReadValue<Vector2>().x < 0)
         {
             if (m_currentAttackZoneNum != 0)
@@ -227,6 +228,7 @@ public class AIDebugDisplay : MonoBehaviour
 
     private void ChangeAITarget()
     {
+        // Inputs for cycling debug target, could use a refactor
         if (m_arrowKeys.action.ReadValue<Vector2>().x < 0)
         {
             if (m_currentAiNum != 0)

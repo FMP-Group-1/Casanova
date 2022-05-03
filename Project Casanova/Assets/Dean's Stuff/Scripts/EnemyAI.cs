@@ -184,13 +184,12 @@ public class EnemyAI : MonoBehaviour
 
 
 
-    //New Input System Shit
+    //New Input System
     private DeanControls m_inputs;
 
     private void Awake()
     {
-
-        //Actuall Make the controls
+        // Create the control input
         m_inputs = new DeanControls();
 
 
@@ -294,10 +293,12 @@ public class EnemyAI : MonoBehaviour
             {
                 if (HasReachedDestination())
                 {
+                    // If reached the end of the patrol points, go to wait state
                     if (m_patrolDestinationIndex >= m_patrolRoutePoints.Count - 1)
                     {
                         SetPatrolState(PatrolState.Waiting);
                     }
+                    // Move to next patrol point in sequence
                     else
                     {
                         m_patrolDestinationIndex++;
@@ -310,10 +311,12 @@ public class EnemyAI : MonoBehaviour
             {
                 if (HasReachedDestination())
                 {
+                    // If reached the end of the patrol points, go to wait state
                     if (m_patrolDestinationIndex <= 0)
                     {
                         SetPatrolState(PatrolState.Waiting);
                     }
+                    // Move to next patrol point in sequence
                     else
                     {
                         m_patrolDestinationIndex--;
@@ -326,6 +329,7 @@ public class EnemyAI : MonoBehaviour
             {
                 m_patrolTimer += Time.deltaTime;
 
+                // Using a timer to make the AI wait before patrolling the opposite direction
                 if (m_patrolTimer >= m_patrolWaitTime)
                 {
                     if (m_patrolDestinationIndex >= m_patrolRoutePoints.Count - 1)
@@ -344,7 +348,7 @@ public class EnemyAI : MonoBehaviour
 
     private void CombatUpdate()
     {
-        // If to help space out attacks a bit more
+        // Condition to help space out attacks a bit more
         if (m_aiManager.CanAttack() && m_combatState != CombatState.Pursuing && m_currentAttackingType == AttackingType.Active)
         {
             m_timeSinceLastAttack += Time.deltaTime;
@@ -367,13 +371,16 @@ public class EnemyAI : MonoBehaviour
                 {
                     AttackZone currentAttackZone = m_attackZoneManager.FindAttackZone(this);
 
+                    // If the current zone exists and isn't occupied by another AI
                     if (currentAttackZone != null && currentAttackZone.IsAvailable())
                     {
+                        // If this AI already has an occupied zone, empty it
                         if (m_occupiedAttackZone != null)
                         {
                             m_occupiedAttackZone.EmptyZone();
                         }
 
+                        // Set to maintain distance, then set this zone as the occupied zone
                         SetCombatState(CombatState.MaintainDist);
                         SetAttackZone(currentAttackZone);
                         SetOccupiedAttackZone(m_currentAttackZone);
@@ -387,27 +394,33 @@ public class EnemyAI : MonoBehaviour
                 }
                 break;
             }
+            // Strafe around the player
             case CombatState.Strafing:
             {
+                // Timed check to determine whether the AI should try and occupy the zone they're currently in
                 TimedAttackZoneCheck();
 
+                // Function to continue strafing
                 Strafe();
 
                 StrafeRangeCheck();
                 AttackCheck();
                 break;
             }
+            // Strafe with the intention of finding a zone to occupy
             case CombatState.StrafingToZone:
             {
                 Strafe();
 
                 StrafeRangeCheck();
 
+                // Radial obstruction check looks for other AI to avoid bumping into
                 RadialObstructionCheck();
                 StrafeZoneCheck();
                 AttackCheck();
                 break;
             }
+            // Running in circle to find zone
             case CombatState.RadialRunToZone:
             {
                 RadialRun();
@@ -419,6 +432,7 @@ public class EnemyAI : MonoBehaviour
                 AttackCheck();
                 break;
             }
+            // Maintain the current distance between AI and player
             case CombatState.MaintainDist:
             {
                 TimedAttackZoneCheck();
@@ -431,6 +445,7 @@ public class EnemyAI : MonoBehaviour
                 AttackCheck();
                 break;
             }
+            // Close the distance between AI and player
             case CombatState.ClosingDist:
             {
                 m_navMeshAgent.destination = m_player.transform.position;
@@ -448,6 +463,7 @@ public class EnemyAI : MonoBehaviour
 
                 break;
             }
+            // Increase the distance between AI and player
             case CombatState.BackingUp:
             {
                 // Todo: Optimise this check
@@ -467,6 +483,7 @@ public class EnemyAI : MonoBehaviour
 
                 break;
             }
+            // Begin moving in to range for an attack
             case CombatState.MovingToAttack:
             {
                 m_navMeshAgent.destination = m_player.transform.position;
@@ -477,6 +494,7 @@ public class EnemyAI : MonoBehaviour
                 }
                 break;
             }
+            // Moving to a specific zone
             case CombatState.MovingToZone:
             {
                 if (HasReachedDestination())
@@ -486,6 +504,7 @@ public class EnemyAI : MonoBehaviour
                 }
                 break;
             }
+            // Currently in attack animation
             case CombatState.Attacking:
             {
                 transform.LookAt(m_player.transform.position);
@@ -601,24 +620,28 @@ public class EnemyAI : MonoBehaviour
             }
             case CombatState.Strafing:
             {
+                // Randomise the direction to strafe
                 m_strafeDir = (StrafeDir)Random.Range(0, 2);
                 StartStrafeAnim(m_strafeDir);
                 break;
             }
             case CombatState.StrafingToZone:
             {
+                // Randomise the direction to strafe
                 m_strafeDir = (StrafeDir)Random.Range(0, 2);
                 StartStrafeAnim(m_strafeDir);
                 break;
             }
             case CombatState.RadialRunToZone:
             {
+                // Randomise the direction to run
                 m_strafeDir = (StrafeDir)Random.Range(0, 2);
                 StartRunAnim();
                 break;
             }
             case CombatState.MaintainDist:
             {
+                // Randomise delay before moving again
                 m_timeUntilStrafe = Random.Range(m_minDelayBeforeStrafe, m_maxDelayBeforeStrafe);
                 StartCombatIdleAnim();
                 break;
@@ -657,7 +680,6 @@ public class EnemyAI : MonoBehaviour
     private void RadialRun()
     {
         Vector3 offset;
-        // Basic start to strafe logic
         if (m_strafeDir == StrafeDir.Left)
         {
             offset = m_player.transform.position - transform.position;
@@ -734,6 +756,7 @@ public class EnemyAI : MonoBehaviour
 
     private void AttackCheck()
     {
+        // Checking if it's been long enough to attack, if the current AI is an active attacker, and checking with the AI manager if attacking is allowed currently
         if (m_timeSinceLastAttack >= m_attackTimer && m_aiManager.CanAttack() && m_attackEnabled && m_currentAttackingType == AttackingType.Active)
         {
             SetCombatState(CombatState.MovingToAttack);
@@ -908,26 +931,31 @@ public class EnemyAI : MonoBehaviour
             if (m_currentAttackZone != m_occupiedAttackZone)
             {
                 // Todo: Make AttackZone use same enum for attacking types
+                // If in the active zone, but not an active attacker, back up
                 if (m_currentAttackZone.GetZoneType() == ZoneType.Active && m_currentAttackingType != AttackingType.Active)
                 {
                     SetCombatState(CombatState.BackingUp);
                     return;
                 }
+                // If in a passive zone, but an active attacker, close the distance
                 else if (m_currentAttackZone.GetZoneType() == ZoneType.Passive && m_currentAttackingType != AttackingType.Passive)
                 {
                     SetCombatState(CombatState.ClosingDist);
                     return;
                 }
+                // If in a zone
                 if (m_currentAttackZone != null)
                 {
+                    // If zone is not occupied
                     if (!m_currentAttackZone.IsOccupied())
                     {
-                        // Occupy current zone
+                        // Empty previously occupied zone
                         if (m_occupiedAttackZone != null)
                         {
                             m_occupiedAttackZone.EmptyZone();
                         }
 
+                        // Occupy current zone
                         m_occupiedAttackZone = m_currentAttackZone;
                         m_occupiedAttackZone.SetOccupant(this);
                     }
@@ -977,12 +1005,13 @@ public class EnemyAI : MonoBehaviour
                 {
                     if (!m_currentAttackZone.IsOccupied())
                     {
-                        // Occupy current zone
+                        // Empty previously occupied zone
                         if (m_occupiedAttackZone != null)
                         {
                             m_occupiedAttackZone.EmptyZone();
                         }
 
+                        // Occupy current zone
                         m_occupiedAttackZone = m_currentAttackZone;
                         m_occupiedAttackZone.SetOccupant(this);
                         SetCombatState(CombatState.MaintainDist);

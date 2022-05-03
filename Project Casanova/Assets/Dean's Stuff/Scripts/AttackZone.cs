@@ -17,7 +17,7 @@ public class AttackZone
     private EnemyAI m_occupant;
     private GameObject m_player;
     private int m_zoneNum;
-    private float m_navMeshCheckDist = 1.0f;
+    private float m_navMeshCheckDist = 0.1f;
     private float m_zoneAngleSize;
     private float m_zoneAngleStart;
     private float m_zoneAngleEnd;
@@ -120,22 +120,67 @@ public class AttackZone
 
     public void CheckForObstruction()
     {
+        m_isObstructed = false;
+
         // Todo: Awful function, needs rework, just putting in as basic logic
         Vector3[] pointArray = new Vector3[5];
 
-        pointArray[0] = DirFromAngle(m_zoneAngleStart, true, m_player) * m_zoneDistStart;
-        pointArray[1] = DirFromAngle(m_zoneAngleStart, true, m_player) * m_zoneDistEnd;
-        pointArray[2] = DirFromAngle(m_zoneAngleEnd, true, m_player) * m_zoneDistStart;
-        pointArray[3] = DirFromAngle(m_zoneAngleEnd, true, m_player) * m_zoneDistEnd;
-        pointArray[4] = DirFromAngle(m_zoneDistEnd - (m_zoneAngleSize * 0.5f), true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
+        // Manually setting positions, as mentioned above needs rework, just did this to get the main logic working
+        pointArray[0] = m_player.transform.position + DirFromAngle(m_zoneAngleStart, true, m_player) * m_zoneDistStart;
+        pointArray[1] = m_player.transform.position + DirFromAngle(m_zoneAngleStart, true, m_player) * m_zoneDistEnd;
+        pointArray[2] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd, true, m_player) * m_zoneDistStart;
+        pointArray[3] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd, true, m_player) * m_zoneDistEnd;
+        pointArray[4] = m_player.transform.position + DirFromAngle((m_zoneDistEnd - m_zoneDistStart) * 0.5f, true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
 
         for (int i = 0; i < pointArray.Length; i++)
         {
+            // SamplePosition to check whether the position is currently on the navmesh
             if (!NavMesh.SamplePosition(pointArray[i], out NavMeshHit hit, m_navMeshCheckDist, NavMesh.AllAreas))
             {
                 // If point is not valid on navmesh          
                 Debug.Log("Zone: " + m_zoneType + " " + m_zoneNum + " NavMesh Invalid");
+                m_isObstructed = true;
+                return;
             }
+        }
+    }
+
+    public void CheckForObstruction(List<GameObject> objectArray )
+    {
+        m_isObstructed = false;
+
+        // Todo: Awful function, needs rework, just putting in as basic logic
+        Vector3[] pointArray = new Vector3[5];
+
+        // Manually setting positions, as mentioned above needs rework, just did this to get the main logic working
+        pointArray[0] = m_player.transform.position + DirFromAngle(m_zoneAngleStart, true, m_player) * m_zoneDistStart;
+        pointArray[1] = m_player.transform.position + DirFromAngle(m_zoneAngleStart, true, m_player) * m_zoneDistEnd;
+        pointArray[2] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd, true, m_player) * m_zoneDistStart;
+        pointArray[3] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd, true, m_player) * m_zoneDistEnd;
+        pointArray[4] = m_player.transform.position + DirFromAngle((m_zoneDistEnd - m_zoneDistStart) * 0.5f, true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
+
+        // Using this function to set the position of the debug objects as a way to visualize where these points are
+        ObsCheckPoints(pointArray, objectArray);
+
+        for (int i = 0; i < pointArray.Length; i++)
+        {
+            // SamplePosition to check whether the position is currently on the navmesh
+            if (!NavMesh.SamplePosition(pointArray[i], out NavMeshHit hit, m_navMeshCheckDist, NavMesh.AllAreas))
+            {
+                // If point is not valid on navmesh          
+                Debug.Log("Zone: " + m_zoneType + " " + m_zoneNum + " NavMesh Invalid");
+                m_isObstructed = true;
+                return;
+            }
+        }
+    }
+
+    private void ObsCheckPoints(Vector3[] positionArray, List<GameObject> objectArray)
+    {
+        // Setting position of given objects in an array to the positions of an array of positions, used above for debug visualization
+        for (int i = 0; i < positionArray.Length; i++)
+        {
+            objectArray[i].transform.position = positionArray[i];
         }
     }
 
