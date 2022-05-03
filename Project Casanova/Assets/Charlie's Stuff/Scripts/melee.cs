@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class melee : MonoBehaviour
 {
@@ -28,6 +26,12 @@ public class melee : MonoBehaviour
 
     //public Text comboDebugText;
 
+    public Transform swordTip;
+    public Material lineMaterial;
+    public float lineTime = 1f;
+
+    public GameObject colliderSweepThing;
+
     private enum Attack
     {
         Nothing,
@@ -46,6 +50,7 @@ public class melee : MonoBehaviour
 
         m_playerControls.Enable();
         animator = GetComponent<Animator>();
+
     }
 
 
@@ -163,19 +168,38 @@ public class melee : MonoBehaviour
 
         }
 
+        //rotate COllider Thingy to angle to the sword (ALL THE TIME)
+
+        //Readability
+        Vector3 startPosition = transform.position;
+        startPosition.y = 0f;
+
+        Vector3 targetPosition = swordTip.position;
+        targetPosition.y = 0;
+
+        //Get target angle in degrees
+        float targetAngle = Mathf.Rad2Deg * ( Mathf.Atan2( targetPosition.x - startPosition.x, targetPosition.z - startPosition.z ) );
+
+        //Debug.Log( targetAngle ); 
+
+        Vector3 targetRotation = new Vector3 ( 0f, targetAngle, 0f );
+        colliderSweepThing.transform.rotation = Quaternion.Euler(targetRotation);
+
     }
 
     public void CollisionsStart()
     {
         //comboDebugText.text += "\nColl. Start\n";
-        swordCollider.enabled = true;
+        colliderSweepThing.SetActive( true );
+
     }
 
     public void CollisionsEnd()
     {
         //comboDebugText.text += "\nColl. End\n";
-        swordCollider.enabled = false;
         canStartNextAttack = true;
+
+        colliderSweepThing.SetActive( false );
 
     }
 

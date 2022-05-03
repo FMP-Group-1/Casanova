@@ -16,7 +16,7 @@ public class swordAttack : MonoBehaviour
     {
 
     }
-
+    /*
     private void OnCollisionEnter( Collision collision )
     {
         if ( collision.gameObject.tag == "Enemy" )
@@ -25,6 +25,6 @@ public class swordAttack : MonoBehaviour
 
         }
 
-    }
+    }*/
 
 }
