@@ -50,7 +50,7 @@ public class melee : MonoBehaviour
 
         m_playerControls.Enable();
         animator = GetComponent<Animator>();
-
+        colliderSweepThing.SetActive(false);
     }
 
 
