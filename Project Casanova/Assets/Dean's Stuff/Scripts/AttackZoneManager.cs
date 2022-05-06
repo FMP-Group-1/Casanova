@@ -41,6 +41,11 @@ public class AttackZoneManager
 
     public void Update()
     {
+        ObsCheckUpdate();
+    }
+
+    private void ObsCheckUpdate()
+    {
         // Using this update function to sequentially check for obstruction in zones
         //m_passiveAttackZones[0].CheckForObstruction(m_obsCheckChildArray);
 
@@ -53,6 +58,7 @@ public class AttackZoneManager
             m_currentZoneNumToCheck = 0;
         }
     }
+
     private void SetupAttackZones()
     {
         // Setting up attack zone objects, and giving them their initial data
@@ -71,7 +77,8 @@ public class AttackZoneManager
     // Function for finding the attack zone that the given enemy is in
     public AttackZone FindAttackZone( EnemyAI enemyToCheck )
     {
-        // Messy equation, needs refactoring, but basic logic works
+        AttackZone returnZone = null;
+
         Vector3 enemyPos = enemyToCheck.gameObject.transform.position;
         Vector3 playerPos = m_player.transform.position;
 
@@ -80,10 +87,6 @@ public class AttackZoneManager
 
         Vector3 dirFromPlayer = (enemyPos - playerPos).normalized;
         float angle = Vector3.SignedAngle(dirFromPlayer, Vector3.forward, Vector3.down);
-
-        // Todo: In BIG need of refactor
-
-        //Debug.Log("Zone Angle: " + angle);
 
         angle += m_sectionHalfAngle;
 
@@ -100,16 +103,15 @@ public class AttackZoneManager
         {
             if (dist < m_aiManager.GetActiveAttackerMaxDist())
             {
-                return m_activeAttackZones[(int)(angle / sectionAngle)];
+                returnZone = m_activeAttackZones[(int)(angle / sectionAngle)];
             }
             else
             {
-                return m_passiveAttackZones[(int)(angle / sectionAngle)];
+                returnZone = m_passiveAttackZones[(int)(angle / sectionAngle)];
             }
         }
 
-        // Todo: Refactor this function to not use null returns (maybe, kind of useful atm)
-        return null;
+        return returnZone;
     }
 
     // Function for randomising a position for a given enemy to travel to, not currently being made use of, as enemies have a different logic setup right now
@@ -180,10 +182,6 @@ public class AttackZoneManager
 
         Vector3 dirFromPlayer = (enemyPos - playerPos).normalized;
         float angle = Vector3.SignedAngle(dirFromPlayer, Vector3.forward, Vector3.down);
-
-        // Todo: In BIG need of refactor
-
-        //Debug.Log("Zone Angle: " + angle);
 
         angle += m_sectionHalfAngle;
 

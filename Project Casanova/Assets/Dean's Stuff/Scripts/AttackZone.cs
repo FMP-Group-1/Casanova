@@ -26,6 +26,8 @@ public class AttackZone
     private float m_obstructionDistBuffer = 0.7f;
     private float m_obstructionAngBuffer = 2.0f;
 
+    private Vector3[] m_obstPointArray = new Vector3[5];
+
     public AttackZone(bool isOccupied, ZoneType zoneType, int zoneNum)
     {
         m_isOccupied = isOccupied;
@@ -124,57 +126,46 @@ public class AttackZone
     {
         m_isObstructed = false;
 
-        // Todo: Awful function, needs rework, just putting in as basic logic
-        Vector3[] pointArray = new Vector3[5];
+        m_obstPointArray[0] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
+        m_obstPointArray[1] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
+        m_obstPointArray[2] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
+        m_obstPointArray[3] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
 
-        // Manually setting positions, as mentioned above needs rework, just did this to get the main logic working
-        pointArray[0] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
-        pointArray[1] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
-        pointArray[2] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
-        pointArray[3] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
+        m_obstPointArray[4] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - (m_zoneAngleSize * 0.5f), true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
 
-        // Center point, needs more working out
-        pointArray[4] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - (m_zoneAngleSize * 0.5f), true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
-
-        for (int i = 0; i < pointArray.Length; i++)
+        for (int i = 0; i < m_obstPointArray.Length; i++)
         {
             // SamplePosition to check whether the position is currently on the navmesh
-            if (!NavMesh.SamplePosition(pointArray[i], out NavMeshHit hit, m_navMeshCheckDist, NavMesh.AllAreas))
+            if (!NavMesh.SamplePosition(m_obstPointArray[i], out NavMeshHit hit, m_navMeshCheckDist, NavMesh.AllAreas))
             {
-                // If point is not valid on navmesh          
-                //Debug.Log("Zone: " + m_zoneType + " " + m_zoneNum + " NavMesh Invalid");
+                // If point is not valid on navmesh
                 m_isObstructed = true;
                 return;
             }
         }
     }
 
+    // Purely for visualizing the obs point check, will need removing
     public void CheckForObstruction(List<GameObject> objectArray )
     {
         m_isObstructed = false;
 
-        // Todo: Awful function, needs rework, just putting in as basic logic
-        Vector3[] pointArray = new Vector3[5];
+        m_obstPointArray[0] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
+        m_obstPointArray[1] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
+        m_obstPointArray[2] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
+        m_obstPointArray[3] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
 
-        // Manually setting positions, as mentioned above needs rework, just did this to get the main logic working
-        pointArray[0] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
-        pointArray[1] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
-        pointArray[2] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
-        pointArray[3] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
-
-        // Center point, needs more working out
-        pointArray[4] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - (m_zoneAngleSize * 0.5f), true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
+        m_obstPointArray[4] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - (m_zoneAngleSize * 0.5f), true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
 
         // Using this function to set the position of the debug objects as a way to visualize where these points are
-        ObsCheckPoints(pointArray, objectArray);
+        ObsCheckPoints(m_obstPointArray, objectArray);
 
-        for (int i = 0; i < pointArray.Length; i++)
+        for (int i = 0; i < m_obstPointArray.Length; i++)
         {
             // SamplePosition to check whether the position is currently on the navmesh
-            if (!NavMesh.SamplePosition(pointArray[i], out NavMeshHit hit, m_navMeshCheckDist, NavMesh.AllAreas))
+            if (!NavMesh.SamplePosition(m_obstPointArray[i], out NavMeshHit hit, m_navMeshCheckDist, NavMesh.AllAreas))
             {
-                // If point is not valid on navmesh          
-                //Debug.Log("Zone: " + m_zoneType + " " + m_zoneNum + " NavMesh Invalid");
+                // If point is not valid on navmesh
                 m_isObstructed = true;
                 return;
             }
