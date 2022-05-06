@@ -28,6 +28,9 @@ public class AIManager : MonoBehaviour
 
     [SerializeField]
     private int m_maxActiveAttackers = 3;
+
+    [SerializeField]
+    private GameObject m_obsCheckDebug;
     
     void Start()
     {
@@ -39,7 +42,7 @@ public class AIManager : MonoBehaviour
 
     void Update()
     {
-
+        m_attackZoneManager.Update();
     }
 
     private void RegisterEnemies()
@@ -50,12 +53,16 @@ public class AIManager : MonoBehaviour
 
             if (enemyScript != null)
             {
+                // Adding the enemy into the list
                 m_enemyList.Add(enemyScript);
+
+                // Giving the enemy a reference to the managers
                 enemyScript.SetAIManagerRef(this);
                 enemyScript.SetAttackZoneManagerRef(m_attackZoneManager);
             }
             else
             {
+                // Notifying user that an enemy has failed to register with the manager
                 Debug.Log("AIManager: Failed to add EnemyAI script of Enemy: " + enemy.name);
             }
         }
@@ -176,5 +183,10 @@ public class AIManager : MonoBehaviour
     public void SetCanAttack(bool canAttack)
     {
         m_canAttack = canAttack;
+    }
+
+    public GameObject GetObsCheckDebug()
+    {
+        return m_obsCheckDebug;
     }
 }

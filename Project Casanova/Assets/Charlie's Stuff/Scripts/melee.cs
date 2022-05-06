@@ -10,9 +10,6 @@ public class melee : MonoBehaviour
     //[SerializeField]
     //private GameObject realSword;
 
-    [SerializeField]
-    private swordAttack swordScript;
-
     public BoxCollider swordCollider;
 
     bool swordEquipped = true;
