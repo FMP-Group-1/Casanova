@@ -4,19 +4,18 @@ using UnityEngine;
 
 public class SwordCollisionManager : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-	private void OnTriggerEnter( Collider other )
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Start
+    * Parameters: Collider other
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Sword Collision with Enemy
+    **************************************************************************************/
+    private void OnTriggerEnter( Collider other )
     {
         if ( other.gameObject.tag == "Enemy" )
         {

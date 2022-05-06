@@ -8,13 +8,10 @@ public class melee : MonoBehaviour
     //[SerializeField]
     //private GameObject realSword;
 
-    [SerializeField]
-    private swordAttack swordScript;
-
     public BoxCollider swordCollider;
 
-    bool swordEquipped = true;
-    bool currentlyInTheProcessOfSheathing = false;
+    //private bool swordEquipped = true;
+    //private bool currentlyInTheProcessOfSheathing = false;
 
     private Animator animator;
 
@@ -22,15 +19,21 @@ public class melee : MonoBehaviour
 
     private PlayerController m_playerController;
 
-    public bool canStartNextAttack = true;
+    [SerializeField]
+    private bool canStartNextAttack = true;
 
-    //public Text comboDebugText;
+    //[SerializeField]
+    //private Text comboDebugText;
 
-    public Transform swordTip;
-    public Material lineMaterial;
-    public float lineTime = 1f;
-
-    public GameObject colliderSweepThing;
+    [SerializeField]
+    private Transform swordTip;
+    [SerializeField]
+    private Material lineMaterial;
+    //[SerializeField]
+    //private float lineTime = 1f;
+    
+    [SerializeField]
+    private GameObject colliderSweepThing;
 
     private enum Attack
     {
@@ -41,7 +44,17 @@ public class melee : MonoBehaviour
 
     private Attack attackType;
 
-    // Start is called before the first frame update
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Start
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Setup any variables or components
+    **************************************************************************************/
     void Start()
     {
         m_playerControls = new PlayerControls();
@@ -59,34 +72,15 @@ public class melee : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        /*if ( m_playerControls.Combat.SheatheUnsheathe.triggered )
-        {
-            if ( !currentlyInTheProcessOfSheathing )
-            {
-                currentlyInTheProcessOfSheathing = true;
-
-                if ( swordEquipped )
-                {
-                    animator.SetTrigger( "sheatheSword" );
-                    // swordEquipped = false;
-                }
-                else
-                {
-                    animator.SetTrigger( "drawSword" );
-                    // swordEquipped = true;
-                }
-            }
-        }*/
-
         //Attack straight from unarmed. No Blend Animation
         //Light Attack
         if ( m_playerControls.Combat.LightAtatck.triggered )
         {
-            //So Sword is NOT equipped
-            if ( !swordEquipped )
-            {
-                swordEquipped = true;
-            }
+            //Sword is NOT equipped
+            //if ( !swordEquipped )
+            //{
+            //    swordEquipped = true;
+            //}
 
             attackType = Attack.Light;
 
@@ -94,26 +88,27 @@ public class melee : MonoBehaviour
         //Heavy Attack
         if ( m_playerControls.Combat.HeavyAttack.triggered )
         {
-            //So Sword is NOT equipped
-            if ( !swordEquipped )
-            {
-                swordEquipped = true;
-            }
+            //Sword is NOT equipped
+            //if ( !swordEquipped )
+            //{
+            //    swordEquipped = true;
+            //}
 
             attackType = Attack.Heavy;
         }
         //Heavy Attack
         if ( m_playerControls.Combat.Whirlwind.triggered )
         {
-            //So Sword is NOT equipped
-            if ( !swordEquipped )
-            {
-                swordEquipped = true;
-            }
+            //Sword is NOT equipped
+            //if ( !swordEquipped )
+            //{
+            //    swordEquipped = true;
+            //}
 
             attackType = Attack.Heavy;
             animator.SetTrigger( "whirlwind" );
         }
+        /*
         //Whirlwind has been released
         if ( m_playerControls.Combat.Whirlwind.ReadValue<float>() == 0 )
         {
@@ -123,7 +118,7 @@ public class melee : MonoBehaviour
         {
             animator.SetBool( "whirlwindHeld", true );
         }
-
+        */
 
         //Basically, if you have reached the end of an attack, you are no longer attacking, but if "attackType" is not nothing, there's somehing queued up, so lets do it
         if ( canStartNextAttack && attackType != Attack.Nothing )
@@ -168,25 +163,35 @@ public class melee : MonoBehaviour
 
         }
 
-        //rotate COllider Thingy to angle to the sword (ALL THE TIME)
-
-        //Readability
+        //rotate Collider Thingy to angle to the sword (ALL THE TIME)
+        //Verbose for Readability
+        //Rotate From...
         Vector3 startPosition = transform.position;
         startPosition.y = 0f;
-
+        //... to....
         Vector3 targetPosition = swordTip.position;
         targetPosition.y = 0;
 
-        //Get target angle in degrees
+        //This is now the angle (between 0 and 180?) between origin and target
         float targetAngle = Mathf.Rad2Deg * ( Mathf.Atan2( targetPosition.x - startPosition.x, targetPosition.z - startPosition.z ) );
 
-        //Debug.Log( targetAngle ); 
-
+        //Create a vector 3, with new angle, to be what we want the new rotation point to be
         Vector3 targetRotation = new Vector3 ( 0f, targetAngle, 0f );
         colliderSweepThing.transform.rotation = Quaternion.Euler(targetRotation);
 
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: CollisionsStart
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Called by Animation Events when the attacks collisions should begin
+    **************************************************************************************/
     public void CollisionsStart()
     {
         //comboDebugText.text += "\nColl. Start\n";
@@ -194,6 +199,17 @@ public class melee : MonoBehaviour
 
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: CollisionsEnd
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Called by Animation Events when the attacks collisions should end
+    **************************************************************************************/
     public void CollisionsEnd()
     {
         //comboDebugText.text += "\nColl. End\n";
@@ -203,53 +219,54 @@ public class melee : MonoBehaviour
 
     }
 
-    /*
-    public void endSheathing()
-    {
-        currentlyInTheProcessOfSheathing = false;
-    }
-
-    public void EquipSword()
-    {
-        swordEquipped = true;
-        realSword.SetActive( true );
-        holsteredSword.SetActive( false );
-    }
-
-    public void SheatheSword()
-    {
-
-        swordEquipped = false;
-        realSword.SetActive( false );
-        holsteredSword.SetActive( true );
-    }
-    */
-
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: AttackBegin
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Called by Animation Events when the attack animation FIRST begins.
+    *               Used mainly for rotating the player to the direction they're inputting
+    **************************************************************************************/
     private void AttackBegin()
 	{
-        //Cap to how far can rotate;
-        float maxRotate = 40;
-        float rotationSpeed = 4f;
-        Transform cameraMainTransform = Camera.main.transform;
-
-        Vector2 playerInput = m_playerController.GetPlayerInput();
-
-        float targetAngle = Mathf.Atan2( playerInput.x, playerInput.y ) * Mathf.Rad2Deg + cameraMainTransform.eulerAngles.y;
-        Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
-        // We have the TARGET angle, where we really are wanting to go, but we don't wanna go that far.
-
-        Debug.Log( "Current Angle: " + transform.rotation.eulerAngles.y );
-        Debug.Log( "Target Angle:  " + targetAngle );
+        //The direction the player is inputing
+        Vector3 moveDirection = transform.position + m_playerController.GetMoveDirection();
 
 
-        //Quaternion MoveDirection = Quaternion.Euler(m_playerController.GetMoveDirection());
+        //Current Position value
+        Vector3 startPosition = transform.position;
+        startPosition.y = 0f;
 
+        Vector3 targetPosition = moveDirection;
+        targetPosition.y = 0;
 
-        //Need to make it based on inputs.
+        //Get target angle in degrees
+        float targetAngle = Mathf.Rad2Deg * ( Mathf.Atan2( targetPosition.x - startPosition.x, targetPosition.z - startPosition.z ) );
 
-        StartCoroutine(Rotate( targetRotation ) );
+        //Debug.Log( targetAngle ); 
+
+        Quaternion targetRotation = Quaternion.Euler( new Vector3 ( 0f, targetAngle, 0f ));
+
+        //Rotate player over a short time, to the place where the player is trying to move to
+        StartCoroutine( RotatePlayer( targetRotation ) );
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: EndCombo
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Called by Animation Events when the attack combo ends, to reset variables
+    *               that allow the player to move or fall
+    **************************************************************************************/
     public void EndCombo()
     {
 		if( !animator.IsInTransition(0) )
@@ -274,8 +291,18 @@ public class melee : MonoBehaviour
 
     }
 
-    //Target angle is not actually where you will end up! It is the point you are looking, so it could be 180 degrees away, we are not going that far
-    IEnumerator Rotate( Quaternion targetRotation )
+    /**************************************************************************************
+    * Type: IEnumerator
+    * 
+    * Name: RotatePlayer
+    * Parameters: Quaternion targetRotation
+    * Return: null
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Over a set time, rotate the player to face the new direction
+    **************************************************************************************/
+    IEnumerator RotatePlayer( Quaternion targetRotation )
     {
         float inTime = 0.2f; ;
         for( var t = 0f; t < 1; t += Time.deltaTime / inTime )

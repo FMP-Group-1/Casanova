@@ -206,7 +206,7 @@ namespace Substance.Platform
 
                     if (DllHandle == IntPtr.Zero)
                     {
-                        Debug.LogError("Substance engine failed to load.");
+                        //Debug.LogError("Substance engine failed to load.");
                     }
                 }
             }

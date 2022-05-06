@@ -216,14 +216,14 @@ AnimatorStateMachine:
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
-  - first: {fileID: -7011014140529778589}
-    second:
-    - {fileID: 8583702674458626282}
-    - {fileID: 8038796218775122043}
   - first: {fileID: 2620673676442588479}
     second:
     - {fileID: -5578271243071071838}
     - {fileID: 4846938489902079395}
+  - first: {fileID: -7011014140529778589}
+    second:
+    - {fileID: 8583702674458626282}
+    - {fileID: 8038796218775122043}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 50, y: 20, z: 0}
   m_EntryPosition: {x: -330, y: 20, z: 0}
@@ -325,7 +325,7 @@ AnimatorStateTransition:
   m_Name: Return to Move
   m_Conditions:
   - m_ConditionMode: 3
-    m_ConditionEvent: forwardSpeed
+    m_ConditionEvent: movingSpeed
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 0}
@@ -423,7 +423,7 @@ AnimatorStateTransition:
   m_Name: Return to Move
   m_Conditions:
   - m_ConditionMode: 3
-    m_ConditionEvent: forwardSpeed
+    m_ConditionEvent: movingSpeed
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -5471811009597948236}
@@ -522,7 +522,7 @@ AnimatorStateTransition:
   m_Name: Return to Move
   m_Conditions:
   - m_ConditionMode: 3
-    m_ConditionEvent: forwardSpeed
+    m_ConditionEvent: movingSpeed
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 0}
@@ -650,7 +650,7 @@ AnimatorStateTransition:
   m_Name: Land to Move
   m_Conditions:
   - m_ConditionMode: 3
-    m_ConditionEvent: forwardSpeed
+    m_ConditionEvent: movingSpeed
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 0}
@@ -783,7 +783,7 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: Blend
     m_Mirror: 0
-  m_BlendParameter: forwardSpeed
+  m_BlendParameter: movingSpeed
   m_BlendParameterY: forwardSpeed
   m_MinThreshold: 0
   m_MaxThreshold: 1
@@ -1340,79 +1340,79 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: light
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: heavy
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: forwardSpeed
+    m_Controller: {fileID: 0}
+  - m_Name: movingSpeed
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: comboActive
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: canFall
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: inAir
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: currentlyAttacking
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: drawSword
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: sheatheSword
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: whirlwind
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: whirlwindHeld
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: jumped
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -1479,9 +1479,9 @@ AnimatorStateMachine:
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
-  - first: {fileID: -4483734559022611988}
-    second: []
   - first: {fileID: 969334637605749433}
+    second: []
+  - first: {fileID: -4483734559022611988}
     second: []
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: -80, y: -20, z: 0}
@@ -1763,9 +1763,6 @@ AnimatorStateMachine:
     second:
     - {fileID: 3910445519534710428}
     - {fileID: 5357625246289755668}
-  - first: {fileID: 1629611850086898750}
-    second:
-    - {fileID: 7767908661844581828}
   - first: {fileID: 2702837486843879061}
     second:
     - {fileID: -3535022633998364407}
@@ -1774,6 +1771,9 @@ AnimatorStateMachine:
     second:
     - {fileID: 68889173616535689}
     - {fileID: 1274201130124966176}
+  - first: {fileID: 1629611850086898750}
+    second:
+    - {fileID: 7767908661844581828}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 60, y: -20, z: 0}
   m_EntryPosition: {x: 370, y: -10, z: 0}
@@ -2188,7 +2188,7 @@ AnimatorStateTransition:
   m_Name: Return to Move
   m_Conditions:
   - m_ConditionMode: 3
-    m_ConditionEvent: forwardSpeed
+    m_ConditionEvent: movingSpeed
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 0}
@@ -2386,14 +2386,14 @@ AnimatorStateMachine:
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
-  - first: {fileID: -631584212696142805}
-    second:
-    - {fileID: -7754844404729205794}
-    - {fileID: 7306105264994760903}
   - first: {fileID: 6511955426513122599}
     second:
     - {fileID: -3250006310011763823}
     - {fileID: -6687376788369908118}
+  - first: {fileID: -631584212696142805}
+    second:
+    - {fileID: -7754844404729205794}
+    - {fileID: 7306105264994760903}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 10, y: 110, z: 0}
   m_EntryPosition: {x: -380, y: -290, z: 0}
@@ -2480,7 +2480,7 @@ AnimatorStateTransition:
   m_Name: Return to Move
   m_Conditions:
   - m_ConditionMode: 3
-    m_ConditionEvent: forwardSpeed
+    m_ConditionEvent: movingSpeed
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 0}
@@ -2823,7 +2823,7 @@ AnimatorStateTransition:
   m_Name: Return to Move
   m_Conditions:
   - m_ConditionMode: 3
-    m_ConditionEvent: forwardSpeed
+    m_ConditionEvent: movingSpeed
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 0}
