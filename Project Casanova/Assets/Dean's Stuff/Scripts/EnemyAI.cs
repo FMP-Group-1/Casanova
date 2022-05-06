@@ -182,8 +182,6 @@ public class EnemyAI : MonoBehaviour
     [Tooltip("The layer mask for AI")]
     private LayerMask m_aiMask;
 
-
-
     //New Input System
     private DeanControls m_inputs;
 
@@ -191,7 +189,6 @@ public class EnemyAI : MonoBehaviour
     {
         // Create the control input
         m_inputs = new DeanControls();
-
 
         m_navMeshAgent = GetComponent<NavMeshAgent>();
         m_animController = GetComponent<Animator>();
@@ -210,8 +207,6 @@ public class EnemyAI : MonoBehaviour
         {
             SetAIState(AIState.Sleeping);
         }
-
-        //RandomiseStrafeRange();
 
         if (m_wakeTriggerObj != null)
         {
@@ -1118,9 +1113,12 @@ public class EnemyAI : MonoBehaviour
 
     private void WakeTriggerCheck()
     {
-        if (m_wakeTrigger.bounds.Intersects(m_playerCollider.bounds))
+        if( m_wakeTrigger != null)
         {
-            WakeUpAI(WakeTrigger.Standard);
+            if (m_wakeTrigger.bounds.Intersects(m_playerCollider.bounds))
+            {
+                WakeUpAI(WakeTrigger.Standard);
+            }
         }
     }
 
@@ -1332,10 +1330,16 @@ public class EnemyAI : MonoBehaviour
 
             if (m_health <= 0.0f)
             {
-                m_health = 0.0f;
-                SetAIState(AIState.Dead);
+                Die();
             }
         }
+    }
+
+    private void Die()
+    {
+        m_health = 0.0f;
+        SetAIState(AIState.Dead);
+        m_aiManager.UnregisterAttacker(this);
     }
 
     public void ChangeStateFromWake()
@@ -1461,33 +1465,6 @@ public class EnemyAI : MonoBehaviour
             {
                 SetAIState(AIState.InCombat);
             }
-
-            //int zoneNum = Random.Range(0, m_aiManager.GetAttackZonesNum());
-
-            //if (m_occupiedAttackZone != null)
-            //{
-            //  m_occupiedAttackZone.EmptyZone();
-            //}
-            //m_occupiedAttackZone = m_attackZoneManager.GetAttackZoneByNum(zoneNum, ZoneType.Passive);
-            //while (m_occupiedAttackZone.IsOccupied())
-            //{
-            //    zoneNum = (zoneNum + 1) % m_aiManager.GetAttackZonesNum();
-            //    m_occupiedAttackZone = m_attackZoneManager.GetAttackZoneByNum(zoneNum, ZoneType.Passive);
-            //}
-            ////Debug.Log("AI: " + name + " " + "Zone " + zoneNum);
-            //m_occupiedAttackZone.SetOccupant(this);
-            //m_navMeshAgent.stoppingDistance = m_patrolStoppingDistance;
-            //m_navMeshAgent.destination = m_attackZoneManager.RandomiseAttackPosForEnemy(this, zoneNum);
-            ////SetCombatState(CombatState.MovingToZone);
-
-            //m_navMeshAgent.SetDestination(m_attackZoneManager.RandomiseAttackPosForEnemy(this, zoneNum));
-            //SetAIState(AIState.InCombat);
         }
-
-        // Start Sleeping Test Input
-        //if (Input.GetKeyDown(KeyCode.S))
-        //{
-        //    SetAIState(AIState.Sleeping);
-        //}
     }
 }
