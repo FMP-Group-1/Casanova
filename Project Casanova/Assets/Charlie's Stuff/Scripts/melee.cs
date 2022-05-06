@@ -8,8 +8,6 @@ public class melee : MonoBehaviour
     //[SerializeField]
     //private GameObject realSword;
 
-    public BoxCollider swordCollider;
-
     //private bool swordEquipped = true;
     //private bool currentlyInTheProcessOfSheathing = false;
 
@@ -249,7 +247,7 @@ public class melee : MonoBehaviour
 
         //Debug.Log( targetAngle ); 
 
-        Quaternion targetRotation = Quaternion.Euler( new Vector3 ( 0f, targetAngle, 0f ));
+        Quaternion targetRotation = Quaternion.Euler( new Vector3 ( 0f, targetAngle + transform.rotation.y, 0f ));
 
         //Rotate player over a short time, to the place where the player is trying to move to
         StartCoroutine( RotatePlayer( targetRotation ) );
@@ -304,6 +302,7 @@ public class melee : MonoBehaviour
     **************************************************************************************/
     IEnumerator RotatePlayer( Quaternion targetRotation )
     {
+        targetRotation.y = targetRotation.y + (transform.rotation.y);
         float inTime = 0.2f; ;
         for( var t = 0f; t < 1; t += Time.deltaTime / inTime )
         {

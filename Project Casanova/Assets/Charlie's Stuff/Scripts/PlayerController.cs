@@ -48,6 +48,10 @@ public class PlayerController : MonoBehaviour
 
     //Line renderer shows the player's input
     public LineRenderer inputDirectionVisual;
+    private Vector3 previousDirection;
+
+
+    public LineRenderer currentDirectionFaced;
 
     /**************************************************************************************
     * Type: Function
@@ -99,6 +103,7 @@ public class PlayerController : MonoBehaviour
         animator = GetComponent<Animator>();
         controller = gameObject.GetComponent<CharacterController>();
         cameraMainTransform = Camera.main.transform;
+
     }
 
     /**************************************************************************************
@@ -164,6 +169,13 @@ public class PlayerController : MonoBehaviour
     **************************************************************************************/
     void Update()
     {
+        currentDirectionFaced.SetPosition( 0, transform.position );
+        Vector3 facedDirection = transform.position + transform.forward;
+
+        currentDirectionFaced.SetPosition( 1, facedDirection );
+
+
+
         //Use the character Controller's isGrounded functionality to fill a member
         groundedPlayer = controller.isGrounded;
         if ( groundedPlayer && playerVelocity.y < 0 )
@@ -173,6 +185,17 @@ public class PlayerController : MonoBehaviour
 
 
         Vector3 moveDirection = GetMoveDirection();
+
+        if(moveDirection != Vector3.zero )
+		{
+            previousDirection = moveDirection;
+        }
+        else
+		{
+            previousDirection += moveDirection;
+
+        }
+
 
         //Debug.Log( moveDirection );
 
@@ -232,7 +255,7 @@ public class PlayerController : MonoBehaviour
         
         inputDirectionVisual.SetPosition( 0, transform.position );
 
-        Vector3 inputDirection = transform.position + moveDirection;
+        Vector3 inputDirection = transform.position + previousDirection;
 
         inputDirectionVisual.SetPosition( 1, inputDirection );
 
