@@ -3,14 +3,6 @@ using UnityEngine;
 
 public class melee : MonoBehaviour
 {
-    //[SerializeField]
-    //private GameObject holsteredSword;
-    //[SerializeField]
-    //private GameObject realSword;
-
-    //private bool swordEquipped = true;
-    //private bool currentlyInTheProcessOfSheathing = false;
-
     private Animator animator;
 
     private PlayerControls m_playerControls;
@@ -32,6 +24,10 @@ public class melee : MonoBehaviour
     
     [SerializeField]
     private GameObject colliderSweepThing;
+
+    [SerializeField]
+    [Range(0f, 1f)]
+    private float rotateSpeed = 0.2f;
 
     private enum Attack
     {
@@ -74,49 +70,20 @@ public class melee : MonoBehaviour
         //Light Attack
         if ( m_playerControls.Combat.LightAtatck.triggered )
         {
-            //Sword is NOT equipped
-            //if ( !swordEquipped )
-            //{
-            //    swordEquipped = true;
-            //}
-
             attackType = Attack.Light;
 
         }
         //Heavy Attack
         if ( m_playerControls.Combat.HeavyAttack.triggered )
         {
-            //Sword is NOT equipped
-            //if ( !swordEquipped )
-            //{
-            //    swordEquipped = true;
-            //}
-
             attackType = Attack.Heavy;
         }
         //Heavy Attack
         if ( m_playerControls.Combat.Whirlwind.triggered )
         {
-            //Sword is NOT equipped
-            //if ( !swordEquipped )
-            //{
-            //    swordEquipped = true;
-            //}
-
             attackType = Attack.Heavy;
             animator.SetTrigger( "whirlwind" );
         }
-        /*
-        //Whirlwind has been released
-        if ( m_playerControls.Combat.Whirlwind.ReadValue<float>() == 0 )
-        {
-            animator.SetBool( "whirlwindHeld", false );
-        }
-        else
-        {
-            animator.SetBool( "whirlwindHeld", true );
-        }
-        */
 
         //Basically, if you have reached the end of an attack, you are no longer attacking, but if "attackType" is not nothing, there's somehing queued up, so lets do it
         if ( canStartNextAttack && attackType != Attack.Nothing )
@@ -247,10 +214,18 @@ public class melee : MonoBehaviour
 
         //Debug.Log( targetAngle ); 
 
-        Quaternion targetRotation = Quaternion.Euler( new Vector3 ( 0f, targetAngle + transform.rotation.y, 0f ));
+        Quaternion targetRotation = Quaternion.Euler( new Vector3 ( 0f, targetAngle, 0f ));
 
-        //Rotate player over a short time, to the place where the player is trying to move to
-        StartCoroutine( RotatePlayer( targetRotation ) );
+
+        //Only if the there is some level of input
+        if ( m_playerController.GetMoveDirection() != Vector3.zero )
+        {
+            //Rotate player over a short time, to the place where the player is trying to move to
+            StartCoroutine( RotatePlayer( targetRotation ) );
+
+        }
+        //otherweise we just attack forwards (Where player is facing)
+
     }
 
     /**************************************************************************************
@@ -262,31 +237,19 @@ public class melee : MonoBehaviour
     *
     * Author: Charlie Taylor
     *
-    * Description: Called by Animation Events when the attack combo ends, to reset variables
-    *               that allow the player to move or fall
+    * Description: Called by Animation Events when the attack combo ends, at the begining 
+    *               of the leave anim, to reset variables that allow the player to move 
+    *               or fall
     **************************************************************************************/
     public void EndCombo()
     {
-		if( !animator.IsInTransition(0) )
-        {
+        //comboDebugText.text = "\nEnd\n";
+        m_playerController.playerVelocity.y = 0f;
 
-            //comboDebugText.text = "\nEnd\n";
-            m_playerController.playerVelocity.y = 0f;
-
-            m_playerController.canFall = true;
-            m_playerController.canMove = true;
-            m_playerController.canRotate = true;
-            animator.SetBool( "comboActive", false );
-            //MAKE SURE IT'S AVAILABLE AGAIN. CURRENTLY BROKE a bit This is duplicated
-            //canStartNextAttack = true;
-
-        }
-		else
-		{
-            //comboDebugText.text += "\nthis attack was started on a transitiony state";
-        }
-		
-
+        m_playerController.canFall = true;
+        m_playerController.canMove = true;
+        m_playerController.canRotate = true;
+        animator.SetBool( "comboActive", false );
     }
 
     /**************************************************************************************
@@ -302,8 +265,7 @@ public class melee : MonoBehaviour
     **************************************************************************************/
     IEnumerator RotatePlayer( Quaternion targetRotation )
     {
-        targetRotation.y = targetRotation.y + (transform.rotation.y);
-        float inTime = 0.2f; ;
+        float inTime = rotateSpeed;
         for( var t = 0f; t < 1; t += Time.deltaTime / inTime )
         {
             transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, t );
