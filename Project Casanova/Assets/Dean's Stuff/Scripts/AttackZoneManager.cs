@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//*******************************************
+// Author: Dean Pearce
+// Class: AttackZoneManager
+// Description: Class for managing the attack zone objects which hold information about the attack zones
+// around the player
+//*******************************************
 public class AttackZoneManager
 {
     private AIManager m_aiManager;

@@ -11,7 +11,12 @@ public enum DebugType
     None
 }
 
-// Todo: Script needs to either be renamed, or split into 2 to separate AI debug from Zone debug
+//*******************************************
+// Author: Dean Pearce
+// Class: DebugDisplay
+// Description: Handles the UI element which is used for displaying debug information on a specific zone or AI
+//*******************************************
+
 public class DebugDisplay : MonoBehaviour
 {
     private DebugType m_debugType = DebugType.None;

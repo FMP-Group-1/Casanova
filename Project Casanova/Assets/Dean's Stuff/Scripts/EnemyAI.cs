@@ -53,7 +53,11 @@ public enum StrafeDir
     Right
 }
 
-// Enemy AI Script, will likely be reworked to use inheritance once base functionality is polished
+//*******************************************
+// Author: Dean Pearce
+// Class: EnemyAI
+// Description: Base enemy AI class which handles navigation, behaviour, and animation
+//*******************************************
 public class EnemyAI : MonoBehaviour
 {
     private AIManager m_aiManager;
@@ -787,6 +791,12 @@ public class EnemyAI : MonoBehaviour
         {
             maxStrafeRange = m_aiManager.GetPassiveAttackerMaxDist();
             minStrafeRange = m_aiManager.GetActiveAttackerMaxDist();
+
+            // If enemy is too close to the player, tell the AI manager to make this AI an active attacker, and swap the furthest active attacker to a passive attacker
+            if ( distanceToPlayer < m_aiManager.GetActiveAttackerMinDist())
+            {
+                m_aiManager.SwapPassiveWithActive(this);
+            }
         }
         // Active range check
         else

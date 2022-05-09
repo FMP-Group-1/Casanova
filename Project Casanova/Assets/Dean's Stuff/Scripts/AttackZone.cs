@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+//*******************************************
+// Author: Dean Pearce
+// Class: AttackZone
+// Description: Class for tracking combat zones around the player
+//*******************************************
 public enum ZoneType
 {
     Passive,

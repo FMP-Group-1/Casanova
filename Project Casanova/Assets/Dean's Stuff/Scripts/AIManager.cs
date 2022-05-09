@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//*******************************************
+// Author: Dean Pearce
+// Class: AIManager
+// Description: Manages the EnemyAI objects in the game
+//*******************************************
+
 public class AIManager : MonoBehaviour
 {
     private GameObject m_player;
@@ -43,6 +49,7 @@ public class AIManager : MonoBehaviour
     void Update()
     {
         m_attackZoneManager.Update();
+        ActiveAttackerCount();
     }
 
     private void RegisterEnemies()
@@ -129,6 +136,62 @@ public class AIManager : MonoBehaviour
             m_passiveAttackers.Add(enemy);
             enemy.SetAttackingType(AttackingType.Passive);
         }
+    }
+
+    // Function for ensuring the active attacker count is always correct
+    private void ActiveAttackerCount()
+    {
+        if (m_activeAttackers.Count > m_maxActiveAttackers)
+        {
+            MakePassiveAttacker(FindFurthestActiveAttacker());
+        }
+        else if (m_activeAttackers.Count < m_maxActiveAttackers && m_passiveAttackers.Count > 0)
+        {
+            MakeActiveAttacker(FindClosestPassiveAttacker());
+        }
+    }
+
+    // Function for finding the furthest active attacker from the player
+    private EnemyAI FindFurthestActiveAttacker()
+    {
+        // Setting the first index as the default
+        EnemyAI furthestEnemy = m_activeAttackers[0];
+
+        for (int i = 0; i < m_activeAttackers.Count; i++)
+        {
+            // Looping through the list to compare distances
+            if (Vector3.Distance(m_activeAttackers[i].gameObject.transform.position, m_player.transform.position) > Vector3.Distance(furthestEnemy.transform.position, m_player.transform.position))
+            {
+                furthestEnemy = m_activeAttackers[i];
+            }
+        }
+
+        return furthestEnemy;
+    }
+
+    // Function for finding the closest passive attacker to the player
+    private EnemyAI FindClosestPassiveAttacker()
+    {
+        // Setting the first index as the default
+        EnemyAI closestEnemy = m_passiveAttackers[0];
+
+        for (int i = 0; i < m_passiveAttackers.Count; i++)
+        {
+            // Looping through the list to compare distances
+            if (Vector3.Distance(m_passiveAttackers[i].gameObject.transform.position, m_player.transform.position) < Vector3.Distance(closestEnemy.transform.position, m_player.transform.position))
+            {
+                closestEnemy = m_passiveAttackers[i];
+            }
+        }
+
+        return closestEnemy;
+    }
+
+    // Function for passive attacker to call when they've gotten to close to the player
+    public void SwapPassiveWithActive( EnemyAI enemyToSwap )
+    {
+        MakeActiveAttacker(enemyToSwap);
+        MakePassiveAttacker(FindFurthestActiveAttacker());
     }
 
     // Check if any of the active attackers are currently attacking
