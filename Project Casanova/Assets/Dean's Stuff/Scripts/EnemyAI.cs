@@ -64,6 +64,8 @@ public class EnemyAI : MonoBehaviour
     private AttackZoneManager m_attackZoneManager;
 
     private NavMeshAgent m_navMeshAgent;
+    [SerializeField]
+    [Tooltip( "AI's current State" )]
     private AIState m_mainState = AIState.Idle;
     private CombatState m_combatState = CombatState.Strafing;
     private AIState m_stateBeforeHit = AIState.Idle;
@@ -218,6 +220,8 @@ public class EnemyAI : MonoBehaviour
         {
             m_wakeTrigger = m_wakeTriggerObj.GetComponent<BoxCollider>();
         }
+
+        SetAIState( m_mainState );
     }
 
     private void OnEnable()

@@ -26,7 +26,7 @@ public class SwordCollisionManager : MonoBehaviour
                 enemy.WakeUpAI( WakeTrigger.Attack );
             }
 
-            enemy.TakeDamage( 50f );
+            enemy.TakeDamage( 15f );
 
             //m_collider.enabled = false;
         }
