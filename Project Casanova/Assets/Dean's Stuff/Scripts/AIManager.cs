@@ -187,7 +187,8 @@ public class AIManager : MonoBehaviour
         return closestEnemy;
     }
 
-    // Function for passive attacker to call when they've gotten to close to the player
+    // Function for passive attacker to call when they've gotten too close to the player
+    // Makes the passive attacker an active attacker and vice versa
     public void SwapPassiveWithActive( EnemyAI enemyToSwap )
     {
         // Todo: Add logic to interrupt MovingToAttack state

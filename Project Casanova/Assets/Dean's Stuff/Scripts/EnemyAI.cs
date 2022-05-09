@@ -188,6 +188,8 @@ public class EnemyAI : MonoBehaviour
 
     //New Input System
     private DeanControls m_inputs;
+    [SerializeField]
+    private bool m_debugInputsActive = false;
 
     private void Awake()
     {
@@ -1507,23 +1509,26 @@ public class EnemyAI : MonoBehaviour
 
     private void TestingInputs()
     {
-        // Start Patrolling Test Input
-        if( m_inputs.Debug.AI_Move.triggered ) 
+        if (m_debugInputsActive)
         {
-            SetAIState(AIState.Patrolling);
-            if (m_patrolRoute != null)
+            // Start Patrolling Test Input
+            if( m_inputs.Debug.AI_Move.triggered ) 
             {
-                m_navMeshAgent.destination = m_patrolRoutePoints[m_patrolDestinationIndex].position;
+                SetAIState(AIState.Patrolling);
+                if (m_patrolRoute != null)
+                {
+                    m_navMeshAgent.destination = m_patrolRoutePoints[m_patrolDestinationIndex].position;
+                }
+                //Debug.Log("Going to Next Destination");
             }
-            //Debug.Log("Going to Next Destination");
-        }
 
-        // Start Pursuing Test Input
-        if (m_inputs.Debug.AI_Combat.triggered)
-        {
-            if (m_mainState != AIState.Dead)
+            // Start Pursuing Test Input
+            if (m_inputs.Debug.AI_Combat.triggered)
             {
-                SetAIState(AIState.InCombat);
+                if (m_mainState != AIState.Dead)
+                {
+                    SetAIState(AIState.InCombat);
+                }
             }
         }
     }
