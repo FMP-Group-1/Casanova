@@ -63,7 +63,17 @@ public class melee : MonoBehaviour
 
 
 
-    // Update is called once per frame
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Update
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Update player's melee stuff
+    **************************************************************************************/
     void Update()
     {
         //Attack straight from unarmed. No Blend Animation
