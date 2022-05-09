@@ -190,6 +190,7 @@ public class AIManager : MonoBehaviour
     // Function for passive attacker to call when they've gotten to close to the player
     public void SwapPassiveWithActive( EnemyAI enemyToSwap )
     {
+        // Todo: Add logic to interrupt MovingToAttack state
         MakeActiveAttacker(enemyToSwap);
         MakePassiveAttacker(FindFurthestActiveAttacker());
     }
