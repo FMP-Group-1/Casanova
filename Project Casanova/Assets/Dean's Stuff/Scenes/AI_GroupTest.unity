@@ -1105,7 +1105,7 @@ PrefabInstance:
       objectReference: {fileID: 40924126}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_debugInputsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6075207789189456789, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_RootOrder
@@ -2029,7 +2029,7 @@ PrefabInstance:
       objectReference: {fileID: 40924126}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_debugInputsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6075207789189456789, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_RootOrder
@@ -3153,7 +3153,7 @@ PrefabInstance:
       objectReference: {fileID: 40924126}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_debugInputsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6075207789189456789, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_RootOrder
@@ -4055,7 +4055,7 @@ PrefabInstance:
       objectReference: {fileID: 40924126}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_debugInputsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6075207789189456789, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_RootOrder
@@ -4722,7 +4722,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 968972969}
-  m_LocalRotation: {x: 0.15614161, y: -0.00000001699874, z: 0.000000002686272, w: 0.9877347}
+  m_LocalRotation: {x: 0.15614161, y: 0.00000001699874, z: -0.000000002686272, w: 0.9877347}
   m_LocalPosition: {x: 5.67, y: 3.84, z: -19.04}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -4799,10 +4799,10 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "               PC | Xbox / PS4\nMove - WASD | Left Stick  \nCamera - Mouse
-    | Right Stick\nJump - Space | A / Cross   \nLight attack - LMB    | X / Square
-    \nHeavy - RMB    | Y / Triangle\n\nReset - Q | D-Pad Up\nQuit - Escape | Start
-    / Options"
+  m_Text: "Controls                                  \n               PC | Xbox /
+    PS4\nMove - WASD | Left Stick  \nCamera - Mouse | Right Stick\nJump - Space |
+    A / Cross   \nLight attack - LMB    | X / Square \nHeavy - RMB    | Y / Triangle\n\nReset
+    - Q | D-Pad Up\nQuit - Escape | Start / Options"
 --- !u!222 &985288456
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5642,7 +5642,7 @@ PrefabInstance:
       objectReference: {fileID: 40924126}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_debugInputsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6075207789189456789, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_RootOrder
@@ -6056,8 +6056,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 285.10938, y: 142.47284}
-  m_SizeDelta: {x: 229.7863, y: 165.1643}
+  m_AnchoredPosition: {x: 285.10938, y: 136.26}
+  m_SizeDelta: {x: 229.7863, y: 177.59}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1715244792
 MonoBehaviour:
@@ -7147,7 +7147,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2066997322}
-  m_LocalRotation: {x: 0.15614161, y: -0.000000016995338, z: 0.000000002686632, w: 0.9877347}
+  m_LocalRotation: {x: 0.15614161, y: 0.000000016995338, z: -0.000000002686632, w: 0.9877347}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -8118,7 +8118,7 @@ PrefabInstance:
       objectReference: {fileID: 40924126}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_debugInputsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6075207789189456789, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_RootOrder
