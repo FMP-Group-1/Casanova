@@ -53,13 +53,19 @@ public enum StrafeDir
     Right
 }
 
-// Enemy AI Script, will likely be reworked to use inheritance once base functionality is polished
+//*******************************************
+// Author: Dean Pearce
+// Class: EnemyAI
+// Description: Base enemy AI class which handles navigation, behaviour, and animation
+//*******************************************
 public class EnemyAI : MonoBehaviour
 {
     private AIManager m_aiManager;
     private AttackZoneManager m_attackZoneManager;
 
     private NavMeshAgent m_navMeshAgent;
+    [SerializeField]
+    [Tooltip( "AI's current State" )]
     private AIState m_mainState = AIState.Idle;
     private CombatState m_combatState = CombatState.Strafing;
     private AIState m_stateBeforeHit = AIState.Idle;
@@ -182,16 +188,15 @@ public class EnemyAI : MonoBehaviour
     [Tooltip("The layer mask for AI")]
     private LayerMask m_aiMask;
 
-
-
     //New Input System
     private DeanControls m_inputs;
+    [SerializeField]
+    private bool m_debugInputsActive = false;
 
     private void Awake()
     {
         // Create the control input
         m_inputs = new DeanControls();
-
 
         m_navMeshAgent = GetComponent<NavMeshAgent>();
         m_animController = GetComponent<Animator>();
@@ -211,12 +216,12 @@ public class EnemyAI : MonoBehaviour
             SetAIState(AIState.Sleeping);
         }
 
-        //RandomiseStrafeRange();
-
         if (m_wakeTriggerObj != null)
         {
             m_wakeTrigger = m_wakeTriggerObj.GetComponent<BoxCollider>();
         }
+
+        SetAIState( m_mainState );
     }
 
     private void OnEnable()
@@ -226,8 +231,10 @@ public class EnemyAI : MonoBehaviour
 
     private void Update()
     {
+        // Function for debug testing
         TestingInputs();
 
+        // Finding the attack zone the AI is currently in
         AttackZoneCheck();
 
         switch (m_mainState)
@@ -244,21 +251,27 @@ public class EnemyAI : MonoBehaviour
             }
             case AIState.Sleeping:
             {
+                // Check if player is in the wake trigger zone to wake up
                 WakeTriggerCheck();
                 break;
             }
             // Patrol Logic
             case AIState.Patrolling:
             {
+                // Start combat when AI sees player
                 if (IsPlayerVisible())
                 {
                     SetAIState(AIState.InCombat);
                 }
+
+                // Todo: Review whether this should be re-ordered
+                // Continue Patrol Update
                 PatrolUpdate();
                 break;
             }
             case AIState.ReturningToPatrol:
             {
+                // Carry on patrolling once previous point is reached
                 if (HasReachedDestination())
                 {
                     SetAIState(AIState.Patrolling);
@@ -374,6 +387,7 @@ public class EnemyAI : MonoBehaviour
 
                         OccupyCurrentZone();
                     }
+                    // Carry on radial running to a zone
                     else
                     {
                         SetCombatState(CombatState.RadialRunToZone);
@@ -474,6 +488,7 @@ public class EnemyAI : MonoBehaviour
             {
                 m_navMeshAgent.destination = m_player.transform.position;
 
+                // Once in range, begin attack
                 if (HasReachedDestination())
                 {
                     SetCombatState(CombatState.Attacking);
@@ -512,16 +527,19 @@ public class EnemyAI : MonoBehaviour
 
         switch (stateToSet)
         {
+            // Idle State
             case AIState.Idle:
             {
                 StartIdleAnim();
                 break;
             }
+            // Sleep State
             case AIState.Sleeping:
             {
                 SetToPlayDeadAnim();
                 break;
             }
+            // Patrol State
             case AIState.Patrolling:
             {
                 m_navMeshAgent.destination = m_patrolRoutePoints[m_patrolDestinationIndex].position;
@@ -537,6 +555,7 @@ public class EnemyAI : MonoBehaviour
                 }
                 break;
             }
+            // Return to Patrol State
             case AIState.ReturningToPatrol:
             {
                 m_navMeshAgent.stoppingDistance = m_patrolStoppingDistance;
@@ -544,6 +563,7 @@ public class EnemyAI : MonoBehaviour
                 StartWalkAnim();
                 break;
             }
+            // Combat State
             case AIState.InCombat:
             {
 
@@ -553,6 +573,7 @@ public class EnemyAI : MonoBehaviour
 
                 break;
             }
+            // Death State
             case AIState.Dead:
             {
                 StartDeathAnim();
@@ -568,16 +589,19 @@ public class EnemyAI : MonoBehaviour
 
         switch (stateToSet)
         {
+            // Patrol in normal direction
             case PatrolState.Patrol:
             {
                 StartWalkAnim();
                 break;
             }
+            // Patrol in reverse direction
             case PatrolState.ReversePatrol:
             {
                 StartWalkAnim();
                 break;
             }
+            // Waiting to resume patrol
             case PatrolState.Waiting:
             {
                 m_patrolTimer = 0.0f;
@@ -594,6 +618,7 @@ public class EnemyAI : MonoBehaviour
 
         switch (stateToSet)
         {
+            // Pursue Player
             case CombatState.Pursuing:
             {
                 m_attackZonePos = m_attackZoneManager.RandomiseAttackPosForEnemy(this);
@@ -604,6 +629,7 @@ public class EnemyAI : MonoBehaviour
                 StartRunAnim();
                 break;
             }
+            // Strafe around player
             case CombatState.Strafing:
             {
                 // Randomise the direction to strafe
@@ -611,6 +637,7 @@ public class EnemyAI : MonoBehaviour
                 StartStrafeAnim(m_strafeDir);
                 break;
             }
+            // Strafe around player in search of empty zone
             case CombatState.StrafingToZone:
             {
                 // Randomise the direction to strafe
@@ -618,6 +645,7 @@ public class EnemyAI : MonoBehaviour
                 StartStrafeAnim(m_strafeDir);
                 break;
             }
+            // Radial run around player in search of zone
             case CombatState.RadialRunToZone:
             {
                 // Randomise the direction to run
@@ -625,6 +653,7 @@ public class EnemyAI : MonoBehaviour
                 StartRunAnim();
                 break;
             }
+            // Maintain current distance to player
             case CombatState.MaintainDist:
             {
                 // Randomise delay before moving again
@@ -632,28 +661,33 @@ public class EnemyAI : MonoBehaviour
                 StartCombatIdleAnim();
                 break;
             }
+            // Attack player
             case CombatState.Attacking:
             {
                 StartAttackAnim();
                 break;
             }
+            // Move directly to a specified zone
             case CombatState.MovingToZone:
             {
                 StartRunAnim();
                 break;
             }
+            // Get in range of player for attack
             case CombatState.MovingToAttack:
             {
                 m_navMeshAgent.destination = m_player.transform.position;
                 StartRunAnim();
                 break;
             }
+            // Close distance to player
             case CombatState.ClosingDist:
             {
                 RandomiseStrafeRange();
                 StartWalkAnim();
                 break;
             }
+            // Increase distance to player
             case CombatState.BackingUp:
             {
                 RandomiseStrafeRange();
@@ -666,6 +700,8 @@ public class EnemyAI : MonoBehaviour
     private void RadialRun()
     {
         Vector3 offset;
+
+        // Determining nav mesh target based on strafe dir
         if (m_strafeDir == StrafeDir.Left)
         {
             offset = m_player.transform.position - transform.position;
@@ -681,7 +717,7 @@ public class EnemyAI : MonoBehaviour
     private void Strafe()
     {
         Vector3 offset;
-        // Basic start to strafe logic
+        // Determining nav mesh target based on strafe dir
         if (m_strafeDir == StrafeDir.Left)
         {
             offset = m_player.transform.position - transform.position;
@@ -692,6 +728,8 @@ public class EnemyAI : MonoBehaviour
         }
         Vector3 dir = Vector3.Cross(offset, Vector3.up);
         m_navMeshAgent.SetDestination(transform.position + dir);
+
+        // LookAt so that it looks like actual strafing
         transform.LookAt(m_player.transform.position);
     }
 
@@ -699,6 +737,8 @@ public class EnemyAI : MonoBehaviour
     {
         Vector3 dir = (transform.position - m_player.transform.position).normalized;
         m_navMeshAgent.SetDestination(transform.position + (dir * 2.0f));
+
+        // Keep facing player while back stepping
         transform.LookAt(m_player.transform.position);
     }
 
@@ -747,21 +787,31 @@ public class EnemyAI : MonoBehaviour
 
     private void AiToPlayerRangeCheck()
     {
+        // Get distance
         float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
         float maxStrafeRange = 0.0f;
         float minStrafeRange = 0.0f;
 
+        // Passive range check
         if (m_currentAttackingType == AttackingType.Passive)
         {
             maxStrafeRange = m_aiManager.GetPassiveAttackerMaxDist();
             minStrafeRange = m_aiManager.GetActiveAttackerMaxDist();
+
+            // If enemy is too close to the player, tell the AI manager to make this AI an active attacker, and swap the furthest active attacker to a passive attacker
+            if ( distanceToPlayer < m_aiManager.GetActiveAttackerMinDist())
+            {
+                m_aiManager.SwapPassiveWithActive(this);
+            }
         }
+        // Active range check
         else
         {
             maxStrafeRange = m_aiManager.GetActiveAttackerMaxDist();
             minStrafeRange = m_aiManager.GetActiveAttackerMinDist();
         }
 
+        // AI is out of zone, empty zone, resume pursuit
         if (distanceToPlayer > maxStrafeRange)
         {
             if (m_occupiedAttackZone != null)
@@ -771,6 +821,7 @@ public class EnemyAI : MonoBehaviour
             SetCombatState(CombatState.Pursuing);
         }
         // Player moved closer than strafe range
+        // Empty zone, then back up
         if (distanceToPlayer < minStrafeRange && m_combatState != CombatState.BackingUp)
         {
             if (m_occupiedAttackZone != null)
@@ -793,6 +844,7 @@ public class EnemyAI : MonoBehaviour
 
     private void StrafeOrMaintain()
     {
+        // Decide whether to strafe or maintain distance based on whether the zone is the currently occupied zone
         if (m_currentAttackZone == m_occupiedAttackZone)
         {
             SetCombatState(CombatState.MaintainDist);
@@ -806,6 +858,7 @@ public class EnemyAI : MonoBehaviour
 
     private void RandomiseStrafeRange()
     {
+        // Randomise the range for the AI to maintain based on attacker type
         if (m_currentAttackingType == AttackingType.Passive)
         {
             m_strafeDist = Random.Range(m_aiManager.GetActiveAttackerMaxDist(), m_aiManager.GetPassiveAttackerMaxDist()) + m_aiManager.GetActiveAttackerMinDist();
@@ -1000,6 +1053,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    // Function to check if AI should start strafing to mimic more lifelike behaviour
     private void TimedBeginStrafeCheck()
     {
         m_delayBeforeStrafe += Time.deltaTime;
@@ -1011,6 +1065,8 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    // Check while strafing whether to occupy current zone
+    // Based on a timer to allow variation on when the AI stops
     private void StrafeZoneCheck()
     {
         m_strafeZoneTimer += Time.deltaTime;
@@ -1019,9 +1075,9 @@ public class EnemyAI : MonoBehaviour
         {
             m_strafeZoneTimer = 0.0f;
 
-            if (m_currentAttackZone != m_occupiedAttackZone)
+            if (m_currentAttackZone != null)               
             {
-                if (m_currentAttackZone != null)
+                if (m_currentAttackZone != m_occupiedAttackZone)
                 {
                     if (!m_currentAttackZone.IsOccupied())
                     {
@@ -1033,12 +1089,14 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    // Checking for obstructions during strafing/radial running
     private void RadialObstructionCheck()
     {
         Vector3 dir = transform.forward;
         Vector3 castFrom = transform.position;
         castFrom.y += m_navMeshAgent.height * 0.5f;
 
+        // If strafing, setup directions to be from sides
         if (m_combatState == CombatState.StrafingToZone)
         {
             if (m_strafeDir == StrafeDir.Left)
@@ -1083,6 +1141,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    // Checking if zone is available to occupy whilst radial running
     private void RadialZoneCheck()
     {
         if (m_currentAttackZone != null)
@@ -1116,14 +1175,19 @@ public class EnemyAI : MonoBehaviour
         return m_currentAttackZone == m_occupiedAttackZone;
     }
 
+    // Wake up AI if player is detected in trigger zone
     private void WakeTriggerCheck()
     {
-        if (m_wakeTrigger.bounds.Intersects(m_playerCollider.bounds))
+        if( m_wakeTrigger != null)
         {
-            WakeUpAI(WakeTrigger.Standard);
+            if (m_wakeTrigger.bounds.Intersects(m_playerCollider.bounds))
+            {
+                WakeUpAI(WakeTrigger.Standard);
+            }
         }
     }
 
+    // Wake up differently based on wake up type, i.e. hit by player vs. detected player
     public void WakeUpAI( WakeTrigger wakeTrigger )
     {
         switch (wakeTrigger)
@@ -1332,10 +1396,16 @@ public class EnemyAI : MonoBehaviour
 
             if (m_health <= 0.0f)
             {
-                m_health = 0.0f;
-                SetAIState(AIState.Dead);
+                Die();
             }
         }
+    }
+
+    private void Die()
+    {
+        m_health = 0.0f;
+        SetAIState(AIState.Dead);
+        m_aiManager.UnregisterAttacker(this);
     }
 
     public void ChangeStateFromWake()
@@ -1443,51 +1513,27 @@ public class EnemyAI : MonoBehaviour
 
     private void TestingInputs()
     {
-        // Start Patrolling Test Input
-        if( m_inputs.Debug.AI_Move.triggered ) 
+        if (m_debugInputsActive)
         {
-            SetAIState(AIState.Patrolling);
-            if (m_patrolRoute != null)
+            // Start Patrolling Test Input
+            if( m_inputs.Debug.AI_Move.triggered ) 
             {
-                m_navMeshAgent.destination = m_patrolRoutePoints[m_patrolDestinationIndex].position;
-            }
-            //Debug.Log("Going to Next Destination");
-        }
-
-        // Start Pursuing Test Input
-        if (m_inputs.Debug.AI_Combat.triggered)
-        {
-            if (m_mainState != AIState.Dead)
-            {
-                SetAIState(AIState.InCombat);
+                SetAIState(AIState.Patrolling);
+                if (m_patrolRoute != null)
+                {
+                    m_navMeshAgent.destination = m_patrolRoutePoints[m_patrolDestinationIndex].position;
+                }
+                //Debug.Log("Going to Next Destination");
             }
 
-            //int zoneNum = Random.Range(0, m_aiManager.GetAttackZonesNum());
-
-            //if (m_occupiedAttackZone != null)
-            //{
-            //  m_occupiedAttackZone.EmptyZone();
-            //}
-            //m_occupiedAttackZone = m_attackZoneManager.GetAttackZoneByNum(zoneNum, ZoneType.Passive);
-            //while (m_occupiedAttackZone.IsOccupied())
-            //{
-            //    zoneNum = (zoneNum + 1) % m_aiManager.GetAttackZonesNum();
-            //    m_occupiedAttackZone = m_attackZoneManager.GetAttackZoneByNum(zoneNum, ZoneType.Passive);
-            //}
-            ////Debug.Log("AI: " + name + " " + "Zone " + zoneNum);
-            //m_occupiedAttackZone.SetOccupant(this);
-            //m_navMeshAgent.stoppingDistance = m_patrolStoppingDistance;
-            //m_navMeshAgent.destination = m_attackZoneManager.RandomiseAttackPosForEnemy(this, zoneNum);
-            ////SetCombatState(CombatState.MovingToZone);
-
-            //m_navMeshAgent.SetDestination(m_attackZoneManager.RandomiseAttackPosForEnemy(this, zoneNum));
-            //SetAIState(AIState.InCombat);
+            // Start Pursuing Test Input
+            if (m_inputs.Debug.AI_Combat.triggered)
+            {
+                if (m_mainState != AIState.Dead)
+                {
+                    SetAIState(AIState.InCombat);
+                }
+            }
         }
-
-        // Start Sleeping Test Input
-        //if (Input.GetKeyDown(KeyCode.S))
-        //{
-        //    SetAIState(AIState.Sleeping);
-        //}
     }
 }

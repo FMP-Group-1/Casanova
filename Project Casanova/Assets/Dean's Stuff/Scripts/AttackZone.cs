@@ -3,6 +3,11 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+//*******************************************
+// Author: Dean Pearce
+// Class: AttackZone
+// Description: Class for tracking combat zones around the player
+//*******************************************
 public enum ZoneType
 {
     Passive,
@@ -126,11 +131,14 @@ public class AttackZone
     {
         m_isObstructed = false;
 
+        // Setting the points that should be checking the nav mesh
+        // Setting them to the corners of the zone - the buffer values
         m_obstPointArray[0] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
         m_obstPointArray[1] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
         m_obstPointArray[2] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
         m_obstPointArray[3] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
 
+        // Center point
         m_obstPointArray[4] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - (m_zoneAngleSize * 0.5f), true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
 
         for (int i = 0; i < m_obstPointArray.Length; i++)
@@ -150,11 +158,14 @@ public class AttackZone
     {
         m_isObstructed = false;
 
+        // Setting the points that should be checking the nav mesh
+        // Setting them to the corners of the zone - the buffer values
         m_obstPointArray[0] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
         m_obstPointArray[1] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
         m_obstPointArray[2] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
         m_obstPointArray[3] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
 
+        // Center point
         m_obstPointArray[4] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - (m_zoneAngleSize * 0.5f), true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
 
         // Using this function to set the position of the debug objects as a way to visualize where these points are

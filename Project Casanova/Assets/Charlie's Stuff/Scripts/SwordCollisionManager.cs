@@ -11,7 +11,7 @@ public class SwordCollisionManager : MonoBehaviour
     * Parameters: Collider other
     * Return: n/a
     *
-    * Author: Charlie Taylor
+    * Author: Dean Pearce
     *
     * Description: Sword Collision with Enemy
     **************************************************************************************/
@@ -26,7 +26,7 @@ public class SwordCollisionManager : MonoBehaviour
                 enemy.WakeUpAI( WakeTrigger.Attack );
             }
 
-            enemy.TakeDamage( 50f );
+            enemy.TakeDamage( 15f );
 
             //m_collider.enabled = false;
         }
