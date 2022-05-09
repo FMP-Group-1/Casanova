@@ -36,12 +36,15 @@ public class AttackZoneManager
 
         // Setting the debug object from the AI as it's set in inspector
         // Only using temporarily to get base logic working
-        m_obsCheckDebug = m_aiManager.GetObsCheckDebug();
-
-        // Adding the debug objects to the list
-        for (int i = 0; i < m_obsCheckDebug.transform.childCount; i++)
+        if ( m_aiManager.GetObsCheckDebug() != null)
         {
-            m_obsCheckChildArray.Add(m_obsCheckDebug.transform.GetChild(i).gameObject);
+            m_obsCheckDebug = m_aiManager.GetObsCheckDebug();
+
+            // Adding the debug objects to the list
+            for (int i = 0; i < m_obsCheckDebug.transform.childCount; i++)
+            {
+                m_obsCheckChildArray.Add(m_obsCheckDebug.transform.GetChild(i).gameObject);
+            }
         }
     }
 

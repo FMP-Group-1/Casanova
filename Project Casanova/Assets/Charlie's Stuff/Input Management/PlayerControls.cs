@@ -343,6 +343,76 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Level"",
+            ""id"": ""d50d67e7-3846-4966-8625-a0e44b3ae0e0"",
+            ""actions"": [
+                {
+                    ""name"": ""Reset"",
+                    ""type"": ""Button"",
+                    ""id"": ""f0e927ef-10ab-4133-b5e3-af344c7d2806"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Quit"",
+                    ""type"": ""Button"",
+                    ""id"": ""7ea267d8-806e-43dc-a7c3-7964ef094b29"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""41a2eeda-7355-4acd-b9ff-3e136a33b5eb"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reset"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""646fc97d-3f6e-4435-a4b6-e849a3a7b7ff"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reset"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4342b1ad-f25c-46f1-89f4-ef7660961706"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Quit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a05adf92-42cc-44ce-9743-d10dd817a78f"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Quit"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -358,6 +428,10 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Move_MouseLook = m_Move.FindAction("MouseLook", throwIfNotFound: true);
         m_Move_Movement = m_Move.FindAction("Movement", throwIfNotFound: true);
         m_Move_Jump = m_Move.FindAction("Jump", throwIfNotFound: true);
+        // Level
+        m_Level = asset.FindActionMap("Level", throwIfNotFound: true);
+        m_Level_Reset = m_Level.FindAction("Reset", throwIfNotFound: true);
+        m_Level_Quit = m_Level.FindAction("Quit", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -519,6 +593,47 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         }
     }
     public MoveActions @Move => new MoveActions(this);
+
+    // Level
+    private readonly InputActionMap m_Level;
+    private ILevelActions m_LevelActionsCallbackInterface;
+    private readonly InputAction m_Level_Reset;
+    private readonly InputAction m_Level_Quit;
+    public struct LevelActions
+    {
+        private @PlayerControls m_Wrapper;
+        public LevelActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Reset => m_Wrapper.m_Level_Reset;
+        public InputAction @Quit => m_Wrapper.m_Level_Quit;
+        public InputActionMap Get() { return m_Wrapper.m_Level; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(LevelActions set) { return set.Get(); }
+        public void SetCallbacks(ILevelActions instance)
+        {
+            if (m_Wrapper.m_LevelActionsCallbackInterface != null)
+            {
+                @Reset.started -= m_Wrapper.m_LevelActionsCallbackInterface.OnReset;
+                @Reset.performed -= m_Wrapper.m_LevelActionsCallbackInterface.OnReset;
+                @Reset.canceled -= m_Wrapper.m_LevelActionsCallbackInterface.OnReset;
+                @Quit.started -= m_Wrapper.m_LevelActionsCallbackInterface.OnQuit;
+                @Quit.performed -= m_Wrapper.m_LevelActionsCallbackInterface.OnQuit;
+                @Quit.canceled -= m_Wrapper.m_LevelActionsCallbackInterface.OnQuit;
+            }
+            m_Wrapper.m_LevelActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Reset.started += instance.OnReset;
+                @Reset.performed += instance.OnReset;
+                @Reset.canceled += instance.OnReset;
+                @Quit.started += instance.OnQuit;
+                @Quit.performed += instance.OnQuit;
+                @Quit.canceled += instance.OnQuit;
+            }
+        }
+    }
+    public LevelActions @Level => new LevelActions(this);
     public interface ICombatActions
     {
         void OnLightAtatck(InputAction.CallbackContext context);
@@ -531,5 +646,10 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnMouseLook(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+    }
+    public interface ILevelActions
+    {
+        void OnReset(InputAction.CallbackContext context);
+        void OnQuit(InputAction.CallbackContext context);
     }
 }
