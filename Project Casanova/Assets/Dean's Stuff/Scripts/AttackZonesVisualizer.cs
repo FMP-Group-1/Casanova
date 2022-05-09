@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-// Script for visualizing the available positions for AI attackers in the Editor
+//*******************************************
+// Author: Dean Pearce
+// Class: AttackZonesVisualizer
+// Description: Script for visualizing the available zones for AI attackers in the Editor
 // Logic from https://www.youtube.com/watch?v=rQG9aUWarwE
+//*******************************************
 
 [CustomEditor(typeof(AIManager))]
 public class AttackZonesVisualizer : Editor

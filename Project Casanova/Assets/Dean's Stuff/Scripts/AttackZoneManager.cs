@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//*******************************************
+// Author: Dean Pearce
+// Class: AttackZoneManager
+// Description: Class for managing the attack zone objects which hold information about the attack zones
+// around the player
+//*******************************************
 public class AttackZoneManager
 {
     private AIManager m_aiManager;
@@ -82,35 +88,42 @@ public class AttackZoneManager
     {
         AttackZone returnZone = null;
 
+        // Getting relevant positions
         Vector3 enemyPos = enemyToCheck.gameObject.transform.position;
         Vector3 playerPos = m_player.transform.position;
 
+        // Zeroing y co-ords to prevent affecting angle output
         enemyPos.y = 0.0f;
         playerPos.y = 0.0f;
 
+        // Getting dir between enemy and player
         Vector3 dirFromPlayer = (enemyPos - playerPos).normalized;
         float angle = Vector3.SignedAngle(dirFromPlayer, Vector3.forward, Vector3.down);
 
+        // Adding half angle to account for the offset
         angle += m_sectionHalfAngle;
 
+        // Wrapping angle back to 360
         if (angle < 0.0f)
         {
             angle = 360.0f - angle * -1.0f;
         }
 
-        float sectionAngle = 360.0f / m_attackZonesNum;
-
+        // Distance between player and enemy
         float dist = Vector3.Distance(enemyToCheck.transform.position, m_player.transform.position);
 
+        // If within the zone bounds
         if (dist > m_aiManager.GetActiveAttackerMinDist() && dist < m_aiManager.GetPassiveAttackerMaxDist())
         {
+            // Within active zone bounds
             if (dist < m_aiManager.GetActiveAttackerMaxDist())
             {
-                returnZone = m_activeAttackZones[(int)(angle / sectionAngle)];
+                returnZone = m_activeAttackZones[(int)(angle / m_anglePerSection)];
             }
+            // Within passive zone bounds
             else
             {
-                returnZone = m_passiveAttackZones[(int)(angle / sectionAngle)];
+                returnZone = m_passiveAttackZones[(int)(angle / m_anglePerSection)];
             }
         }
 
@@ -120,36 +133,42 @@ public class AttackZoneManager
     // Function for randomising a position for a given enemy to travel to, not currently being made use of, as enemies have a different logic setup right now
     public Vector3 RandomiseAttackPosForEnemy( EnemyAI enemy )
     {
-        float anglePerZone = 360.0f / m_attackZonesNum;
         float dist = m_aiManager.GetActiveAttackerMaxDist();
 
+        // Randomising the zone and angle
         int attackZone = Random.Range(0, m_attackZonesNum);
-        float randomAngle = Random.Range((anglePerZone * attackZone) + m_aiManager.GetZoneDistanceBuffer(), (anglePerZone * (attackZone + 1)) - m_aiManager.GetZoneDistanceBuffer());
+        float randomAngle = Random.Range((m_anglePerSection * attackZone) + m_aiManager.GetZoneDistanceBuffer(), (m_anglePerSection * (attackZone + 1)) - m_aiManager.GetZoneDistanceBuffer());
 
+        // Direction based on angle
         Vector3 dirToAttackZone = DirFromAngle(randomAngle - m_sectionHalfAngle, true, m_player);
 
+        // If for active zone range
         if (enemy.GetAttackingType() == AttackingType.Active)
         {
             dist = Random.Range(m_aiManager.GetActiveAttackerMinDist(), m_aiManager.GetActiveAttackerMaxDist());
         }
+        // If for passive zone range
         else if (enemy.GetAttackingType() == AttackingType.Passive)
         {
             dist = Random.Range(m_aiManager.GetActiveAttackerMaxDist(), m_aiManager.GetPassiveAttackerMaxDist());
         }
 
+        // Todo: Look into dynamically tracking this pos instead of a one time set
         return m_player.transform.position + (dirToAttackZone * dist);
     }
 
     // Overload of above function to get pos for a specific zone
     public Vector3 RandomiseAttackPosForEnemy( EnemyAI enemy, int zoneToUse )
     {
-        float anglePerZone = 360.0f / m_attackZonesNum;
         float dist = m_aiManager.GetActiveAttackerMaxDist();
 
-        float randomAngle = Random.Range((anglePerZone * zoneToUse) + m_aiManager.GetZoneDistanceBuffer(), (anglePerZone * (zoneToUse + 1)) - m_aiManager.GetZoneDistanceBuffer());
+        // Random angle based on specified zone
+        float randomAngle = Random.Range((m_anglePerSection * zoneToUse) + m_aiManager.GetZoneDistanceBuffer(), (m_anglePerSection * (zoneToUse + 1)) - m_aiManager.GetZoneDistanceBuffer());
 
+        // Direction based on angle
         Vector3 dirToAttackZone = DirFromAngle(randomAngle - m_sectionHalfAngle, true, m_player);
 
+        // Distance based on attacker type
         if (enemy.GetAttackingType() == AttackingType.Active)
         {
             dist = Random.Range(m_aiManager.GetActiveAttackerMinDist(), m_aiManager.GetActiveAttackerMaxDist());
@@ -165,9 +184,7 @@ public class AttackZoneManager
     // Getting position for an enemy by a specified zone and distance
     public Vector3 GetAttackPosByZoneAndDist( EnemyAI enemy, int zoneToUse, float dist )
     {
-        float anglePerZone = 360.0f / m_attackZonesNum;
-
-        float randomAngle = Random.Range((anglePerZone * zoneToUse) + m_aiManager.GetZoneDistanceBuffer(), (anglePerZone * (zoneToUse + 1)) - m_aiManager.GetZoneDistanceBuffer());
+        float randomAngle = Random.Range((m_anglePerSection * zoneToUse) + m_aiManager.GetZoneDistanceBuffer(), (m_anglePerSection * (zoneToUse + 1)) - m_aiManager.GetZoneDistanceBuffer());
 
         Vector3 dirToAttackZone = DirFromAngle(randomAngle - m_sectionHalfAngle, true, m_player);
 
@@ -177,25 +194,28 @@ public class AttackZoneManager
     // Return the number of the zone the specified enemy is in
     public int GetZoneNumByAngle( EnemyAI enemy )
     {
+        // Getting positions
         Vector3 enemyPos = enemy.gameObject.transform.position;
         Vector3 playerPos = m_player.transform.position;
 
+        // Zero y to prevent affecting angles
         enemyPos.y = 0.0f;
         playerPos.y = 0.0f;
 
+        // Getting dir from player to enemy
         Vector3 dirFromPlayer = (enemyPos - playerPos).normalized;
         float angle = Vector3.SignedAngle(dirFromPlayer, Vector3.forward, Vector3.down);
 
+        // Add half angle to account for offset
         angle += m_sectionHalfAngle;
 
+        // If angle less than 0, wrap back around
         if (angle < 0.0f)
         {
             angle = 360.0f - angle * -1.0f;
         }
 
-        float sectionAngle = 360.0f / m_attackZonesNum;
-
-        return (int)(angle / sectionAngle);
+        return (int)(angle / m_anglePerSection);
     }
 
     public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject gameObject )

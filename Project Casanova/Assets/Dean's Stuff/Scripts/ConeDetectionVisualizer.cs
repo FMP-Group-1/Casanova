@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-// Script for visualizing the AI's FOV in the Editor
+//*******************************************
+// Author: Dean Pearce
+// Class: ConeDetectionVisualizer
+// Description: Script for visualizing the AI's FOV in the Editor
 // Logic from https://www.youtube.com/watch?v=rQG9aUWarwE
+//*******************************************
 
 [CustomEditor (typeof (EnemyAI))]
 public class ConeDetectionVisualizer : Editor
