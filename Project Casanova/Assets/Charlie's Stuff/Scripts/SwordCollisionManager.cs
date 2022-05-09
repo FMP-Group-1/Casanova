@@ -11,7 +11,7 @@ public class SwordCollisionManager : MonoBehaviour
     * Parameters: Collider other
     * Return: n/a
     *
-    * Author: Charlie Taylor
+    * Author: Dean Pearce
     *
     * Description: Sword Collision with Enemy
     **************************************************************************************/

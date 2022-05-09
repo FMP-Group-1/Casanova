@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-public class melee : MonoBehaviour
+public class Melee : MonoBehaviour
 {
     private Animator animator;
 
