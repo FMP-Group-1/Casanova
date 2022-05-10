@@ -37,7 +37,23 @@ public class AIManager : MonoBehaviour
 
     [SerializeField]
     private GameObject m_obsCheckDebug;
-    
+
+    //Input System
+    private DeanControls m_inputs;
+    [SerializeField]
+    private bool m_debugInputsActive = false;
+
+    private void Awake()
+    {
+        // Create the control input
+        m_inputs = new DeanControls();
+    }
+
+    private void OnEnable()
+    {
+        m_inputs.Enable();
+    }
+
     void Start()
     {
         m_player = GameObject.FindGameObjectWithTag("Player");
@@ -48,6 +64,9 @@ public class AIManager : MonoBehaviour
 
     void Update()
     {
+        // Function for reading the test inputs
+        TestingInputs();
+
         m_attackZoneManager.Update();
         ActiveAttackerCount();
     }
@@ -191,9 +210,14 @@ public class AIManager : MonoBehaviour
     // Makes the passive attacker an active attacker and vice versa
     public void SwapPassiveWithActive( EnemyAI enemyToSwap )
     {
-        // Todo: Add logic to interrupt MovingToAttack state
+        EnemyAI furthestActive = FindFurthestActiveAttacker();
         MakeActiveAttacker(enemyToSwap);
-        MakePassiveAttacker(FindFurthestActiveAttacker());
+        MakePassiveAttacker(furthestActive);
+
+        if (furthestActive.GetCombatState() != CombatState.Attacking)
+        {
+            furthestActive.SetCombatState(CombatState.BackingUp);
+        }
     }
 
     // Check if any of the active attackers are currently attacking
@@ -253,5 +277,33 @@ public class AIManager : MonoBehaviour
     public GameObject GetObsCheckDebug()
     {
         return m_obsCheckDebug;
+    }
+
+    // Function for reading inputs for purposes of debugging
+    private void TestingInputs()
+    {
+        if (m_debugInputsActive)
+        {
+            // Start Patrolling Test Input
+            if (m_inputs.Debug.AI_Move.triggered)
+            {
+                foreach (EnemyAI enemy in m_enemyList)
+                {
+                    enemy.SetAIState(AIState.Patrolling);
+                }
+            }
+
+            // Start Pursuing Test Input
+            if (m_inputs.Debug.AI_Combat.triggered)
+            {
+                foreach (EnemyAI enemy in m_enemyList)
+                {
+                    if (enemy.GetState() != AIState.Dead)
+                    {
+                        enemy.SetAIState(AIState.InCombat);
+                    }
+                }
+            }
+        }
     }
 }

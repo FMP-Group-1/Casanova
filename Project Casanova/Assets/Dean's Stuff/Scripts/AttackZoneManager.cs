@@ -130,7 +130,8 @@ public class AttackZoneManager
         return returnZone;
     }
 
-    // Function for randomising a position for a given enemy to travel to, not currently being made use of, as enemies have a different logic setup right now
+    // Function for randomising a position for a given enemy to travel to
+    // Not currently being made use of, as enemies have a different logic setup right now
     public Vector3 RandomiseAttackPosForEnemy( EnemyAI enemy )
     {
         float dist = m_aiManager.GetActiveAttackerMaxDist();
@@ -153,7 +154,8 @@ public class AttackZoneManager
             dist = Random.Range(m_aiManager.GetActiveAttackerMaxDist(), m_aiManager.GetPassiveAttackerMaxDist());
         }
 
-        // Todo: Look into dynamically tracking this pos instead of a one time set
+        // Todo: This won't actually work in practice as it's a one time set, and not dynamically tracking the position
+        // If the player moves, the position given will be incorrect, so this needs to be reworked to keep track of the position
         return m_player.transform.position + (dirToAttackZone * dist);
     }
 
