@@ -3,40 +3,38 @@ using UnityEngine;
 
 public class Melee : MonoBehaviour
 {
-    private Animator animator;
+    private Animator m_animator;
 
+    //This will be swapped to singular input actions, as the melee script does no need to know about moving
     private PlayerControls m_playerControls;
 
+    //Player Controller Script
     private PlayerController m_playerController;
 
     [SerializeField]
-    private bool canStartNextAttack = true;
+    private bool m_canStartNextAttack = true;
 
-    //[SerializeField]
-    //private Text comboDebugText;
+    //For box collider rotations
+    [SerializeField]
+    private Transform m_swordTip;
+    //Object with the collider that actually rotates
+    [SerializeField]
+    private GameObject m_colliderSweeper;
 
-    [SerializeField]
-    private Transform swordTip;
-    [SerializeField]
-    private Material lineMaterial;
-    //[SerializeField]
-    //private float lineTime = 1f;
-    
-    [SerializeField]
-    private GameObject colliderSweepThing;
-
+    //How fast the player rotates at begining of an attack
     [SerializeField]
     [Range(0f, 1f)]
-    private float rotateSpeed = 0.2f;
+    private float m_rotateSpeed = 0.2f;
 
+    //Attack Enum
     private enum Attack
     {
         Nothing,
         Light,
         Heavy,
     }
-
-    private Attack attackType;
+    //Member version of attack
+    private Attack m_attackType;
 
     /**************************************************************************************
     * Type: Function
@@ -56,8 +54,8 @@ public class Melee : MonoBehaviour
         m_playerController = GetComponent<PlayerController>();
 
         m_playerControls.Enable();
-        animator = GetComponent<Animator>();
-        colliderSweepThing.SetActive(false);
+        m_animator = GetComponent<Animator>();
+        m_colliderSweeper.SetActive(false);
     }
 
 
@@ -72,87 +70,103 @@ public class Melee : MonoBehaviour
     *
     * Author: Charlie Taylor
     *
-    * Description: Update player's melee stuff
+    * Description: Activate Mechanim Triggers and bools, allowing attacks to flow
     **************************************************************************************/
     void Update()
     {
-        //Attack straight from unarmed. No Blend Animation
         //Light Attack
         if ( m_playerControls.Combat.LightAtatck.triggered )
         {
-            attackType = Attack.Light;
-
+            m_attackType = Attack.Light;
         }
         //Heavy Attack
         if ( m_playerControls.Combat.HeavyAttack.triggered )
         {
-            attackType = Attack.Heavy;
+            m_attackType = Attack.Heavy;
         }
-        //Heavy Attack
+        /*//Whirlwind Attack
+        //Still in progress, not finished
         if ( m_playerControls.Combat.Whirlwind.triggered )
         {
-            attackType = Attack.Heavy;
+            m_attackType = Attack.Heavy;
             animator.SetTrigger( "whirlwind" );
-        }
+        }*/
 
-        //Basically, if you have reached the end of an attack, you are no longer attacking, but if "attackType" is not nothing, there's somehing queued up, so lets do it
-        if ( canStartNextAttack && attackType != Attack.Nothing )
+
+
+
+
+        //Actually begin the attack stuff
+        /* When you click an input, as above, you assign m_attackType to Light, Heavy etc
+         * If you can start an attack (Be it, you going from idle or are available to do so
+         * in a combo), and you are attacking, we can now enter this statement
+         */
+        if ( m_canStartNextAttack && m_attackType != Attack.Nothing )
         {
-            //Rotation stuff needs to go around here??????
-            Vector3 targetDirection = m_playerController.GetMoveDirection();
-            // So we are not attacking YET, but we want to
-
             //Stop being able to move or fall or rotate because we are in an attack
-            m_playerController.canMove = false;
-            m_playerController.canFall = false;
-            m_playerController.canRotate = false;
+            m_playerController.m_canMove = false;
+            m_playerController.m_canFall = false;
+            m_playerController.m_canRotate = false;
 
-            //We are attacking
-            canStartNextAttack = false;
-            animator.SetTrigger( "attacked" );
+            //We are attacking, so stop being able to again. (It is reset from CollisionsEnd)
+            m_canStartNextAttack = false;
+            m_animator.SetTrigger( "attacked" );
             //Combo has begun
-            animator.SetBool( "comboActive", true );
+            m_animator.SetBool( "comboActive", true );
 
             //What attack type?
-            switch ( attackType )
+            switch ( m_attackType )
             {
                 case Attack.Light:
 
-                    animator.SetTrigger( "light" );
+                    m_animator.SetTrigger( "light" );
                     break;
 
                 case Attack.Heavy:
 
-                    animator.SetTrigger( "heavy" );
+                    m_animator.SetTrigger( "heavy" );
 					break;
 
 				case Attack.Nothing:
-                    Debug.Log( "You've reset the Attack type to nothing before executing the attack you dumb ass" );
+                    Debug.Log( "You've reset the Attack type to nothing before executing the Switch. This should not happen" );
                     break;
 
 			}
+			//Next queued attack is nothing, until we add one in next run of update (If we click something, obviously)
+			m_attackType = Attack.Nothing;
 
 
-			//Next queued attack is nothing, until we add one
-			attackType = Attack.Nothing;
+            //The triggers now affect the animation played
+
 
         }
 
-        //rotate Collider Thingy to angle to the sword (ALL THE TIME)
+        //rotate Collider sweeper to angle to the sword (ALL THE TIME)
         //Verbose for Readability
         //Rotate From...
-        Vector3 startPosition = transform.position;
-        startPosition.y = 0f;
+        Vector3 startPosition= transform.position;
         //... to....
-        Vector3 targetPosition = swordTip.position;
-        targetPosition.y = 0;
+        Vector3 targetPosition = m_swordTip.position;
 
-        //This is now the angle (between 0 and 180?) between origin and target
+        //This is now the angle (between -180 and 180) between origin and target
         float targetAngle = Mathf.Rad2Deg * ( Mathf.Atan2( targetPosition.x - startPosition.x, targetPosition.z - startPosition.z ) );
 
-        //Create a vector 3, with new angle, to be what we want the new rotation point to be
-        Vector3 targetRotation = new Vector3 ( 0f, targetAngle, 0f );
-        colliderSweepThing.transform.rotation = Quaternion.Euler(targetRotation);
+  
+
+        //Create a Quaternion, with new angle, to be what we want the new rotation point to be
+        Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
+
+        //Lerp instead of SET it as I believe that will stop issues like frame rate skipping past or soemthing
+        m_colliderSweeper.transform.rotation = Quaternion.Lerp( m_colliderSweeper.transform.rotation, targetRotation, 0.99f );
+
+
+        //Just SET it version
+        ////Create a vector 3, with new angle, to be what we want the new rotation point to be
+        //Vector3 targetRotation = new Vector3 ( 0f, targetAngle, 0f );
+
+        //m_colliderSweeper.transform.rotation = Quaternion.Euler(targetRotation);
+
+
 
     }
 
@@ -169,8 +183,8 @@ public class Melee : MonoBehaviour
     **************************************************************************************/
     public void CollisionsStart()
     {
-        //comboDebugText.text += "\nColl. Start\n";
-        colliderSweepThing.SetActive( true );
+        //Set collider sweeper on
+        m_colliderSweeper.SetActive( true );
 
     }
 
@@ -187,10 +201,11 @@ public class Melee : MonoBehaviour
     **************************************************************************************/
     public void CollisionsEnd()
     {
-        //comboDebugText.text += "\nColl. End\n";
-        canStartNextAttack = true;
+        //Begin attack again if you can
+        m_canStartNextAttack = true;
 
-        colliderSweepThing.SetActive( false );
+        //Set collider sweeper off
+        m_colliderSweeper.SetActive( false );
 
     }
 
@@ -208,16 +223,11 @@ public class Melee : MonoBehaviour
     **************************************************************************************/
     private void AttackBegin()
 	{
-        //The direction the player is inputing
-        Vector3 moveDirection = transform.position + m_playerController.GetMoveDirection();
-
-
         //Current Position value
         Vector3 startPosition = transform.position;
-        startPosition.y = 0f;
 
-        Vector3 targetPosition = moveDirection;
-        targetPosition.y = 0;
+        //Add the direction to where you are to get the vector
+        Vector3 targetPosition = transform.position + m_playerController.GetMoveDirection();
 
         //Get target angle in degrees
         float targetAngle = Mathf.Rad2Deg * ( Mathf.Atan2( targetPosition.x - startPosition.x, targetPosition.z - startPosition.z ) );
@@ -253,13 +263,13 @@ public class Melee : MonoBehaviour
     **************************************************************************************/
     public void EndCombo()
     {
-        //comboDebugText.text = "\nEnd\n";
-        m_playerController.playerVelocity.y = 0f;
+        //Reset velocity to 0 so the player doesn't reach mach 4 in falling
+        m_playerController.m_playerVelocity.y = 0f;
 
-        m_playerController.canFall = true;
-        m_playerController.canMove = true;
-        m_playerController.canRotate = true;
-        animator.SetBool( "comboActive", false );
+        m_playerController.m_canFall = true;
+        m_playerController.m_canMove = true;
+        m_playerController.m_canRotate = true;
+        m_animator.SetBool( "comboActive", false );
     }
 
     /**************************************************************************************
@@ -275,8 +285,8 @@ public class Melee : MonoBehaviour
     **************************************************************************************/
     IEnumerator RotatePlayer( Quaternion targetRotation )
     {
-        float inTime = rotateSpeed;
-        for( var t = 0f; t < 1; t += Time.deltaTime / inTime )
+        //While time is still less than the rotate time speed thing, rotate to the position
+        for( var t = 0f; t < 1; t += Time.deltaTime / m_rotateSpeed )
         {
             transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, t );
             yield return null;

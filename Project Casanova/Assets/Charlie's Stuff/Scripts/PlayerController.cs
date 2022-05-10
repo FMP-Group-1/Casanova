@@ -8,50 +8,60 @@ public class PlayerController : MonoBehaviour
 {
     //Input actions
     [SerializeField]
-    private InputActionReference movementControl;
+    [Tooltip( "Movement Control Input" )]
+    private InputActionReference m_movementControl;
     [SerializeField]
-    private InputActionReference jumpControl;
+    [Tooltip( "Jump Control Input" )]
+    private InputActionReference m_jumpControl;
 
     //Player Components
     //The Animator Component
-    private Animator animator;
+    private Animator m_animator;
     //Character Controller
-    private CharacterController controller;
+    private CharacterController m_controller;
 
     //Player stats
     //Move Speed
     [SerializeField]
-    private float playerSpeed = 2.0f;
+    [Tooltip("How fast player runs")]
+    private float m_playerSpeed = 5.0f;
     [SerializeField]
+    [Tooltip( "Player jump force" )]
     //How hard they jump
-    private float jumpForce = 1.0f;
+    private float m_jumpForce = 1.0f;
     //gravity
     [SerializeField]
-    private float gravityValue = -9.81f;
+    private float m_gravityValue = -9.81f;
     //How fast the player rotates when moving in a new direction
     [SerializeField]
-    private float rotationSpeed = 4f;
+    private float m_rotationSpeed = 4f;
 
-    public Vector3 playerVelocity;
-    private bool groundedPlayer;
+    //Being Public is not finalised. This will become a getter/setter (Called in Melee.cs)
+    public Vector3 m_playerVelocity;
+    private bool m_groundedPlayer;
     //Camera's transform position, used for directional movmement/attacking
-    private Transform cameraMainTransform;
+    private Transform m_cameraMainTransform;
 
 
     //Values that allow player to move or fall or rotate
-    public bool canMove = true;
-    public bool canFall = true;
-    public bool canRotate = true;
+    //All of these Being Public is not finalised. They will become getters/setters (Called in Melee.cs)
+    public bool m_canMove = true;
+    public bool m_canFall = true;
+    public bool m_canRotate = true;
 
-    //Used for animating
+    //Normalised float of how much player is moving. Used in 1D Blend Tree
     private float m_moveAmount;
 
-    //Line renderer shows the player's input
-    public LineRenderer inputDirectionVisual;
-    private Vector3 previousDirection;
+    [Header("Debug Stuff")]
 
+    [SerializeField]
+    [Tooltip("Input Direction Visualiser")]
+    private LineRenderer m_inputDirectionVisual;
+    private Vector3 m_previousDirection;
 
-    public LineRenderer currentDirectionFaced;
+    [SerializeField]
+    [Tooltip( "Current Direction Visualiser" )]
+    private LineRenderer m_currentDirectionFaced;
 
     /**************************************************************************************
     * Type: Function
@@ -66,8 +76,9 @@ public class PlayerController : MonoBehaviour
     **************************************************************************************/
     private void OnEnable()
     {
-        movementControl.action.Enable();
-        jumpControl.action.Enable();
+        //Input actions need to be enabled
+        m_movementControl.action.Enable();
+        m_jumpControl.action.Enable();
     }
 
     /**************************************************************************************
@@ -83,8 +94,9 @@ public class PlayerController : MonoBehaviour
     **************************************************************************************/
     private void OnDisable()
     {
-        movementControl.action.Disable();
-        jumpControl.action.Disable();
+        //Input actions need to be diabled
+        m_movementControl.action.Disable();
+        m_jumpControl.action.Disable();
     }
 
     /**************************************************************************************
@@ -100,10 +112,10 @@ public class PlayerController : MonoBehaviour
     **************************************************************************************/
     private void Start()
     {
-        animator = GetComponent<Animator>();
-        controller = gameObject.GetComponent<CharacterController>();
-        cameraMainTransform = Camera.main.transform;
-
+        //Asign stuff with GetComponent instead of in Inspector
+        m_animator = GetComponent<Animator>();
+        m_controller = gameObject.GetComponent<CharacterController>();
+        m_cameraMainTransform = Camera.main.transform;
     }
 
     /**************************************************************************************
@@ -111,16 +123,20 @@ public class PlayerController : MonoBehaviour
     * 
     * Name: GetPlayerInput
     * Parameters: n/a
-    * Return: Vector2
+    * Return: Vector3
     *
     * Author: Charlie Taylor
     *
-    * Description: Return the players input values as a Vector2
+    * Description: Return the players input values as a Vector3 direction
     **************************************************************************************/
-    public Vector2 GetPlayerInput()
+    public Vector3 GetPlayerInput()
 	{
-        //The input values for Forward and Right, put into a member variable
-        return movementControl.action.ReadValue<Vector2>();
+        //The player inputs are a vector2, but everywhere I used it, it's in relation to a Vector 3, and
+        //The Y value of the Vecrtor2 was always put in the Z and it was kind of confusing, so now it returns
+        //a Vector3, with X and Z being the correct values.
+        
+        //Y always being 0 may be a waste, but it made it far more readable for me
+        return new Vector3( m_movementControl.action.ReadValue<Vector2>().x, 0f, m_movementControl.action.ReadValue<Vector2>().y);
     }
 
     /**************************************************************************************
@@ -137,22 +153,18 @@ public class PlayerController : MonoBehaviour
     **************************************************************************************/
     public Vector3 GetMoveDirection()
     {
-        //Vector of what direction to move based on the inputs. Y is in the Z area, as the above holds the Z in it's Y value
-        Vector3 moveInputs = new Vector3( GetPlayerInput().x, 0, GetPlayerInput().y );
-
         //Get the absolute values of movement inputs (0-1) for use in a 1d Blend tree animations
-        m_moveAmount = Mathf.Clamp01( Mathf.Abs( GetPlayerInput().x ) + Mathf.Abs( GetPlayerInput().y ) );
-        animator.SetFloat( "movingSpeed", m_moveAmount );
+        m_moveAmount = Mathf.Clamp01( Mathf.Abs( GetPlayerInput().x ) + Mathf.Abs( GetPlayerInput().z ) );
+        //Animator variable set to move amount
+        m_animator.SetFloat( "movingSpeed", m_moveAmount );
 
 
         //Move Direction based on the camera angle
-        Vector3 moveDirection = cameraMainTransform.forward * moveInputs.z + cameraMainTransform.right * moveInputs.x;
+        Vector3 moveDirection = m_cameraMainTransform.forward * GetPlayerInput().z + m_cameraMainTransform.right * GetPlayerInput().x;
         //No move via Y. That's a jumping thing
         moveDirection.y = 0f;
 
-        //Move is now the direction I want to go
-
-
+        //moveDirection is now the direction I want to go
         return moveDirection;
     }
 
@@ -169,97 +181,90 @@ public class PlayerController : MonoBehaviour
     **************************************************************************************/
     void Update()
     {
-        currentDirectionFaced.SetPosition( 0, transform.position );
-        Vector3 facedDirection = transform.position + transform.forward;
-
-        currentDirectionFaced.SetPosition( 1, facedDirection );
 
 
-
-        //Use the character Controller's isGrounded functionality to fill a member
-        groundedPlayer = controller.isGrounded;
-        if ( groundedPlayer && playerVelocity.y < 0 )
+        //Use the character Controller's isGrounded functionality to fill a member variable for readability
+        m_groundedPlayer = m_controller.isGrounded;
+        if ( m_groundedPlayer && m_playerVelocity.y < 0 )
         {
-            playerVelocity.y = 0f;
+            m_playerVelocity.y = 0f;
         }
-
-
-        Vector3 moveDirection = GetMoveDirection();
-
-        if(moveDirection != Vector3.zero )
-		{
-            previousDirection = moveDirection;
-        }
-        else
-		{
-            previousDirection += moveDirection;
-
-        }
-
-
-        //Debug.Log( moveDirection );
 
 
 
         //If you're even touching Inputs
-        if ( GetPlayerInput() != Vector2.zero )
+        if ( GetMoveDirection() != Vector3.zero )
         {
-            if ( canMove )
+            if ( m_canMove )
             {
                 //We are touching inputs AND we can move so, move
-                controller.Move( moveDirection * Time.deltaTime * playerSpeed );
+                m_controller.Move( GetMoveDirection() * (Time.deltaTime * m_playerSpeed) );
             }
 
             //Rotate player when moving, not when Idle
-            if ( canRotate )
+            if ( m_canRotate )
             {
-                float targetAngle = Mathf.Atan2( GetPlayerInput().x, GetPlayerInput().y ) * Mathf.Rad2Deg + cameraMainTransform.eulerAngles.y;
+                //Get the angle where your inputs are, relative to camera
+                float targetAngle = Mathf.Atan2( GetPlayerInput().x, GetPlayerInput().z ) * Mathf.Rad2Deg + m_cameraMainTransform.eulerAngles.y;
+                //Pass that into a quaternion
                 Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
-                transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * rotationSpeed );
-
+                //Rotate to it using rotation speed
+                transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * m_rotationSpeed );
             }
         }
 
 
-        // Changes the height position of the player..
-        if ( jumpControl.action.triggered && groundedPlayer )
+        //Jumping
+        if ( m_jumpControl.action.triggered && m_groundedPlayer )
         {
             //Jumped
-            animator.SetTrigger( "jumped" );
-            playerVelocity.y += Mathf.Sqrt( jumpForce * -3.0f * gravityValue );
+            m_animator.SetTrigger( "jumped" );
+            m_playerVelocity.y += Mathf.Sqrt( m_jumpForce * -3.0f * m_gravityValue );
         }
 
-        if ( !groundedPlayer )
+        //If in air, at all
+        if ( !m_groundedPlayer )
         {
 
-            animator.SetBool( "inAir", true );
+            m_animator.SetBool( "inAir", true );
         }
         else
         {
             //Landed
-            animator.SetBool( "inAir", false );
+            m_animator.SetBool( "inAir", false );
         }
 
-        playerVelocity.y += gravityValue * Time.deltaTime;
-
-
-        if ( canFall )
+        //Update a variable with how much you should be falling
+        m_playerVelocity.y += m_gravityValue * Time.deltaTime;
+        //And if you can fall, move that way.
+        if ( m_canFall )
         {
-            controller.Move( playerVelocity * Time.deltaTime );
+            //Velocity is only used for falling and jumping
+            m_controller.Move( m_playerVelocity * Time.deltaTime );
         }
 
 
-        //Debug.Log(playerVelocity);
-
-
+        /////////////
+        /// Debug ///
+        /////////////
         
-        inputDirectionVisual.SetPosition( 0, transform.position );
+        //Rotate the Current Direction line renderer
+        m_currentDirectionFaced.SetPosition( 0, transform.position );
+        Vector3 facedDirection = transform.position + transform.forward;
+        m_currentDirectionFaced.SetPosition( 1, facedDirection );
 
-        Vector3 inputDirection = transform.position + previousDirection;
+        //If there is a movement direction (So there's input)
+        if ( GetMoveDirection() != Vector3.zero )
+        {
+            //Set vector3 for the line renderer
+            m_previousDirection = GetMoveDirection();
+        }
+        //If no input, it will just use the last 
 
-        inputDirectionVisual.SetPosition( 1, inputDirection );
-
-
+        //Set input direction Visualisers
+        m_inputDirectionVisual.SetPosition( 0, transform.position );
+        Vector3 inputDirection = transform.position + m_previousDirection;
+        m_inputDirectionVisual.SetPosition( 1, inputDirection );
 
     }
 }
