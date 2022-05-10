@@ -25,6 +25,7 @@ public class LevelManager : MonoBehaviour
     **************************************************************************************/
     void Start()
     {
+        //Hide Mouse and lock to window
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -38,10 +39,11 @@ public class LevelManager : MonoBehaviour
     *
     * Author: Charlie Taylor
     *
-    * Description: Enable input actions
+    * Description: Enable input actions (No Disable as this will never be, and is only Debug)
     **************************************************************************************/
     private void OnEnable()
 	{
+        //Input actions need to be enabled
         m_resetLevel.action.Enable();
         m_quitGame.action.Enable();
 
@@ -66,6 +68,7 @@ public class LevelManager : MonoBehaviour
             Scene scene = SceneManager.GetActiveScene(); 
             SceneManager.LoadScene( scene.name );
         }
+        //Quit Game
         if( m_quitGame.action.triggered )
 		{
             Application.Quit();

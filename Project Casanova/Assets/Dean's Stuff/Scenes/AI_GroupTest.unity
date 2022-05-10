@@ -229,7 +229,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 54015416}
-  m_LocalRotation: {x: 0.17408216, y: 1e-45, z: -0, w: 0.98473114}
+  m_LocalRotation: {x: 0.17408216, y: -1e-45, z: -0, w: 0.98473114}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -292,8 +292,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 4496087950069955517, guid: 03e13222398f7b8419ad0e6b72540edc, type: 3}
+    - target: {fileID: 3101260882665976689, guid: 03e13222398f7b8419ad0e6b72540edc, type: 3}
+      propertyPath: m_playerSpeed
+      value: 5
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 03e13222398f7b8419ad0e6b72540edc, type: 3}
 --- !u!1 &115861386
 GameObject:
@@ -4722,7 +4725,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 968972969}
-  m_LocalRotation: {x: 0.15614161, y: 0.00000001699874, z: -0.000000002686272, w: 0.9877347}
+  m_LocalRotation: {x: 0.15614161, y: -0.00000001699874, z: 0.000000002686272, w: 0.9877347}
   m_LocalPosition: {x: 5.67, y: 3.84, z: -19.04}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -5048,7 +5051,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1318281121}
-  m_LocalRotation: {x: 0.13819696, y: -1e-45, z: -0, w: 0.9904048}
+  m_LocalRotation: {x: 0.13819696, y: 1e-45, z: -0, w: 0.9904048}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -7147,7 +7150,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2066997322}
-  m_LocalRotation: {x: 0.15614161, y: 0.000000016995338, z: -0.000000002686632, w: 0.9877347}
+  m_LocalRotation: {x: 0.15614161, y: -0.000000016995338, z: 0.000000002686632, w: 0.9877347}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class SwordCollisionManager : MonoBehaviour
 {
+    [SerializeField]
+    [Tooltip( "Damage" )]
+    private float m_swordDamage = 10f;
     /**************************************************************************************
     * Type: Function
     * 
@@ -17,18 +20,20 @@ public class SwordCollisionManager : MonoBehaviour
     **************************************************************************************/
     private void OnTriggerEnter( Collider other )
     {
+        //We've collided, but is it with an enemy?
         if ( other.gameObject.tag == "Enemy" )
         {
+            //Yes? Okay, get the enemy
             EnemyAI enemy = other.GetComponent<EnemyAI>();
 
+            //Asleep? Wake it up
             if ( enemy.GetState() == AIState.Sleeping )
             {
                 enemy.WakeUpAI( WakeTrigger.Attack );
             }
 
-            enemy.TakeDamage( 15f );
-
-            //m_collider.enabled = false;
+            //Then hurt them
+            enemy.TakeDamage( m_swordDamage );
         }
     }
 }

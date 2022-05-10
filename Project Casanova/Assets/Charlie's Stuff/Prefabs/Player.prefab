@@ -140,6 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4d405f7fb1fd20640bc3e294c185b3bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_swordDamage: 10
 --- !u!54 &1277660078
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1167,18 +1168,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 611de15752cd70d45888eba308826f29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  movementControl: {fileID: 2691785763913772774, guid: 718be9eb4c7d2ee4198df765b1d66ceb, type: 3}
-  jumpControl: {fileID: 7058330660807564182, guid: 718be9eb4c7d2ee4198df765b1d66ceb, type: 3}
-  playerSpeed: 5
-  jumpForce: 3
-  gravityValue: -9.81
-  rotationSpeed: 6
-  playerVelocity: {x: 0, y: 0, z: 0}
-  canMove: 1
-  canFall: 1
-  canRotate: 1
-  inputDirectionVisual: {fileID: 1538279741}
-  currentDirectionFaced: {fileID: 8749133694467419308}
+  m_movementControl: {fileID: 2691785763913772774, guid: 718be9eb4c7d2ee4198df765b1d66ceb, type: 3}
+  m_jumpControl: {fileID: 7058330660807564182, guid: 718be9eb4c7d2ee4198df765b1d66ceb, type: 3}
+  m_playerSpeed: 2
+  m_jumpForce: 1
+  m_gravityValue: -9.81
+  m_rotationSpeed: 4
+  m_playerVelocity: {x: 0, y: 0, z: 0}
+  m_canMove: 1
+  m_canFall: 1
+  m_canRotate: 1
+  m_inputDirectionVisual: {fileID: 1538279741}
+  m_currentDirectionFaced: {fileID: 8749133694467419308}
 --- !u!114 &451694131460032750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1191,10 +1192,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca186c01b51b3c94eb1c806ef0651e9d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canStartNextAttack: 1
-  swordTip: {fileID: 2002403007}
-  lineMaterial: {fileID: 2100000, guid: 1772fbba53a682b429c0969fed95dbad, type: 2}
-  colliderSweepThing: {fileID: 1277660074}
+  m_canStartNextAttack: 1
+  m_swordTip: {fileID: 2002403007}
+  m_colliderSweeper: {fileID: 1277660074}
+  m_rotateSpeed: 0.2
 --- !u!1 &1787312980649176709
 GameObject:
   m_ObjectHideFlags: 0
