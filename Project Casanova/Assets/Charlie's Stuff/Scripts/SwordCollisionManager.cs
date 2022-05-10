@@ -15,6 +15,7 @@ public class SwordCollisionManager : MonoBehaviour
     * Return: n/a
     *
     * Author: Dean Pearce
+    *         Charlie Taylor
     *
     * Description: Sword Collision with Enemy
     **************************************************************************************/
