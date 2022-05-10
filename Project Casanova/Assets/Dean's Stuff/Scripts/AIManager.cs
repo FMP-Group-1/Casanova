@@ -69,6 +69,10 @@ public class AIManager : MonoBehaviour
 
         m_attackZoneManager.Update();
         ActiveAttackerCount();
+
+        // This line will be removed later when attack management is expanded upon
+        // For now, it ensures the AI don't get stuck in a state of not attacking
+        m_canAttack = !AreEnemiesAttacking();
     }
 
     private void RegisterEnemies()
@@ -231,7 +235,7 @@ public class AIManager : MonoBehaviour
     {
         foreach (EnemyAI enemy in m_activeAttackers)
         {
-            if (enemy.GetCombatState() == CombatState.Attacking)
+            if (enemy.GetCombatState() == CombatState.Attacking || enemy.GetCombatState() == CombatState.MovingToAttack)
             {
                 return true;
             }

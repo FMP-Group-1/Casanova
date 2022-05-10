@@ -818,7 +818,9 @@ public class EnemyAI : MonoBehaviour
         if (m_timeSinceLastAttack >= m_attackTimer && m_aiManager.CanAttack() && m_attackEnabled && m_currentAttackingType == AttackingType.Active)
         {
             SetCombatState(CombatState.MovingToAttack);
-            m_aiManager.SetCanAttack(false);
+
+            // Disabled for now since control of it has been handed to AI manager
+            //m_aiManager.SetCanAttack(false);
         }
     }
 
@@ -1374,7 +1376,8 @@ public class EnemyAI : MonoBehaviour
 
         // Telling the AI manager that the attack is over and other AI can attack again
         // Very basic currently, and will be expanded upon in the future
-        m_aiManager.SetCanAttack(true);
+        // Disabled for now since control of it is being handled by AI manager
+        //m_aiManager.SetCanAttack(true);
     }
 
     public void TakeDamage( float damageToTake )
