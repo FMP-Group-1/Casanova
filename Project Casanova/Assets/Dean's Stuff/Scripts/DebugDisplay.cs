@@ -4,18 +4,18 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
+//*******************************************
+// Author: Dean Pearce
+// Class: DebugDisplay
+// Description: Handles the UI element which is used for displaying debug information on a specific zone or AI
+//*******************************************
+
 public enum DebugType
 {
     AI,
     Zone,
     None
 }
-
-//*******************************************
-// Author: Dean Pearce
-// Class: DebugDisplay
-// Description: Handles the UI element which is used for displaying debug information on a specific zone or AI
-//*******************************************
 
 public class DebugDisplay : MonoBehaviour
 {

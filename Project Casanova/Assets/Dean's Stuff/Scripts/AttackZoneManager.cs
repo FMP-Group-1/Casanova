@@ -56,8 +56,6 @@ public class AttackZoneManager
     private void ObsCheckUpdate()
     {
         // Using this update function to sequentially check for obstruction in zones
-        //m_passiveAttackZones[0].CheckForObstruction(m_obsCheckChildArray);
-
         m_activeAttackZones[m_currentZoneNumToCheck].CheckForObstruction();
         m_passiveAttackZones[m_currentZoneNumToCheck].CheckForObstruction();
 
@@ -109,14 +107,11 @@ public class AttackZoneManager
             angle = 360.0f - angle * -1.0f;
         }
 
-        // Distance between player and enemy
-        float dist = Vector3.Distance(enemyToCheck.transform.position, m_player.transform.position);
-
         // If within the zone bounds
-        if (dist > m_aiManager.GetActiveAttackerMinDist() && dist < m_aiManager.GetPassiveAttackerMaxDist())
+        if (!DistanceSqrCheck(enemyToCheck.gameObject, m_player, m_aiManager.GetActiveAttackerMinDist()) && DistanceSqrCheck(enemyToCheck.gameObject, m_player, m_aiManager.GetPassiveAttackerMaxDist()))
         {
             // Within active zone bounds
-            if (dist < m_aiManager.GetActiveAttackerMaxDist())
+            if (DistanceSqrCheck(enemyToCheck.gameObject, m_player, m_aiManager.GetActiveAttackerMaxDist()))
             {
                 returnZone = m_activeAttackZones[(int)(angle / m_anglePerSection)];
             }
@@ -218,6 +213,23 @@ public class AttackZoneManager
         }
 
         return (int)(angle / m_anglePerSection);
+    }
+
+    // Function for optimally checking two targets are within a given distance of each other
+    private bool DistanceSqrCheck( GameObject firstTarget, GameObject secondTarget, float distanceToCheck )
+    {
+        bool isInRange = false;
+
+        // Getting the distance between this and the target
+        Vector3 distance = firstTarget.transform.position - secondTarget.transform.position;
+
+        // Checking if sqrMagnitude is less than the distance squared
+        if (distance.sqrMagnitude <= distanceToCheck * distanceToCheck)
+        {
+            isInRange = true;
+        }
+
+        return isInRange;
     }
 
     public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject gameObject )

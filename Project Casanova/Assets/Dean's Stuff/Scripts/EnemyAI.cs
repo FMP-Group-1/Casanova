@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+//*******************************************
+// Author: Dean Pearce
+// Class: EnemyAI
+// Description: Base enemy AI class which handles navigation, behaviour, and animation
+//*******************************************
+
 public enum AIState
 {
     Idle,
@@ -53,11 +59,6 @@ public enum StrafeDir
     Right
 }
 
-//*******************************************
-// Author: Dean Pearce
-// Class: EnemyAI
-// Description: Base enemy AI class which handles navigation, behaviour, and animation
-//*******************************************
 public class EnemyAI : MonoBehaviour
 {
     private AIManager m_aiManager;
@@ -65,6 +66,7 @@ public class EnemyAI : MonoBehaviour
 
     private NavMeshAgent m_navMeshAgent;
     [SerializeField]
+    [Tooltip("AI's Current State")]
     private AIState m_mainState = AIState.Idle;
     private CombatState m_combatState = CombatState.Strafing;
     private AIState m_stateBeforeHit = AIState.Idle;
@@ -344,15 +346,12 @@ public class EnemyAI : MonoBehaviour
             m_timeSinceLastAttack += Time.deltaTime;
         }
 
-        //TimedAttackZoneCheck();
-
         switch (m_combatState)
         {
             // Chase after target/player
             case CombatState.Pursuing:
             {
                 m_navMeshAgent.destination = m_player.transform.position;
-                //m_navMeshAgent.destination = m_attackZonePos;
 
                 // Very basic detection for reaching destination, will need to be expanded upon
                 // i.e. in case of path being blocked
@@ -723,6 +722,8 @@ public class EnemyAI : MonoBehaviour
         transform.LookAt(m_player.transform.position);
     }
 
+    // Function for detecting if the zone the AI is about to enter is obstructed
+    // Not currently in use, but will be implemented later
     private bool AdjacentZoneIsAvailable()
     {
         bool zoneAvailable = false;
@@ -768,8 +769,6 @@ public class EnemyAI : MonoBehaviour
 
     private void AiToPlayerRangeCheck()
     {
-        // Get distance
-        float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
         float maxStrafeRange = 0.0f;
         float minStrafeRange = 0.0f;
 
@@ -780,7 +779,7 @@ public class EnemyAI : MonoBehaviour
             minStrafeRange = m_aiManager.GetActiveAttackerMaxDist();
 
             // If enemy is too close to the player, tell the AI manager to make this AI an active attacker, and swap the furthest active attacker to a passive attacker
-            if ( distanceToPlayer < m_aiManager.GetActiveAttackerMinDist())
+            if ( DistanceSqrCheck( m_player, m_aiManager.GetActiveAttackerMinDist() ) )
             {
                 m_aiManager.SwapPassiveWithActive(this);
             }
@@ -793,7 +792,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         // AI is out of zone, empty zone, resume pursuit
-        if (distanceToPlayer > maxStrafeRange)
+        if (!DistanceSqrCheck(m_player, maxStrafeRange))
         {
             if (m_occupiedAttackZone != null)
             {
@@ -803,7 +802,7 @@ public class EnemyAI : MonoBehaviour
         }
         // Player moved closer than strafe range
         // Empty zone, then back up
-        if (distanceToPlayer < minStrafeRange && m_combatState != CombatState.BackingUp)
+        if (DistanceSqrCheck(m_player, minStrafeRange) && m_combatState != CombatState.BackingUp)
         {
             if (m_occupiedAttackZone != null)
             {

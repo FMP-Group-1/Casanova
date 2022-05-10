@@ -179,7 +179,7 @@ public class AIManager : MonoBehaviour
         for (int i = 0; i < m_activeAttackers.Count; i++)
         {
             // Looping through the list to compare distances
-            if (Vector3.Distance(m_activeAttackers[i].gameObject.transform.position, m_player.transform.position) > Vector3.Distance(furthestEnemy.transform.position, m_player.transform.position))
+            if (GetSqrDistance(m_activeAttackers[i].gameObject, m_player) > GetSqrDistance(furthestEnemy.gameObject, m_player))
             {
                 furthestEnemy = m_activeAttackers[i];
             }
@@ -197,13 +197,19 @@ public class AIManager : MonoBehaviour
         for (int i = 0; i < m_passiveAttackers.Count; i++)
         {
             // Looping through the list to compare distances
-            if (Vector3.Distance(m_passiveAttackers[i].gameObject.transform.position, m_player.transform.position) < Vector3.Distance(closestEnemy.transform.position, m_player.transform.position))
+            if (GetSqrDistance(m_passiveAttackers[i].gameObject, m_player) < GetSqrDistance(closestEnemy.gameObject, m_player))
             {
                 closestEnemy = m_passiveAttackers[i];
             }
         }
 
         return closestEnemy;
+    }
+
+    // Function for getting the square distance for more optimal comparison checks
+    private float GetSqrDistance( GameObject firstTarget, GameObject secondTarget )
+    {
+        return (firstTarget.transform.position - secondTarget.transform.position).sqrMagnitude;
     }
 
     // Function for passive attacker to call when they've gotten too close to the player
@@ -301,6 +307,7 @@ public class AIManager : MonoBehaviour
                     if (enemy.GetState() != AIState.Dead)
                     {
                         enemy.SetAIState(AIState.InCombat);
+                        m_canAttack = true;
                     }
                 }
             }
