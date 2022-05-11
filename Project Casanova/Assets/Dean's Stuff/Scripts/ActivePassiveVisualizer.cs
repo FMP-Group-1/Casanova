@@ -2,6 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+//*******************************************
+// Author: Dean Pearce
+// Class: ActivePassiveVisualizer
+// Description: Visualizer for showing a colored orb above enemies head to easily determine whether they are an active or passive attacker
+//*******************************************
+
 public class ActivePassiveVisualizer : MonoBehaviour
 {
     [SerializeField]
