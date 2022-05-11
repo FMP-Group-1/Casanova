@@ -3,6 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+//*******************************************
+// Author: Dean Pearce
+// Class: EnemyAI
+// Description: Base enemy AI class which handles navigation, behaviour, and animation
+//*******************************************
+
 public enum AIState
 {
     Idle,
@@ -53,11 +59,6 @@ public enum StrafeDir
     Right
 }
 
-//*******************************************
-// Author: Dean Pearce
-// Class: EnemyAI
-// Description: Base enemy AI class which handles navigation, behaviour, and animation
-//*******************************************
 public class EnemyAI : MonoBehaviour
 {
     private AIManager m_aiManager;
@@ -65,7 +66,7 @@ public class EnemyAI : MonoBehaviour
 
     private NavMeshAgent m_navMeshAgent;
     [SerializeField]
-    [Tooltip( "AI's current State" )]
+    [Tooltip("AI's Current State")]
     private AIState m_mainState = AIState.Idle;
     private CombatState m_combatState = CombatState.Strafing;
     private AIState m_stateBeforeHit = AIState.Idle;
@@ -188,16 +189,8 @@ public class EnemyAI : MonoBehaviour
     [Tooltip("The layer mask for AI")]
     private LayerMask m_aiMask;
 
-    //New Input System
-    private DeanControls m_inputs;
-    [SerializeField]
-    private bool m_debugInputsActive = false;
-
     private void Awake()
     {
-        // Create the control input
-        m_inputs = new DeanControls();
-
         m_navMeshAgent = GetComponent<NavMeshAgent>();
         m_animController = GetComponent<Animator>();
 
@@ -221,19 +214,11 @@ public class EnemyAI : MonoBehaviour
             m_wakeTrigger = m_wakeTriggerObj.GetComponent<BoxCollider>();
         }
 
-        SetAIState( m_mainState );
-    }
-
-    private void OnEnable()
-    {
-        m_inputs.Enable();
+        SetAIState(m_mainState);
     }
 
     private void Update()
     {
-        // Function for debug testing
-        TestingInputs();
-
         // Finding the attack zone the AI is currently in
         AttackZoneCheck();
 
@@ -258,15 +243,15 @@ public class EnemyAI : MonoBehaviour
             // Patrol Logic
             case AIState.Patrolling:
             {
+                // Continue Patrol Update
+                PatrolUpdate();
+
                 // Start combat when AI sees player
                 if (IsPlayerVisible())
                 {
                     SetAIState(AIState.InCombat);
                 }
 
-                // Todo: Review whether this should be re-ordered
-                // Continue Patrol Update
-                PatrolUpdate();
                 break;
             }
             case AIState.ReturningToPatrol:
@@ -361,15 +346,12 @@ public class EnemyAI : MonoBehaviour
             m_timeSinceLastAttack += Time.deltaTime;
         }
 
-        //TimedAttackZoneCheck();
-
         switch (m_combatState)
         {
             // Chase after target/player
             case CombatState.Pursuing:
             {
                 m_navMeshAgent.destination = m_player.transform.position;
-                //m_navMeshAgent.destination = m_attackZonePos;
 
                 // Very basic detection for reaching destination, will need to be expanded upon
                 // i.e. in case of path being blocked
@@ -452,8 +434,7 @@ public class EnemyAI : MonoBehaviour
 
                 AiToPlayerRangeCheck();
 
-                // Todo: Optimise this check
-                if (Vector3.Distance(m_player.transform.position, transform.position) < m_strafeDist)
+                if (DistanceSqrCheck(m_player, m_strafeDist))
                 {
                     StrafeOrMaintain();
                 }
@@ -466,8 +447,7 @@ public class EnemyAI : MonoBehaviour
             // Increase the distance between AI and player
             case CombatState.BackingUp:
             {
-                // Todo: Optimise this check
-                if (Vector3.Distance(m_player.transform.position, transform.position) > m_strafeDist)
+                if (!DistanceSqrCheck(m_player, m_strafeDist))
                 {
                     StrafeOrMaintain();
                     return;
@@ -514,7 +494,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    private void SetAIState( AIState stateToSet )
+    public void SetAIState( AIState stateToSet )
     {
         // If changing FROM patrol state, store the last position in the patrol route
         if (m_mainState == AIState.Patrolling)
@@ -611,7 +591,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    private void SetCombatState( CombatState stateToSet )
+    public void SetCombatState( CombatState stateToSet )
     {
         m_combatState = stateToSet;
         ResetAnimTriggers();
@@ -742,6 +722,8 @@ public class EnemyAI : MonoBehaviour
         transform.LookAt(m_player.transform.position);
     }
 
+    // Function for detecting if the zone the AI is about to enter is obstructed
+    // Not currently in use, but will be implemented later
     private bool AdjacentZoneIsAvailable()
     {
         bool zoneAvailable = false;
@@ -787,8 +769,6 @@ public class EnemyAI : MonoBehaviour
 
     private void AiToPlayerRangeCheck()
     {
-        // Get distance
-        float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
         float maxStrafeRange = 0.0f;
         float minStrafeRange = 0.0f;
 
@@ -799,7 +779,7 @@ public class EnemyAI : MonoBehaviour
             minStrafeRange = m_aiManager.GetActiveAttackerMaxDist();
 
             // If enemy is too close to the player, tell the AI manager to make this AI an active attacker, and swap the furthest active attacker to a passive attacker
-            if ( distanceToPlayer < m_aiManager.GetActiveAttackerMinDist())
+            if ( DistanceSqrCheck( m_player, m_aiManager.GetActiveAttackerMinDist() ) )
             {
                 m_aiManager.SwapPassiveWithActive(this);
             }
@@ -812,7 +792,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         // AI is out of zone, empty zone, resume pursuit
-        if (distanceToPlayer > maxStrafeRange)
+        if (!DistanceSqrCheck(m_player, maxStrafeRange))
         {
             if (m_occupiedAttackZone != null)
             {
@@ -822,7 +802,7 @@ public class EnemyAI : MonoBehaviour
         }
         // Player moved closer than strafe range
         // Empty zone, then back up
-        if (distanceToPlayer < minStrafeRange && m_combatState != CombatState.BackingUp)
+        if (DistanceSqrCheck(m_player, minStrafeRange) && m_combatState != CombatState.BackingUp)
         {
             if (m_occupiedAttackZone != null)
             {
@@ -838,7 +818,9 @@ public class EnemyAI : MonoBehaviour
         if (m_timeSinceLastAttack >= m_attackTimer && m_aiManager.CanAttack() && m_attackEnabled && m_currentAttackingType == AttackingType.Active)
         {
             SetCombatState(CombatState.MovingToAttack);
-            m_aiManager.SetCanAttack(false);
+
+            // Disabled for now since control of it has been handed to AI manager
+            //m_aiManager.SetCanAttack(false);
         }
     }
 
@@ -971,12 +953,10 @@ public class EnemyAI : MonoBehaviour
             return true;
         }
 
-        // Todo: Look into using sqr root distance checks for optimisation
         if (m_playerDetectionEnabled)
         {
-            Vector3 distance = transform.position - m_player.transform.position;
             // Checking if player is in range
-            if (distance.sqrMagnitude <= m_viewRadius * m_viewRadius)
+            if (DistanceSqrCheck(m_player, m_viewRadius))
             {
                 // Once player is in range, getting the direction to the player and checking if it's within the AI's FOV
                 Vector3 dirToPlayer = (m_player.transform.position - transform.position).normalized;
@@ -993,6 +973,23 @@ public class EnemyAI : MonoBehaviour
         }
 
         return playerIsVisible;
+    }
+
+    // Function for optimally checking a target is within a given distance
+    private bool DistanceSqrCheck(GameObject targetToCheck, float distanceToCheck)
+    {
+        bool isInRange = false;
+
+        // Getting the distance between this and the target
+        Vector3 distance = transform.position - targetToCheck.transform.position;
+
+        // Checking if sqrMagnitude is less than the distance squared
+        if (distance.sqrMagnitude <= distanceToCheck * distanceToCheck)
+        {
+            isInRange = true;
+        }
+
+        return isInRange;
     }
 
     private void AttackZoneCheck()
@@ -1377,8 +1374,10 @@ public class EnemyAI : MonoBehaviour
         m_attackTimer = Random.Range(m_minAttackTime, m_maxAttackTime);
         m_timeSinceLastAttack = 0.0f;
 
-        // Todo: Placeholder logic to demonstrate attacking. Replace with better logic
-        m_aiManager.SetCanAttack(true);
+        // Telling the AI manager that the attack is over and other AI can attack again
+        // Very basic currently, and will be expanded upon in the future
+        // Disabled for now since control of it is being handled by AI manager
+        //m_aiManager.SetCanAttack(true);
     }
 
     public void TakeDamage( float damageToTake )
@@ -1509,31 +1508,5 @@ public class EnemyAI : MonoBehaviour
     public void SetOccupiedAttackZone( AttackZone zoneToSet )
     {
         m_occupiedAttackZone = zoneToSet;
-    }
-
-    private void TestingInputs()
-    {
-        if (m_debugInputsActive)
-        {
-            // Start Patrolling Test Input
-            if( m_inputs.Debug.AI_Move.triggered ) 
-            {
-                SetAIState(AIState.Patrolling);
-                if (m_patrolRoute != null)
-                {
-                    m_navMeshAgent.destination = m_patrolRoutePoints[m_patrolDestinationIndex].position;
-                }
-                //Debug.Log("Going to Next Destination");
-            }
-
-            // Start Pursuing Test Input
-            if (m_inputs.Debug.AI_Combat.triggered)
-            {
-                if (m_mainState != AIState.Dead)
-                {
-                    SetAIState(AIState.InCombat);
-                }
-            }
-        }
     }
 }

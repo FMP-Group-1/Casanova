@@ -37,7 +37,23 @@ public class AIManager : MonoBehaviour
 
     [SerializeField]
     private GameObject m_obsCheckDebug;
-    
+
+    //Input System
+    private DeanControls m_inputs;
+    [SerializeField]
+    private bool m_debugInputsActive = false;
+
+    private void Awake()
+    {
+        // Create the control input
+        m_inputs = new DeanControls();
+    }
+
+    private void OnEnable()
+    {
+        m_inputs.Enable();
+    }
+
     void Start()
     {
         m_player = GameObject.FindGameObjectWithTag("Player");
@@ -48,8 +64,15 @@ public class AIManager : MonoBehaviour
 
     void Update()
     {
+        // Function for reading the test inputs
+        TestingInputs();
+
         m_attackZoneManager.Update();
         ActiveAttackerCount();
+
+        // This line will be removed later when attack management is expanded upon
+        // For now, it ensures the AI don't get stuck in a state of not attacking
+        m_canAttack = !AreEnemiesAttacking();
     }
 
     private void RegisterEnemies()
@@ -160,7 +183,7 @@ public class AIManager : MonoBehaviour
         for (int i = 0; i < m_activeAttackers.Count; i++)
         {
             // Looping through the list to compare distances
-            if (Vector3.Distance(m_activeAttackers[i].gameObject.transform.position, m_player.transform.position) > Vector3.Distance(furthestEnemy.transform.position, m_player.transform.position))
+            if (GetSqrDistance(m_activeAttackers[i].gameObject, m_player) > GetSqrDistance(furthestEnemy.gameObject, m_player))
             {
                 furthestEnemy = m_activeAttackers[i];
             }
@@ -178,7 +201,7 @@ public class AIManager : MonoBehaviour
         for (int i = 0; i < m_passiveAttackers.Count; i++)
         {
             // Looping through the list to compare distances
-            if (Vector3.Distance(m_passiveAttackers[i].gameObject.transform.position, m_player.transform.position) < Vector3.Distance(closestEnemy.transform.position, m_player.transform.position))
+            if (GetSqrDistance(m_passiveAttackers[i].gameObject, m_player) < GetSqrDistance(closestEnemy.gameObject, m_player))
             {
                 closestEnemy = m_passiveAttackers[i];
             }
@@ -187,13 +210,24 @@ public class AIManager : MonoBehaviour
         return closestEnemy;
     }
 
+    // Function for getting the square distance for more optimal comparison checks
+    private float GetSqrDistance( GameObject firstTarget, GameObject secondTarget )
+    {
+        return (firstTarget.transform.position - secondTarget.transform.position).sqrMagnitude;
+    }
+
     // Function for passive attacker to call when they've gotten too close to the player
     // Makes the passive attacker an active attacker and vice versa
     public void SwapPassiveWithActive( EnemyAI enemyToSwap )
     {
-        // Todo: Add logic to interrupt MovingToAttack state
+        EnemyAI furthestActive = FindFurthestActiveAttacker();
         MakeActiveAttacker(enemyToSwap);
-        MakePassiveAttacker(FindFurthestActiveAttacker());
+        MakePassiveAttacker(furthestActive);
+
+        if (furthestActive.GetCombatState() != CombatState.Attacking)
+        {
+            furthestActive.SetCombatState(CombatState.BackingUp);
+        }
     }
 
     // Check if any of the active attackers are currently attacking
@@ -201,7 +235,7 @@ public class AIManager : MonoBehaviour
     {
         foreach (EnemyAI enemy in m_activeAttackers)
         {
-            if (enemy.GetCombatState() == CombatState.Attacking)
+            if (enemy.GetCombatState() == CombatState.Attacking || enemy.GetCombatState() == CombatState.MovingToAttack)
             {
                 return true;
             }
@@ -253,5 +287,34 @@ public class AIManager : MonoBehaviour
     public GameObject GetObsCheckDebug()
     {
         return m_obsCheckDebug;
+    }
+
+    // Function for reading inputs for purposes of debugging
+    private void TestingInputs()
+    {
+        if (m_debugInputsActive)
+        {
+            // Start Patrolling Test Input
+            if (m_inputs.Debug.AI_Move.triggered)
+            {
+                foreach (EnemyAI enemy in m_enemyList)
+                {
+                    enemy.SetAIState(AIState.Patrolling);
+                }
+            }
+
+            // Start Pursuing Test Input
+            if (m_inputs.Debug.AI_Combat.triggered)
+            {
+                foreach (EnemyAI enemy in m_enemyList)
+                {
+                    if (enemy.GetState() != AIState.Dead)
+                    {
+                        enemy.SetAIState(AIState.InCombat);
+                        m_canAttack = true;
+                    }
+                }
+            }
+        }
     }
 }
