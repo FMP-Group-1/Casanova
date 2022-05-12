@@ -420,7 +420,7 @@ public class EnemyAI : MonoBehaviour
             {
                 TimedAttackZoneCheck();
 
-                transform.LookAt(m_player.transform.position);
+                transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
 
                 AiToPlayerRangeCheck();
                 TimedBeginStrafeCheck();
@@ -455,7 +455,8 @@ public class EnemyAI : MonoBehaviour
 
                 BackUp();
                 AiToPlayerRangeCheck();
-                transform.LookAt(m_player.transform.position);
+                transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+                //transform.LookAt(m_player.transform.position);
 
 
                 // AttackCheck needs to be put here because it was causing a loop higher up
@@ -488,7 +489,8 @@ public class EnemyAI : MonoBehaviour
             // Currently in attack animation
             case CombatState.Attacking:
             {
-                transform.LookAt(m_player.transform.position);
+                transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+                //transform.LookAt(m_player.transform.position);
                 break;
             }
         }
@@ -710,7 +712,8 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.SetDestination(transform.position + dir);
 
         // LookAt so that it looks like actual strafing
-        transform.LookAt(m_player.transform.position);
+        transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+        //transform.LookAt(m_player.transform.position);
     }
 
     private void BackUp()
@@ -719,7 +722,8 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.SetDestination(transform.position + (dir * 2.0f));
 
         // Keep facing player while back stepping
-        transform.LookAt(m_player.transform.position);
+        transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+        //transform.LookAt(m_player.transform.position);
     }
 
     // Function for detecting if the zone the AI is about to enter is obstructed
