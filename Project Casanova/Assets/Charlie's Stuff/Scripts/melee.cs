@@ -84,13 +84,16 @@ public class Melee : MonoBehaviour
         {
             m_attackType = Attack.Heavy;
         }
-        /*//Whirlwind Attack
+        //Whirlwind Attack
         //Still in progress, not finished
-        if ( m_playerControls.Combat.Whirlwind.triggered )
+        if ( m_playerControls.Combat.HeavyAttack.IsPressed() )
         {
-            m_attackType = Attack.Heavy;
-            animator.SetTrigger( "whirlwind" );
-        }*/
+            m_animator.SetBool( "whirlwindHeld", true ) ;
+        }
+        else
+		{
+            m_animator.SetBool( "whirlwindHeld", false );
+        }
 
 
 
@@ -201,13 +204,28 @@ public class Melee : MonoBehaviour
     **************************************************************************************/
     public void CollisionsEnd()
     {
-        //Begin attack again if you can
-        m_canStartNextAttack = true;
-
         //Set collider sweeper off
         m_colliderSweeper.SetActive( false );
 
     }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: CanStartNextAttack
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Called by Animation Events when the another Attack can begin
+    **************************************************************************************/
+    public void CanStartNextAttack()
+    {
+        //Begin attack again if you can
+        m_canStartNextAttack = true;
+    }
+
 
     /**************************************************************************************
     * Type: Function
@@ -265,7 +283,7 @@ public class Melee : MonoBehaviour
     {
         //Reset velocity to 0 so the player doesn't reach mach 4 in falling
         m_playerController.m_playerVelocity.y = 0f;
-
+        CanStartNextAttack();
         m_playerController.m_canFall = true;
         m_playerController.m_canMove = true;
         m_playerController.m_canRotate = true;

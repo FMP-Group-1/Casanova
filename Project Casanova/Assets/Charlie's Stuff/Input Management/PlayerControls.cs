@@ -53,15 +53,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Whirlwind"",
-                    ""type"": ""Button"",
-                    ""id"": ""d42f01d8-adb3-4c47-ac3c-11da4aa2feed"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -128,28 +119,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Sheathe/Unsheathe"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""29202c8d-6eac-432f-bf80-caddc0a541bb"",
-                    ""path"": ""<Keyboard>/q"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Whirlwind"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""688a9747-97e7-4b11-b92a-a6e78eb828df"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Whirlwind"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -422,7 +391,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Combat_LightAtatck = m_Combat.FindAction("LightAtatck", throwIfNotFound: true);
         m_Combat_HeavyAttack = m_Combat.FindAction("HeavyAttack", throwIfNotFound: true);
         m_Combat_SheatheUnsheathe = m_Combat.FindAction("Sheathe/Unsheathe", throwIfNotFound: true);
-        m_Combat_Whirlwind = m_Combat.FindAction("Whirlwind", throwIfNotFound: true);
         // Move
         m_Move = asset.FindActionMap("Move", throwIfNotFound: true);
         m_Move_MouseLook = m_Move.FindAction("MouseLook", throwIfNotFound: true);
@@ -494,7 +462,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Combat_LightAtatck;
     private readonly InputAction m_Combat_HeavyAttack;
     private readonly InputAction m_Combat_SheatheUnsheathe;
-    private readonly InputAction m_Combat_Whirlwind;
     public struct CombatActions
     {
         private @PlayerControls m_Wrapper;
@@ -502,7 +469,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @LightAtatck => m_Wrapper.m_Combat_LightAtatck;
         public InputAction @HeavyAttack => m_Wrapper.m_Combat_HeavyAttack;
         public InputAction @SheatheUnsheathe => m_Wrapper.m_Combat_SheatheUnsheathe;
-        public InputAction @Whirlwind => m_Wrapper.m_Combat_Whirlwind;
         public InputActionMap Get() { return m_Wrapper.m_Combat; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -521,9 +487,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @SheatheUnsheathe.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnSheatheUnsheathe;
                 @SheatheUnsheathe.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnSheatheUnsheathe;
                 @SheatheUnsheathe.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnSheatheUnsheathe;
-                @Whirlwind.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnWhirlwind;
-                @Whirlwind.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnWhirlwind;
-                @Whirlwind.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnWhirlwind;
             }
             m_Wrapper.m_CombatActionsCallbackInterface = instance;
             if (instance != null)
@@ -537,9 +500,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @SheatheUnsheathe.started += instance.OnSheatheUnsheathe;
                 @SheatheUnsheathe.performed += instance.OnSheatheUnsheathe;
                 @SheatheUnsheathe.canceled += instance.OnSheatheUnsheathe;
-                @Whirlwind.started += instance.OnWhirlwind;
-                @Whirlwind.performed += instance.OnWhirlwind;
-                @Whirlwind.canceled += instance.OnWhirlwind;
             }
         }
     }
@@ -639,7 +599,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnLightAtatck(InputAction.CallbackContext context);
         void OnHeavyAttack(InputAction.CallbackContext context);
         void OnSheatheUnsheathe(InputAction.CallbackContext context);
-        void OnWhirlwind(InputAction.CallbackContext context);
     }
     public interface IMoveActions
     {
