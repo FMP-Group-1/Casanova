@@ -53,6 +53,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Dodge"",
+                    ""type"": ""Button"",
+                    ""id"": ""461507ef-9df6-4f8c-aa98-593c7da165b2"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -119,6 +128,28 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Sheathe/Unsheathe"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ec7afae0-22c9-4e74-b3b7-fd5b27eafd12"",
+                    ""path"": ""<Keyboard>/shift"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dodge"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""d9b997a2-87d2-44d5-ae9c-7c7b62cf48cf"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Dodge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -391,6 +422,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Combat_LightAtatck = m_Combat.FindAction("LightAtatck", throwIfNotFound: true);
         m_Combat_HeavyAttack = m_Combat.FindAction("HeavyAttack", throwIfNotFound: true);
         m_Combat_SheatheUnsheathe = m_Combat.FindAction("Sheathe/Unsheathe", throwIfNotFound: true);
+        m_Combat_Dodge = m_Combat.FindAction("Dodge", throwIfNotFound: true);
         // Move
         m_Move = asset.FindActionMap("Move", throwIfNotFound: true);
         m_Move_MouseLook = m_Move.FindAction("MouseLook", throwIfNotFound: true);
@@ -462,6 +494,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Combat_LightAtatck;
     private readonly InputAction m_Combat_HeavyAttack;
     private readonly InputAction m_Combat_SheatheUnsheathe;
+    private readonly InputAction m_Combat_Dodge;
     public struct CombatActions
     {
         private @PlayerControls m_Wrapper;
@@ -469,6 +502,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @LightAtatck => m_Wrapper.m_Combat_LightAtatck;
         public InputAction @HeavyAttack => m_Wrapper.m_Combat_HeavyAttack;
         public InputAction @SheatheUnsheathe => m_Wrapper.m_Combat_SheatheUnsheathe;
+        public InputAction @Dodge => m_Wrapper.m_Combat_Dodge;
         public InputActionMap Get() { return m_Wrapper.m_Combat; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -487,6 +521,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @SheatheUnsheathe.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnSheatheUnsheathe;
                 @SheatheUnsheathe.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnSheatheUnsheathe;
                 @SheatheUnsheathe.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnSheatheUnsheathe;
+                @Dodge.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnDodge;
+                @Dodge.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnDodge;
+                @Dodge.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnDodge;
             }
             m_Wrapper.m_CombatActionsCallbackInterface = instance;
             if (instance != null)
@@ -500,6 +537,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @SheatheUnsheathe.started += instance.OnSheatheUnsheathe;
                 @SheatheUnsheathe.performed += instance.OnSheatheUnsheathe;
                 @SheatheUnsheathe.canceled += instance.OnSheatheUnsheathe;
+                @Dodge.started += instance.OnDodge;
+                @Dodge.performed += instance.OnDodge;
+                @Dodge.canceled += instance.OnDodge;
             }
         }
     }
@@ -599,6 +639,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         void OnLightAtatck(InputAction.CallbackContext context);
         void OnHeavyAttack(InputAction.CallbackContext context);
         void OnSheatheUnsheathe(InputAction.CallbackContext context);
+        void OnDodge(InputAction.CallbackContext context);
     }
     public interface IMoveActions
     {

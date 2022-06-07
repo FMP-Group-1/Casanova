@@ -97,8 +97,6 @@ public class MeleeController : MonoBehaviour
 
 
 
-
-
         //Actually begin the attack stuff
         /* When you click an input, as above, you assign m_attackType to Light, Heavy etc
          * If you can start an attack (Be it, you going from idle or are available to do so
