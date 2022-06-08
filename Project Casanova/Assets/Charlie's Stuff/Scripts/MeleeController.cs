@@ -364,7 +364,6 @@ public class MeleeController : MonoBehaviour
             yield return null;
         }
         
-        Debug.ClearDeveloperConsole();
         m_sphereColliderTransform.localScale = new Vector3( 0.5f, 0.5f, 0.5f );
     }
 }
