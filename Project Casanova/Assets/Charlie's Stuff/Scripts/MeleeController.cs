@@ -22,9 +22,18 @@ public class MeleeController : MonoBehaviour
     private GameObject m_colliderSweeper;
 
     //How fast the player rotates at begining of an attack
-    [SerializeField]
-    [Range(0f, 1f)]
+    [SerializeField, Range(0f, 1f)]
     private float m_rotateSpeed = 0.2f;
+
+
+    [SerializeField]
+    private Transform m_sphereColliderTransform;
+
+
+    [SerializeField, Range(0f, 5f)]
+    float m_timeToGrow = 1f;
+    [SerializeField, Range(5f, 10f)]
+    float m_maxSphereSize = 7;
 
     //Attack Enum
     private enum Attack
@@ -168,7 +177,6 @@ public class MeleeController : MonoBehaviour
         //m_colliderSweeper.transform.rotation = Quaternion.Euler(targetRotation);
 
 
-
     }
 
     /**************************************************************************************
@@ -308,4 +316,55 @@ public class MeleeController : MonoBehaviour
             yield return null;
         }
 	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void GroundpoundActivated()
+	{
+        //Begin plumetting to the ground
+
+        m_playerController.m_canFall = true;
+
+        m_playerController.m_canDodge = false;
+        m_playerController.m_playerVelocity.y = -1f;
+    }
+
+    private void GrounpoundLanded()
+	{
+        //AoE Attack
+        Debug.Log( "Big AoE" );
+        StartCoroutine( ExpandGroundpoundSphere() );
+	}
+
+    IEnumerator ExpandGroundpoundSphere()
+	{
+        float timer = 0;
+        Vector3 MaxSize = new Vector3(m_maxSphereSize, m_maxSphereSize, m_maxSphereSize ); 
+
+
+        while( timer < m_timeToGrow )
+		{
+
+            Debug.Log( m_sphereColliderTransform.localScale );
+            m_sphereColliderTransform.localScale = Vector3.Lerp( m_sphereColliderTransform.localScale, MaxSize, (timer/m_timeToGrow) );
+            timer += Time.deltaTime;
+
+            yield return null;
+        }
+        
+        Debug.ClearDeveloperConsole();
+        m_sphereColliderTransform.localScale = new Vector3( 0.5f, 0.5f, 0.5f );
+    }
 }

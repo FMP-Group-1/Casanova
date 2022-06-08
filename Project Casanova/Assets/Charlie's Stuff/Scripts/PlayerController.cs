@@ -33,8 +33,7 @@ public class PlayerController : MonoBehaviour
     [Range( 3, 8 )]
     private float m_playerSpeed = 5.0f;
     [SerializeField]
-    [Tooltip( "Player jump force" )]
-    [Range( 1, 5 )]
+    [Tooltip( "Player jump force" ), Range( 1f, 10f )]
     //How hard they jump
     private float m_jumpForce = 1.0f;
     //gravity
@@ -47,6 +46,7 @@ public class PlayerController : MonoBehaviour
 
     //Being Public is not finalised. This will become a getter/setter (Called in Melee.cs)
     public Vector3 m_playerVelocity;
+    [SerializeField]
     private bool m_groundedPlayer;
     //Camera's transform position, used for directional movmement/attacking
     private Transform m_cameraMainTransform;
@@ -74,6 +74,8 @@ public class PlayerController : MonoBehaviour
     private int an_jumped;
     private int an_dodge;
 
+    [SerializeField]
+    private LayerMask m_groundLayer;
 
 
     [Header("Debug Stuff")]
@@ -190,8 +192,10 @@ public class PlayerController : MonoBehaviour
         //Get the absolute values of movement inputs (0-1) for use in a 1d Blend tree animations
         m_moveAmount = Mathf.Clamp01( Mathf.Abs( GetPlayerInput().x ) + Mathf.Abs( GetPlayerInput().z ) );
 
-        float NormalisedValue = m_moveAmount;
-
+        if (m_moveAmount > 0 && m_moveAmount < 0.001f )
+		{
+            m_moveAmount = 0;
+		}
 
 		#region Snapping Movement
 		if ( m_moveAmount > 0.05f&& m_moveAmount < 0.55f )
@@ -219,13 +223,13 @@ public class PlayerController : MonoBehaviour
 
         moveDirection.Normalize();
 
-        Debug.Log( moveDirection );
+        //Debug.Log( moveDirection );
         // Debug.Log( moveDirection );
         //moveDirection is now the direction I want to go
         return moveDirection;
     }
 
-    /**************************************************************************************
+	/**************************************************************************************
     * Type: Function
     * 
     * Name: Update
@@ -236,15 +240,30 @@ public class PlayerController : MonoBehaviour
     *
     * Description: Update everything
     **************************************************************************************/
-    void Update()
+	void Update()
     {
-
-
         //Use the character Controller's isGrounded functionality to fill a member variable for readability
         m_groundedPlayer = m_controller.isGrounded;
-        if ( m_groundedPlayer && m_playerVelocity.y < 0 )
+        //Raycast for the groundpound
+        RaycastHit hit;
+        if( Physics.Raycast( transform.position, -transform.up, out hit, 0.1f, m_groundLayer ) )
+        {
+            transform.position = hit.transform.position;
+            m_groundedPlayer = true;
+        }
+
+
+        if( m_groundedPlayer )
         {
             m_playerVelocity.y = 0f;
+        }
+        else
+        {
+            if( m_playerVelocity.y > -3 && m_canFall )
+            {
+                //Update a variable with how much you should be falling
+                m_playerVelocity.y += m_gravityValue * Time.deltaTime;
+            }
         }
 
 
@@ -297,8 +316,6 @@ public class PlayerController : MonoBehaviour
             m_animator.SetBool( an_inAir, false );
         }
 
-        //Update a variable with how much you should be falling
-        m_playerVelocity.y += m_gravityValue * Time.deltaTime;
         //And if you can fall, move that way.
         if ( m_canFall )
         {
