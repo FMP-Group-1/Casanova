@@ -552,6 +552,7 @@ public class EnemyAI : MonoBehaviour
                 // Registering the enemy as an attacker with the manager
                 m_aiManager.RegisterAttacker(this);
                 SetCombatState(CombatState.Pursuing);
+                ResetAttackTimer();
 
                 break;
             }
@@ -1375,13 +1376,18 @@ public class EnemyAI : MonoBehaviour
     private void EndAttack()
     {
         SetCombatState(CombatState.BackingUp);
-        m_attackTimer = Random.Range(m_minAttackTime, m_maxAttackTime);
-        m_timeSinceLastAttack = 0.0f;
+        ResetAttackTimer();
 
         // Telling the AI manager that the attack is over and other AI can attack again
         // Very basic currently, and will be expanded upon in the future
         // Disabled for now since control of it is being handled by AI manager
         //m_aiManager.SetCanAttack(true);
+    }
+
+    private void ResetAttackTimer()
+    {
+        m_attackTimer = Random.Range(m_minAttackTime, m_maxAttackTime);
+        m_timeSinceLastAttack = 0.0f;
     }
 
     public void TakeDamage( float damageToTake )

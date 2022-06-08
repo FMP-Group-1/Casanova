@@ -34,6 +34,8 @@ public class AIManager : MonoBehaviour
 
     [SerializeField]
     private int m_maxActiveAttackers = 3;
+    [SerializeField]
+    private int m_maxSimultaneousAttacks = 2;
 
     [SerializeField]
     private GameObject m_obsCheckDebug;
@@ -70,9 +72,8 @@ public class AIManager : MonoBehaviour
         m_attackZoneManager.Update();
         ActiveAttackerCount();
 
-        // This line will be removed later when attack management is expanded upon
-        // For now, it ensures the AI don't get stuck in a state of not attacking
-        m_canAttack = !AreEnemiesAttacking();
+        // Check to make sure too many enemies can't attack at once
+        m_canAttack = TotalEnemiesAttacking() < m_maxSimultaneousAttacks;
     }
 
     private void RegisterEnemies()
@@ -231,6 +232,7 @@ public class AIManager : MonoBehaviour
     }
 
     // Check if any of the active attackers are currently attacking
+    // Todo: Review this function, might not be needed as currently not in use
     public bool AreEnemiesAttacking()
     {
         foreach (EnemyAI enemy in m_activeAttackers)
@@ -242,6 +244,21 @@ public class AIManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    public int TotalEnemiesAttacking()
+    {
+        int total = 0;
+
+        foreach (EnemyAI enemy in m_activeAttackers)
+        {
+            if (enemy.GetCombatState() == CombatState.Attacking || enemy.GetCombatState() == CombatState.MovingToAttack)
+            {
+                total++;
+            }
+        }
+
+        return total;
     }
 
     public AttackZoneManager GetAttackZoneManager()
