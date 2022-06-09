@@ -15,6 +15,7 @@ public class AIManager : MonoBehaviour
     private List<EnemyAI> m_enemyList = new List<EnemyAI>();
     private List<EnemyAI> m_activeAttackers = new List<EnemyAI>();
     private List<EnemyAI> m_passiveAttackers = new List<EnemyAI>();
+    private List<EnemyAI> m_unassignedAttackers = new List<EnemyAI>();
     private AttackZoneManager m_attackZoneManager;
 
     private bool m_canAttack = true;
@@ -104,24 +105,30 @@ public class AIManager : MonoBehaviour
     // Register an enemy as an attacker
     public void RegisterAttacker(EnemyAI enemyToRegister)
     {
-        // Check to make sure enemy isn't already in list
-        if (!m_activeAttackers.Contains(enemyToRegister) && !m_passiveAttackers.Contains(enemyToRegister))
+        if (!m_unassignedAttackers.Contains(enemyToRegister))
         {
-            // If active attackers isn't at max, add to active attackers, otherwise add to the passive attackers
-            if (m_activeAttackers.Count < m_maxActiveAttackers)
-            {
-                m_activeAttackers.Add(enemyToRegister);
-                enemyToRegister.SetAttackingType(AttackingType.Active);
-            }
-            else
-            {
-                m_passiveAttackers.Add(enemyToRegister);
-                enemyToRegister.SetAttackingType(AttackingType.Passive);
-            }
+            m_unassignedAttackers.Add(enemyToRegister);
+            enemyToRegister.SetAttackingType(AttackingType.Unassigned);
         }
+
+            // Check to make sure enemy isn't already in list
+            //if (!m_activeAttackers.Contains(enemyToRegister) && !m_passiveAttackers.Contains(enemyToRegister))
+            //{
+            //    // If active attackers isn't at max, add to active attackers, otherwise add to the passive attackers
+            //    if (m_activeAttackers.Count < m_maxActiveAttackers)
+            //    {
+            //        m_activeAttackers.Add(enemyToRegister);
+            //        enemyToRegister.SetAttackingType(AttackingType.Active);
+            //    }
+            //    else
+            //    {
+            //        m_passiveAttackers.Add(enemyToRegister);
+            //        enemyToRegister.SetAttackingType(AttackingType.Passive);
+            //    }
+            //}
     }
 
-    // Unregister enemy from attacker lists
+        // Unregister enemy from attacker lists
     public void UnregisterAttacker(EnemyAI enemyToUnregister)
     {
         if (m_activeAttackers.Contains(enemyToUnregister))
@@ -132,6 +139,10 @@ public class AIManager : MonoBehaviour
         {
             m_passiveAttackers.Remove(enemyToUnregister);
         }
+        if (m_unassignedAttackers.Contains(enemyToUnregister))
+        {
+            m_unassignedAttackers.Remove(enemyToUnregister);
+        }
     }
 
     // Adds specified enemy to active attacker list, and makes sure they're removed from passive list
@@ -140,6 +151,10 @@ public class AIManager : MonoBehaviour
         if (m_passiveAttackers.Contains(enemy))
         {
             m_passiveAttackers.Remove(enemy);
+        }
+        if (m_unassignedAttackers.Contains(enemy))
+        {
+            m_unassignedAttackers.Remove(enemy);
         }
         if (!m_activeAttackers.Contains(enemy))
         {
@@ -155,10 +170,31 @@ public class AIManager : MonoBehaviour
         {
             m_activeAttackers.Remove(enemy);
         }
+        if (m_unassignedAttackers.Contains(enemy))
+        {
+            m_unassignedAttackers.Remove(enemy);
+        }
         if (!m_passiveAttackers.Contains(enemy))
         {
             m_passiveAttackers.Add(enemy);
             enemy.SetAttackingType(AttackingType.Passive);
+        }
+    }
+
+    public void MakeUnasssignedAttacker( EnemyAI enemy )
+    {
+        if (m_activeAttackers.Contains(enemy))
+        {
+            m_activeAttackers.Remove(enemy);
+        }
+        if (m_passiveAttackers.Contains(enemy))
+        {
+            m_passiveAttackers.Remove(enemy);
+        }
+        if (!m_unassignedAttackers.Contains(enemy))
+        {
+            m_unassignedAttackers.Add(enemy);
+            enemy.SetAttackingType(AttackingType.Unassigned);
         }
     }
 
@@ -209,6 +245,11 @@ public class AIManager : MonoBehaviour
         }
 
         return closestEnemy;
+    }
+
+    public bool ActiveSlotsOpen()
+    {
+        return m_activeAttackers.Count < m_maxActiveAttackers;
     }
 
     // Function for getting the square distance for more optimal comparison checks

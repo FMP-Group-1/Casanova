@@ -49,6 +49,7 @@ public enum WakeTrigger
 
 public enum AttackingType
 {
+    Unassigned,
     Passive,
     Active
 }
@@ -353,10 +354,27 @@ public class EnemyAI : MonoBehaviour
             {
                 m_navMeshAgent.destination = m_player.transform.position;
 
-                // Very basic detection for reaching destination, will need to be expanded upon
-                // i.e. in case of path being blocked
-                // Logic from https://answers.unity.com/questions/324589/how-can-i-tell-when-a-navmesh-has-reached-its-dest.html
-                if (IsInStrafeRange())
+                // Checking if within the overall zone range, and if they've been assigned an attacking type yet
+                if (DistanceSqrCheck(m_player, m_aiManager.GetPassiveAttackerMaxDist()) && m_currentAttackingType == AttackingType.Unassigned)
+                {
+                    // If there's space for active attackers, become active
+                    if(m_aiManager.ActiveSlotsOpen())
+                    {
+                        m_aiManager.MakeActiveAttacker(this);
+                        m_currentAttackingType = AttackingType.Active;
+                    }
+                    // Else become passive
+                    else
+                    {
+                        m_aiManager.MakePassiveAttacker(this);
+                        m_currentAttackingType = AttackingType.Passive;
+                    }
+
+                    RandomiseStrafeRange();
+                }
+
+                // Checking if they've reached the strafe range yet
+                if (IsInStrafeRange() && m_currentAttackingType != AttackingType.Unassigned)
                 {
                     AttackZone currentAttackZone = m_attackZoneManager.FindAttackZone(this);
 
@@ -803,11 +821,18 @@ public class EnemyAI : MonoBehaviour
             {
                 m_occupiedAttackZone.EmptyZone();
             }
+            if (m_currentAttackingType == AttackingType.Passive)
+            {
+                m_aiManager.MakeUnasssignedAttacker(this);
+                m_currentAttackingType = AttackingType.Unassigned;
+            }
             SetCombatState(CombatState.Pursuing);
         }
         // Player moved closer than strafe range
         // Empty zone, then back up
-        if (DistanceSqrCheck(m_player, minStrafeRange) && m_combatState != CombatState.BackingUp)
+        // Using minStrafeRange - (minStrafeRange * 0.25f) to act as a buffer for preventing the AI backing up prematurely
+        // Todo: Could use a rework for the buffer logic, perhaps a member variable?
+        if (DistanceSqrCheck(m_player, minStrafeRange - (minStrafeRange * 0.25f)) && m_combatState != CombatState.BackingUp)
         {
             if (m_occupiedAttackZone != null)
             {
@@ -888,15 +913,7 @@ public class EnemyAI : MonoBehaviour
 
     private bool IsInStrafeRange()
     {
-        bool inStrafeRange = false;
-
-        // Just using detection based on distance for now, will need better logic for broken nav paths
-        if (m_navMeshAgent.remainingDistance < m_strafeDist)
-        {
-            inStrafeRange = true;
-        }
-
-        return inStrafeRange;
+        return DistanceSqrCheck(m_player, m_strafeDist);
     }
 
     private void DisableCollision()
@@ -1170,6 +1187,18 @@ public class EnemyAI : MonoBehaviour
         // Occupy current zone
         m_occupiedAttackZone = m_currentAttackZone;
         m_occupiedAttackZone.SetOccupant(this);
+    }
+
+    private void TakeOverOccupiedZone()
+    {
+        m_currentAttackZone.GetOccupant().ClearOccupiedZone();
+        OccupyCurrentZone();
+    }
+
+    public void ClearOccupiedZone()
+    {
+        m_occupiedAttackZone.EmptyZone();
+        m_occupiedAttackZone = null;
     }
 
     private bool IsInAssignedZone()

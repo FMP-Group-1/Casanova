@@ -54,6 +54,7 @@ public class AttackZonesVisualizer : Editor
     {
         Color transRed = new Color(255, 0, 0, 0.1f);
         Color transGreen = new Color(0, 255, 0, 0.1f);
+        Color transBlue = new Color(0, 0, 255, 0.5f);
 
         Handles.color = transGreen;
 
@@ -68,6 +69,10 @@ public class AttackZonesVisualizer : Editor
             {
                 Handles.color = transRed;
             }
+            else if (passiveZone.IsOccupied())
+            {
+                Handles.color = transBlue;
+            }
             else
             {
                 Handles.color = transGreen;
@@ -78,6 +83,10 @@ public class AttackZonesVisualizer : Editor
             if (activeZone.IsObstructed())
             {
                 Handles.color = transRed;
+            }
+            else if (activeZone.IsOccupied())
+            {
+                Handles.color = transBlue;
             }
             else
             {

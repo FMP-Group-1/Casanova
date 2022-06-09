@@ -108,7 +108,7 @@ public class AttackZoneManager
         }
 
         // If within the zone bounds
-        if (!DistanceSqrCheck(enemyToCheck.gameObject, m_player, m_aiManager.GetActiveAttackerMinDist()) && DistanceSqrCheck(enemyToCheck.gameObject, m_player, m_aiManager.GetPassiveAttackerMaxDist()))
+        if (DistanceSqrCheck(enemyToCheck.gameObject, m_player, m_aiManager.GetPassiveAttackerMaxDist()))
         {
             // Within active zone bounds
             if (DistanceSqrCheck(enemyToCheck.gameObject, m_player, m_aiManager.GetActiveAttackerMaxDist()))
