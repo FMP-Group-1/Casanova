@@ -1172,14 +1172,19 @@ MonoBehaviour:
   m_jumpControl: {fileID: 7058330660807564182, guid: 718be9eb4c7d2ee4198df765b1d66ceb, type: 3}
   m_dodgeControl: {fileID: 2037604338768725776, guid: 718be9eb4c7d2ee4198df765b1d66ceb, type: 3}
   m_playerSpeed: 5
-  m_jumpForce: 1
+  m_jumpForce: 15.5
   m_gravityValue: -9.81
   m_rotationSpeed: 4
   m_playerVelocity: {x: 0, y: 0, z: 0}
+  m_groundedPlayer: 0
+  m_dampTime: 0
   m_canMove: 1
   m_canFall: 1
   m_canRotate: 1
   m_canDodge: 1
+  m_groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
   m_inputDirectionVisual: {fileID: 1538279741}
   m_currentDirectionFaced: {fileID: 8749133694467419308}
 --- !u!114 &451694131460032750
@@ -1198,6 +1203,9 @@ MonoBehaviour:
   m_swordTip: {fileID: 2002403007}
   m_colliderSweeper: {fileID: 1277660074}
   m_rotateSpeed: 0.2
+  m_sphereColliderTransform: {fileID: 0}
+  m_timeToGrow: 1
+  m_maxSphereSize: 7
 --- !u!1 &1787312980649176709
 GameObject:
   m_ObjectHideFlags: 0

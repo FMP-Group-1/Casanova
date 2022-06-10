@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using UnityEngine.UI;
 
 [RequireComponent( typeof( CharacterController ) )]
 
@@ -33,11 +34,11 @@ public class PlayerController : MonoBehaviour
     [Range( 3, 8 )]
     private float m_playerSpeed = 5.0f;
     [SerializeField]
-    [Tooltip( "Player jump force" ), Range( 1f, 10f )]
+    [Tooltip( "Player jump force" ), Range( 1.0f, 15.0f )]
     //How hard they jump
     private float m_jumpForce = 1.0f;
     //gravity
-    [SerializeField]
+    [SerializeField, Range(-9, -15)]
     private float m_gravityValue = -9.81f;
     //How fast the player rotates when moving in a new direction
     [SerializeField]
@@ -88,6 +89,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     [Tooltip( "Current Direction Visualiser" )]
     private LineRenderer m_currentDirectionFaced;
+
+    [SerializeField]
+    private Text m_canFallText;
 
     /**************************************************************************************
     * Type: Function
@@ -246,27 +250,28 @@ public class PlayerController : MonoBehaviour
         m_groundedPlayer = m_controller.isGrounded;
         //Raycast for the groundpound
         RaycastHit hit;
-        if( Physics.Raycast( transform.position, -transform.up, out hit, 0.1f, m_groundLayer ) )
+        if( Physics.Raycast( transform.position, -transform.up, out hit, 0.001f, m_groundLayer ) )
         {
             transform.position = hit.transform.position;
             m_groundedPlayer = true;
         }
 
 
-        if( m_groundedPlayer )
+        if( m_groundedPlayer || !m_canFall )
         {
             m_playerVelocity.y = 0f;
         }
         else
         {
-            if( m_playerVelocity.y > -3 && m_canFall )
-            {
-                //Update a variable with how much you should be falling
-                m_playerVelocity.y += m_gravityValue * Time.deltaTime;
-            }
+            
+        }
+        if( m_playerVelocity.y > -20 && m_canFall )
+        {
+            //Update a variable with how much you should be falling
+            m_playerVelocity.y += m_gravityValue * Time.deltaTime;
         }
 
-
+      //  Debug.Log( m_playerVelocity.y );
         //Dodging
         if ( m_dodgeControl.action.triggered && m_canDodge )
         {
@@ -283,6 +288,7 @@ public class PlayerController : MonoBehaviour
                 m_controller.Move( ( GetMoveDirection() * ( m_playerSpeed * m_moveAmount ) ) * Time.deltaTime  );
             }
 
+            m_canFallText.text = ""+(GetMoveDirection() * ( m_playerSpeed * m_moveAmount ) ) * Time.deltaTime;
             //Rotate player when moving, not when Idle
             if ( m_canRotate )
             {
@@ -301,7 +307,7 @@ public class PlayerController : MonoBehaviour
         {
             //Jumped
             m_animator.SetTrigger( an_jumped );
-            m_playerVelocity.y += Mathf.Sqrt( m_jumpForce * -3.0f * m_gravityValue );
+            m_playerVelocity.y = m_jumpForce;
         }
 
         //If in air, at all
@@ -316,6 +322,9 @@ public class PlayerController : MonoBehaviour
             m_animator.SetBool( an_inAir, false );
         }
 
+        m_canFallText.text = "Can Fall: " + m_canFall + "\n" + m_moveAmount + "\n"
+            + "Can Fall: " + m_canFall
+            + "\ninAir: " + !m_groundedPlayer;
         //And if you can fall, move that way.
         if ( m_canFall )
         {

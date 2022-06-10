@@ -288,7 +288,7 @@ public class MeleeController : MonoBehaviour
     public void EndCombo()
     {
         //Reset velocity to 0 so the player doesn't reach mach 4 in falling
-        m_playerController.m_playerVelocity.y = 0f;
+        m_playerController.m_playerVelocity.y = -6f; 
         CanStartNextAttack();
         m_playerController.m_canFall = true;
         m_playerController.m_canMove = true;
@@ -332,13 +332,14 @@ public class MeleeController : MonoBehaviour
 
 
     private void GroundpoundActivated()
-	{
+    {
+        //m_playerController.m_playerVelocity.y -= Mathf.Sqrt( m_jumpForce * -3.0f * m_gravityValue )
+        m_playerController.m_playerVelocity.y = -15f;
         //Begin plumetting to the ground
 
         m_playerController.m_canFall = true;
 
         m_playerController.m_canDodge = false;
-        m_playerController.m_playerVelocity.y = -1f;
     }
 
     private void GrounpoundLanded()
