@@ -232,6 +232,32 @@ public class AttackZoneManager
         return isInRange;
     }
 
+    public bool AreZonesAvailable(ZoneType typeToCheck)
+    {
+        if( typeToCheck == ZoneType.Active)
+        {
+            foreach (AttackZone zone in m_activeAttackZones)
+            {
+                if (zone.IsAvailable())
+                {
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            foreach (AttackZone zone in m_passiveAttackZones)
+            {
+                if (zone.IsAvailable())
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject gameObject )
     {
         if (!angleIsGlobal)
