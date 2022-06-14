@@ -108,7 +108,7 @@ public class AttackZoneManager
         }
 
         // If within the zone bounds
-        if (!DistanceSqrCheck(enemyToCheck.gameObject, m_player, m_aiManager.GetActiveAttackerMinDist()) && DistanceSqrCheck(enemyToCheck.gameObject, m_player, m_aiManager.GetPassiveAttackerMaxDist()))
+        if (DistanceSqrCheck(enemyToCheck.gameObject, m_player, m_aiManager.GetPassiveAttackerMaxDist()))
         {
             // Within active zone bounds
             if (DistanceSqrCheck(enemyToCheck.gameObject, m_player, m_aiManager.GetActiveAttackerMaxDist()))
@@ -230,6 +230,32 @@ public class AttackZoneManager
         }
 
         return isInRange;
+    }
+
+    public bool AreZonesAvailable(ZoneType typeToCheck)
+    {
+        if( typeToCheck == ZoneType.Active)
+        {
+            foreach (AttackZone zone in m_activeAttackZones)
+            {
+                if (zone.IsAvailable())
+                {
+                    return true;
+                }
+            }
+        }
+        else
+        {
+            foreach (AttackZone zone in m_passiveAttackZones)
+            {
+                if (zone.IsAvailable())
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject gameObject )
