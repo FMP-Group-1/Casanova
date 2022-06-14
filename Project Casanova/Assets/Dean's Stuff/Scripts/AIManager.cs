@@ -347,6 +347,11 @@ public class AIManager : MonoBehaviour
         return m_obsCheckDebug;
     }
 
+    public List<EnemyAI> GetEnemyList()
+    {
+        return m_enemyList;
+    }
+
     // Function for reading inputs for purposes of debugging
     private void TestingInputs()
     {

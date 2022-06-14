@@ -19,6 +19,12 @@ public class ConeDetectionVisualizer : Editor
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         EnemyAI targetEnemy = (EnemyAI)target;
 
+        DrawPlayerDetectionCone(player, targetEnemy);
+        DrawAIDetectionCone(targetEnemy);
+    }
+
+    private void DrawPlayerDetectionCone(GameObject player, EnemyAI targetEnemy)
+    {
         // Setting line color, drawing the initial arc, then getting the angles for the fov lines with DirFromAngle
         Handles.color = Color.white;
         Handles.DrawWireArc(targetEnemy.transform.position, Vector3.up, Vector3.forward, 360.0f, targetEnemy.GetViewRadius());
@@ -35,33 +41,32 @@ public class ConeDetectionVisualizer : Editor
         {
             Handles.DrawLine(targetEnemy.transform.position, player.transform.position);
         }
+    }
 
-        // Strafe debug lines, drawing in the direction that the AI is checking for other AI
-        Handles.color = Color.blue;
-        if (EditorApplication.isPlaying)
+    private void DrawAIDetectionCone(EnemyAI targetEnemy)
+    {
+        // Setting line color, drawing the initial arc, then getting the angles for the fov lines with DirFromAngle
+        Handles.color = Color.white;
+        Handles.DrawWireArc(targetEnemy.transform.position, Vector3.up, Vector3.forward, 360.0f, targetEnemy.GetAICheckDist());
+
+        // Getting the direction and position to draw from, setting the y at half the AI's height
+        Vector3 dir = targetEnemy.transform.forward;
+
+        // Checking what direction the enemy is strafing to determine the direction to draw the lines
+        if (targetEnemy.GetStrafeDir() == StrafeDir.Left)
         {
-            // Getting the direction and position to draw from, setting the y at half the AI's height
-            Vector3 dir = targetEnemy.transform.forward;
-            Vector3 castFrom = targetEnemy.transform.position;
-            castFrom.y += targetEnemy.GetAgentHeight() * 0.5f;
-
-            // Checking if the enemy is strafing
-            if (targetEnemy.GetCombatState() == CombatState.StrafingToZone)
-            {
-                // Checking what direction the enemy is strafing to determine the direction to draw the lines
-                if (targetEnemy.GetStrafeDir() == StrafeDir.Left)
-                {
-                    dir = -targetEnemy.transform.right;
-                }
-                else
-                {
-                    dir = targetEnemy.transform.right;
-                }
-            }
-            // Drawing the lines
-            Handles.DrawLine(castFrom, castFrom + (dir * targetEnemy.GetAICheckDist()));
-            Handles.DrawLine(castFrom, castFrom + (Vector3.Normalize((dir + targetEnemy.DirFromAngle(-targetEnemy.GetAIAngleCheck(), false))) * targetEnemy.GetAICheckDist()));
-            Handles.DrawLine(castFrom, castFrom + (Vector3.Normalize((dir + targetEnemy.DirFromAngle(targetEnemy.GetAIAngleCheck(), false))) * targetEnemy.GetAICheckDist()));
+            dir = -targetEnemy.transform.right;
         }
+        else
+        {
+            dir = targetEnemy.transform.right;
+        }
+
+        Vector3 viewAngleA = (dir - targetEnemy.DirFromAngle(-targetEnemy.GetAIAngleCheck() * 0.5f, false)).normalized;
+        Vector3 viewAngleB = (dir + targetEnemy.DirFromAngle(targetEnemy.GetAIAngleCheck() * 0.5f, false)).normalized;
+
+        // Drawing the fov lines
+        Handles.DrawLine(targetEnemy.transform.position, targetEnemy.transform.position + viewAngleA * targetEnemy.GetAICheckDist());
+        Handles.DrawLine(targetEnemy.transform.position, targetEnemy.transform.position + viewAngleB * targetEnemy.GetAICheckDist());
     }
 }

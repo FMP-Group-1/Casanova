@@ -1020,6 +1020,12 @@ public class EnemyAI : MonoBehaviour
         return isInRange;
     }
 
+    // Function for returning distance in float between target
+    private float DistanceSqrValue( GameObject targetToCheck )
+    {
+        return (transform.position - targetToCheck.transform.position).sqrMagnitude;
+    }
+
     // Todo: Rename this function or TimedAttackZoneCheck() to be clearer
     private void AttackZoneCheck()
     {
@@ -1148,36 +1154,69 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
-        // Three raycasts to check if AI is walking into another AI
-        if (Physics.Raycast(castFrom, dir, m_checkForAIDist, m_aiMask) ||
-            Physics.Raycast(castFrom, dir + DirFromAngle(-m_checkForAIAngles, false), m_checkForAIDist, m_aiMask) ||
-            Physics.Raycast(castFrom, dir + DirFromAngle(m_checkForAIAngles, false), m_checkForAIDist, m_aiMask))
+        GameObject enemyToCheck = FindClosestEnemy().gameObject;
+
+        if (DistanceSqrCheck(enemyToCheck, m_checkForAIDist))
         {
-            float currentZoneHalfDist = 0.0f;
+            Vector3 dirToCheck;
 
-            // Finding the distance to compare with the current strafe distance to determine whether the AI should move backwards or forwards
-            if (m_currentAttackingType == AttackingType.Passive)
+            if (m_strafeDir == StrafeDir.Right)
             {
-                currentZoneHalfDist = m_aiManager.GetActiveAttackerMaxDist() + ((m_aiManager.GetPassiveAttackerMaxDist() - m_aiManager.GetActiveAttackerMaxDist()) * 0.5f);
+                dirToCheck = transform.right;
             }
             else
             {
-                currentZoneHalfDist = m_aiManager.GetActiveAttackerMinDist() + ((m_aiManager.GetActiveAttackerMaxDist() - m_aiManager.GetActiveAttackerMinDist()) * 0.5f);
+                dirToCheck = -transform.right;
             }
 
-            if (m_strafeDist > currentZoneHalfDist)
+            Vector3 dirToEnemy = (enemyToCheck.transform.position - transform.position).normalized;
+            if (Vector3.Angle(dirToCheck, dirToEnemy) < m_checkForAIAngles * 0.5f)
             {
-                StartWalkAnim();
-                m_strafeDist -= m_AIAvoidanceDist;
-                m_combatState = CombatState.ClosingDist;
-            }
-            else
-            {
-                StartWalkBackAnim();
-                m_strafeDist += m_AIAvoidanceDist;
-                m_combatState = CombatState.BackingUp;
+                float currentZoneHalfDist = 0.0f;
+
+                // Finding the distance to compare with the current strafe distance to determine whether the AI should move backwards or forwards
+                if (m_currentAttackingType == AttackingType.Passive)
+                {
+                    currentZoneHalfDist = m_aiManager.GetActiveAttackerMaxDist() + ((m_aiManager.GetPassiveAttackerMaxDist() - m_aiManager.GetActiveAttackerMaxDist()) * 0.5f);
+                }
+                else
+                {
+                    currentZoneHalfDist = m_aiManager.GetActiveAttackerMinDist() + ((m_aiManager.GetActiveAttackerMaxDist() - m_aiManager.GetActiveAttackerMinDist()) * 0.5f);
+                }
+
+                if (m_strafeDist > currentZoneHalfDist)
+                {
+                    StartWalkAnim();
+                    m_strafeDist -= m_AIAvoidanceDist;
+                    m_combatState = CombatState.ClosingDist;
+                }
+                else
+                {
+                    StartWalkBackAnim();
+                    m_strafeDist += m_AIAvoidanceDist;
+                    m_combatState = CombatState.BackingUp;
+                }
             }
         }
+    }
+
+    private EnemyAI FindClosestEnemy()
+    {
+        EnemyAI closestEnemy = m_aiManager.GetEnemyList()[0];
+
+        foreach (EnemyAI enemy in m_aiManager.GetEnemyList())
+        {
+            if (enemy != this && enemy.gameObject.activeSelf && enemy.GetState() == AIState.InCombat)
+            {
+                if (DistanceSqrValue(enemy.gameObject) < DistanceSqrValue(closestEnemy.gameObject))
+                {
+                    closestEnemy = enemy;                    
+                }
+            }
+        }
+
+        Debug.Log("Closest AI to " + name + " is " + DistanceSqrValue(closestEnemy.gameObject));
+        return closestEnemy;
     }
 
     // Checking if zone is available to occupy whilst radial running
