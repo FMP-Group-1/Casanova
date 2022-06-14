@@ -53,6 +53,9 @@ public class PlayerController : MonoBehaviour
     private Transform m_cameraMainTransform;
 
 
+    private bool m_justBeganFalling = false;
+
+
     //Values that allow player to move or fall or rotate
     //All of these Being Public is not finalised. They will become getters/setters (Called in Melee.cs)
 
@@ -74,6 +77,7 @@ public class PlayerController : MonoBehaviour
     private int an_inAir;
     private int an_jumped;
     private int an_dodge;
+    private int an_beganFalling;
 
     [SerializeField]
     private LayerMask m_groundLayer;
@@ -91,7 +95,7 @@ public class PlayerController : MonoBehaviour
     private LineRenderer m_currentDirectionFaced;
 
     [SerializeField]
-    private Text m_canFallText;
+    private Text m_debugText;
 
     /**************************************************************************************
     * Type: Function
@@ -156,6 +160,7 @@ public class PlayerController : MonoBehaviour
         an_inAir = Animator.StringToHash( "inAir" );
         an_jumped = Animator.StringToHash( "jumped" );
         an_dodge = Animator.StringToHash( "dodge" );
+        an_beganFalling = Animator.StringToHash( "beganFalling" );
     }
 
     /**************************************************************************************
@@ -256,22 +261,49 @@ public class PlayerController : MonoBehaviour
             m_groundedPlayer = true;
         }
 
-
+        //If you're grounded or CAN'T fall (eg. Attacking in air)
         if( m_groundedPlayer || !m_canFall )
         {
+            //Velocity is 0
             m_playerVelocity.y = 0f;
         }
-        else
-        {
-            
-        }
-        if( m_playerVelocity.y > -20 && m_canFall )
+        //If you are falling, but not at terminal velocity, accelerate
+        else if( m_playerVelocity.y > -20 && m_canFall )
         {
             //Update a variable with how much you should be falling
-            m_playerVelocity.y += m_gravityValue * Time.deltaTime;
+            m_playerVelocity.y += m_gravityValue * Time.deltaTime; 
+            
+            //if the addition goes UNDER -20, set it to it, and now you'll never come back into this section
+            if( m_playerVelocity.y < -20 )
+            {
+                m_playerVelocity.y = -20;
+            }
         }
 
-      //  Debug.Log( m_playerVelocity.y );
+
+        //Now we assess the velocity, so as to check if we fall or not
+        //We are going downwards
+
+        if (m_playerVelocity.y >= 0 /*|| /*m_groundedPlayer*/ )
+		{
+
+        }
+        else if( m_playerVelocity.y < 0 )
+        {
+            //We are falling, but has it only just started? If so, should be false, so do it
+            if( !m_justBeganFalling )
+            {
+                m_justBeganFalling = true;
+                m_animator.SetTrigger( an_beganFalling );
+            }
+        }
+
+        m_debugText.text = "justBeganFalling: " + m_justBeganFalling
+                         + "\nCan Fall: "       + m_canFall
+                         + "\nGrounded?: "      + m_groundedPlayer; ;
+
+
+        //  Debug.Log( m_playerVelocity.y );
         //Dodging
         if ( m_dodgeControl.action.triggered && m_canDodge )
         {
@@ -287,8 +319,6 @@ public class PlayerController : MonoBehaviour
                 //Multiply the move direction by  (speed * move amount) rather than just speed, and do it all before delta time
                 m_controller.Move( ( GetMoveDirection() * ( m_playerSpeed * m_moveAmount ) ) * Time.deltaTime  );
             }
-
-            m_canFallText.text = ""+(GetMoveDirection() * ( m_playerSpeed * m_moveAmount ) ) * Time.deltaTime;
             //Rotate player when moving, not when Idle
             if ( m_canRotate )
             {
@@ -322,9 +352,6 @@ public class PlayerController : MonoBehaviour
             m_animator.SetBool( an_inAir, false );
         }
 
-        m_canFallText.text = "Can Fall: " + m_canFall + "\n" + m_moveAmount + "\n"
-            + "Can Fall: " + m_canFall
-            + "\ninAir: " + !m_groundedPlayer;
         //And if you can fall, move that way.
         if ( m_canFall )
         {
@@ -398,4 +425,5 @@ public class PlayerController : MonoBehaviour
         m_canFall = true;
         m_meleeController.CanStartNextAttack();
 	}
+
 }
