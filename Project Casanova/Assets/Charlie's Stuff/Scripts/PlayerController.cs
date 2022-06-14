@@ -27,6 +27,9 @@ public class PlayerController : MonoBehaviour
     //Character Controller
     private CharacterController m_controller;
 
+    //Player Health Thing
+    private PlayerHealth m_playerHealth;
+
     //Player stats
     //Move Speed
     [SerializeField]
@@ -154,7 +157,7 @@ public class PlayerController : MonoBehaviour
         m_controller = gameObject.GetComponent<CharacterController>();
         m_cameraMainTransform = Camera.main.transform;
 
-
+        m_playerHealth = gameObject.GetComponent<PlayerHealth>();
 
         an_movingSpeed = Animator.StringToHash( "movingSpeed" );
         an_inAir = Animator.StringToHash( "inAir" );
@@ -419,6 +422,7 @@ public class PlayerController : MonoBehaviour
     }
     private void ResetDodge()
 	{
+
         m_canRotate = true;
         m_canMove = true;
         m_canDodge = true;
@@ -426,4 +430,19 @@ public class PlayerController : MonoBehaviour
         m_meleeController.CanStartNextAttack();
 	}
 
+    public void DeactivateAllTheCanStuff()
+    {
+        m_canRotate = false;
+        m_canMove = false;
+        m_canDodge = false;
+        m_canFall = false;
+    }
+
+    public void ResetAllTheCanStuff()
+	{
+        m_canRotate = true;
+        m_canMove = true;
+        m_canDodge = true;
+        m_canFall = true;
+    }
 }
