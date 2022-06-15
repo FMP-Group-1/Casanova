@@ -1188,6 +1188,7 @@ GameObject:
   - component: {fileID: 5170419533230534568}
   - component: {fileID: 3101260882665976689}
   - component: {fileID: 451694131460032750}
+  - component: {fileID: 4825272603966825724}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1303,6 +1304,18 @@ MonoBehaviour:
   m_sphereColliderTransform: {fileID: 650982153}
   m_timeToGrow: 1
   m_maxSphereSize: 7
+--- !u!114 &4825272603966825724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1775784077948444107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85e97a220ea4fc94cb414f2f05e31971, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1787312980649176709
 GameObject:
   m_ObjectHideFlags: 0
