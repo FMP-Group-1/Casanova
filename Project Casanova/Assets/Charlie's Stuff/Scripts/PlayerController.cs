@@ -301,9 +301,9 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        m_debugText.text = "justBeganFalling: " + m_justBeganFalling
-                         + "\nCan Fall: "       + m_canFall
-                         + "\nGrounded?: "      + m_groundedPlayer; ;
+        //m_debugText.text = "justBeganFalling: " + m_justBeganFalling
+        //                 + "\nCan Fall: "       + m_canFall
+        //                 + "\nGrounded?: "      + m_groundedPlayer; ;
 
 
         //  Debug.Log( m_playerVelocity.y );

@@ -1203,8 +1203,8 @@ public class EnemyAI : MonoBehaviour
     private EnemyAI FindClosestEnemy()
     {
         EnemyAI closestEnemy = m_aiManager.GetEnemyList()[0];
-		
-		if (closestEnemy == this)
+
+        if (closestEnemy == this)
 		{
 			closestEnemy = m_aiManager.GetEnemyList()[1];
 		}
@@ -1220,7 +1220,7 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
-        Debug.Log("Closest AI to " + name + " is " + DistanceSqrValue(closestEnemy.gameObject));
+        //Debug.Log("Closest AI to " + name + " is " + DistanceSqrValue(closestEnemy.gameObject));
         return closestEnemy;
     }
 
