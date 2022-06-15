@@ -161,7 +161,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1542974563191966563}
   - component: {fileID: 5886014170756832046}
-  - component: {fileID: 5504599777974190722}
   m_Layer: 0
   m_Name: puppet_prototype
   m_TagString: Untagged
@@ -253,19 +252,6 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.0000006109476, y: 1.0059825, z: 0.06449886}
     m_Extent: {x: 0.30471724, y: 0.6473589, z: 0.28986305}
   m_DirtyAABB: 0
---- !u!65 &5504599777974190722
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 422364720616032759}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 0.4782548, y: 1.1125474, z: 0.45481586}
-  m_Center: {x: 0, y: 1.0749168, z: 0.10910845}
 --- !u!1 &845268415739957608
 GameObject:
   m_ObjectHideFlags: 0
@@ -537,7 +523,7 @@ MonoBehaviour:
   m_attackEnabled: 1
   m_minAttackTime: 4.5
   m_maxAttackTime: 7.5
-  m_weapon: {fileID: 422364720616032759}
+  m_weapon: {fileID: 4793544701578298030}
   m_playerDetectionEnabled: 1
   m_viewRadius: 7.5
   m_viewAngle: 160
@@ -716,6 +702,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4839046039218032438}
+  - component: {fileID: 8246255124460836231}
   m_Layer: 0
   m_Name: r_foot_j
   m_TagString: Untagged
@@ -737,6 +724,19 @@ Transform:
   m_Father: {fileID: 4697640339224284692}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!65 &8246255124460836231
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4793544701578298030}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.17640969, y: 0.22121763, z: 0.28836316}
+  m_Center: {x: 0.025623217, y: 0.113499224, z: 0.12498048}
 --- !u!1 &4946349542153580657
 GameObject:
   m_ObjectHideFlags: 0

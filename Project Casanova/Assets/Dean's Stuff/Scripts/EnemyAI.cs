@@ -514,6 +514,13 @@ public class EnemyAI : MonoBehaviour
             case CombatState.Attacking:
             {
                 transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+
+                // Attack hits
+                if (m_weaponCollider.enabled && m_weaponCollider.bounds.Intersects(m_playerCollider.bounds))
+                {
+                    m_player.gameObject.GetComponent<PlayerHealth>().GetHurt(transform);
+                    DisableCollision();
+                }
                 //transform.LookAt(m_player.transform.position);
                 break;
             }
@@ -870,6 +877,7 @@ public class EnemyAI : MonoBehaviour
         else
         {
             m_combatState = CombatState.RadialRunToZone;
+            ResetAnimTriggers();
             StartRunAnim();
         }
     }
@@ -1186,12 +1194,14 @@ public class EnemyAI : MonoBehaviour
 
                 if (m_strafeDist > currentZoneHalfDist)
                 {
+                    ResetAnimTriggers();
                     StartWalkAnim();
                     m_strafeDist -= m_AIAvoidanceDist;
                     m_combatState = CombatState.ClosingDist;
                 }
                 else
                 {
+                    ResetAnimTriggers();
                     StartWalkBackAnim();
                     m_strafeDist += m_AIAvoidanceDist;
                     m_combatState = CombatState.BackingUp;
@@ -1234,6 +1244,7 @@ public class EnemyAI : MonoBehaviour
                 if (!m_currentAttackZone.IsOccupied())
                 {
                     m_combatState = CombatState.StrafingToZone;
+                    ResetAnimTriggers();
                     StartStrafeAnim(m_strafeDir);
                 }
             }
@@ -1518,6 +1529,7 @@ public class EnemyAI : MonoBehaviour
 
             if (m_mainState != AIState.Sleeping)
             {
+                ResetAnimTriggers();
                 PlayDamageAnim();
             }
 
