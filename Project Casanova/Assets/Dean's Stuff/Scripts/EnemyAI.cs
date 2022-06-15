@@ -1203,7 +1203,12 @@ public class EnemyAI : MonoBehaviour
     private EnemyAI FindClosestEnemy()
     {
         EnemyAI closestEnemy = m_aiManager.GetEnemyList()[0];
-
+		
+		if (closestEnemy == this)
+		{
+			closestEnemy = m_aiManager.GetEnemyList()[1];
+		}
+		
         foreach (EnemyAI enemy in m_aiManager.GetEnemyList())
         {
             if (enemy != this && enemy.gameObject.activeSelf && enemy.GetState() == AIState.InCombat)
