@@ -244,6 +244,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 484198018, guid: 03e13222398f7b8419ad0e6b72540edc, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1436378459497105265, guid: 03e13222398f7b8419ad0e6b72540edc, type: 3}
       propertyPath: m_RootOrder
       value: 17
@@ -1063,40 +1067,12 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_viewAngle
-      value: 160
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_viewRadius
-      value: 7.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_patrolRoute
       value: 
       objectReference: {fileID: 402222208}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_spawnAsleep
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_aiMask.m_Bits
-      value: 64
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_maxAttackTime
-      value: 7.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_minAttackTime
-      value: 4.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_movePosTarget
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_checkForAIDist
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_maxStrafeRange
@@ -1987,40 +1963,12 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_viewAngle
-      value: 160
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_viewRadius
-      value: 7.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_patrolRoute
       value: 
       objectReference: {fileID: 402222208}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_spawnAsleep
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_aiMask.m_Bits
-      value: 64
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_maxAttackTime
-      value: 7.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_minAttackTime
-      value: 4.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_movePosTarget
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_checkForAIDist
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_maxStrafeRange
@@ -3111,40 +3059,12 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_viewAngle
-      value: 160
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_viewRadius
-      value: 7.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_patrolRoute
       value: 
       objectReference: {fileID: 402222208}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_spawnAsleep
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_aiMask.m_Bits
-      value: 64
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_maxAttackTime
-      value: 7.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_minAttackTime
-      value: 4.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_movePosTarget
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_checkForAIDist
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_maxStrafeRange
@@ -4013,40 +3933,12 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_viewAngle
-      value: 160
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_viewRadius
-      value: 7.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_patrolRoute
       value: 
       objectReference: {fileID: 402222208}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_spawnAsleep
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_aiMask.m_Bits
-      value: 64
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_maxAttackTime
-      value: 7.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_minAttackTime
-      value: 4.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_movePosTarget
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_checkForAIDist
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_maxStrafeRange
@@ -4725,7 +4617,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 968972969}
-  m_LocalRotation: {x: 0.15614161, y: 0.00000001699874, z: -0.000000002686272, w: 0.9877347}
+  m_LocalRotation: {x: 0.15614161, y: -0.00000001699874, z: 0.000000002686272, w: 0.9877347}
   m_LocalPosition: {x: 5.67, y: 3.84, z: -19.04}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -4749,7 +4641,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &985288454
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5600,40 +5492,12 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_viewAngle
-      value: 160
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_viewRadius
-      value: 7.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_patrolRoute
       value: 
       objectReference: {fileID: 402222208}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_spawnAsleep
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_aiMask.m_Bits
-      value: 64
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_maxAttackTime
-      value: 7.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_minAttackTime
-      value: 4.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_movePosTarget
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_checkForAIDist
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_maxStrafeRange
@@ -6042,7 +5906,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1715244791
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7150,7 +7014,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2066997322}
-  m_LocalRotation: {x: 0.15614161, y: 0.000000016995338, z: -0.000000002686632, w: 0.9877347}
+  m_LocalRotation: {x: 0.15614161, y: -0.000000016995338, z: 0.000000002686632, w: 0.9877347}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -7215,7 +7079,7 @@ PrefabInstance:
       objectReference: {fileID: 14215512}
     - target: {fileID: 984604579415697764, guid: b3679aa34bb745849a94e3a4de29b99d, type: 3}
       propertyPath: m_debugInputsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 984604579415697765, guid: b3679aa34bb745849a94e3a4de29b99d, type: 3}
       propertyPath: m_Name
@@ -8080,40 +7944,12 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_viewAngle
-      value: 160
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_viewRadius
-      value: 7.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_patrolRoute
       value: 
       objectReference: {fileID: 402222208}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_spawnAsleep
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_aiMask.m_Bits
-      value: 64
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_maxAttackTime
-      value: 7.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_minAttackTime
-      value: 4.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_movePosTarget
       value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
-      propertyPath: m_checkForAIDist
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6036442217792160290, guid: a271d61baccd33a4caa2dc9655c08030, type: 3}
       propertyPath: m_maxStrafeRange

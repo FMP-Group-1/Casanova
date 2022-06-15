@@ -23479,13 +23479,6 @@ AnimationClip:
   m_HasMotionFloatCurves: 1
   m_Events:
   - time: 0
-    functionName: AttackBegin
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.016666668
     functionName: CollisionsStart
     data: 
     objectReferenceParameter: {fileID: 0}
@@ -23494,13 +23487,6 @@ AnimationClip:
     messageOptions: 0
   - time: 0.5833333
     functionName: CollisionsEnd
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.6
-    functionName: CanStartNextAttack
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0

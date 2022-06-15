@@ -20,7 +20,9 @@ public class ActivePassiveVisualizer : MonoBehaviour
     [SerializeField]
     private Color m_passiveColor = Color.blue;
     [SerializeField]
-    private Color m_activeColor = Color.green;    
+    private Color m_activeColor = Color.green;      
+    [SerializeField]
+    private Color m_unassignedColor = Color.yellow;    
 
     void Start()
     {
@@ -67,6 +69,10 @@ public class ActivePassiveVisualizer : MonoBehaviour
         else if (m_parentScript.GetAttackingType() == AttackingType.Active && m_renderer.material.color != m_activeColor)
         {
             m_renderer.material.color = m_activeColor;
+        }
+        else if (m_parentScript.GetAttackingType() == AttackingType.Unassigned && m_renderer.material.color != m_activeColor)
+        {
+            m_renderer.material.color = m_unassignedColor;
         }
     }
 }
