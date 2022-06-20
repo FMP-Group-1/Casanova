@@ -301,10 +301,6 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        m_debugText.text = "justBeganFalling: " + m_justBeganFalling
-                         + "\nCan Fall: "       + m_canFall
-                         + "\nGrounded?: "      + m_groundedPlayer; ;
-
 
         //  Debug.Log( m_playerVelocity.y );
         //Dodging
@@ -384,6 +380,13 @@ public class PlayerController : MonoBehaviour
         m_inputDirectionVisual.SetPosition( 0, transform.position );
         Vector3 inputDirection = transform.position + m_previousDirection;
         m_inputDirectionVisual.SetPosition( 1, inputDirection );
+
+
+        if (transform.position == new Vector3(0.0f, 0.0f, 0.0f ) )
+		{
+
+            m_debugText.text += "\nBALLS";
+        }
 
     }
 

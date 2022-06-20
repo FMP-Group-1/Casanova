@@ -10,6 +10,7 @@ using UnityEngine.AI;
 //*******************************************
 public enum ZoneType
 {
+    None,
     Passive,
     Active
 }
