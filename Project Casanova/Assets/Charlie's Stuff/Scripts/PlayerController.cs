@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    [SerializeField]
+    private Transform m_fakeTransform;
     //Input actions
     [SerializeField]
     [Tooltip( "Movement Control Input" )]
@@ -41,7 +43,7 @@ public class PlayerController : MonoBehaviour
     //How hard they jump
     private float m_jumpForce = 1.0f;
     //gravity
-    [SerializeField, Range(-9, -15)]
+    [SerializeField, Range(0, -15)]
     private float m_gravityValue = -9.81f;
     //How fast the player rotates when moving in a new direction
     [SerializeField]
@@ -364,8 +366,8 @@ public class PlayerController : MonoBehaviour
         /////////////
         
         //Rotate the Current Direction line renderer
-        m_currentDirectionFaced.SetPosition( 0, transform.position );
-        Vector3 facedDirection = transform.position + transform.forward;
+        m_currentDirectionFaced.SetPosition( 0, m_fakeTransform.position );
+        Vector3 facedDirection = m_fakeTransform.position + transform.forward;
         m_currentDirectionFaced.SetPosition( 1, facedDirection );
 
         //If there is a movement direction (So there's input)
@@ -377,8 +379,8 @@ public class PlayerController : MonoBehaviour
         //If no input, it will just use the last 
 
         //Set input direction Visualisers
-        m_inputDirectionVisual.SetPosition( 0, transform.position );
-        Vector3 inputDirection = transform.position + m_previousDirection;
+        m_inputDirectionVisual.SetPosition( 0, m_fakeTransform.position );
+        Vector3 inputDirection = m_fakeTransform.position + m_previousDirection;
         m_inputDirectionVisual.SetPosition( 1, inputDirection );
 
 
