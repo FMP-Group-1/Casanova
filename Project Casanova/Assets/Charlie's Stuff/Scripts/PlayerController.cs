@@ -7,8 +7,6 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField]
-    private Transform m_fakeTransform;
     //Input actions
     [SerializeField]
     [Tooltip( "Movement Control Input" )]
@@ -56,7 +54,7 @@ public class PlayerController : MonoBehaviour
     //Being Public is not finalised. This will become a getter/setter (Called in Melee.cs)
     public Vector3 m_playerVelocity;
     [SerializeField]
-    private bool m_groundedPlayer;
+    private bool m_isGrounded;
     //Camera's transform position, used for directional movmement/attacking
     private Transform m_cameraMainTransform;
 
@@ -288,9 +286,8 @@ public class PlayerController : MonoBehaviour
             //Now, were we going downwards? (To stop it when jumping)
             if( m_playerVelocity.y < 0f )
             {
-
                 transform.position = hit.point;
-                m_groundedPlayer = true;
+                m_isGrounded = true;
                 m_playerVelocity.y = 0;
                 m_animator.SetBool(an_inAir, false);  //Which in turns set velocity to 0
                 m_justBeganFalling = false;
@@ -298,9 +295,14 @@ public class PlayerController : MonoBehaviour
         }
         else // If raycast does not hit ground
         {
-            m_groundedPlayer = false;
+            m_isGrounded = false;
             m_animator.SetBool( an_inAir, true );
         }
+
+        if( m_controller.isGrounded )
+		{
+            m_isGrounded = true;
+		}
 
         #endregion
 
@@ -308,7 +310,7 @@ public class PlayerController : MonoBehaviour
             
 
 		//If you're grounded or CAN'T fall (eg. Attacking in air)
-		if( m_groundedPlayer || !m_canFall )
+		if( m_isGrounded || !m_canFall )
         {
             //Velocity is 0
             m_playerVelocity.y = 0f;
@@ -328,14 +330,14 @@ public class PlayerController : MonoBehaviour
 
        
         //If grounded, reset in air
-        if( m_groundedPlayer )
+        if( m_isGrounded )
         {
 
             m_animator.SetBool( an_inAir, false );
         } 
         
         //Jumping
-        if( m_jumpControl.action.triggered && m_groundedPlayer )
+        if( m_jumpControl.action.triggered && m_isGrounded )
         {
             //Jumped
             m_animator.SetTrigger( an_jumped );
@@ -405,8 +407,8 @@ public class PlayerController : MonoBehaviour
         //If no input, it will just use the last 
 
         //Set input direction Visualisers
-        m_inputDirectionVisual.SetPosition( 0, m_fakeTransform.position );
-        Vector3 inputDirection = m_fakeTransform.position + m_previousDirection;
+        m_inputDirectionVisual.SetPosition( 0, transform.position );
+        Vector3 inputDirection = transform.position + m_previousDirection;
         m_inputDirectionVisual.SetPosition( 1, inputDirection );
 
     }
