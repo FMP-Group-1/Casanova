@@ -102,9 +102,6 @@ public class PlayerController : MonoBehaviour
     [Tooltip( "Current Direction Visualiser" )]
     private LineRenderer m_currentDirectionFaced;
 
-    [SerializeField, Tooltip( "Landing Ray" )]
-    private LineRenderer m_landingRay;
-
     [SerializeField]
     private Text m_debugText;
 
@@ -283,10 +280,6 @@ public class PlayerController : MonoBehaviour
        
         //Raycast for the groundpound
         RaycastHit hit;
-
-        m_landingRay.SetPosition( 0, transform.position );
-        Vector3 downwards = new Vector3 (transform.position.x, transform.position.y - checkRange, transform.position.z);
-        m_landingRay.SetPosition( 1, downwards );
 
         if( Physics.Raycast( transform.position, -transform.up, out hit, checkRange, m_groundLayer ) )
         {
