@@ -147,9 +147,9 @@ public class DebugDisplay : MonoBehaviour
         m_playerDetectedText.text = "Player Detected: " + m_targetAI.IsPlayerVisible();
         m_strafeAtDistText.text = "Strafe Distance: " + m_targetAI.GetStrafeDist();
 
-        if (m_targetAI.GetAttackZone() != null)
+        if (m_targetAI.GetZoneHandler().GetCurrentAttackZone() != null)
         {
-            AttackZone attackZone = m_targetAI.GetAttackZone();
+            AttackZone attackZone = m_targetAI.GetZoneHandler().GetCurrentAttackZone();
             m_attackZoneText.text = "Attack Zone: " + attackZone.GetZoneType() + " " + attackZone.GetZoneNum();
         }
         else
@@ -157,9 +157,9 @@ public class DebugDisplay : MonoBehaviour
             m_attackZoneText.text = "Attack Zone: None";
         }
 
-        if (m_targetAI.GetOccupiedAttackZone() != null)
+        if (m_targetAI.GetZoneHandler().GetOccupiedAttackZone() != null)
         {
-            AttackZone attackZone = m_targetAI.GetOccupiedAttackZone();
+            AttackZone attackZone = m_targetAI.GetZoneHandler().GetOccupiedAttackZone();
             m_occupiedZoneText.text = "Occupied Zone: " + attackZone.GetZoneType() + " " + attackZone.GetZoneNum();
         }
         else
