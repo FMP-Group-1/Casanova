@@ -304,6 +304,7 @@ GameObject:
   - component: {fileID: 7322517767275377774}
   - component: {fileID: 2954932507059447975}
   - component: {fileID: 2954932507059447974}
+  - component: {fileID: 5864922511400277821}
   m_Layer: 0
   m_Name: Cape2
   m_TagString: Untagged
@@ -4878,6 +4879,19 @@ Cloth:
   - {x: 0.6666667, y: 0.16666667, z: 0.16666667}
   - {x: 0.5, y: 0.5, z: 0}
   m_VirtualParticleIndices: 
+--- !u!114 &5864922511400277821
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2954932507059447973}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfad43cf4ed48984192cca4dac750610, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_action: {fileID: 7058330660807564182, guid: 718be9eb4c7d2ee4198df765b1d66ceb, type: 3}
 --- !u!1 &3845270008453720908
 GameObject:
   m_ObjectHideFlags: 0
@@ -5133,6 +5147,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5465774441286998847}
   - component: {fileID: 1088949059352726386}
+  - component: {fileID: 1471541990706591746}
   m_Layer: 0
   m_Name: puppet_prototype
   m_TagString: Untagged
@@ -5224,6 +5239,19 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.0000030100346, y: 0.42558646, z: 0.106342345}
     m_Extent: {x: 0.30156153, y: 0.50056255, z: 0.2526015}
   m_DirtyAABB: 0
+--- !u!114 &1471541990706591746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6588592172473162155}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfad43cf4ed48984192cca4dac750610, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_action: {fileID: 7058330660807564182, guid: 718be9eb4c7d2ee4198df765b1d66ceb, type: 3}
 --- !u!1 &6643637347262930168
 GameObject:
   m_ObjectHideFlags: 0
@@ -5327,6 +5355,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1574693348851051335}
   - component: {fileID: 2878339939276714778}
+  - component: {fileID: 4753234390779774411}
   m_Layer: 0
   m_Name: mask_low
   m_TagString: Untagged
@@ -5418,6 +5447,19 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.000000014901161, y: 0.7318068, z: 0.12124781}
     m_Extent: {x: 0.074237555, y: 0.10934192, z: 0.095054224}
   m_DirtyAABB: 0
+--- !u!114 &4753234390779774411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6856695082703611959}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cfad43cf4ed48984192cca4dac750610, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_action: {fileID: 7058330660807564182, guid: 718be9eb4c7d2ee4198df765b1d66ceb, type: 3}
 --- !u!1 &7580475105495263210
 GameObject:
   m_ObjectHideFlags: 0
