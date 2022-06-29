@@ -90,7 +90,7 @@ public class AIManager : MonoBehaviour
 
                 // Giving the enemy a reference to the managers
                 enemyScript.SetAIManagerRef(this);
-                enemyScript.SetAttackZoneManagerRef(m_attackZoneManager);
+                enemyScript.SetupZoneHandler(ref m_attackZoneManager);
             }
             else
             {
