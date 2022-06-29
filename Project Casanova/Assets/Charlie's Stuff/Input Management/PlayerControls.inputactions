@@ -33,9 +33,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Whirlwind",
+                    "name": "Dodge",
                     "type": "Button",
-                    "id": "d42f01d8-adb3-4c47-ac3c-11da4aa2feed",
+                    "id": "461507ef-9df6-4f8c-aa98-593c7da165b2",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -111,23 +111,23 @@
                 },
                 {
                     "name": "",
-                    "id": "29202c8d-6eac-432f-bf80-caddc0a541bb",
-                    "path": "<Keyboard>/q",
+                    "id": "ec7afae0-22c9-4e74-b3b7-fd5b27eafd12",
+                    "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Whirlwind",
+                    "action": "Dodge",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
                 {
                     "name": "",
-                    "id": "688a9747-97e7-4b11-b92a-a6e78eb828df",
-                    "path": "<Gamepad>/rightShoulder",
-                    "interactions": "",
+                    "id": "d9b997a2-87d2-44d5-ae9c-7c7b62cf48cf",
+                    "path": "<Gamepad>/rightTrigger",
+                    "interactions": "Press",
                     "processors": "",
                     "groups": "",
-                    "action": "Whirlwind",
+                    "action": "Dodge",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
