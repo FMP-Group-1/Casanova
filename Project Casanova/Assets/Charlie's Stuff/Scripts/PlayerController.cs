@@ -431,6 +431,7 @@ public class PlayerController : MonoBehaviour
         m_canMove = false;
         m_canRotate = false;
         m_canDodge = false;
+        m_playerHealth.SetInvulnerable();
 
         m_meleeController.CollisionsEnd();
         //Current Position value

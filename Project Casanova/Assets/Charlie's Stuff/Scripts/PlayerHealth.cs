@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
-
-    private bool m_canBeHurt = true;
+    [SerializeField]
+    private float m_health = 100;
+    private bool m_invulnerable = false;
     //The Animator Component
     private Animator m_animator;
     private PlayerController m_playerController;
+    [SerializeField]
+    private float m_invulnerableTime = 1f;
 
 
     private int an_stumble;
@@ -27,9 +30,9 @@ public class PlayerHealth : MonoBehaviour
     }
 
 
-    public void GetHurt(Transform othersTransform)
+    public void GetHurt(Transform othersTransform, float damage = 30f )
     {
-        if( m_canBeHurt )
+        if( !m_invulnerable )
         {
             m_playerController.DeactivateAllTheCanStuff();
             //rotate to face the thing, then animate 
@@ -50,30 +53,25 @@ public class PlayerHealth : MonoBehaviour
             transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, 0.99f );
 
             m_animator.SetTrigger( an_stumble );
-            m_canBeHurt = false;
-            StartCoroutine( ResetInvulnerable() );
+            m_invulnerable = true;
+            StartCoroutine( ResetInvulnerable( m_invulnerableTime ) );
         }
 
 	}
 
-	public IEnumerator ResetInvulnerable()
+	public IEnumerator ResetInvulnerable(float timer)
 	{
-        yield return new WaitForSeconds( 1f );
-        m_canBeHurt = true;
+        yield return new WaitForSeconds( timer );
+        m_invulnerable = false;
         m_playerController.ResetAllTheCanStuff();
     }
 
 
-    public void SetInvulnerable(int isInvulnerable)
+    public void SetInvulnerable()
 	{
-        if ( isInvulnerable == 1 )
-		{
-            m_canBeHurt = false;
-        }
-		else
-		{
-            m_canBeHurt = true;
-        }
+        m_invulnerable = true;
+        StartCoroutine(ResetInvulnerable( m_invulnerableTime ) );
+
 	}
 
 }
