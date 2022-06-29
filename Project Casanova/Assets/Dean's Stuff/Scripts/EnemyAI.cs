@@ -810,7 +810,7 @@ public class EnemyAI : MonoBehaviour
     private void StrafeOrMaintain()
     {
         // Decide whether to strafe or maintain distance based on whether the zone is the currently occupied zone
-        if (m_zoneHandler.IsInMatchingZone() || !m_zoneHandler.AreZonesAvailable())
+        if (m_zoneHandler.IsInValidZone() || !m_zoneHandler.AreZonesAvailable())
         {
             SetCombatState(CombatState.MaintainDist);
         }

@@ -25,6 +25,7 @@ public class DebugDisplay : MonoBehaviour
 
     private List<GameObject> m_aiList = new List<GameObject>();
     private EnemyAI m_targetAI;
+    private GameObject m_player;
 
     private int m_currentAiNum = 0;
 
@@ -74,6 +75,7 @@ public class DebugDisplay : MonoBehaviour
     {
         m_aiDebugHolder = GameObject.Find("AIDebugHolder");
         m_zoneDebugHolder = GameObject.Find("ZoneDebugHolder");
+        m_player = GameObject.Find("Player");
         SetupAIDebugDisplay();
         SetupZoneDebugDisplay();
 
@@ -145,6 +147,7 @@ public class DebugDisplay : MonoBehaviour
         m_aiStateText.text = "AI State: " + currentAIState;
         m_aiHealth.text = "AI Health: " + m_targetAI.GetHealth();
         m_playerDetectedText.text = "Player Detected: " + m_targetAI.IsPlayerVisible();
+        //m_playerDetectedText.text = "Player Distance: " + Vector3.Distance(m_targetAI.gameObject.transform.position, m_player.transform.position);
         m_strafeAtDistText.text = "Strafe Distance: " + m_targetAI.GetStrafeDist();
 
         if (m_targetAI.GetZoneHandler().GetCurrentAttackZone() != null)
