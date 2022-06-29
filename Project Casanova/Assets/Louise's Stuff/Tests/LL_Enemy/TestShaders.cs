@@ -19,7 +19,7 @@ public class TestShaders : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
     {
-        m_material = GetComponent<MeshRenderer>().sharedMaterial;
+        m_material = GetComponent<Renderer>().sharedMaterial;
         m_material.SetFloat( "_FadeStartTime", float.MaxValue );
     }
 
