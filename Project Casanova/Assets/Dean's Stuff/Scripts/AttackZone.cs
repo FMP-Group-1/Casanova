@@ -10,6 +10,7 @@ using UnityEngine.AI;
 //*******************************************
 public enum ZoneType
 {
+    None,
     Passive,
     Active
 }
@@ -22,7 +23,7 @@ public class AttackZone
     private EnemyAI m_occupant;
     private GameObject m_player;
     private int m_zoneNum;
-    private float m_navMeshCheckDist = 0.1f;
+    private float m_navMeshCheckDist = 0.2f;
     private float m_zoneAngleSize;
     private float m_zoneAngleStart;
     private float m_zoneAngleEnd;
