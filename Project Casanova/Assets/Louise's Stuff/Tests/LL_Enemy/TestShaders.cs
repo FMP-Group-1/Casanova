@@ -21,7 +21,7 @@ public class TestShaders : MonoBehaviour
     {
         m_material = GetComponent<Renderer>().sharedMaterial;
         m_material.SetFloat( "_FadeStartTime", float.MaxValue );
-        m_material.SetInt( "_Dissolve", 1 );
+        m_material.SetInt( "_ForceVisible", 0 );
     }
 
     // Update is called once per frame
@@ -32,5 +32,10 @@ public class TestShaders : MonoBehaviour
             m_material.SetFloat( "_FadeStartTime", Time.time );
             Debug.Log( "Ya boi" );
 		}
+    }
+
+    void OnApplicationQuit()
+    {
+        m_material.SetInt( "_ForceVisible", 1 );
     }
 }
