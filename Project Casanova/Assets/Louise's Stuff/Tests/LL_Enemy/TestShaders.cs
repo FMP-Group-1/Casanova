@@ -9,33 +9,46 @@ public class TestShaders : MonoBehaviour
     [Tooltip( "Action Input" )]
     private InputActionReference m_action;
 
-    private Material m_material;
+    private Material[] m_materials;
+    private List<Material> m_materialList = new List<Material>();
 
 
-	private void OnEnable()
+
+    private void OnEnable()
 	{
         m_action.action.Enable();
 	}
 	// Start is called before the first frame update
 	void Start()
     {
-        m_material = GetComponent<Renderer>().sharedMaterial;
-        m_material.SetFloat( "_FadeStartTime", float.MaxValue );
-        m_material.SetInt( "_ForceVisible", 0 );
+    
+        int iteration = 0;
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
+
+        foreach ( Renderer child in renderers )
+        {
+            m_materialList.Add( renderers[ iteration ].material );
+            m_materialList[ iteration ] = renderers[ iteration ].material;
+            m_materialList[ iteration ].SetFloat( "_FadeStartTime", float.MaxValue );
+            m_materialList[ iteration ].SetInt( "_ForceVisible", 0 );
+            iteration++;
+        }
     }
+
 
     // Update is called once per frame
     void Update()
     {
 		if( m_action.action.triggered )
 		{
-            m_material.SetFloat( "_FadeStartTime", Time.time );
-            Debug.Log( "Ya boi" );
+           foreach( Material mat in m_materialList )
+			{
+                mat.SetFloat( "_FadeStartTime", Time.time );
+            }
 		}
     }
 
     void OnApplicationQuit()
     {
-        m_material.SetInt( "_ForceVisible", 1 );
     }
 }
