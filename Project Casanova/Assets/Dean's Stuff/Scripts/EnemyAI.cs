@@ -355,18 +355,7 @@ public class EnemyAI : MonoBehaviour
                 // Checking if within the overall zone range, and if they've been assigned an attacking type yet
                 if (DistanceSqrCheck(m_player, m_aiManager.GetPassiveAttackerMaxDist()) && m_currentAttackingType == AttackingType.Unassigned)
                 {
-                    // If there's space for active attackers, become active
-                    if(m_aiManager.ActiveSlotsOpen())
-                    {
-                        m_aiManager.MakeActiveAttacker(this);
-                        m_currentAttackingType = AttackingType.Active;
-                    }
-                    // Else become passive
-                    else
-                    {
-                        m_aiManager.MakePassiveAttacker(this);
-                        m_currentAttackingType = AttackingType.Passive;
-                    }
+                    SetupAttackingType();
 
                     RandomiseStrafeRange();
                 }
@@ -498,9 +487,13 @@ public class EnemyAI : MonoBehaviour
             // Moving to a specific zone
             case CombatState.MovingToZone:
             {
+                m_navMeshAgent.destination = m_zoneHandler.GetReservedPos();
+
                 if (HasReachedDestination())
                 {
                     SetCombatState(CombatState.MaintainDist);
+                    m_zoneHandler.UnreserveZone();
+                    m_zoneHandler.OccupyCurrentZone();
                     Debug.Log("AI: " + name + " reached destination.");
                 }
                 break;
@@ -576,7 +569,13 @@ public class EnemyAI : MonoBehaviour
             {
                 // Registering the enemy as an attacker with the manager
                 m_aiManager.RegisterAttacker(this);
-                SetCombatState(CombatState.Pursuing);
+                //SetCombatState(CombatState.Pursuing);
+
+                SetupAttackingType();
+                RandomiseStrafeRange();
+                m_zoneHandler.ReserveClosestZone();
+                SetCombatState(CombatState.MovingToZone);
+
                 ResetAttackTimer();
 
                 break;
@@ -704,6 +703,22 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    private void SetupAttackingType()
+    {
+        // If there's space for active attackers, become active
+        if (m_aiManager.ActiveSlotsOpen())
+        {
+            m_aiManager.MakeActiveAttacker(this);
+            m_currentAttackingType = AttackingType.Active;
+        }
+        // Else become passive
+        else
+        {
+            m_aiManager.MakePassiveAttacker(this);
+            m_currentAttackingType = AttackingType.Passive;
+        }
+    }
+
     private void RadialRun()
     {
         Vector3 offset;
@@ -787,9 +802,14 @@ public class EnemyAI : MonoBehaviour
         }
         // Player moved closer than strafe range
         // Empty zone, then back up
+
+        //** Old if condition, might not work the way originally intended, leaving commented incase needed again
         // Using minStrafeRange - (minStrafeRange * 0.25f) to act as a buffer for preventing the AI backing up prematurely
         // Todo: Could use a rework for the buffer logic, perhaps a member variable?
-        if (DistanceSqrCheck(m_player, minStrafeRange - (minStrafeRange * 0.25f)) && m_combatState != CombatState.BackingUp)
+        //if (DistanceSqrCheck(m_player, minStrafeRange - (minStrafeRange * 0.25f)) && m_combatState != CombatState.BackingUp)
+
+
+        if (DistanceSqrCheck(m_player, minStrafeRange) && m_combatState != CombatState.BackingUp)
         {
             SetCombatState(CombatState.BackingUp);
         }
@@ -827,7 +847,7 @@ public class EnemyAI : MonoBehaviour
         // Randomise the range for the AI to maintain based on attacker type
         if (m_currentAttackingType == AttackingType.Passive)
         {
-            m_strafeDist = Random.Range(m_aiManager.GetActiveAttackerMaxDist(), m_aiManager.GetPassiveAttackerMaxDist()) + m_aiManager.GetActiveAttackerMinDist();
+            m_strafeDist = Random.Range(m_aiManager.GetActiveAttackerMaxDist(), m_aiManager.GetPassiveAttackerMaxDist());
         }
         else
         {

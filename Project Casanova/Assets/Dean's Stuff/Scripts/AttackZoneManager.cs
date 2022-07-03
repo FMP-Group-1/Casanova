@@ -125,67 +125,12 @@ public class AttackZoneManager
         return returnZone;
     }
 
-    // Function for randomising a position for a given enemy to travel to
-    // Not currently being made use of, as enemies have a different logic setup right now
-    public Vector3 RandomiseAttackPosForEnemy( EnemyAI enemy )
-    {
-        float dist = m_aiManager.GetActiveAttackerMaxDist();
-
-        // Randomising the zone and angle
-        int attackZone = Random.Range(0, m_attackZonesNum);
-        float randomAngle = Random.Range((m_anglePerSection * attackZone) + m_aiManager.GetZoneDistanceBuffer(), (m_anglePerSection * (attackZone + 1)) - m_aiManager.GetZoneDistanceBuffer());
-
-        // Direction based on angle
-        Vector3 dirToAttackZone = DirFromAngle(randomAngle - m_sectionHalfAngle, true, m_player);
-
-        // If for active zone range
-        if (enemy.GetAttackingType() == AttackingType.Active)
-        {
-            dist = Random.Range(m_aiManager.GetActiveAttackerMinDist(), m_aiManager.GetActiveAttackerMaxDist());
-        }
-        // If for passive zone range
-        else if (enemy.GetAttackingType() == AttackingType.Passive)
-        {
-            dist = Random.Range(m_aiManager.GetActiveAttackerMaxDist(), m_aiManager.GetPassiveAttackerMaxDist());
-        }
-
-        // Todo: This won't actually work in practice as it's a one time set, and not dynamically tracking the position
-        // If the player moves, the position given will be incorrect, so this needs to be reworked to keep track of the position
-        return m_player.transform.position + (dirToAttackZone * dist);
-    }
-
-    // Overload of above function to get pos for a specific zone
-    public Vector3 RandomiseAttackPosForEnemy( EnemyAI enemy, int zoneToUse )
-    {
-        float dist = m_aiManager.GetActiveAttackerMaxDist();
-
-        // Random angle based on specified zone
-        float randomAngle = Random.Range((m_anglePerSection * zoneToUse) + m_aiManager.GetZoneDistanceBuffer(), (m_anglePerSection * (zoneToUse + 1)) - m_aiManager.GetZoneDistanceBuffer());
-
-        // Direction based on angle
-        Vector3 dirToAttackZone = DirFromAngle(randomAngle - m_sectionHalfAngle, true, m_player);
-
-        // Distance based on attacker type
-        if (enemy.GetAttackingType() == AttackingType.Active)
-        {
-            dist = Random.Range(m_aiManager.GetActiveAttackerMinDist(), m_aiManager.GetActiveAttackerMaxDist());
-        }
-        else if (enemy.GetAttackingType() == AttackingType.Passive)
-        {
-            dist = Random.Range(m_aiManager.GetActiveAttackerMaxDist(), m_aiManager.GetPassiveAttackerMaxDist());
-        }
-
-        return m_player.transform.position + (dirToAttackZone * dist);
-    }
-
     // Getting position for an enemy by a specified zone and distance
-    public Vector3 GetAttackPosByZoneAndDist( EnemyAI enemy, int zoneToUse, float dist )
+    public Vector3 GetSpecifiedPos( float angle, float dist )
     {
-        float randomAngle = Random.Range((m_anglePerSection * zoneToUse) + m_aiManager.GetZoneDistanceBuffer(), (m_anglePerSection * (zoneToUse + 1)) - m_aiManager.GetZoneDistanceBuffer());
+        Vector3 dirToPos = DirFromAngle(angle - m_sectionHalfAngle, true, m_player);
 
-        Vector3 dirToAttackZone = DirFromAngle(randomAngle - m_sectionHalfAngle, true, m_player);
-
-        return m_player.transform.position + (dirToAttackZone * dist);
+        return m_player.transform.position + (dirToPos * dist);
     }
 
     // Return the number of the zone the specified enemy is in
@@ -270,23 +215,14 @@ public class AttackZoneManager
 
     public AttackZone GetAttackZoneByNum( int num, ZoneType zoneType )
     {
-        AttackZone zoneToReturn = null;
-
-        switch (zoneType)
+        if (zoneType == ZoneType.Passive)
         {
-            case ZoneType.Passive:
-            {
-                zoneToReturn = m_passiveAttackZones[num];
-                break;
-            }
-            case ZoneType.Active:
-            {
-                zoneToReturn = m_activeAttackZones[num];
-                break;
-            }
+            return m_passiveAttackZones[num];
         }
-
-        return zoneToReturn;
+        else
+        {
+            return m_activeAttackZones[num];
+        }
     }
 
     public List<AttackZone> GetPassiveAttackZones()
