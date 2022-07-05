@@ -15,6 +15,7 @@ public class AIManager : MonoBehaviour
     private List<EnemyAI> m_enemyList = new List<EnemyAI>();
     private List<EnemyAI> m_activeAttackers = new List<EnemyAI>();
     private List<EnemyAI> m_passiveAttackers = new List<EnemyAI>();
+    private List<EnemyAI> m_unassignedAttackers = new List<EnemyAI>();
     private AttackZoneManager m_attackZoneManager;
 
     private bool m_canAttack = true;
@@ -34,6 +35,8 @@ public class AIManager : MonoBehaviour
 
     [SerializeField]
     private int m_maxActiveAttackers = 3;
+    [SerializeField]
+    private int m_maxSimultaneousAttacks = 2;
 
     [SerializeField]
     private GameObject m_obsCheckDebug;
@@ -70,9 +73,8 @@ public class AIManager : MonoBehaviour
         m_attackZoneManager.Update();
         ActiveAttackerCount();
 
-        // This line will be removed later when attack management is expanded upon
-        // For now, it ensures the AI don't get stuck in a state of not attacking
-        m_canAttack = !AreEnemiesAttacking();
+        // Check to make sure too many enemies can't attack at once
+        m_canAttack = TotalEnemiesAttacking() < m_maxSimultaneousAttacks;
     }
 
     private void RegisterEnemies()
@@ -88,7 +90,7 @@ public class AIManager : MonoBehaviour
 
                 // Giving the enemy a reference to the managers
                 enemyScript.SetAIManagerRef(this);
-                enemyScript.SetAttackZoneManagerRef(m_attackZoneManager);
+                enemyScript.SetupZoneHandler(ref m_attackZoneManager);
             }
             else
             {
@@ -103,24 +105,30 @@ public class AIManager : MonoBehaviour
     // Register an enemy as an attacker
     public void RegisterAttacker(EnemyAI enemyToRegister)
     {
-        // Check to make sure enemy isn't already in list
-        if (!m_activeAttackers.Contains(enemyToRegister) && !m_passiveAttackers.Contains(enemyToRegister))
+        if (!m_unassignedAttackers.Contains(enemyToRegister))
         {
-            // If active attackers isn't at max, add to active attackers, otherwise add to the passive attackers
-            if (m_activeAttackers.Count < m_maxActiveAttackers)
-            {
-                m_activeAttackers.Add(enemyToRegister);
-                enemyToRegister.SetAttackingType(AttackingType.Active);
-            }
-            else
-            {
-                m_passiveAttackers.Add(enemyToRegister);
-                enemyToRegister.SetAttackingType(AttackingType.Passive);
-            }
+            m_unassignedAttackers.Add(enemyToRegister);
+            enemyToRegister.SetAttackingType(AttackingType.Unassigned);
         }
+
+            // Check to make sure enemy isn't already in list
+            //if (!m_activeAttackers.Contains(enemyToRegister) && !m_passiveAttackers.Contains(enemyToRegister))
+            //{
+            //    // If active attackers isn't at max, add to active attackers, otherwise add to the passive attackers
+            //    if (m_activeAttackers.Count < m_maxActiveAttackers)
+            //    {
+            //        m_activeAttackers.Add(enemyToRegister);
+            //        enemyToRegister.SetAttackingType(AttackingType.Active);
+            //    }
+            //    else
+            //    {
+            //        m_passiveAttackers.Add(enemyToRegister);
+            //        enemyToRegister.SetAttackingType(AttackingType.Passive);
+            //    }
+            //}
     }
 
-    // Unregister enemy from attacker lists
+        // Unregister enemy from attacker lists
     public void UnregisterAttacker(EnemyAI enemyToUnregister)
     {
         if (m_activeAttackers.Contains(enemyToUnregister))
@@ -131,6 +139,10 @@ public class AIManager : MonoBehaviour
         {
             m_passiveAttackers.Remove(enemyToUnregister);
         }
+        if (m_unassignedAttackers.Contains(enemyToUnregister))
+        {
+            m_unassignedAttackers.Remove(enemyToUnregister);
+        }
     }
 
     // Adds specified enemy to active attacker list, and makes sure they're removed from passive list
@@ -139,6 +151,10 @@ public class AIManager : MonoBehaviour
         if (m_passiveAttackers.Contains(enemy))
         {
             m_passiveAttackers.Remove(enemy);
+        }
+        if (m_unassignedAttackers.Contains(enemy))
+        {
+            m_unassignedAttackers.Remove(enemy);
         }
         if (!m_activeAttackers.Contains(enemy))
         {
@@ -154,10 +170,31 @@ public class AIManager : MonoBehaviour
         {
             m_activeAttackers.Remove(enemy);
         }
+        if (m_unassignedAttackers.Contains(enemy))
+        {
+            m_unassignedAttackers.Remove(enemy);
+        }
         if (!m_passiveAttackers.Contains(enemy))
         {
             m_passiveAttackers.Add(enemy);
             enemy.SetAttackingType(AttackingType.Passive);
+        }
+    }
+
+    public void MakeUnasssignedAttacker( EnemyAI enemy )
+    {
+        if (m_activeAttackers.Contains(enemy))
+        {
+            m_activeAttackers.Remove(enemy);
+        }
+        if (m_passiveAttackers.Contains(enemy))
+        {
+            m_passiveAttackers.Remove(enemy);
+        }
+        if (!m_unassignedAttackers.Contains(enemy))
+        {
+            m_unassignedAttackers.Add(enemy);
+            enemy.SetAttackingType(AttackingType.Unassigned);
         }
     }
 
@@ -210,6 +247,11 @@ public class AIManager : MonoBehaviour
         return closestEnemy;
     }
 
+    public bool ActiveSlotsOpen()
+    {
+        return m_activeAttackers.Count < m_maxActiveAttackers;
+    }
+
     // Function for getting the square distance for more optimal comparison checks
     private float GetSqrDistance( GameObject firstTarget, GameObject secondTarget )
     {
@@ -231,6 +273,7 @@ public class AIManager : MonoBehaviour
     }
 
     // Check if any of the active attackers are currently attacking
+    // Todo: Review this function, might not be needed as currently not in use
     public bool AreEnemiesAttacking()
     {
         foreach (EnemyAI enemy in m_activeAttackers)
@@ -242,6 +285,21 @@ public class AIManager : MonoBehaviour
         }
 
         return false;
+    }
+
+    public int TotalEnemiesAttacking()
+    {
+        int total = 0;
+
+        foreach (EnemyAI enemy in m_activeAttackers)
+        {
+            if (enemy.GetCombatState() == CombatState.Attacking || enemy.GetCombatState() == CombatState.MovingToAttack)
+            {
+                total++;
+            }
+        }
+
+        return total;
     }
 
     public AttackZoneManager GetAttackZoneManager()
@@ -287,6 +345,11 @@ public class AIManager : MonoBehaviour
     public GameObject GetObsCheckDebug()
     {
         return m_obsCheckDebug;
+    }
+
+    public List<EnemyAI> GetEnemyList()
+    {
+        return m_enemyList;
     }
 
     // Function for reading inputs for purposes of debugging
