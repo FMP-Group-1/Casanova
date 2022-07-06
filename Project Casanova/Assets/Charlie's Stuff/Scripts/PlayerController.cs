@@ -275,7 +275,7 @@ public class PlayerController : MonoBehaviour
         //Raycast for the groundpound
         RaycastHit hit;
 
-        if( Physics.Raycast( transform.position, -transform.up, out hit, m_fallCheckRange, m_groundLayer ) )
+        if( Physics.Raycast( transform.position, -transform.up, out hit, m_fallCheckRange/*, m_groundLayer */) )
         {
             //Raycast hits Grounds
 
