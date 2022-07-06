@@ -288,7 +288,7 @@ public class MeleeController : MonoBehaviour
     public void EndCombo()
     {
         //Reset velocity to 0 so the player doesn't reach mach 4 in falling
-        m_playerController.m_playerVelocity.y = -6f; 
+        //m_playerController.m_playerVelocity.y = -6f; 
         CanStartNextAttack();
         m_playerController.m_canFall = true;
         m_playerController.m_canMove = true;

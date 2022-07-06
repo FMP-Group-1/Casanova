@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour
     private CharacterController m_controller;
 
     //Player Health Thing
-    private PlayerHealth m_playerHealth;
+    private CharacterDamageManager m_playerHealth;
 
     //Player stats
     //Move Speed
@@ -41,17 +41,20 @@ public class PlayerController : MonoBehaviour
     //How hard they jump
     private float m_jumpForce = 1.0f;
     //gravity
-    [SerializeField, Range(-9, -15)]
+    [SerializeField, Range(0, -15)]
     private float m_gravityValue = -9.81f;
     //How fast the player rotates when moving in a new direction
     [SerializeField]
     [Range( 2, 5 )]
     private float m_rotationSpeed = 4f;
+    //How far to check for the ground
+    [SerializeField, Range( 0.01f, 0.5f )]
+    float checkRange = 0.05f;
 
     //Being Public is not finalised. This will become a getter/setter (Called in Melee.cs)
     public Vector3 m_playerVelocity;
     [SerializeField]
-    private bool m_groundedPlayer;
+    private bool m_isGrounded;
     //Camera's transform position, used for directional movmement/attacking
     private Transform m_cameraMainTransform;
 
@@ -157,7 +160,7 @@ public class PlayerController : MonoBehaviour
         m_controller = gameObject.GetComponent<CharacterController>();
         m_cameraMainTransform = Camera.main.transform;
 
-        m_playerHealth = gameObject.GetComponent<PlayerHealth>();
+        m_playerHealth = gameObject.GetComponent<CharacterDamageManager>();
 
         an_movingSpeed = Animator.StringToHash( "movingSpeed" );
         an_inAir = Animator.StringToHash( "inAir" );
@@ -201,32 +204,45 @@ public class PlayerController : MonoBehaviour
     **************************************************************************************/
     public Vector3 GetMoveDirection()
     {
-        //Get the absolute values of movement inputs (0-1) for use in a 1d Blend tree animations
-        m_moveAmount = Mathf.Clamp01( Mathf.Abs( GetPlayerInput().x ) + Mathf.Abs( GetPlayerInput().z ) );
 
-        if (m_moveAmount > 0 && m_moveAmount < 0.001f )
-		{
-            m_moveAmount = 0;
-		}
+        #region Snapping Movement
 
-		#region Snapping Movement
-		if ( m_moveAmount > 0.05f&& m_moveAmount < 0.55f )
-		{
-            m_moveAmount = 0.5f;
-		}
-        else if (m_moveAmount >= 0.55f )
-		{
-            m_moveAmount = 1;
-		}
+        float dampingTime = m_dampTime;
+        if( m_canMove )
+        {
+            //Get the absolute values of movement inputs (0-1) for use in a 1d Blend tree animations
+            m_moveAmount = Mathf.Clamp01( Mathf.Abs( GetPlayerInput().x ) + Mathf.Abs( GetPlayerInput().z ) );
+
+            if (m_moveAmount > 0 && m_moveAmount < 0.001f )
+		    {
+                m_moveAmount = 0f;
+		    }
+
+
+            if( m_moveAmount > 0.05f && m_moveAmount < 0.55f )
+            {
+                m_moveAmount = 0.5f;
+            }
+            else if( m_moveAmount >= 0.55f )
+            {
+                m_moveAmount = 1f;
+            }
+            else if( m_moveAmount <= 0.05f )
+
+            {
+                m_moveAmount = 0f;
+            }
+        }
         else
 		{
-            m_moveAmount = 0;
+            m_moveAmount = 0f;
+            dampingTime = 0f;
 		}
-		#endregion
 
-		//Animator variable set to move amount
-		m_animator.SetFloat( an_movingSpeed, m_moveAmount, m_dampTime, Time.deltaTime );
+        //Animator variable set to move amount
+        m_animator.SetFloat( an_movingSpeed, m_moveAmount, dampingTime, Time.deltaTime );
 
+        #endregion
 
         //Move Direction based on the camera angle
         Vector3 moveDirection = m_cameraMainTransform.forward * GetPlayerInput().z + m_cameraMainTransform.right * GetPlayerInput().x;
@@ -254,26 +270,55 @@ public class PlayerController : MonoBehaviour
     **************************************************************************************/
 	void Update()
     {
+        float yVelocityLastFrame = m_playerVelocity.y;
+
+
         //Use the character Controller's isGrounded functionality to fill a member variable for readability
-        m_groundedPlayer = m_controller.isGrounded;
+         #region Landing Raycast
+       
         //Raycast for the groundpound
         RaycastHit hit;
-        if( Physics.Raycast( transform.position, -transform.up, out hit, 0.001f, m_groundLayer ) )
+
+        if( Physics.Raycast( transform.position, -transform.up, out hit, checkRange, m_groundLayer ) )
         {
-            transform.position = hit.transform.position;
-            m_groundedPlayer = true;
+            //Raycast hits Grounds
+
+            //Now, were we going downwards? (To stop it when jumping)
+            if( m_playerVelocity.y < 0f )
+            {
+                transform.position = hit.point;
+                m_isGrounded = true;
+                m_playerVelocity.y = 0;
+                m_animator.SetBool(an_inAir, false);  //Which in turns set velocity to 0
+                m_justBeganFalling = false;
+            } 
+        }
+        else // If raycast does not hit ground
+        {
+            m_isGrounded = false;
+            m_animator.SetBool( an_inAir, true );
         }
 
-        //If you're grounded or CAN'T fall (eg. Attacking in air)
-        if( m_groundedPlayer || !m_canFall )
+        if( m_controller.isGrounded )
+		{
+            m_isGrounded = true;
+		}
+
+        #endregion
+
+
+            
+
+		//If you're grounded or CAN'T fall (eg. Attacking in air)
+		if( m_isGrounded || !m_canFall )
         {
             //Velocity is 0
             m_playerVelocity.y = 0f;
         }
-        //If you are falling, but not at terminal velocity, accelerate
+        //If you are falling, but not at terminal velocity, 
         else if( m_playerVelocity.y > -20 && m_canFall )
         {
-            //Update a variable with how much you should be falling
+            //Accelerate
             m_playerVelocity.y += m_gravityValue * Time.deltaTime; 
             
             //if the addition goes UNDER -20, set it to it, and now you'll never come back into this section
@@ -283,33 +328,37 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-
-        //Now we assess the velocity, so as to check if we fall or not
-        //We are going downwards
-
-        if (m_playerVelocity.y >= 0 /*|| /*m_groundedPlayer*/ )
-		{
-
-        }
-        else if( m_playerVelocity.y < 0 )
+       
+        //If grounded, reset in air
+        if( m_isGrounded )
         {
-            //We are falling, but has it only just started? If so, should be false, so do it
-            if( !m_justBeganFalling )
-            {
-                m_justBeganFalling = true;
-                m_animator.SetTrigger( an_beganFalling );
-            }
+
+            m_animator.SetBool( an_inAir, false );
+        } 
+        
+        //Jumping
+        if( m_jumpControl.action.triggered && m_isGrounded )
+        {
+            //Jumped
+            m_animator.SetTrigger( an_jumped );
+            m_playerVelocity.y = m_jumpForce;
         }
 
 
-        //  Debug.Log( m_playerVelocity.y );
+        //And if you can fall, move that way.
+        if( m_canFall )
+        {
+            //Velocity is only used for falling and jumping
+            m_controller.Move( m_playerVelocity * Time.deltaTime );
+        }
+
         //Dodging
         if ( m_dodgeControl.action.triggered && m_canDodge )
         {
             Dodge();
         }
 
-        //If you're even touching Inputs
+        //If you're even touching Inputs at all
         if ( GetMoveDirection() != Vector3.zero )
         {
             if ( m_canMove )
@@ -331,38 +380,19 @@ public class PlayerController : MonoBehaviour
         }
 
 
-        //Jumping
-        if ( m_jumpControl.action.triggered && m_groundedPlayer )
-        {
-            //Jumped
-            m_animator.SetTrigger( an_jumped );
-            m_playerVelocity.y = m_jumpForce;
-        }
 
-        //If in air, at all
-        if ( !m_groundedPlayer )
-        {
 
-            m_animator.SetBool( an_inAir, true );
-        }
-        else
+        if( yVelocityLastFrame >= 0f && m_playerVelocity.y < 0f )
         {
-            //Landed
-            m_animator.SetBool( an_inAir, false );
-        }
-
-        //And if you can fall, move that way.
-        if ( m_canFall )
-        {
-            //Velocity is only used for falling and jumping
-            m_controller.Move( m_playerVelocity * Time.deltaTime );
+            m_debugText.text += "\nBALLS";
+            BeginFalling();
         }
 
 
         /////////////
         /// Debug ///
         /////////////
-        
+
         //Rotate the Current Direction line renderer
         m_currentDirectionFaced.SetPosition( 0, transform.position );
         Vector3 facedDirection = transform.position + transform.forward;
@@ -381,14 +411,18 @@ public class PlayerController : MonoBehaviour
         Vector3 inputDirection = transform.position + m_previousDirection;
         m_inputDirectionVisual.SetPosition( 1, inputDirection );
 
-
-        if (transform.position == new Vector3(0.0f, 0.0f, 0.0f ) )
-		{
-
-            m_debugText.text += "\nBALLS";
-        }
-
     }
+
+
+
+    private void BeginFalling() 
+    { 
+        m_justBeganFalling = true;
+        m_animator.SetTrigger( an_beganFalling );
+    }
+
+
+
 
     private void Dodge()
 	{
@@ -397,6 +431,7 @@ public class PlayerController : MonoBehaviour
         m_canMove = false;
         m_canRotate = false;
         m_canDodge = false;
+        m_playerHealth.SetInvulnerable();
 
         m_meleeController.CollisionsEnd();
         //Current Position value
