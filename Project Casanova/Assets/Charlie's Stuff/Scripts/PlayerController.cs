@@ -384,8 +384,8 @@ public class PlayerController : MonoBehaviour
 
         if( yVelocityLastFrame >= 0f && m_playerVelocity.y < 0f )
         {
-            m_debugText.text += "\nBALLS";
-            BeginFalling();
+            //m_debugText.text += "\nBALLS";
+            //BeginFalling();
         }
 
 

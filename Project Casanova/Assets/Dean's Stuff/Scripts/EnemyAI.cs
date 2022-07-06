@@ -71,7 +71,6 @@ public class EnemyAI : MonoBehaviour
     [Tooltip("AI's Current State")]
     private AIState m_mainState = AIState.Idle;
     private CombatState m_combatState = CombatState.Strafing;
-    private AIState m_stateBeforeHit = AIState.Idle;
     [Header("Movement Values")]
     [SerializeField]
     [Tooltip("The walk speed of the AI")]
@@ -169,6 +168,7 @@ public class EnemyAI : MonoBehaviour
     private float m_zoneTimer = 0.0f;
     private float m_strafeCheckInterval = 2.0f;
     private float m_strafeTimer = 0.0f;
+    private bool m_isTakingDamage = false;
 
     // Vision Detection Relevant Variables
     [Header("Player Detection Values")]
@@ -236,8 +236,7 @@ public class EnemyAI : MonoBehaviour
             {
                 if (IsPlayerVisible())
                 {
-                    // Disabled Detection in Idle for now
-                    //SetAIState(AIState.Pursuing);
+                    SetAIState(AIState.InCombat);
                 }
                 break;
             }
@@ -249,7 +248,7 @@ public class EnemyAI : MonoBehaviour
             }
             case AIState.Waking:
             {
-                if (m_lookAtPlayerWhileWaking)
+                if (m_lookAtPlayerWhileWaking && !m_isTakingDamage)
                 {
                     transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
                 }
@@ -446,8 +445,11 @@ public class EnemyAI : MonoBehaviour
             case CombatState.MaintainDist:
             {
                 TimedZoneCheck();
-
-                transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+                
+                if (!m_isTakingDamage)
+                {
+                    transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+                }
 
                 AiToPlayerRangeCheck();
                 TimedBeginStrafeCheck();
@@ -482,7 +484,10 @@ public class EnemyAI : MonoBehaviour
 
                 BackUp();
                 AiToPlayerRangeCheck();
-                transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+                if (!m_isTakingDamage)
+                {
+                    transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+                }
                 //transform.LookAt(m_player.transform.position);
 
 
@@ -520,7 +525,10 @@ public class EnemyAI : MonoBehaviour
             // Currently in attack animation
             case CombatState.Attacking:
             {
-                transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+                if (!m_isTakingDamage)
+                {
+                    transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+                }
 
                 // Attack hits
                 if (m_weaponCollider.enabled && m_weaponCollider.bounds.Intersects(m_playerCollider.bounds))
@@ -772,7 +780,10 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.SetDestination(transform.position + dir);
 
         // LookAt so that it looks like actual strafing
-        transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+        if (!m_isTakingDamage)
+        {
+            transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+        }
         //transform.LookAt(m_player.transform.position);
     }
 
@@ -782,7 +793,10 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.SetDestination(transform.position + (dir * 2.0f));
 
         // Keep facing player while back stepping
-        transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+        if (!m_isTakingDamage)
+        {
+            transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+        }
         //transform.LookAt(m_player.transform.position);
     }
 
@@ -1128,47 +1142,50 @@ public class EnemyAI : MonoBehaviour
 
         GameObject enemyToCheck = FindClosestEnemy().gameObject;
 
-        if (DistanceSqrCheck(enemyToCheck, m_checkForAIDist))
+        if( enemyToCheck != null )
         {
-            Vector3 dirToCheck;
-
-            if (m_strafeDir == StrafeDir.Right)
+            if (DistanceSqrCheck(enemyToCheck, m_checkForAIDist))
             {
-                dirToCheck = transform.right;
-            }
-            else
-            {
-                dirToCheck = -transform.right;
-            }
+                Vector3 dirToCheck;
 
-            Vector3 dirToEnemy = (enemyToCheck.transform.position - transform.position).normalized;
-            if (Vector3.Angle(dirToCheck, dirToEnemy) < m_checkForAIAngles * 0.5f)
-            {
-                float currentZoneHalfDist = 0.0f;
-
-                // Finding the distance to compare with the current strafe distance to determine whether the AI should move backwards or forwards
-                if (m_currentAttackingType == AttackingType.Passive)
+                if (m_strafeDir == StrafeDir.Right)
                 {
-                    currentZoneHalfDist = m_aiManager.GetActiveAttackerMaxDist() + ((m_aiManager.GetPassiveAttackerMaxDist() - m_aiManager.GetActiveAttackerMaxDist()) * 0.5f);
+                    dirToCheck = transform.right;
                 }
                 else
                 {
-                    currentZoneHalfDist = m_aiManager.GetActiveAttackerMinDist() + ((m_aiManager.GetActiveAttackerMaxDist() - m_aiManager.GetActiveAttackerMinDist()) * 0.5f);
+                    dirToCheck = -transform.right;
                 }
 
-                if (m_strafeDist > currentZoneHalfDist)
+                Vector3 dirToEnemy = (enemyToCheck.transform.position - transform.position).normalized;
+                if (Vector3.Angle(dirToCheck, dirToEnemy) < m_checkForAIAngles * 0.5f)
                 {
-                    ResetLastUsedAnimTrigger();
-                    StartWalkAnim();
-                    m_strafeDist -= m_AIAvoidanceDist;
-                    m_combatState = CombatState.ClosingDist;
-                }
-                else
-                {
-                    ResetLastUsedAnimTrigger();
-                    StartWalkBackAnim();
-                    m_strafeDist += m_AIAvoidanceDist;
-                    m_combatState = CombatState.BackingUp;
+                    float currentZoneHalfDist = 0.0f;
+
+                    // Finding the distance to compare with the current strafe distance to determine whether the AI should move backwards or forwards
+                    if (m_currentAttackingType == AttackingType.Passive)
+                    {
+                        currentZoneHalfDist = m_aiManager.GetActiveAttackerMaxDist() + ((m_aiManager.GetPassiveAttackerMaxDist() - m_aiManager.GetActiveAttackerMaxDist()) * 0.5f);
+                    }
+                    else
+                    {
+                        currentZoneHalfDist = m_aiManager.GetActiveAttackerMinDist() + ((m_aiManager.GetActiveAttackerMaxDist() - m_aiManager.GetActiveAttackerMinDist()) * 0.5f);
+                    }
+
+                    if (m_strafeDist > currentZoneHalfDist)
+                    {
+                        ResetLastUsedAnimTrigger();
+                        StartWalkAnim();
+                        m_strafeDist -= m_AIAvoidanceDist;
+                        m_combatState = CombatState.ClosingDist;
+                    }
+                    else
+                    {
+                        ResetLastUsedAnimTrigger();
+                        StartWalkBackAnim();
+                        m_strafeDist += m_AIAvoidanceDist;
+                        m_combatState = CombatState.BackingUp;
+                    }
                 }
             }
         }
@@ -1466,13 +1483,16 @@ public class EnemyAI : MonoBehaviour
 
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(animTrigger);
+        m_navMeshAgent.updateRotation = false;
         DisableCollision();
         m_lastUsedAnimTrigger = animTrigger;
+        m_isTakingDamage = true;
     }
 
     private void RecoverFromHit()
     {
         SetCombatState(CombatState.Pursuing);
+        m_isTakingDamage = false;
     }
 
     // Can possibly remove these pause and resume functions, but leave for now
@@ -1508,8 +1528,6 @@ public class EnemyAI : MonoBehaviour
     {
         if (m_mainState != AIState.Dead)
         {
-            m_stateBeforeHit = m_mainState;
-
             m_health -= damageToTake;
 
             if (m_mainState != AIState.Sleeping)
