@@ -36,7 +36,7 @@ public class SwordCollisionManager : MonoBehaviour
             //Then hurt them
             if (enemy.GetState() != AIState.Dead )
 			{
-                enemy.TakeDamage( m_swordDamage );
+                enemy.GetHealthManager().TakeDamage( transform, m_swordDamage );
             }
         }
     }

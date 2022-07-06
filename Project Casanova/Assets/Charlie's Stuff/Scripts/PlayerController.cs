@@ -379,7 +379,7 @@ public class PlayerController : MonoBehaviour
 
         if( yVelocityLastFrame >= 0f && m_playerVelocity.y < 0f )
         {
-            m_debugText.text += "\nBALLS";
+            //m_debugText.text += "\nBALLS";
             BeginFalling();
         }
 
@@ -425,7 +425,7 @@ public class PlayerController : MonoBehaviour
         m_canMove = false;
         m_canRotate = false;
         m_canDodge = false;
-        m_playerHealth.SetInvulnerable();
+        m_playerHealth.SetIFrames();
 
         m_meleeController.CollisionsEnd();
         //Current Position value
@@ -477,4 +477,15 @@ public class PlayerController : MonoBehaviour
         m_canDodge = true;
         m_canFall = true;
     }
+
+
+    //PUT ALL YOUR GETTERS HERE, LET'S GET CLEAN
+    public void SetDodge( bool canDodge )
+	{
+        m_canDodge = canDodge;
+	}
+    public bool GetDodge()
+	{
+        return m_canDodge;
+	}
 }

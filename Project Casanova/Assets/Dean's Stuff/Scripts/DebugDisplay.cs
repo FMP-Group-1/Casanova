@@ -145,7 +145,7 @@ public class DebugDisplay : MonoBehaviour
         AIState currentAIState = m_targetAI.GetState();
 
         m_aiStateText.text = "AI State: " + currentAIState;
-        m_aiHealth.text = "AI Health: " + m_targetAI.GetHealth();
+        //m_aiHealth.text = "AI Health: " + m_targetAI.GetHealth();
         //m_playerDetectedText.text = "Player Detected: " + m_targetAI.IsPlayerVisible();
         m_playerDetectedText.text = "Player Distance: " + Vector3.Distance(m_targetAI.gameObject.transform.position, m_player.transform.position);
         m_strafeAtDistText.text = "Strafe Distance: " + m_targetAI.GetStrafeDist();
