@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour
     private CharacterController m_controller;
 
     //Player Health Thing
-    private PlayerHealth m_playerHealth;
+    private CharacterDamageManager m_playerHealth;
 
     //Player stats
     //Move Speed
@@ -160,7 +160,7 @@ public class PlayerController : MonoBehaviour
         m_controller = gameObject.GetComponent<CharacterController>();
         m_cameraMainTransform = Camera.main.transform;
 
-        m_playerHealth = gameObject.GetComponent<PlayerHealth>();
+        m_playerHealth = gameObject.GetComponent<CharacterDamageManager>();
 
         an_movingSpeed = Animator.StringToHash( "movingSpeed" );
         an_inAir = Animator.StringToHash( "inAir" );

@@ -513,7 +513,7 @@ public class EnemyAI : MonoBehaviour
                 // Attack hits
                 if (m_weaponCollider.enabled && m_weaponCollider.bounds.Intersects(m_playerCollider.bounds))
                 {
-                    m_player.gameObject.GetComponent<PlayerHealth>().GetHurt(transform);
+                    m_player.gameObject.GetComponent<CharacterDamageManager>().GetHurt(transform);
                     DisableCollision();
                 }
                 //transform.LookAt(m_player.transform.position);
