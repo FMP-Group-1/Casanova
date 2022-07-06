@@ -49,7 +49,7 @@ public class PlayerController : MonoBehaviour
     private float m_rotationSpeed = 4f;
     //How far to check for the ground
     [SerializeField, Range( 0.01f, 0.5f )]
-    float checkRange = 0.05f;
+    float m_fallCheckRange = 0.05f;
 
     //Being Public is not finalised. This will become a getter/setter (Called in Melee.cs)
     public Vector3 m_playerVelocity;
@@ -57,10 +57,6 @@ public class PlayerController : MonoBehaviour
     private bool m_isGrounded;
     //Camera's transform position, used for directional movmement/attacking
     private Transform m_cameraMainTransform;
-
-
-    private bool m_justBeganFalling = false;
-
 
     //Values that allow player to move or fall or rotate
     //All of these Being Public is not finalised. They will become getters/setters (Called in Melee.cs)
@@ -279,7 +275,7 @@ public class PlayerController : MonoBehaviour
         //Raycast for the groundpound
         RaycastHit hit;
 
-        if( Physics.Raycast( transform.position, -transform.up, out hit, checkRange, m_groundLayer ) )
+        if( Physics.Raycast( transform.position, -transform.up, out hit, m_fallCheckRange, m_groundLayer ) )
         {
             //Raycast hits Grounds
 
@@ -290,7 +286,6 @@ public class PlayerController : MonoBehaviour
                 m_isGrounded = true;
                 m_playerVelocity.y = 0;
                 m_animator.SetBool(an_inAir, false);  //Which in turns set velocity to 0
-                m_justBeganFalling = false;
             } 
         }
         else // If raycast does not hit ground
@@ -417,7 +412,6 @@ public class PlayerController : MonoBehaviour
 
     private void BeginFalling() 
     { 
-        m_justBeganFalling = true;
         m_animator.SetTrigger( an_beganFalling );
     }
 
