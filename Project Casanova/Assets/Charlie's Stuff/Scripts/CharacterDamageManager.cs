@@ -9,10 +9,20 @@ public class CharacterDamageManager : MonoBehaviour
     private bool m_invulnerable = false;
     //The Animator Component
     private Animator m_animator;
-    private PlayerController m_playerController;
     [SerializeField]
     private float m_invulnerableTime = 1f;
 
+    private EnemyAI m_enemyAI;
+    private PlayerController m_playerController;
+
+    private enum CharacterType
+    {
+        Enemy,
+        Player
+	}
+
+    [SerializeField]
+    private CharacterType m_characterType;
 
     private int an_stumble;
 
@@ -21,6 +31,17 @@ public class CharacterDamageManager : MonoBehaviour
         m_playerController = GetComponent<PlayerController>();
         m_animator = GetComponent<Animator>();
         an_stumble = Animator.StringToHash( "stumble" );
+
+
+        if (m_characterType == CharacterType.Player )
+		{
+            m_playerController = GetComponent<PlayerController>();
+		}
+        else if ( m_characterType == CharacterType.Enemy )
+		{
+            m_enemyAI = GetComponent<EnemyAI>();
+		}
+
     }
 
     // Update is called once per frame
@@ -34,8 +55,30 @@ public class CharacterDamageManager : MonoBehaviour
     {
 
 
-        // if ( enemy )
+        if( m_characterType == CharacterType.Player )
+        {
 
+        }
+        else if( m_characterType == CharacterType.Enemy )
+        {
+            m_health -= damage;
+
+            if( m_enemyAI.GetState() != AIState.Sleeping )
+            {
+                //m_enemyAI.ResetLastUsedAnimTrigger();
+                //m_enemyAI.PlayDamageAnim();
+            }
+
+            if( m_health <= 0.0f )
+            {
+                Die();
+            }
+        }
+
+        // if ( enemy )
+        /*
+            
+         */
 
         if( !m_invulnerable )
         {
@@ -69,7 +112,15 @@ public class CharacterDamageManager : MonoBehaviour
 
 	}
 
-	public IEnumerator ResetInvulnerable(float timer)
+    private void Die()
+    {
+        m_health = 0.0f;
+        //SetAIState( AIState.Dead );
+        //m_aiManager.UnregisterAttacker( this );
+    }
+
+
+    public IEnumerator ResetInvulnerable(float timer)
 	{
         yield return new WaitForSeconds( timer );
         m_invulnerable = false;
