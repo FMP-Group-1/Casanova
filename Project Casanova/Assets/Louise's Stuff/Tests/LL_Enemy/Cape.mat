@@ -32,6 +32,30 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_039e068a81b34b0fb2f7c025b2f3dd4c:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_b2c13d097196455b8fa3140c51741ffb:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture2D_e46cb9a8d9264a8583a6ef53f440512a:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - Texture3D_9750840f29844837b11be2c33f7fd249:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _AO:
+        m_Texture: {fileID: 2800000, guid: e61a56a7711937642986761d67ab1e0f, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Albedo:
+        m_Texture: {fileID: 2800000, guid: 57710d2da00fd744aa65dab76de8d6f8, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -64,12 +88,20 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Normal:
+        m_Texture: {fileID: 2800000, guid: 18fd536975deceb4f97d3f3f08f73488, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Roughness:
+        m_Texture: {fileID: 2800000, guid: b7b99b8b41071e043a269ad0705ca87f, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -89,6 +121,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Floats:
+    - Boolean_c8709a0346e34377a29ec58a8d352487: 0
     - Vector1_da39f16e6fa1425089db1ac6b3347134: 30
     - Vector1_fbc6f6ff6e4a4808988ae73eeb865f87: 0.02
     - _AlphaClip: 0
@@ -103,7 +136,8 @@ Material:
     - _DstBlend: 0
     - _EnvironmentReflections: 1
     - _FadePeriod: 0.75
-    - _FadeStartTime: 3.4028235e+38
+    - _FadeStartTime: 14.560908
+    - _ForceVisible: 1
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
@@ -122,8 +156,12 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - Color_0d6e31bece4c42b6b117849e785a3b1e: {r: 0.6698113, g: 0.07203627, b: 0.07203627, a: 0}
     - Color_2b30d1738939409caf156a28f079ce47: {r: 0.13207549, g: 0.13207549, b: 0.13207549, a: 0}
+    - Color_973417512f9147ec81bf574f790c64a9: {r: 0.41509432, g: 0.11904589, b: 0.18512654, a: 0}
     - Color_e650eb15af344364bff7b22b4adc912b: {r: 14.52852, g: 14.52852, b: 14.52852, a: 0}
+    - Vector2_38cc50af7c4e478caceb7bf0d1f22141: {r: 0, g: 0, b: 0, a: 0}
+    - Vector2_eb006f09a42640ef9cef5f7b0fc7976e: {r: 0, g: 0, b: 0, a: 0}
     - _BaseColor: {r: 0.021978566, g: 0.021978566, b: 0.021978566, a: 1}
     - _Color: {r: 0.15999028, g: 0.15999028, b: 0.15999028, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
