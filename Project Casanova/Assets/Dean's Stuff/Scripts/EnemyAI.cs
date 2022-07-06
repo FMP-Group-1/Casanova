@@ -38,7 +38,8 @@ public enum CombatState
     BackingUp,
     MovingToZone,
     MovingToAttack,
-    Attacking
+    Attacking,
+    Dodging
 }
 
 public enum WakeTrigger
@@ -88,6 +89,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     [Tooltip("Should the AI spawn asleep?")]
     private bool m_spawnAsleep = false;
+    private bool m_lookAtPlayerWhileWaking = false;
     [SerializeField]
     [Tooltip("The trigger zone which will wake the AI when the player enters it")]
     private GameObject m_wakeTriggerObj;
@@ -181,6 +183,15 @@ public class EnemyAI : MonoBehaviour
     [Tooltip("The angle that the AI can detect the player AKA field of view")]
     private float m_viewAngle = 145.0f;
 
+    [Header("Animation Values")]
+    [SerializeField]
+    [Tooltip("Total number of sleep to wake animations")]
+    private int m_sleepToWakeAnimNum = 2;
+    [SerializeField]
+    [Tooltip("Total number of dodge animations")]
+    private int m_dodgeAnimNum = 2;
+    private string m_lastUsedAnimTrigger = "None";
+
     [SerializeField]
     [Tooltip("The layer mask for obstacles")]
     private LayerMask m_obstacleMask;
@@ -234,6 +245,14 @@ public class EnemyAI : MonoBehaviour
             {
                 // Check if player is in the wake trigger zone to wake up
                 WakeTriggerCheck();
+                break;
+            }
+            case AIState.Waking:
+            {
+                if (m_lookAtPlayerWhileWaking)
+                {
+                    transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
+                }
                 break;
             }
             // Patrol Logic
@@ -494,7 +513,7 @@ public class EnemyAI : MonoBehaviour
                     SetCombatState(CombatState.MaintainDist);
                     m_zoneHandler.UnreserveZone();
                     m_zoneHandler.OccupyCurrentZone();
-                    Debug.Log("AI: " + name + " reached destination.");
+                    //Debug.Log("AI: " + name + " reached destination.");
                 }
                 break;
             }
@@ -524,7 +543,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         m_mainState = stateToSet;
-        ResetAnimTriggers();
+        ResetLastUsedAnimTrigger();
 
         switch (stateToSet)
         {
@@ -592,7 +611,7 @@ public class EnemyAI : MonoBehaviour
     private void SetPatrolState( PatrolState stateToSet )
     {
         m_patrolState = stateToSet;
-        ResetAnimTriggers();
+        ResetLastUsedAnimTrigger();
 
         switch (stateToSet)
         {
@@ -621,7 +640,7 @@ public class EnemyAI : MonoBehaviour
     public void SetCombatState( CombatState stateToSet )
     {
         m_combatState = stateToSet;
-        ResetAnimTriggers();
+        ResetLastUsedAnimTrigger();
 
         switch (stateToSet)
         {
@@ -676,6 +695,7 @@ public class EnemyAI : MonoBehaviour
             // Move directly to a specified zone
             case CombatState.MovingToZone:
             {
+                m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
                 StartRunAnim();
                 break;
             }
@@ -837,7 +857,7 @@ public class EnemyAI : MonoBehaviour
         else
         {
             m_combatState = CombatState.RadialRunToZone;
-            ResetAnimTriggers();
+            ResetLastUsedAnimTrigger();
             StartRunAnim();
         }
     }
@@ -1138,14 +1158,14 @@ public class EnemyAI : MonoBehaviour
 
                 if (m_strafeDist > currentZoneHalfDist)
                 {
-                    ResetAnimTriggers();
+                    ResetLastUsedAnimTrigger();
                     StartWalkAnim();
                     m_strafeDist -= m_AIAvoidanceDist;
                     m_combatState = CombatState.ClosingDist;
                 }
                 else
                 {
-                    ResetAnimTriggers();
+                    ResetLastUsedAnimTrigger();
                     StartWalkBackAnim();
                     m_strafeDist += m_AIAvoidanceDist;
                     m_combatState = CombatState.BackingUp;
@@ -1184,7 +1204,7 @@ public class EnemyAI : MonoBehaviour
         if (m_zoneHandler.IsZoneAvailable())
         {
             m_combatState = CombatState.StrafingToZone;
-            ResetAnimTriggers();
+            ResetLastUsedAnimTrigger();
             StartStrafeAnim(m_strafeDir);
         }
     }
@@ -1209,16 +1229,22 @@ public class EnemyAI : MonoBehaviour
             case WakeTrigger.Attack:
             {
                 SetAIState(AIState.Waking);
-                StartStandUpAnim();
+                StartSleepToWakeAnim();
                 break;
             }
             case WakeTrigger.Standard:
             {
                 SetAIState(AIState.Waking);
-                StartStandUpAnim();
+                StartSleepToWakeAnim();
                 break;
             }
         }
+    }
+
+    public void LookAtPlayerOnWake()
+    {
+        // Todo: Maybe rework this, or just don't forget to reset if the AI gets re-used via pooling
+        m_lookAtPlayerWhileWaking = true;
     }
 
     public ZoneType GetZoneTypeFromAttackType()
@@ -1284,14 +1310,19 @@ public class EnemyAI : MonoBehaviour
 
     private void StartWalkAnim()
     {
+        string animTrigger = "Walk";
+
         m_navMeshAgent.isStopped = false;
-        m_animController.SetTrigger("Walk");
+        m_animController.SetTrigger(animTrigger);
         m_navMeshAgent.speed = m_walkSpeed;
         m_navMeshAgent.updateRotation = true;
+        m_lastUsedAnimTrigger = animTrigger;
     }
 
     private void StartStrafeAnim( StrafeDir dirToStrafe )
     {
+        string animTrigger = "None";
+
         m_navMeshAgent.isStopped = false;
         m_navMeshAgent.speed = m_strafeSpeed;
         m_navMeshAgent.updateRotation = false;
@@ -1300,93 +1331,148 @@ public class EnemyAI : MonoBehaviour
         {
             case StrafeDir.Left:
             {
+                animTrigger = "StrafeLeft";
+
                 m_animController.SetTrigger("StrafeLeft");
                 break;
             }
             case StrafeDir.Right:
             {
+                animTrigger = "StrafeRight";
+
                 m_animController.SetTrigger("StrafeRight");
                 break;
             }
         }
+
+        m_lastUsedAnimTrigger = animTrigger;
     }
 
     private void StartWalkBackAnim()
     {
+        string animTrigger = "WalkBack";
+
         m_navMeshAgent.isStopped = false;
-        m_animController.SetTrigger("WalkBack");
+        m_animController.SetTrigger(animTrigger);
         m_navMeshAgent.speed = m_walkSpeed;
         m_navMeshAgent.updateRotation = false;
+        m_lastUsedAnimTrigger = animTrigger;
     }
 
     private void StartRunAnim()
     {
+        string animTrigger = "Run";
+
         m_navMeshAgent.isStopped = false;
-        m_animController.SetTrigger("Run");
+        m_animController.SetTrigger(animTrigger);
         m_navMeshAgent.speed = m_runSpeed;
         m_navMeshAgent.updateRotation = true;
+        m_lastUsedAnimTrigger = animTrigger;
     }
 
     private void StartIdleAnim()
     {
+        string animTrigger = "Idle";
+
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger("Idle");
+        m_animController.SetTrigger(animTrigger);
         m_navMeshAgent.updateRotation = true;
+        m_lastUsedAnimTrigger = animTrigger;
     }
 
     private void StartCombatIdleAnim()
     {
+        string animTrigger = "CombatIdle";
+
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger("CombatIdle");
+        m_animController.SetTrigger(animTrigger);
         m_navMeshAgent.updateRotation = false;
+        m_lastUsedAnimTrigger = animTrigger;
     }
 
     private void StartAttackAnim()
     {
+        string animTrigger = "Attack";
+
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger("Attack");
+        m_animController.SetTrigger(animTrigger);
         m_navMeshAgent.updateRotation = false;
+        m_lastUsedAnimTrigger = animTrigger;
     }
 
-    private void StartStandUpAnim()
+    private void StartQuickAttackAnim()
     {
+        string animTrigger = "QuickAttack";
+
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger("StandUp");
+        m_animController.SetTrigger(animTrigger);
         m_navMeshAgent.updateRotation = false;
+        m_lastUsedAnimTrigger = animTrigger;
+    }
+
+    private void StartHeavyAttackAnim()
+    {
+        string animTrigger = "HeavyAttack";
+
+        m_navMeshAgent.isStopped = true;
+        m_animController.SetTrigger(animTrigger);
+        m_navMeshAgent.updateRotation = false;
+        m_lastUsedAnimTrigger = animTrigger;
+    }
+
+    private void StartDodgeAnim()
+    {
+        int animNum = Random.Range(0, m_dodgeAnimNum);
+        string animTrigger = "Dodge" + animNum;
+        m_navMeshAgent.isStopped = true;
+        m_animController.SetTrigger(animTrigger);
+        m_navMeshAgent.updateRotation = false;
+        m_lastUsedAnimTrigger = animTrigger;
+    }
+
+    private void StartSleepToWakeAnim()
+    {
+        int animNum = Random.Range(0, m_sleepToWakeAnimNum);
+        string animTrigger = "SleepToWake" + animNum;
+        m_navMeshAgent.isStopped = true;
+        m_animController.SetTrigger(animTrigger);
+        m_navMeshAgent.updateRotation = false;
+        m_lastUsedAnimTrigger = animTrigger;
     }
 
     private void SetToPlayDeadAnim()
     {
+        string animTrigger = "Sleep";
+
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger("LayDown");
+        m_animController.SetTrigger(animTrigger);
         m_navMeshAgent.updateRotation = false;
+        m_lastUsedAnimTrigger = animTrigger;
     }
 
     private void StartDeathAnim()
     {
+        string animTrigger = "Death";
+
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger("Death");
+        m_animController.SetTrigger(animTrigger);
         m_navMeshAgent.updateRotation = false;
+        m_lastUsedAnimTrigger = animTrigger;
     }
 
     private void PlayDamageAnim()
     {
+        string animTrigger = "TakeHit";
+
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger("TakeHit");
+        m_animController.SetTrigger(animTrigger);
         DisableCollision();
+        m_lastUsedAnimTrigger = animTrigger;
     }
 
     private void RecoverFromHit()
     {
-        // Todo: Maybe remove, function has become redundant
-        if (m_playerDetectionEnabled)
-        {
-            SetAIState(AIState.InCombat);
-        }
-        else
-        {
-            SetAIState(m_stateBeforeHit);
-        }
+        SetCombatState(CombatState.Pursuing);
     }
 
     // Can possibly remove these pause and resume functions, but leave for now
@@ -1428,7 +1514,7 @@ public class EnemyAI : MonoBehaviour
 
             if (m_mainState != AIState.Sleeping)
             {
-                ResetAnimTriggers();
+                ResetLastUsedAnimTrigger();
                 PlayDamageAnim();
             }
 
@@ -1461,18 +1547,34 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    private void ResetAnimTriggers()
+    private void ResetLastUsedAnimTrigger()
+    {
+        if (m_lastUsedAnimTrigger != "None")
+        {
+            m_animController.ResetTrigger(m_lastUsedAnimTrigger);
+        }
+    }
+
+    private void ResetAllAnimTriggers()
     {
         m_animController.ResetTrigger("Walk");
         m_animController.ResetTrigger("Idle");
         m_animController.ResetTrigger("Attack");
+        m_animController.ResetTrigger("QuickAttack");
+        m_animController.ResetTrigger("HeavyAttack");
         m_animController.ResetTrigger("Run");
-        m_animController.ResetTrigger("StandUp");
-        m_animController.ResetTrigger("LayDown");
+        m_animController.ResetTrigger("SleepToWake0");
+        m_animController.ResetTrigger("SleepToWake1");
+        m_animController.ResetTrigger("Sleep");
         m_animController.ResetTrigger("TakeHit");
         m_animController.ResetTrigger("StrafeLeft");
         m_animController.ResetTrigger("StrafeRight");
         m_animController.ResetTrigger("CombatIdle");
+        m_animController.ResetTrigger("WalkBack");
+        m_animController.ResetTrigger("Death");
+        m_animController.ResetTrigger("Weaken");
+        m_animController.ResetTrigger("Dodge0");
+        m_animController.ResetTrigger("Dodge1");
     }
 
     private void SetupPatrolRoutes()

@@ -260,7 +260,7 @@ GameObject:
   - component: {fileID: 1896295725392823048}
   - component: {fileID: 1523426573427295264}
   - component: {fileID: 7398250728576852531}
-  - component: {fileID: 2980156169319342548}
+  - component: {fileID: 5449469010737099159}
   m_Layer: 0
   m_Name: GruntEnemyAI
   m_TagString: Untagged
@@ -430,7 +430,7 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!136 &2980156169319342548
+--- !u!136 &5449469010737099159
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -441,9 +441,9 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   m_Radius: 0.5
-  m_Height: 1
+  m_Height: 2.0682783
   m_Direction: 1
-  m_Center: {x: 0, y: 0.40297198, z: 0}
+  m_Center: {x: 0, y: 0.53413916, z: 0}
 --- !u!1 &1942089987557442262
 GameObject:
   m_ObjectHideFlags: 0
