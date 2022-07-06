@@ -9,7 +9,6 @@ public class TestShaders : MonoBehaviour
     [Tooltip( "Action Input" )]
     private InputActionReference m_action;
 
-    private Material[] m_materials;
     private List<Material> m_materialList = new List<Material>();
 
 
@@ -46,9 +45,5 @@ public class TestShaders : MonoBehaviour
                 mat.SetFloat( "_FadeStartTime", Time.time );
             }
 		}
-    }
-
-    void OnApplicationQuit()
-    {
     }
 }
