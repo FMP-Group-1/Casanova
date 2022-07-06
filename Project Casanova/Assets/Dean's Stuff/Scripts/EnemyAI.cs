@@ -55,6 +55,13 @@ public enum AttackingType
     Active
 }
 
+public enum AttackMode
+{
+    Primary,
+    Secondary,
+    Both
+}
+
 public enum StrafeDir
 {
     Left,
@@ -159,9 +166,17 @@ public class EnemyAI : MonoBehaviour
     private float m_maxAttackTime = 7.5f;
     private float m_timeSinceLastAttack = 0.0f;
     [SerializeField]
-    [Tooltip("The weapon object which should have a box collider attached for attack collisions")]
-    private GameObject m_weapon;
-    private BoxCollider m_weaponCollider;
+    [Tooltip("Number of different attacks the AI will use")]
+    private int m_attackNum = 3;
+    [SerializeField]
+    [Tooltip("The primary weapon object which should have a box collider attached for attack collisions")]
+    private GameObject m_primaryWeapon;
+    private BoxCollider m_primaryWeaponCollider;
+    [SerializeField]
+    [Tooltip("The secondary weapon object which should have a box collider attached for attack collisions")]
+    private GameObject m_secondaryWeapon;
+    private BoxCollider m_secondaryWeaponCollider;
+    private AttackMode m_attackMode = AttackMode.Primary;
     private AttackingType m_currentAttackingType = AttackingType.Passive;
     private ZoneHandler m_zoneHandler = new ZoneHandler();
     private float m_zoneCheckInterval = 5.0f;
@@ -210,7 +225,8 @@ public class EnemyAI : MonoBehaviour
 
         m_player = GameObject.FindGameObjectWithTag("Player");
         m_playerCollider = m_player.GetComponent<Collider>();
-        m_weaponCollider = m_weapon.GetComponent<BoxCollider>();
+        m_primaryWeaponCollider = m_primaryWeapon.GetComponent<BoxCollider>();
+        m_secondaryWeaponCollider = m_secondaryWeapon.GetComponent<BoxCollider>();
 
         DisableCollision();
 
@@ -289,7 +305,7 @@ public class EnemyAI : MonoBehaviour
     {
         if (m_patrolRoute == null)
         {
-            Debug.Log("There is no patrol route attached to the AI. Please attach one.");
+            //Debug.Log("There is no patrol route attached to the AI. Please attach one.");
             SetAIState(AIState.Idle);
         }
 
@@ -530,8 +546,15 @@ public class EnemyAI : MonoBehaviour
                     transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
                 }
 
+                // Todo: Temporary change REMOVE ASAP
+                if (m_attackMode == AttackMode.Both)
+                {
+
+                }
+
                 // Attack hits
-                if (m_weaponCollider.enabled && m_weaponCollider.bounds.Intersects(m_playerCollider.bounds))
+                if (m_primaryWeaponCollider.enabled && m_primaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) ||
+                    m_secondaryWeaponCollider.enabled && m_secondaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds))
                 {
                     m_player.gameObject.GetComponent<CharacterDamageManager>().GetHurt(transform);
                     DisableCollision();
@@ -605,6 +628,8 @@ public class EnemyAI : MonoBehaviour
 
                 ResetAttackTimer();
 
+                m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
+
                 break;
             }
             // Death State
@@ -655,7 +680,6 @@ public class EnemyAI : MonoBehaviour
             // Pursue Player
             case CombatState.Pursuing:
             {
-                m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
                 m_navMeshAgent.autoBraking = true;
                 RandomiseStrafeRange();
                 StartRunAnim();
@@ -697,13 +721,12 @@ public class EnemyAI : MonoBehaviour
             // Attack player
             case CombatState.Attacking:
             {
-                StartAttackAnim();
+                Attack();
                 break;
             }
             // Move directly to a specified zone
             case CombatState.MovingToZone:
             {
-                m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
                 StartRunAnim();
                 break;
             }
@@ -926,12 +949,34 @@ public class EnemyAI : MonoBehaviour
 
     private void DisableCollision()
     {
-        m_weaponCollider.enabled = false;
+        m_primaryWeaponCollider.enabled = false;
+        m_secondaryWeaponCollider.enabled = false;
     }
 
     private void EnableCollision()
     {
-        m_weaponCollider.enabled = true;
+        switch (m_attackMode)
+        {
+            case AttackMode.Primary:
+            {
+                m_primaryWeaponCollider.enabled = true;
+
+                break;
+            }
+            case AttackMode.Secondary:
+            {
+                m_secondaryWeaponCollider.enabled = true;
+
+                break;
+            }
+            case AttackMode.Both:
+            {
+                m_primaryWeaponCollider.enabled = true;
+                m_secondaryWeaponCollider.enabled = true;
+
+                break;
+            }
+        }
     }
 
     public bool IsAttackCollidingWithPlayer()
@@ -941,10 +986,10 @@ public class EnemyAI : MonoBehaviour
         // If using this method for actual collision, needs a collider.enabled check
         // But for demonstrating the collision, this is not present currently
 
-        if (m_weaponCollider.bounds.Intersects(m_playerCollider.bounds) && m_weaponCollider.enabled)
+        if (m_primaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) && m_primaryWeaponCollider.enabled)
         {
             isColliding = true;
-            m_weaponCollider.enabled = false;
+            m_primaryWeaponCollider.enabled = false;
         }
 
         return isColliding;
@@ -1191,6 +1236,7 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    // Todo: Add check to only return closest ALIVE enemy
     private EnemyAI FindClosestEnemy()
     {
         EnemyAI closestEnemy = m_aiManager.GetEnemyList()[0];
@@ -1260,7 +1306,6 @@ public class EnemyAI : MonoBehaviour
 
     public void LookAtPlayerOnWake()
     {
-        // Todo: Maybe rework this, or just don't forget to reset if the AI gets re-used via pooling
         m_lookAtPlayerWhileWaking = true;
     }
 
@@ -1280,6 +1325,37 @@ public class EnemyAI : MonoBehaviour
             return ZoneType.None;
         }
     }
+
+    private void Attack()
+    {
+        int attackNum = Random.Range(0, m_attackNum);
+
+        attackNum = 2;
+
+        switch (attackNum)
+        {
+            case 0:
+            {
+                m_attackMode = AttackMode.Primary;
+                StartAttackAnim();
+                break;
+            }
+            case 1:
+            {
+                m_attackMode = AttackMode.Both;
+                m_navMeshAgent.speed = m_walkSpeed;
+                StartQuickAttackAnim();
+                break;
+            }
+            case 2:
+            {
+                m_attackMode = AttackMode.Secondary;
+                StartHeavyAttackAnim();
+                break;
+            }
+        }
+    }
+
     public AIState GetState()
     {
         return m_mainState;
@@ -1421,9 +1497,10 @@ public class EnemyAI : MonoBehaviour
     {
         string animTrigger = "QuickAttack";
 
-        m_navMeshAgent.isStopped = true;
+        m_navMeshAgent.isStopped = false;
+        m_navMeshAgent.stoppingDistance = 0.0f;
         m_animController.SetTrigger(animTrigger);
-        m_navMeshAgent.updateRotation = false;
+        m_navMeshAgent.updateRotation = true;
         m_lastUsedAnimTrigger = animTrigger;
     }
 
@@ -1512,6 +1589,9 @@ public class EnemyAI : MonoBehaviour
         SetCombatState(CombatState.BackingUp);
         ResetAttackTimer();
 
+        m_navMeshAgent.speed = m_runSpeed;
+        m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
+
         // Telling the AI manager that the attack is over and other AI can attack again
         // Very basic currently, and will be expanded upon in the future
         // Disabled for now since control of it is being handled by AI manager
@@ -1558,6 +1638,7 @@ public class EnemyAI : MonoBehaviour
 
             // Had to put this setter here to force path recalculation, otherwise AI would attack immediately.
             m_navMeshAgent.SetDestination(m_player.transform.position);
+            m_lookAtPlayerWhileWaking = false;
         }
         else
         {
