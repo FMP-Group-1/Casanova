@@ -261,9 +261,9 @@ GameObject:
   - component: {fileID: 1523426573427295264}
   - component: {fileID: 7398250728576852531}
   - component: {fileID: 5449469010737099159}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: GruntEnemyAI
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -402,6 +402,8 @@ MonoBehaviour:
   m_playerDetectionEnabled: 1
   m_viewRadius: 7.5
   m_viewAngle: 145
+  m_sleepToWakeAnimNum: 2
+  m_dodgeAnimNum: 2
   m_obstacleMask:
     serializedVersion: 2
     m_Bits: 8

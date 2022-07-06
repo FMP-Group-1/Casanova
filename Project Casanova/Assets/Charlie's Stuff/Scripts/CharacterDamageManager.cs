@@ -30,10 +30,18 @@ public class CharacterDamageManager : MonoBehaviour
     }
 
 
-    public void GetHurt(Transform othersTransform, float damage = 30f )
+    public void TakeDamage(Transform othersTransform, float damage = 30f )
     {
+
+
+        // if ( enemy )
+
+
         if( !m_invulnerable )
         {
+
+
+            //If Player
             m_playerController.DeactivateAllTheCanStuff();
             //rotate to face the thing, then animate 
 
@@ -56,6 +64,8 @@ public class CharacterDamageManager : MonoBehaviour
             m_invulnerable = true;
             StartCoroutine( ResetInvulnerable( m_invulnerableTime ) );
         }
+
+
 
 	}
 

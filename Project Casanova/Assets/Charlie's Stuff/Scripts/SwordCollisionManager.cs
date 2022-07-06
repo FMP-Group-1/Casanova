@@ -34,7 +34,10 @@ public class SwordCollisionManager : MonoBehaviour
             }
 
             //Then hurt them
-            enemy.TakeDamage( m_swordDamage );
+            if (enemy.GetState() != AIState.Dead )
+			{
+                enemy.TakeDamage( m_swordDamage );
+            }
         }
     }
 }
