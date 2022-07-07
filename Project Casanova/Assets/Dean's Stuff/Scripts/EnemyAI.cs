@@ -214,7 +214,6 @@ public class EnemyAI : MonoBehaviour
     [Tooltip("The layer mask for AI")]
     private LayerMask m_aiMask;
 
-
     //String to Hash stuff
     private int an_triggerNone = 0;
     private int an_walk;
@@ -236,16 +235,12 @@ public class EnemyAI : MonoBehaviour
     private int an_takeHit;
     private int an_weaken;
 
-
     //Health Manager Component
     private CharacterDamageManager m_healthManager;
 
-
-
-
     private void Awake()
     {
-        SetUpStringToHashes();
+        SetupStringToHashes();
 
         m_healthManager = GetComponent<CharacterDamageManager>();
 
@@ -265,7 +260,7 @@ public class EnemyAI : MonoBehaviour
 
         if (m_spawnAsleep)
         {
-            //So if sleepin, can't get hurt
+            // So if sleeping, can't get hurt
             m_healthManager.SetInvulnerable( true );
             SetAIState(AIState.Sleeping);
         }
@@ -585,12 +580,6 @@ public class EnemyAI : MonoBehaviour
                     transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
                 }
 
-                // Todo: Temporary change REMOVE ASAP
-                if (m_attackMode == AttackMode.Both)
-                {
-
-                }
-
                 // Attack hits
                 if (m_primaryWeaponCollider.enabled && m_primaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) ||
                     m_secondaryWeaponCollider.enabled && m_secondaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds))
@@ -793,6 +782,36 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    //********
+    // Function:SetupStringToHashes
+    // Author: Charlie Taylor
+    // Description: Sets up variables for string to int hashes used by the animation controller
+    // Parameters: None
+    // Returns: None
+    //********
+    private void SetupStringToHashes()
+    {
+        //an_triggerNone      = Animator.StringToHash( "None" );
+        an_walk = Animator.StringToHash("Walk");
+        an_walkBack = Animator.StringToHash("WalkBack");
+        an_strafeRight = Animator.StringToHash("StrafeRight");
+        an_strafeLeft = Animator.StringToHash("StrafeLeft");
+        an_run = Animator.StringToHash("Run");
+        an_idle = Animator.StringToHash("Idle");
+        an_combatIdle = Animator.StringToHash("CombatIdle");
+        an_attack = Animator.StringToHash("Attack");
+        an_quickAttack = Animator.StringToHash("QuickAttack");
+        an_heavyAttack = Animator.StringToHash("HeavyAttack");
+        an_dodge0 = Animator.StringToHash("Dodge0");
+        an_dodge1 = Animator.StringToHash("Dodge1");
+        an_sleepToWake0 = Animator.StringToHash("SleepToWake0");
+        an_sleepToWake1 = Animator.StringToHash("SleepToWake1");
+        an_sleep = Animator.StringToHash("Sleep");
+        an_death = Animator.StringToHash("Death");
+        an_takeHit = Animator.StringToHash("TakeHit");
+        an_weaken = Animator.StringToHash("Weaken");
+    }
+
     private void SetupAttackingType()
     {
         // If there's space for active attackers, become active
@@ -807,6 +826,36 @@ public class EnemyAI : MonoBehaviour
             m_aiManager.MakePassiveAttacker(this);
             m_currentAttackingType = AttackingType.Passive;
         }
+    }
+
+    private void SetupPatrolRoutes()
+    {
+        // Adding patrol points to a list that the ai can use to follow
+        if (m_patrolRoute != null)
+        {
+            for (int i = 0; i < m_patrolRoute.transform.childCount; i++)
+            {
+                m_patrolRoutePoints.Add(m_patrolRoute.transform.GetChild(i).gameObject.transform);
+            }
+        }
+
+        // Checking patrol route points is valid, then setting next patrol point to the second entry
+        if (m_patrolRoutePoints.Count >= 2)
+        {
+            m_nextPatrolPoint = m_patrolRoutePoints[1];
+            m_lastPointOnPatrol = m_nextPatrolPoint.position;
+        }
+    }
+
+    public void SetupZoneHandler( ref AttackZoneManager attackZoneManager )
+    {
+        EnemyAI thisEnemy = this;
+        m_zoneHandler.Init(ref thisEnemy, ref attackZoneManager);
+    }
+
+    public void StopNavMesh()
+    {
+        m_navMeshAgent.isStopped = true;
     }
 
     private void RadialRun()
@@ -860,6 +909,199 @@ public class EnemyAI : MonoBehaviour
             transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
         }
         //transform.LookAt(m_player.transform.position);
+    }
+
+    private void Attack()
+    {
+        int attackNum = Random.Range(0, m_attackNum);
+
+        attackNum = 2;
+
+        switch (attackNum)
+        {
+            case 0:
+            {
+                m_attackMode = AttackMode.Primary;
+                StartAttackAnim();
+                break;
+            }
+            case 1:
+            {
+                m_attackMode = AttackMode.Both;
+                m_navMeshAgent.speed = m_walkSpeed;
+                StartQuickAttackAnim();
+                break;
+            }
+            case 2:
+            {
+                m_attackMode = AttackMode.Secondary;
+                StartHeavyAttackAnim();
+                break;
+            }
+        }
+    }
+
+    private void EndAttack()
+    {
+        SetCombatState(CombatState.BackingUp);
+        ResetAttackTimer();
+
+        m_navMeshAgent.speed = m_runSpeed;
+        m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
+
+        // Telling the AI manager that the attack is over and other AI can attack again
+        // Very basic currently, and will be expanded upon in the future
+        // Disabled for now since control of it is being handled by AI manager
+        //m_aiManager.SetCanAttack(true);
+    }
+
+    private void ResetAttackTimer()
+    {
+        m_attackTimer = Random.Range(m_minAttackTime, m_maxAttackTime);
+        m_timeSinceLastAttack = 0.0f;
+    }
+
+    private void RecoverFromHit()
+    {
+        SetCombatState(CombatState.Pursuing);
+        m_isTakingDamage = false;
+    }
+
+    /*
+public void TakeDamage( float damageToTake )
+{
+    if (m_mainState != AIState.Dead)
+    {
+        m_health -= damageToTake;
+
+        if (m_mainState != AIState.Sleeping)
+        {
+            ResetLastUsedAnimTrigger();
+            //PlayDamageAnim();
+        }
+
+        if (m_health <= 0.0f)
+        {
+            Die();
+        }
+    }
+}*/
+
+    /*
+    private void Die()
+    {
+        m_health = 0.0f;
+        SetAIState(AIState.Dead);
+        m_aiManager.UnregisterAttacker(this);
+    }
+    */
+
+    public void UnregisterAttacker()
+    {
+        m_aiManager.UnregisterAttacker(this);
+    }
+
+    public void ChangeStateFromWake()
+    {
+        if (m_playerDetectionEnabled)
+        {
+            SetAIState(AIState.InCombat);
+
+            // Had to put this setter here to force path recalculation, otherwise AI would attack immediately.
+            m_navMeshAgent.SetDestination(m_player.transform.position);
+            m_lookAtPlayerWhileWaking = false;
+        }
+        else
+        {
+            SetAIState(AIState.Patrolling);
+        }
+    }
+
+    public void ResetLastUsedAnimTrigger()
+    {
+        if (m_lastUsedAnimTrigger != an_triggerNone)
+        {
+            m_animController.ResetTrigger(m_lastUsedAnimTrigger);
+        }
+    }
+
+    private void ResetAllAnimTriggers()
+    {
+        m_animController.ResetTrigger(an_walk);
+        m_animController.ResetTrigger(an_idle);
+        m_animController.ResetTrigger(an_attack);
+        m_animController.ResetTrigger(an_quickAttack);
+        m_animController.ResetTrigger(an_heavyAttack);
+        m_animController.ResetTrigger(an_run);
+        m_animController.ResetTrigger(an_sleepToWake0);
+        m_animController.ResetTrigger(an_sleepToWake1);
+        m_animController.ResetTrigger(an_sleep);
+        m_animController.ResetTrigger(an_takeHit);
+        m_animController.ResetTrigger(an_strafeLeft);
+        m_animController.ResetTrigger(an_strafeRight);
+        m_animController.ResetTrigger(an_combatIdle);
+        m_animController.ResetTrigger(an_walkBack);
+        m_animController.ResetTrigger(an_death);
+        m_animController.ResetTrigger(an_weaken);
+        m_animController.ResetTrigger(an_dodge0);
+        m_animController.ResetTrigger(an_dodge1);
+    }
+
+    // Wake up differently based on wake up type, i.e. hit by player vs. detected player
+    public void WakeUpAI( WakeTrigger wakeTrigger )
+    {
+        switch (wakeTrigger)
+        {
+            case WakeTrigger.Attack:
+            {
+                SetAIState(AIState.Waking);
+                StartSleepToWakeAnim();
+                break;
+            }
+            case WakeTrigger.Standard:
+            {
+                SetAIState(AIState.Waking);
+                StartSleepToWakeAnim();
+                break;
+            }
+        }
+    }
+
+    public void LookAtPlayerOnWake()
+    {
+        m_lookAtPlayerWhileWaking = true;
+    }
+
+    public void DisableCollision()
+    {
+        m_primaryWeaponCollider.enabled = false;
+        m_secondaryWeaponCollider.enabled = false;
+    }
+
+    private void EnableCollision()
+    {
+        switch (m_attackMode)
+        {
+            case AttackMode.Primary:
+            {
+                m_primaryWeaponCollider.enabled = true;
+
+                break;
+            }
+            case AttackMode.Secondary:
+            {
+                m_secondaryWeaponCollider.enabled = true;
+
+                break;
+            }
+            case AttackMode.Both:
+            {
+                m_primaryWeaponCollider.enabled = true;
+                m_secondaryWeaponCollider.enabled = true;
+
+                break;
+            }
+        }
     }
 
     private void AiToPlayerRangeCheck()
@@ -986,38 +1228,6 @@ public class EnemyAI : MonoBehaviour
         return DistanceSqrCheck(m_player, m_strafeDist);
     }
 
-    public void DisableCollision()
-    {
-        m_primaryWeaponCollider.enabled = false;
-        m_secondaryWeaponCollider.enabled = false;
-    }
-
-    private void EnableCollision()
-    {
-        switch (m_attackMode)
-        {
-            case AttackMode.Primary:
-            {
-                m_primaryWeaponCollider.enabled = true;
-
-                break;
-            }
-            case AttackMode.Secondary:
-            {
-                m_secondaryWeaponCollider.enabled = true;
-
-                break;
-            }
-            case AttackMode.Both:
-            {
-                m_primaryWeaponCollider.enabled = true;
-                m_secondaryWeaponCollider.enabled = true;
-
-                break;
-            }
-        }
-    }
-
     public bool IsAttackCollidingWithPlayer()
     {
         bool isColliding = false;
@@ -1032,84 +1242,6 @@ public class EnemyAI : MonoBehaviour
         }
 
         return isColliding;
-    }
-
-    // DirFromAngle() and IsPlayerVisible() functions use logic from https://www.youtube.com/watch?v=rQG9aUWarwE
-    public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal )
-    {
-        if (!angleIsGlobal)
-        {
-            angleInDegrees += transform.eulerAngles.y;
-        }
-
-        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
-    }
-
-    // Overloaded DirFromAngle to allow getting the direction from a specified object's position
-    public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject dirFromObject )
-    {
-        if (!angleIsGlobal)
-        {
-            angleInDegrees += dirFromObject.transform.eulerAngles.y;
-        }
-
-        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
-    }
-
-    public bool IsPlayerVisible()
-    {
-        bool playerIsVisible = false;
-
-        // If in combat, just return true since no point redoing detection
-        // Will need changing if de-aggro functionality is implemented
-        if (m_mainState == AIState.InCombat)
-        {
-            return true;
-        }
-
-        if (m_playerDetectionEnabled)
-        {
-            // Checking if player is in range
-            if (DistanceSqrCheck(m_player, m_viewRadius))
-            {
-                // Once player is in range, getting the direction to the player and checking if it's within the AI's FOV
-                Vector3 dirToPlayer = (m_player.transform.position - transform.position).normalized;
-                if (Vector3.Angle(transform.forward, dirToPlayer) < m_viewAngle * 0.5f)
-                {
-                    // Once player is in range and in FOV, using Raycast to check if any obstacles are in the way
-                    float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
-                    if (!Physics.Raycast(transform.position, dirToPlayer, distanceToPlayer, m_obstacleMask))
-                    {
-                        playerIsVisible = true;
-                    }
-                }
-            }
-        }
-
-        return playerIsVisible;
-    }
-
-    // Function for optimally checking a target is within a given distance
-    private bool DistanceSqrCheck(GameObject targetToCheck, float distanceToCheck)
-    {
-        bool isInRange = false;
-
-        // Getting the distance between this and the target
-        Vector3 distance = transform.position - targetToCheck.transform.position;
-
-        // Checking if sqrMagnitude is less than the distance squared
-        if (distance.sqrMagnitude <= distanceToCheck * distanceToCheck)
-        {
-            isInRange = true;
-        }
-
-        return isInRange;
-    }
-
-    // Function for returning distance in float between target
-    private float DistanceSqrValue( GameObject targetToCheck )
-    {
-        return (transform.position - targetToCheck.transform.position).sqrMagnitude;
     }
 
     private void TimedZoneCheck()
@@ -1275,31 +1407,6 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // Todo: Add check to only return closest ALIVE enemy
-    private EnemyAI FindClosestEnemy()
-    {
-        EnemyAI closestEnemy = m_aiManager.GetEnemyList()[0];
-
-        if (closestEnemy == this)
-		{
-			closestEnemy = m_aiManager.GetEnemyList()[1];
-		}
-		
-        foreach (EnemyAI enemy in m_aiManager.GetEnemyList())
-        {
-            if (enemy != this && enemy.gameObject.activeSelf && enemy.GetState() == AIState.InCombat)
-            {
-                if (DistanceSqrValue(enemy.gameObject) < DistanceSqrValue(closestEnemy.gameObject))
-                {
-                    closestEnemy = enemy;                    
-                }
-            }
-        }
-
-        //Debug.Log("Closest AI to " + name + " is " + DistanceSqrValue(closestEnemy.gameObject));
-        return closestEnemy;
-    }
-
     // Checking if zone is available to occupy whilst radial running
     private void RadialZoneCheck()
     {
@@ -1323,150 +1430,113 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // Wake up differently based on wake up type, i.e. hit by player vs. detected player
-    public void WakeUpAI( WakeTrigger wakeTrigger )
+    // Todo: Add check to only return closest ALIVE enemy
+    private EnemyAI FindClosestEnemy()
     {
-        switch (wakeTrigger)
+        EnemyAI closestEnemy = m_aiManager.GetEnemyList()[0];
+
+        if (closestEnemy == this)
         {
-            case WakeTrigger.Attack:
-            {
-                SetAIState(AIState.Waking);
-                StartSleepToWakeAnim();
-                break;
-            }
-            case WakeTrigger.Standard:
-            {
-                SetAIState(AIState.Waking);
-                StartSleepToWakeAnim();
-                break;
-            }
+            closestEnemy = m_aiManager.GetEnemyList()[1];
         }
-    }
 
-    public void LookAtPlayerOnWake()
-    {
-        m_lookAtPlayerWhileWaking = true;
-    }
-
-    public ZoneType GetZoneTypeFromAttackType()
-    {
-        if(m_currentAttackingType == AttackingType.Passive)
+        foreach (EnemyAI enemy in m_aiManager.GetEnemyList())
         {
-            return ZoneType.Passive;
-        }
-        else if (m_currentAttackingType == AttackingType.Active)
-        {
-            return ZoneType.Active;
-        }
-        else
-        {
-            //Debug.Log("Error: Unassigned AI trying to find ZoneType");
-            return ZoneType.None;
-        }
-    }
-
-    private void Attack()
-    {
-        int attackNum = Random.Range(0, m_attackNum);
-
-        attackNum = 2;
-
-        switch (attackNum)
-        {
-            case 0:
+            if (enemy != this && enemy.gameObject.activeSelf && enemy.GetState() == AIState.InCombat)
             {
-                m_attackMode = AttackMode.Primary;
-                StartAttackAnim();
-                break;
-            }
-            case 1:
-            {
-                m_attackMode = AttackMode.Both;
-                m_navMeshAgent.speed = m_walkSpeed;
-                StartQuickAttackAnim();
-                break;
-            }
-            case 2:
-            {
-                m_attackMode = AttackMode.Secondary;
-                StartHeavyAttackAnim();
-                break;
+                if (DistanceSqrValue(enemy.gameObject) < DistanceSqrValue(closestEnemy.gameObject))
+                {
+                    closestEnemy = enemy;
+                }
             }
         }
+
+        //Debug.Log("Closest AI to " + name + " is " + DistanceSqrValue(closestEnemy.gameObject));
+        return closestEnemy;
     }
 
-    public AIState GetState()
+    // DirFromAngle() and IsPlayerVisible() functions use logic from https://www.youtube.com/watch?v=rQG9aUWarwE
+    public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal )
     {
-        return m_mainState;
+        if (!angleIsGlobal)
+        {
+            angleInDegrees += transform.eulerAngles.y;
+        }
+
+        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
 
-    public CombatState GetCombatState()
+    // Overloaded DirFromAngle to allow getting the direction from a specified object's position
+    public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject dirFromObject )
     {
-        return m_combatState;
+        if (!angleIsGlobal)
+        {
+            angleInDegrees += dirFromObject.transform.eulerAngles.y;
+        }
+
+        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
 
-    public PatrolState GetPatrolState()
+    public bool IsPlayerVisible()
     {
-        return m_patrolState;
+        bool playerIsVisible = false;
+
+        // If in combat, just return true since no point redoing detection
+        // Will need changing if de-aggro functionality is implemented
+        if (m_mainState == AIState.InCombat)
+        {
+            return true;
+        }
+
+        if (m_playerDetectionEnabled)
+        {
+            // Checking if player is in range
+            if (DistanceSqrCheck(m_player, m_viewRadius))
+            {
+                // Once player is in range, getting the direction to the player and checking if it's within the AI's FOV
+                Vector3 dirToPlayer = (m_player.transform.position - transform.position).normalized;
+                if (Vector3.Angle(transform.forward, dirToPlayer) < m_viewAngle * 0.5f)
+                {
+                    // Once player is in range and in FOV, using Raycast to check if any obstacles are in the way
+                    float distanceToPlayer = Vector3.Distance(transform.position, m_player.transform.position);
+                    if (!Physics.Raycast(transform.position, dirToPlayer, distanceToPlayer, m_obstacleMask))
+                    {
+                        playerIsVisible = true;
+                    }
+                }
+            }
+        }
+
+        return playerIsVisible;
     }
 
-    public float GetViewRadius()
+    // Function for optimally checking a target is within a given distance
+    private bool DistanceSqrCheck( GameObject targetToCheck, float distanceToCheck )
     {
-        return m_viewRadius;
+        bool isInRange = false;
+
+        // Getting the distance between this and the target
+        Vector3 distance = transform.position - targetToCheck.transform.position;
+
+        // Checking if sqrMagnitude is less than the distance squared
+        if (distance.sqrMagnitude <= distanceToCheck * distanceToCheck)
+        {
+            isInRange = true;
+        }
+
+        return isInRange;
     }
 
-    public float GetViewAngle()
+    // Function for returning distance in float between target
+    private float DistanceSqrValue( GameObject targetToCheck )
     {
-        return m_viewAngle;
-    }
-    /*
-    public float GetHealth()
-    {
-        return m_health;
-    }
-    */
-    public float GetStrafeDist()
-    {
-        return m_strafeDist;
-    }
-
-    public float GetAIAngleCheck()
-    {
-        return m_checkForAIAngles;
-    }
-
-    public float GetAgentHeight()
-    {
-        return m_navMeshAgent.height;
-    }
-
-    private void SetUpStringToHashes()
-	{
-        //an_triggerNone      = Animator.StringToHash( "None" );
-        an_walk             = Animator.StringToHash( "Walk" );
-        an_walkBack         = Animator.StringToHash( "WalkBack" );
-        an_strafeRight      = Animator.StringToHash( "StrafeRight" );
-        an_strafeLeft       = Animator.StringToHash( "StrafeLeft" );
-        an_run              = Animator.StringToHash( "Run" );
-        an_idle             = Animator.StringToHash( "Idle" );
-        an_combatIdle       = Animator.StringToHash( "CombatIdle" );
-        an_attack           = Animator.StringToHash( "Attack" );
-        an_quickAttack      = Animator.StringToHash( "QuickAttack" );
-        an_heavyAttack      = Animator.StringToHash( "HeavyAttack" );
-        an_dodge0           = Animator.StringToHash( "Dodge0" );
-        an_dodge1           = Animator.StringToHash( "Dodge1" );
-        an_sleepToWake0     = Animator.StringToHash( "SleepToWake0" );
-        an_sleepToWake1     = Animator.StringToHash( "SleepToWake1" );
-        an_sleep            = Animator.StringToHash( "Sleep" );
-        an_death            = Animator.StringToHash( "Death" );
-        an_takeHit          = Animator.StringToHash( "TakeHit" );
-        an_weaken           = Animator.StringToHash( "Weaken" );
+        return (transform.position - targetToCheck.transform.position).sqrMagnitude;
     }
 
     private void StartWalkAnim()
     {
         m_navMeshAgent.isStopped = false;
-        m_animController.SetTrigger( an_walk );
+        m_animController.SetTrigger(an_walk);
         m_navMeshAgent.speed = m_walkSpeed;
         m_navMeshAgent.updateRotation = true;
         m_lastUsedAnimTrigger = an_walk;
@@ -1486,14 +1556,14 @@ public class EnemyAI : MonoBehaviour
             {
                 animTrigger = an_strafeLeft;
 
-                m_animController.SetTrigger( animTrigger );
+                m_animController.SetTrigger(animTrigger);
                 break;
             }
             case StrafeDir.Right:
             {
                 animTrigger = an_strafeRight;
 
-                m_animController.SetTrigger( animTrigger );
+                m_animController.SetTrigger(animTrigger);
                 break;
             }
         }
@@ -1571,10 +1641,10 @@ public class EnemyAI : MonoBehaviour
         */
 
 
-        int animNum = Random.Range( 0, m_dodgeAnimNum );
+        int animNum = Random.Range(0, m_dodgeAnimNum);
         int animTrigger;
 
-        switch ( animNum )
+        switch (animNum)
         {
             default:
                 animTrigger = an_dodge0;
@@ -1586,7 +1656,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger( animTrigger );
+        m_animController.SetTrigger(animTrigger);
         m_navMeshAgent.updateRotation = false;
         m_lastUsedAnimTrigger = animTrigger;
     }
@@ -1607,8 +1677,8 @@ public class EnemyAI : MonoBehaviour
         int animNum = Random.Range(0, m_sleepToWakeAnimNum);
         int animTrigger;
 
-        switch ( animNum )
-		{
+        switch (animNum)
+        {
 
             default:
                 animTrigger = an_sleepToWake0;
@@ -1619,7 +1689,7 @@ public class EnemyAI : MonoBehaviour
                 animTrigger = an_sleepToWake1;
                 break;
 
-		}
+        }
 
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(animTrigger);
@@ -1642,8 +1712,9 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.updateRotation = false;
         m_lastUsedAnimTrigger = an_death;
     }
+
     /*
-    public void PlayDamageAnim()
+    public void StartDamageAnim()
     {
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(animTrigger);
@@ -1651,11 +1722,6 @@ public class EnemyAI : MonoBehaviour
         m_lastUsedAnimTrigger = animTrigger;
     }
     */
-    private void RecoverFromHit()
-    {
-        SetCombatState(CombatState.Pursuing);
-        m_isTakingDamage = false;
-    }
 
     // Can possibly remove these pause and resume functions, but leave for now
     private void PauseAnimation()
@@ -1669,146 +1735,81 @@ public class EnemyAI : MonoBehaviour
         m_animController.speed = m_prevAnimSpeed;
     }
 
-    private void EndAttack()
+    public ZoneType GetZoneTypeFromAttackType()
     {
-        SetCombatState(CombatState.BackingUp);
-        ResetAttackTimer();
-
-        m_navMeshAgent.speed = m_runSpeed;
-        m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
-
-        // Telling the AI manager that the attack is over and other AI can attack again
-        // Very basic currently, and will be expanded upon in the future
-        // Disabled for now since control of it is being handled by AI manager
-        //m_aiManager.SetCanAttack(true);
+        if(m_currentAttackingType == AttackingType.Passive)
+        {
+            return ZoneType.Passive;
+        }
+        else if (m_currentAttackingType == AttackingType.Active)
+        {
+            return ZoneType.Active;
+        }
+        else
+        {
+            //Debug.Log("Error: Unassigned AI trying to find ZoneType");
+            return ZoneType.None;
+        }
     }
 
-    private void ResetAttackTimer()
+    public AIState GetState()
     {
-        m_attackTimer = Random.Range(m_minAttackTime, m_maxAttackTime);
-        m_timeSinceLastAttack = 0.0f;
+        return m_mainState;
     }
 
+    public CombatState GetCombatState()
+    {
+        return m_combatState;
+    }
+
+    public PatrolState GetPatrolState()
+    {
+        return m_patrolState;
+    }
+
+    public float GetViewRadius()
+    {
+        return m_viewRadius;
+    }
+
+    public float GetViewAngle()
+    {
+        return m_viewAngle;
+    }
+    /*
+    public float GetHealth()
+    {
+        return m_health;
+    }
+    */
+    public float GetStrafeDist()
+    {
+        return m_strafeDist;
+    }
+
+    public float GetAIAngleCheck()
+    {
+        return m_checkForAIAngles;
+    }
+
+    public float GetAgentHeight()
+    {
+        return m_navMeshAgent.height;
+    }
 
     public CharacterDamageManager GetHealthManager()
 	{
         return m_healthManager;
 	}
 
-    /*
-    public void TakeDamage( float damageToTake )
-    {
-        if (m_mainState != AIState.Dead)
-        {
-            m_health -= damageToTake;
-
-            if (m_mainState != AIState.Sleeping)
-            {
-                ResetLastUsedAnimTrigger();
-                //PlayDamageAnim();
-            }
-            
-            if (m_health <= 0.0f)
-            {
-                Die();
-            }
-        }
-    }*/
-
-    /*
-    private void Die()
-    {
-        m_health = 0.0f;
-        SetAIState(AIState.Dead);
-        m_aiManager.UnregisterAttacker(this);
-    }
-    */
-
-    public void UnregisterAttacker()
-	{
-        m_aiManager.UnregisterAttacker( this );
-    }
-
-    public void ChangeStateFromWake()
-    {
-        if (m_playerDetectionEnabled)
-        {
-            SetAIState(AIState.InCombat);
-
-            // Had to put this setter here to force path recalculation, otherwise AI would attack immediately.
-            m_navMeshAgent.SetDestination(m_player.transform.position);
-            m_lookAtPlayerWhileWaking = false;
-        }
-        else
-        {
-            SetAIState(AIState.Patrolling);
-        }
-    }
-
-    public void ResetLastUsedAnimTrigger()
-    {
-        if (m_lastUsedAnimTrigger != an_triggerNone)
-        {
-            m_animController.ResetTrigger(m_lastUsedAnimTrigger);
-        }
-    }
-
     public void SetLastUsedAnimTrigger( int trigger )
 	{
         m_lastUsedAnimTrigger = trigger;
-
-    }
-
-    private void ResetAllAnimTriggers()
-    {
-        m_animController.ResetTrigger( an_walk);
-        m_animController.ResetTrigger( an_idle );
-        m_animController.ResetTrigger( an_attack );
-        m_animController.ResetTrigger( an_quickAttack );
-        m_animController.ResetTrigger( an_heavyAttack );
-        m_animController.ResetTrigger( an_run );
-        m_animController.ResetTrigger( an_sleepToWake0 );
-        m_animController.ResetTrigger( an_sleepToWake1 );
-        m_animController.ResetTrigger( an_sleep );
-        m_animController.ResetTrigger( an_takeHit );
-        m_animController.ResetTrigger( an_strafeLeft );
-        m_animController.ResetTrigger( an_strafeRight );
-        m_animController.ResetTrigger( an_combatIdle );
-        m_animController.ResetTrigger( an_walkBack );
-        m_animController.ResetTrigger( an_death );
-        m_animController.ResetTrigger( an_weaken );
-        m_animController.ResetTrigger( an_dodge0 );
-        m_animController.ResetTrigger( an_dodge1 );
-    }
-
-    private void SetupPatrolRoutes()
-    {
-        // Adding patrol points to a list that the ai can use to follow
-        if (m_patrolRoute != null)
-        {
-            for (int i = 0; i < m_patrolRoute.transform.childCount; i++)
-            {
-                m_patrolRoutePoints.Add(m_patrolRoute.transform.GetChild(i).gameObject.transform);
-            }
-        }
-
-        // Checking patrol route points is valid, then setting next patrol point to the second entry
-        if (m_patrolRoutePoints.Count >= 2)
-        {
-            m_nextPatrolPoint = m_patrolRoutePoints[1];
-            m_lastPointOnPatrol = m_nextPatrolPoint.position;
-        }
     }
 
     public void SetAIManagerRef( AIManager aiManagerRef )
     {
         m_aiManager = aiManagerRef;
-    }
-
-    public void SetupZoneHandler( ref AttackZoneManager attackZoneManager )
-    {
-        EnemyAI thisEnemy = this;
-        m_zoneHandler.Init(ref thisEnemy, ref attackZoneManager);
     }
 
     public AttackingType GetAttackingType()
@@ -1840,9 +1841,4 @@ public class EnemyAI : MonoBehaviour
     {
         return m_zoneHandler;
     }
-
-    public void StopNavMesh()
-	{
-        m_navMeshAgent.isStopped = true;
-	}
 }
