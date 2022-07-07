@@ -261,6 +261,7 @@ GameObject:
   - component: {fileID: 1523426573427295264}
   - component: {fileID: 7398250728576852531}
   - component: {fileID: 5449469010737099159}
+  - component: {fileID: 6976536049151746346}
   m_Layer: 6
   m_Name: GruntEnemyAI
   m_TagString: Enemy
@@ -395,8 +396,6 @@ MonoBehaviour:
   m_wakeTriggerObj: {fileID: 0}
   m_patrolRoute: {fileID: 0}
   m_patrolStoppingDistance: 1.5
-  m_head: {fileID: 4566624926928919154}
-  m_health: 100
   m_playerStoppingDistance: 1.75
   m_minDelayBeforeStrafe: 6
   m_maxDelayBeforeStrafe: 10
@@ -457,6 +456,21 @@ CapsuleCollider:
   m_Height: 2.0682783
   m_Direction: 1
   m_Center: {x: 0, y: 0.53413916, z: 0}
+--- !u!114 &6976536049151746346
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1896295725392823049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 85e97a220ea4fc94cb414f2f05e31971, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_health: 100
+  m_invulnerableTime: 1
+  m_characterType: 0
 --- !u!1 &1942089987557442262
 GameObject:
   m_ObjectHideFlags: 0

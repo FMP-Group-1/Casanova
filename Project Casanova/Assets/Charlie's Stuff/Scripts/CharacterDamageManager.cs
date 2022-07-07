@@ -5,7 +5,7 @@ using UnityEngine;
 public class CharacterDamageManager : MonoBehaviour
 {
     [SerializeField]
-    private float m_health = 10;
+    private float m_health = 100.0f;
     private bool m_invulnerable = false;
     [SerializeField]
     private float m_invulnerableTime = 1f;

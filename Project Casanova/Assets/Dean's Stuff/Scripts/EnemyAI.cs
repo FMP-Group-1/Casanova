@@ -1545,12 +1545,10 @@ public class EnemyAI : MonoBehaviour
 
     private void StartQuickAttackAnim()
     {
-        string animTrigger = "QuickAttack";
-
         m_navMeshAgent.isStopped = false;
-        m_animController.SetTrigger(animTrigger);
+        m_animController.SetTrigger(an_quickAttack);
         m_navMeshAgent.updateRotation = false;
-        m_lastUsedAnimTrigger = animTrigger;
+        m_lastUsedAnimTrigger = an_quickAttack;
     }
 
     private void StartHeavyAttackAnim()
