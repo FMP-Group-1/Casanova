@@ -112,7 +112,7 @@ public class CharacterDamageManager : MonoBehaviour
 
         if ( m_health <= 0.0f )
         {
-s            Die();
+            Die();
         }
 
 
