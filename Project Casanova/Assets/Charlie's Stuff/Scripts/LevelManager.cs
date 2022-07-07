@@ -15,7 +15,7 @@ public class LevelManager : MonoBehaviour
     /**************************************************************************************
     * Type: Function
     * 
-    * Name: Start
+    * Name: Awake
     * Parameters: n/a
     * Return: n/a
     *
@@ -26,8 +26,10 @@ public class LevelManager : MonoBehaviour
     void Start()
     {
         //Hide Mouse and lock to window
+      
+        Cursor.lockState = CursorLockMode.None;
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        /* Cursor.visible = true;*/
     }
 
     /**************************************************************************************

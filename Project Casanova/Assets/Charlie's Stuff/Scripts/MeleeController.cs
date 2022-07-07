@@ -194,6 +194,8 @@ public class MeleeController : MonoBehaviour
     {
         //Set collider sweeper on
         m_colliderSweeper.SetActive( true );
+        //You can dodge when the collisions are happening, as then when dodging it will turn off the collider.
+        m_playerController.SetDodge( true );
 
     }
 
@@ -247,6 +249,9 @@ public class MeleeController : MonoBehaviour
     **************************************************************************************/
     private void AttackBegin()
 	{
+        //Prevent dodging so it can't blend and leave the collider on
+        m_playerController.SetDodge( false );
+
         //Current Position value
         Vector3 startPosition = transform.position;
 

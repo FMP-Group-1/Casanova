@@ -120,9 +120,9 @@ public class EnemyAI : MonoBehaviour
 
     // Combat Relevant Variables
     [Header("Combat Values")]
-    [SerializeField]
-    [Tooltip("The total health of the AI")]
-    private float m_health = 100.0f;
+    //[SerializeField]
+    //[Tooltip("The total health of the AI")]
+    //private float m_health = 100.0f;
     [SerializeField]
     [Tooltip("The distance from the player that the AI will stop")]
     private float m_playerStoppingDistance = 1.75f;
@@ -205,7 +205,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     [Tooltip("Total number of dodge animations")]
     private int m_dodgeAnimNum = 2;
-    private string m_lastUsedAnimTrigger = "None";
+    private int m_lastUsedAnimTrigger;
 
     [SerializeField]
     [Tooltip("The layer mask for obstacles")]
@@ -214,8 +214,41 @@ public class EnemyAI : MonoBehaviour
     [Tooltip("The layer mask for AI")]
     private LayerMask m_aiMask;
 
+
+    //String to Hash stuff
+    private int an_triggerNone = 0;
+    private int an_walk;
+    private int an_walkBack;
+    private int an_strafeRight;
+    private int an_strafeLeft;
+    private int an_run;
+    private int an_idle;
+    private int an_combatIdle;
+    private int an_attack;
+    private int an_quickAttack;
+    private int an_heavyAttack;
+    private int an_dodge0;
+    private int an_dodge1;
+    private int an_sleepToWake0;
+    private int an_sleepToWake1;
+    private int an_sleep;
+    private int an_death;
+    private int an_takeHit;
+    private int an_weaken;
+
+
+    //Health Manager Component
+    private CharacterDamageManager m_healthManager;
+
+
+
+
     private void Awake()
     {
+        SetUpStringToHashes();
+
+        m_healthManager = GetComponent<CharacterDamageManager>();
+
         m_navMeshAgent = GetComponent<NavMeshAgent>();
         m_animController = GetComponent<Animator>();
 
@@ -232,6 +265,8 @@ public class EnemyAI : MonoBehaviour
 
         if (m_spawnAsleep)
         {
+            //So if sleepin, can't get hurt
+            m_healthManager.SetInvulnerable( true );
             SetAIState(AIState.Sleeping);
         }
 
@@ -241,6 +276,9 @@ public class EnemyAI : MonoBehaviour
         }
 
         SetAIState(m_mainState);
+
+
+        m_lastUsedAnimTrigger = an_triggerNone;
     }
 
     private void Update()
@@ -258,6 +296,7 @@ public class EnemyAI : MonoBehaviour
             }
             case AIState.Sleeping:
             {
+
                 // Check if player is in the wake trigger zone to wake up
                 WakeTriggerCheck();
                 break;
@@ -556,7 +595,7 @@ public class EnemyAI : MonoBehaviour
                 if (m_primaryWeaponCollider.enabled && m_primaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) ||
                     m_secondaryWeaponCollider.enabled && m_secondaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds))
                 {
-                    m_player.gameObject.GetComponent<CharacterDamageManager>().GetHurt(transform);
+                    m_player.gameObject.GetComponent<CharacterDamageManager>().TakeDamage(transform);
                     DisableCollision();
                 }
                 //transform.LookAt(m_player.transform.position);
@@ -947,7 +986,7 @@ public class EnemyAI : MonoBehaviour
         return DistanceSqrCheck(m_player, m_strafeDist);
     }
 
-    private void DisableCollision()
+    public void DisableCollision()
     {
         m_primaryWeaponCollider.enabled = false;
         m_secondaryWeaponCollider.enabled = false;
@@ -1380,12 +1419,12 @@ public class EnemyAI : MonoBehaviour
     {
         return m_viewAngle;
     }
-
+    /*
     public float GetHealth()
     {
         return m_health;
     }
-
+    */
     public float GetStrafeDist()
     {
         return m_strafeDist;
@@ -1401,20 +1440,41 @@ public class EnemyAI : MonoBehaviour
         return m_navMeshAgent.height;
     }
 
+    private void SetUpStringToHashes()
+	{
+        //an_triggerNone      = Animator.StringToHash( "None" );
+        an_walk             = Animator.StringToHash( "Walk" );
+        an_walkBack         = Animator.StringToHash( "WalkBack" );
+        an_strafeRight      = Animator.StringToHash( "StrafeRight" );
+        an_strafeLeft       = Animator.StringToHash( "StrafeLeft" );
+        an_run              = Animator.StringToHash( "Run" );
+        an_idle             = Animator.StringToHash( "Idle" );
+        an_combatIdle       = Animator.StringToHash( "CombatIdle" );
+        an_attack           = Animator.StringToHash( "Attack" );
+        an_quickAttack      = Animator.StringToHash( "QuickAttack" );
+        an_heavyAttack      = Animator.StringToHash( "HeavyAttack" );
+        an_dodge0           = Animator.StringToHash( "Dodge0" );
+        an_dodge1           = Animator.StringToHash( "Dodge1" );
+        an_sleepToWake0     = Animator.StringToHash( "SleepToWake0" );
+        an_sleepToWake1     = Animator.StringToHash( "SleepToWake1" );
+        an_sleep            = Animator.StringToHash( "Sleep" );
+        an_death            = Animator.StringToHash( "Death" );
+        an_takeHit          = Animator.StringToHash( "TakeHit" );
+        an_weaken           = Animator.StringToHash( "Weaken" );
+    }
+
     private void StartWalkAnim()
     {
-        string animTrigger = "Walk";
-
         m_navMeshAgent.isStopped = false;
-        m_animController.SetTrigger(animTrigger);
+        m_animController.SetTrigger( an_walk );
         m_navMeshAgent.speed = m_walkSpeed;
         m_navMeshAgent.updateRotation = true;
-        m_lastUsedAnimTrigger = animTrigger;
+        m_lastUsedAnimTrigger = an_walk;
     }
 
     private void StartStrafeAnim( StrafeDir dirToStrafe )
     {
-        string animTrigger = "None";
+        int animTrigger = an_triggerNone;
 
         m_navMeshAgent.isStopped = false;
         m_navMeshAgent.speed = m_strafeSpeed;
@@ -1424,16 +1484,16 @@ public class EnemyAI : MonoBehaviour
         {
             case StrafeDir.Left:
             {
-                animTrigger = "StrafeLeft";
+                animTrigger = an_strafeLeft;
 
-                m_animController.SetTrigger("StrafeLeft");
+                m_animController.SetTrigger( animTrigger );
                 break;
             }
             case StrafeDir.Right:
             {
-                animTrigger = "StrafeRight";
+                animTrigger = an_strafeRight;
 
-                m_animController.SetTrigger("StrafeRight");
+                m_animController.SetTrigger( animTrigger );
                 break;
             }
         }
@@ -1443,54 +1503,44 @@ public class EnemyAI : MonoBehaviour
 
     private void StartWalkBackAnim()
     {
-        string animTrigger = "WalkBack";
-
         m_navMeshAgent.isStopped = false;
-        m_animController.SetTrigger(animTrigger);
+        m_animController.SetTrigger(an_walkBack);
         m_navMeshAgent.speed = m_walkSpeed;
         m_navMeshAgent.updateRotation = false;
-        m_lastUsedAnimTrigger = animTrigger;
+        m_lastUsedAnimTrigger = an_walkBack;
     }
 
     private void StartRunAnim()
     {
-        string animTrigger = "Run";
-
         m_navMeshAgent.isStopped = false;
-        m_animController.SetTrigger(animTrigger);
+        m_animController.SetTrigger(an_run);
         m_navMeshAgent.speed = m_runSpeed;
         m_navMeshAgent.updateRotation = true;
-        m_lastUsedAnimTrigger = animTrigger;
+        m_lastUsedAnimTrigger = an_run;
     }
 
     private void StartIdleAnim()
     {
-        string animTrigger = "Idle";
-
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(animTrigger);
+        m_animController.SetTrigger(an_idle);
         m_navMeshAgent.updateRotation = true;
-        m_lastUsedAnimTrigger = animTrigger;
+        m_lastUsedAnimTrigger = an_idle;
     }
 
     private void StartCombatIdleAnim()
     {
-        string animTrigger = "CombatIdle";
-
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(animTrigger);
+        m_animController.SetTrigger(an_combatIdle);
         m_navMeshAgent.updateRotation = false;
-        m_lastUsedAnimTrigger = animTrigger;
+        m_lastUsedAnimTrigger = an_combatIdle;
     }
 
     private void StartAttackAnim()
     {
-        string animTrigger = "Attack";
-
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(animTrigger);
+        m_animController.SetTrigger(an_attack);
         m_navMeshAgent.updateRotation = false;
-        m_lastUsedAnimTrigger = animTrigger;
+        m_lastUsedAnimTrigger = an_attack;
     }
 
     private void StartQuickAttackAnim()
@@ -1498,36 +1548,81 @@ public class EnemyAI : MonoBehaviour
         string animTrigger = "QuickAttack";
 
         m_navMeshAgent.isStopped = false;
-        m_navMeshAgent.stoppingDistance = 0.0f;
-        m_animController.SetTrigger(animTrigger);
-        m_navMeshAgent.updateRotation = true;
-        m_lastUsedAnimTrigger = animTrigger;
-    }
-
-    private void StartHeavyAttackAnim()
-    {
-        string animTrigger = "HeavyAttack";
-
-        m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(animTrigger);
         m_navMeshAgent.updateRotation = false;
         m_lastUsedAnimTrigger = animTrigger;
     }
 
+    private void StartHeavyAttackAnim()
+    {
+        m_navMeshAgent.isStopped = true;
+        m_animController.SetTrigger(an_heavyAttack);
+        m_navMeshAgent.updateRotation = false;
+        m_lastUsedAnimTrigger = an_heavyAttack;
+    }
+
     private void StartDodgeAnim()
     {
+        /*
         int animNum = Random.Range(0, m_dodgeAnimNum);
         string animTrigger = "Dodge" + animNum;
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(animTrigger);
         m_navMeshAgent.updateRotation = false;
         m_lastUsedAnimTrigger = animTrigger;
+        */
+
+
+        int animNum = Random.Range( 0, m_dodgeAnimNum );
+        int animTrigger;
+
+        switch ( animNum )
+        {
+            default:
+                animTrigger = an_dodge0;
+                break;
+
+            case 1:
+                animTrigger = an_dodge1;
+                break;
+        }
+
+        m_navMeshAgent.isStopped = true;
+        m_animController.SetTrigger( animTrigger );
+        m_navMeshAgent.updateRotation = false;
+        m_lastUsedAnimTrigger = animTrigger;
     }
 
     private void StartSleepToWakeAnim()
     {
+        /*
+        //randomness idea. Just move Array to the top, and can tweak width whenever/if there are more, and also add more string hash vars
+        int[] dodgeHashes = new int[2];
+        dodgeHashes[ 0 ] = an_dodge01;
+        dodgeHashes[ 1 ] = an_dodge02;
+
+        int randNumber = Random.Range(0, dodgeHashes.Length-1);
+
+        int DodgeToUse = dodgeHashes[ randNumber ];
+
+        */
         int animNum = Random.Range(0, m_sleepToWakeAnimNum);
-        string animTrigger = "SleepToWake" + animNum;
+        int animTrigger;
+
+        switch ( animNum )
+		{
+
+            default:
+                animTrigger = an_sleepToWake0;
+                break;
+
+            case 1:
+
+                animTrigger = an_sleepToWake1;
+                break;
+
+		}
+
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(animTrigger);
         m_navMeshAgent.updateRotation = false;
@@ -1536,36 +1631,28 @@ public class EnemyAI : MonoBehaviour
 
     private void SetToPlayDeadAnim()
     {
-        string animTrigger = "Sleep";
-
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(animTrigger);
+        m_animController.SetTrigger(an_sleep);
         m_navMeshAgent.updateRotation = false;
-        m_lastUsedAnimTrigger = animTrigger;
+        m_lastUsedAnimTrigger = an_sleep;
     }
 
     private void StartDeathAnim()
     {
-        string animTrigger = "Death";
-
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(animTrigger);
+        m_animController.SetTrigger(an_death);
         m_navMeshAgent.updateRotation = false;
-        m_lastUsedAnimTrigger = animTrigger;
+        m_lastUsedAnimTrigger = an_death;
     }
-
-    private void PlayDamageAnim()
+    /*
+    public void PlayDamageAnim()
     {
-        string animTrigger = "TakeHit";
-
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(animTrigger);
-        m_navMeshAgent.updateRotation = false;
         DisableCollision();
         m_lastUsedAnimTrigger = animTrigger;
-        m_isTakingDamage = true;
     }
-
+    */
     private void RecoverFromHit()
     {
         SetCombatState(CombatState.Pursuing);
@@ -1604,6 +1691,13 @@ public class EnemyAI : MonoBehaviour
         m_timeSinceLastAttack = 0.0f;
     }
 
+
+    public CharacterDamageManager GetHealthManager()
+	{
+        return m_healthManager;
+	}
+
+    /*
     public void TakeDamage( float damageToTake )
     {
         if (m_mainState != AIState.Dead)
@@ -1613,21 +1707,28 @@ public class EnemyAI : MonoBehaviour
             if (m_mainState != AIState.Sleeping)
             {
                 ResetLastUsedAnimTrigger();
-                PlayDamageAnim();
+                //PlayDamageAnim();
             }
-
+            
             if (m_health <= 0.0f)
             {
                 Die();
             }
         }
-    }
+    }*/
 
+    /*
     private void Die()
     {
         m_health = 0.0f;
         SetAIState(AIState.Dead);
         m_aiManager.UnregisterAttacker(this);
+    }
+    */
+
+    public void UnregisterAttacker()
+	{
+        m_aiManager.UnregisterAttacker( this );
     }
 
     public void ChangeStateFromWake()
@@ -1646,34 +1747,40 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    private void ResetLastUsedAnimTrigger()
+    public void ResetLastUsedAnimTrigger()
     {
-        if (m_lastUsedAnimTrigger != "None")
+        if (m_lastUsedAnimTrigger != an_triggerNone)
         {
             m_animController.ResetTrigger(m_lastUsedAnimTrigger);
         }
     }
 
+    public void SetLastUsedAnimTrigger( int trigger )
+	{
+        m_lastUsedAnimTrigger = trigger;
+
+    }
+
     private void ResetAllAnimTriggers()
     {
-        m_animController.ResetTrigger("Walk");
-        m_animController.ResetTrigger("Idle");
-        m_animController.ResetTrigger("Attack");
-        m_animController.ResetTrigger("QuickAttack");
-        m_animController.ResetTrigger("HeavyAttack");
-        m_animController.ResetTrigger("Run");
-        m_animController.ResetTrigger("SleepToWake0");
-        m_animController.ResetTrigger("SleepToWake1");
-        m_animController.ResetTrigger("Sleep");
-        m_animController.ResetTrigger("TakeHit");
-        m_animController.ResetTrigger("StrafeLeft");
-        m_animController.ResetTrigger("StrafeRight");
-        m_animController.ResetTrigger("CombatIdle");
-        m_animController.ResetTrigger("WalkBack");
-        m_animController.ResetTrigger("Death");
-        m_animController.ResetTrigger("Weaken");
-        m_animController.ResetTrigger("Dodge0");
-        m_animController.ResetTrigger("Dodge1");
+        m_animController.ResetTrigger( an_walk);
+        m_animController.ResetTrigger( an_idle );
+        m_animController.ResetTrigger( an_attack );
+        m_animController.ResetTrigger( an_quickAttack );
+        m_animController.ResetTrigger( an_heavyAttack );
+        m_animController.ResetTrigger( an_run );
+        m_animController.ResetTrigger( an_sleepToWake0 );
+        m_animController.ResetTrigger( an_sleepToWake1 );
+        m_animController.ResetTrigger( an_sleep );
+        m_animController.ResetTrigger( an_takeHit );
+        m_animController.ResetTrigger( an_strafeLeft );
+        m_animController.ResetTrigger( an_strafeRight );
+        m_animController.ResetTrigger( an_combatIdle );
+        m_animController.ResetTrigger( an_walkBack );
+        m_animController.ResetTrigger( an_death );
+        m_animController.ResetTrigger( an_weaken );
+        m_animController.ResetTrigger( an_dodge0 );
+        m_animController.ResetTrigger( an_dodge1 );
     }
 
     private void SetupPatrolRoutes()
@@ -1735,4 +1842,9 @@ public class EnemyAI : MonoBehaviour
     {
         return m_zoneHandler;
     }
+
+    public void StopNavMesh()
+	{
+        m_navMeshAgent.isStopped = true;
+	}
 }
