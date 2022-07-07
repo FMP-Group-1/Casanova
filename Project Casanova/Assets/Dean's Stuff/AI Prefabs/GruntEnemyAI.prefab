@@ -392,11 +392,13 @@ MonoBehaviour:
   m_mainState: 0
   m_walkSpeed: 1.5
   m_runSpeed: 3
-  m_spawnAsleep: 0
   m_wakeTriggerObj: {fileID: 0}
   m_patrolRoute: {fileID: 0}
   m_patrolStoppingDistance: 1.5
   m_playerStoppingDistance: 1.75
+  m_normalAttkStoppingDistance: 1.75
+  m_quickAttkStoppingDistance: 1.75
+  m_heavyAttkStoppingDistance: 2.1
   m_minDelayBeforeStrafe: 6
   m_maxDelayBeforeStrafe: 10
   m_strafeSpeed: 1.5

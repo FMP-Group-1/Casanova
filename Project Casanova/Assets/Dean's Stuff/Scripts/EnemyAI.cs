@@ -42,12 +42,6 @@ public enum CombatState
     Dodging
 }
 
-public enum WakeTrigger
-{
-    Attack,
-    Standard
-}
-
 public enum AttackingType
 {
     Unassigned,
@@ -119,6 +113,15 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     [Tooltip("The distance from the player that the AI will stop")]
     private float m_playerStoppingDistance = 1.75f;
+    [SerializeField]
+    [Tooltip("The distance from the player that the AI will stop on normal attack")]
+    private float m_normalAttkStoppingDistance = 1.75f;
+    [SerializeField]
+    [Tooltip("The distance from the player that the AI will stop on quick attack")]
+    private float m_quickAttkStoppingDistance = 1.75f;
+    [SerializeField]
+    [Tooltip("The distance from the player that the AI will stop on heavy attack")]
+    private float m_heavyAttkStoppingDistance = 2.0f;
     private float m_delayBeforeStrafe = 0.0f;
     private float m_timeUntilStrafe = 0.0f;
     [SerializeField]
@@ -133,7 +136,7 @@ public class EnemyAI : MonoBehaviour
     private float m_strafeSpeed = 1.5f;
     [SerializeField]
     [Tooltip("The distance the AI will check for other obstructing AI during combat")]
-    private float m_checkForAIDist = 2.0f;
+    private float m_checkForAIDist = 2.1f;
     [SerializeField]
     [Tooltip("The angles the AI will check for other obstructing AI during combat")]
     private float m_checkForAIAngles = 45.0f;
@@ -751,6 +754,29 @@ public class EnemyAI : MonoBehaviour
             case CombatState.MovingToAttack:
             {
                 m_navMeshAgent.destination = m_player.transform.position;
+                m_attackMode = (AttackMode)Random.Range(0, m_attackNum);
+
+                m_attackMode = AttackMode.Both;
+
+                switch(m_attackMode)
+                {
+                    case AttackMode.Primary:
+                    {
+                        m_navMeshAgent.stoppingDistance = m_normalAttkStoppingDistance;
+                        break;
+                    }
+                    case AttackMode.Both:
+                    {
+                        m_navMeshAgent.stoppingDistance = m_quickAttkStoppingDistance;
+                        break;
+                    }
+                    case AttackMode.Secondary:
+                    {
+                        m_navMeshAgent.stoppingDistance = m_heavyAttkStoppingDistance;
+                        break;
+                    }
+                }
+
                 StartRunAnim();
                 break;
             }
@@ -793,7 +819,7 @@ public class EnemyAI : MonoBehaviour
             an_sleepToWakeHashes[i] = Animator.StringToHash("SleepToWake" + i);
         }
 
-        //an_triggerNone      = Animator.StringToHash( "None" );
+        //an_triggerNone = Animator.StringToHash( "None" );
         an_walk = Animator.StringToHash("Walk");
         an_walkBack = Animator.StringToHash("WalkBack");
         an_strafeRight = Animator.StringToHash("StrafeRight");
@@ -915,28 +941,23 @@ public class EnemyAI : MonoBehaviour
 
     private void Attack()
     {
-        int attackNum = Random.Range(0, m_attackNum);
-
-        attackNum = 2;
-
-        switch (attackNum)
+        switch (m_attackMode)
         {
-            case 0:
+            case AttackMode.Primary:
             {
-                m_attackMode = AttackMode.Primary;
                 StartAttackAnim();
                 break;
             }
-            case 1:
+            case AttackMode.Both:
             {
-                m_attackMode = AttackMode.Both;
-                m_navMeshAgent.speed = m_walkSpeed;
+                // Todo: This needs more work to make the quick attack work
+                m_navMeshAgent.speed = m_runSpeed;
+                m_navMeshAgent.stoppingDistance = 1.5f;
                 StartQuickAttackAnim();
                 break;
             }
-            case 2:
+            case AttackMode.Secondary:
             {
-                m_attackMode = AttackMode.Secondary;
                 StartHeavyAttackAnim();
                 break;
             }
