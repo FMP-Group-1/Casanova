@@ -20,6 +20,9 @@ public class CharacterDamageManager : MonoBehaviour
     //The Animator Component
     private Animator m_animator;
 
+    [SerializeField]
+    private enemyHealthDisplay enemyHealthDisplay;
+
     private enum CharacterType
     {
         Enemy,
@@ -71,9 +74,11 @@ public class CharacterDamageManager : MonoBehaviour
     public void TakeDamage(Transform othersTransform, float damage = 30f )
     {
 
-        
+
+
         if( !m_invulnerable )
         {
+            m_health -= damage;
             //If Player
             if ( m_characterType == CharacterType.Player )
 			{
@@ -85,10 +90,11 @@ public class CharacterDamageManager : MonoBehaviour
                 m_enemyAI.StopNavMesh();
                 m_enemyAI.DisableCollision();
                 m_enemyAI.SetLastUsedAnimTrigger( an_getHitTrigger );
+
+                enemyHealthDisplay.UpdateHealth(m_health);
             }
             //rotate to face the thing, then animate 
 
-            m_health -= damage;
 
             Vector3 startPosition= transform.position;
             //... to....
@@ -129,6 +135,11 @@ public class CharacterDamageManager : MonoBehaviour
             StartCoroutine( DissolveEnemy( 2f ) );
         }
     }
+
+    public float GetHealth()
+	{
+        return m_health;
+	}
 
     private IEnumerator DissolveEnemy( float time )
 	{
