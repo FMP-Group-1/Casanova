@@ -71,7 +71,6 @@ public enum StrafeDir
 public class EnemyAI : MonoBehaviour
 {
     private AIManager m_aiManager;
-    //private AttackZoneManager m_attackZoneManager;
 
     private NavMeshAgent m_navMeshAgent;
     [SerializeField]
@@ -92,9 +91,6 @@ public class EnemyAI : MonoBehaviour
 
     // Patrol Relevant Variables
     [Header("Patrol Values")]
-    [SerializeField]
-    [Tooltip("Should the AI spawn asleep?")]
-    private bool m_spawnAsleep = false;
     private bool m_lookAtPlayerWhileWaking = false;
     [SerializeField]
     [Tooltip("The trigger zone which will wake the AI when the player enters it")]
@@ -120,14 +116,9 @@ public class EnemyAI : MonoBehaviour
 
     // Combat Relevant Variables
     [Header("Combat Values")]
-    //[SerializeField]
-    //[Tooltip("The total health of the AI")]
-    //private float m_health = 100.0f;
     [SerializeField]
     [Tooltip("The distance from the player that the AI will stop")]
     private float m_playerStoppingDistance = 1.75f;
-    //[SerializeField]
-    //private bool m_canStrafe = true;
     private float m_delayBeforeStrafe = 0.0f;
     private float m_timeUntilStrafe = 0.0f;
     [SerializeField]
@@ -140,10 +131,6 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     [Tooltip("The strafing speed of the AI")]
     private float m_strafeSpeed = 1.5f;
-    //[SerializeField]
-    //private float m_minStrafeRange = 3.0f;
-    //[SerializeField]
-    //private float m_maxStrafeRange = 5.0f;
     [SerializeField]
     [Tooltip("The distance the AI will check for other obstructing AI during combat")]
     private float m_checkForAIDist = 2.0f;
@@ -202,9 +189,11 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     [Tooltip("Total number of sleep to wake animations")]
     private int m_sleepToWakeAnimNum = 2;
+    private int[] an_sleepToWakeHashes;
     [SerializeField]
     [Tooltip("Total number of dodge animations")]
     private int m_dodgeAnimNum = 2;
+    private int[] an_dodgeHashes;
     private int m_lastUsedAnimTrigger;
 
     [SerializeField]
@@ -226,10 +215,10 @@ public class EnemyAI : MonoBehaviour
     private int an_attack;
     private int an_quickAttack;
     private int an_heavyAttack;
-    private int an_dodge0;
-    private int an_dodge1;
-    private int an_sleepToWake0;
-    private int an_sleepToWake1;
+    //private int an_dodge0;
+    //private int an_dodge1;
+    //private int an_sleepToWake0;
+    //private int an_sleepToWake1;
     private int an_sleep;
     private int an_death;
     private int an_takeHit;
@@ -258,11 +247,11 @@ public class EnemyAI : MonoBehaviour
 
         DisableCollision();
 
-        if (m_spawnAsleep)
+        if (m_mainState == AIState.Sleeping)
         {
             // So if sleeping, can't get hurt
+            // Todo: Review this, should they be invuln while sleeping?
             m_healthManager.SetInvulnerable( true );
-            SetAIState(AIState.Sleeping);
         }
 
         if (m_wakeTriggerObj != null)
@@ -791,6 +780,19 @@ public class EnemyAI : MonoBehaviour
     //********
     private void SetupStringToHashes()
     {
+        an_dodgeHashes = new int[m_dodgeAnimNum];
+        an_sleepToWakeHashes = new int[m_sleepToWakeAnimNum];
+
+        for(int i = 0; i < an_dodgeHashes.Length; i++)
+        {
+            an_dodgeHashes[i] = Animator.StringToHash("Dodge" + i);
+        }
+
+        for (int i = 0; i < an_dodgeHashes.Length; i++)
+        {
+            an_sleepToWakeHashes[i] = Animator.StringToHash("SleepToWake" + i);
+        }
+
         //an_triggerNone      = Animator.StringToHash( "None" );
         an_walk = Animator.StringToHash("Walk");
         an_walkBack = Animator.StringToHash("WalkBack");
@@ -802,10 +804,10 @@ public class EnemyAI : MonoBehaviour
         an_attack = Animator.StringToHash("Attack");
         an_quickAttack = Animator.StringToHash("QuickAttack");
         an_heavyAttack = Animator.StringToHash("HeavyAttack");
-        an_dodge0 = Animator.StringToHash("Dodge0");
-        an_dodge1 = Animator.StringToHash("Dodge1");
-        an_sleepToWake0 = Animator.StringToHash("SleepToWake0");
-        an_sleepToWake1 = Animator.StringToHash("SleepToWake1");
+        //an_dodge0 = Animator.StringToHash("Dodge0");
+        //an_dodge1 = Animator.StringToHash("Dodge1");
+        //an_sleepToWake0 = Animator.StringToHash("SleepToWake0");
+        //an_sleepToWake1 = Animator.StringToHash("SleepToWake1");
         an_sleep = Animator.StringToHash("Sleep");
         an_death = Animator.StringToHash("Death");
         an_takeHit = Animator.StringToHash("TakeHit");
@@ -1015,6 +1017,8 @@ public void TakeDamage( float damageToTake )
         {
             SetAIState(AIState.Patrolling);
         }
+
+        m_healthManager.SetInvulnerable(false);
     }
 
     public void ResetLastUsedAnimTrigger()
@@ -1033,8 +1037,8 @@ public void TakeDamage( float damageToTake )
         m_animController.ResetTrigger(an_quickAttack);
         m_animController.ResetTrigger(an_heavyAttack);
         m_animController.ResetTrigger(an_run);
-        m_animController.ResetTrigger(an_sleepToWake0);
-        m_animController.ResetTrigger(an_sleepToWake1);
+        //m_animController.ResetTrigger(an_sleepToWake0);
+        //m_animController.ResetTrigger(an_sleepToWake1);
         m_animController.ResetTrigger(an_sleep);
         m_animController.ResetTrigger(an_takeHit);
         m_animController.ResetTrigger(an_strafeLeft);
@@ -1043,28 +1047,24 @@ public void TakeDamage( float damageToTake )
         m_animController.ResetTrigger(an_walkBack);
         m_animController.ResetTrigger(an_death);
         m_animController.ResetTrigger(an_weaken);
-        m_animController.ResetTrigger(an_dodge0);
-        m_animController.ResetTrigger(an_dodge1);
+        //m_animController.ResetTrigger(an_dodge0);
+        //m_animController.ResetTrigger(an_dodge1);
+
+        foreach(int trigger in an_dodgeHashes)
+        {
+            m_animController.ResetTrigger(trigger);
+        }
+
+        foreach (int trigger in an_sleepToWakeHashes)
+        {
+            m_animController.ResetTrigger(trigger);
+        }
     }
 
-    // Wake up differently based on wake up type, i.e. hit by player vs. detected player
-    public void WakeUpAI( WakeTrigger wakeTrigger )
+    public void WakeUpAI()
     {
-        switch (wakeTrigger)
-        {
-            case WakeTrigger.Attack:
-            {
-                SetAIState(AIState.Waking);
-                StartSleepToWakeAnim();
-                break;
-            }
-            case WakeTrigger.Standard:
-            {
-                SetAIState(AIState.Waking);
-                StartSleepToWakeAnim();
-                break;
-            }
-        }
+        SetAIState(AIState.Waking);
+        StartSleepToWakeAnim();
     }
 
     public void LookAtPlayerOnWake()
@@ -1358,7 +1358,7 @@ public void TakeDamage( float damageToTake )
 
         GameObject enemyToCheck = FindClosestEnemy().gameObject;
 
-        if( enemyToCheck != null )
+        if( enemyToCheck != this )
         {
             if (DistanceSqrCheck(enemyToCheck, m_checkForAIDist))
             {
@@ -1425,20 +1425,14 @@ public void TakeDamage( float damageToTake )
         {
             if (m_wakeTrigger.bounds.Intersects(m_playerCollider.bounds))
             {
-                WakeUpAI(WakeTrigger.Standard);
+                WakeUpAI();
             }
         }
     }
 
-    // Todo: Add check to only return closest ALIVE enemy
     private EnemyAI FindClosestEnemy()
     {
-        EnemyAI closestEnemy = m_aiManager.GetEnemyList()[0];
-
-        if (closestEnemy == this)
-        {
-            closestEnemy = m_aiManager.GetEnemyList()[1];
-        }
+        EnemyAI closestEnemy = this;
 
         foreach (EnemyAI enemy in m_aiManager.GetEnemyList())
         {
@@ -1451,7 +1445,6 @@ public void TakeDamage( float damageToTake )
             }
         }
 
-        //Debug.Log("Closest AI to " + name + " is " + DistanceSqrValue(closestEnemy.gameObject));
         return closestEnemy;
     }
 
@@ -1631,29 +1624,8 @@ public void TakeDamage( float damageToTake )
 
     private void StartDodgeAnim()
     {
-        /*
         int animNum = Random.Range(0, m_dodgeAnimNum);
-        string animTrigger = "Dodge" + animNum;
-        m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(animTrigger);
-        m_navMeshAgent.updateRotation = false;
-        m_lastUsedAnimTrigger = animTrigger;
-        */
-
-
-        int animNum = Random.Range(0, m_dodgeAnimNum);
-        int animTrigger;
-
-        switch (animNum)
-        {
-            default:
-                animTrigger = an_dodge0;
-                break;
-
-            case 1:
-                animTrigger = an_dodge1;
-                break;
-        }
+        int animTrigger = an_dodgeHashes[animNum];
 
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(animTrigger);
@@ -1663,33 +1635,8 @@ public void TakeDamage( float damageToTake )
 
     private void StartSleepToWakeAnim()
     {
-        /*
-        //randomness idea. Just move Array to the top, and can tweak width whenever/if there are more, and also add more string hash vars
-        int[] dodgeHashes = new int[2];
-        dodgeHashes[ 0 ] = an_dodge01;
-        dodgeHashes[ 1 ] = an_dodge02;
-
-        int randNumber = Random.Range(0, dodgeHashes.Length-1);
-
-        int DodgeToUse = dodgeHashes[ randNumber ];
-
-        */
         int animNum = Random.Range(0, m_sleepToWakeAnimNum);
-        int animTrigger;
-
-        switch (animNum)
-        {
-
-            default:
-                animTrigger = an_sleepToWake0;
-                break;
-
-            case 1:
-
-                animTrigger = an_sleepToWake1;
-                break;
-
-        }
+        int animTrigger = an_sleepToWakeHashes[animNum];
 
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(animTrigger);
