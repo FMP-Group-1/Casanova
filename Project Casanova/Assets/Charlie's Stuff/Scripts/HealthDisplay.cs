@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class enemyHealthDisplay : MonoBehaviour
+public class HealthDisplay : MonoBehaviour
 {
-    TextMeshPro m_textObj;
+    TMP_Text m_textObj;
     Camera m_mainCamera;
     [SerializeField]
     CharacterDamageManager m_characterDamageManager;
     // Start is called before the first frame update
+    [SerializeField]
+    private bool m_playerHealth = false;
     void Start()
     {
         m_mainCamera = Camera.main;
-        m_textObj = GetComponent<TextMeshPro>();
+        m_textObj = GetComponent<TMP_Text>();
 
         UpdateHealth( m_characterDamageManager.GetHealth());
 
@@ -23,10 +25,14 @@ public class enemyHealthDisplay : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Vector3 target = m_mainCamera.transform.position ;
-        target.y = transform.position.y;
-        transform.LookAt( target );
+        if( !m_playerHealth )
+		{
 
+            Vector3 target = m_mainCamera.transform.position ;
+            target.y = transform.position.y;
+            transform.LookAt( target );
+
+        }
 
 
 

@@ -1545,7 +1545,7 @@ public class EnemyAI : MonoBehaviour
     private void StartDeathAnim()
     {
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(an_death);
+        //m_animController.SetTrigger(an_death);
         m_navMeshAgent.updateRotation = false;
         m_lastUsedAnimTrigger = an_death;
     }

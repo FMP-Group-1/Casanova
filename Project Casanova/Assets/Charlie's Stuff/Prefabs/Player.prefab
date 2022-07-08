@@ -11,13 +11,13 @@ GameObject:
   - component: {fileID: 484198019}
   - component: {fileID: 484198021}
   - component: {fileID: 484198020}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Green FX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &484198019
 Transform:
   m_ObjectHideFlags: 0
@@ -99,7 +99,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &650982153
 Transform:
   m_ObjectHideFlags: 0
@@ -188,13 +188,13 @@ GameObject:
   - component: {fileID: 1277660076}
   - component: {fileID: 1277660077}
   - component: {fileID: 1277660078}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Collision Thing
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1277660075
 Transform:
   m_ObjectHideFlags: 0
@@ -268,7 +268,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1538279742
 Transform:
   m_ObjectHideFlags: 0
@@ -727,7 +727,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &7179808951254947032
 Transform:
   m_ObjectHideFlags: 0
@@ -1412,7 +1412,7 @@ GameObject:
   - component: {fileID: 451694131460032750}
   - component: {fileID: 4825272603966825724}
   - component: {fileID: 2960758649737448088}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -1545,7 +1545,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_health: 100
   m_invulnerableTime: 1
+  healthDisplay: {fileID: 0}
   m_characterType: 1
+  m_youDied: {fileID: 0}
 --- !u!114 &2960758649737448088
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class CharacterDamageManager : MonoBehaviour
 {
@@ -21,7 +22,7 @@ public class CharacterDamageManager : MonoBehaviour
     private Animator m_animator;
 
     [SerializeField]
-    private enemyHealthDisplay enemyHealthDisplay;
+    private HealthDisplay healthDisplay;
 
     private enum CharacterType
     {
@@ -33,18 +34,26 @@ public class CharacterDamageManager : MonoBehaviour
     private CharacterType m_characterType;
 
     private int an_getHitTrigger;
+    private int an_death;
+
+
+    [SerializeField]
+    private Image m_youDied;
+    Color m_defaultColour;
 
     void Start()
     {
         m_playerController = GetComponent<PlayerController>();
         m_animator = GetComponent<Animator>();
         an_getHitTrigger = Animator.StringToHash( "TakeHit" );
+        an_death = Animator.StringToHash( "Death" );
 
 
         if (m_characterType == CharacterType.Player )
 		{
             m_playerController = GetComponent<PlayerController>();
-		}
+            m_defaultColour = m_youDied.color;
+        }
         else if ( m_characterType == CharacterType.Enemy )
 		{
             m_enemyAI = GetComponent<EnemyAI>();
@@ -91,7 +100,6 @@ public class CharacterDamageManager : MonoBehaviour
                 m_enemyAI.DisableCollision();
                 m_enemyAI.SetLastUsedAnimTrigger( an_getHitTrigger );
 
-                enemyHealthDisplay.UpdateHealth(m_health);
             }
             //rotate to face the thing, then animate 
 
@@ -116,6 +124,7 @@ public class CharacterDamageManager : MonoBehaviour
             StartCoroutine( ResetInvulnerable( m_invulnerableTime ) );
         }
 
+        healthDisplay.UpdateHealth( m_health );
         if ( m_health <= 0.0f )
         {
             Die();
@@ -134,6 +143,22 @@ public class CharacterDamageManager : MonoBehaviour
             m_enemyAI.UnregisterAttacker();
             StartCoroutine( DissolveEnemy( 2f ) );
         }
+        if( m_characterType == CharacterType.Player )
+        {
+            m_playerController.DeactivateAllTheCanStuff();
+
+            m_youDied.gameObject.SetActive( true );
+            Color newColour = m_defaultColour;
+            newColour.a = 0f;
+
+            m_youDied.color = newColour;
+
+
+            StartCoroutine( FadeTo( 1f, 3f ) );
+        }
+
+        m_animator.SetTrigger( an_death );
+
     }
 
     public float GetHealth()
@@ -178,5 +203,15 @@ public class CharacterDamageManager : MonoBehaviour
     public bool GetInvulnerable()
     {
         return m_invulnerable;
+    }
+
+    IEnumerator FadeTo( float aValue, float aTime )
+    {
+        for( float alpha = 0.0f; alpha < 1.0f; alpha += Time.deltaTime / aTime )
+        {
+            Color newColor = new Color(1, 1, 1, alpha);
+            m_youDied.color = newColor;
+            yield return null;
+        }
     }
 }
