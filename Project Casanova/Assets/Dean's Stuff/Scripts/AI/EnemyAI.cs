@@ -1082,6 +1082,11 @@ public void TakeDamage( float damageToTake )
         }
     }
 
+    public void ResetToSpawn()
+    {
+        // Todo: Add reset logic for respawning here
+    }
+
     public void WakeUpAI()
     {
         SetAIState(AIState.Waking);

@@ -12,8 +12,9 @@ GameObject:
   - component: {fileID: 6448550438420621871}
   - component: {fileID: 6448550438420621870}
   - component: {fileID: 6448550438420621841}
+  - component: {fileID: 3165833272424825107}
   m_Layer: 0
-  m_Name: WakeTriggerZone
+  m_Name: TriggerBox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -95,3 +96,17 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &3165833272424825107
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6448550438420621840}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea4a260c0e8bd51409789419785094e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_triggerType: 0
+  m_triggerGroup: 0

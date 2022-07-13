@@ -50,6 +50,7 @@ public class AIManager : MonoBehaviour
     {
         // Create the control input
         m_inputs = new DeanControls();
+        m_attackZoneManager = new AttackZoneManager(this);
     }
 
     private void OnEnable()
@@ -60,9 +61,8 @@ public class AIManager : MonoBehaviour
     void Start()
     {
         m_player = GameObject.FindGameObjectWithTag("Player");
-        m_attackZoneManager = new AttackZoneManager(this);
 
-        RegisterEnemies();
+        //RegisterEnemies();
     }
 
     void Update()
@@ -77,7 +77,7 @@ public class AIManager : MonoBehaviour
         m_canAttack = TotalEnemiesAttacking() < m_maxSimultaneousAttacks;
     }
 
-    private void RegisterEnemies()
+    public void RegisterEnemies()
     {
         foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
         {
