@@ -16,6 +16,11 @@ public class HealthDisplay : MonoBehaviour
     {
         m_mainCamera = Camera.main;
         m_textObj = GetComponent<TMP_Text>();
+        if ( !m_playerHealth )
+		{
+            m_characterDamageManager = transform.parent.gameObject.GetComponent<CharacterDamageManager>();
+        }
+        
 
         UpdateHealth( m_characterDamageManager.GetHealth());
 

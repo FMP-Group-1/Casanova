@@ -1410,8 +1410,8 @@ GameObject:
   - component: {fileID: 5170419533230534568}
   - component: {fileID: 3101260882665976689}
   - component: {fileID: 451694131460032750}
-  - component: {fileID: 4825272603966825724}
   - component: {fileID: 2960758649737448088}
+  - component: {fileID: 4026306038862573783}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -1531,23 +1531,6 @@ MonoBehaviour:
   m_sphereColliderTransform: {fileID: 650982153}
   m_timeToGrow: 1
   m_maxSphereSize: 7
---- !u!114 &4825272603966825724
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1775784077948444107}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 85e97a220ea4fc94cb414f2f05e31971, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_health: 100
-  m_invulnerableTime: 1
-  healthDisplay: {fileID: 0}
-  m_characterType: 1
-  m_youDied: {fileID: 0}
 --- !u!114 &2960758649737448088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1564,6 +1547,22 @@ MonoBehaviour:
   - m_Rig: {fileID: 0}
     m_Active: 1
   m_Effectors: []
+--- !u!114 &4026306038862573783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1775784077948444107}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 008b1f37736fc1145bf3749a885c8988, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_health: 10
+  m_invulnerableTime: 1
+  healthDisplay: {fileID: 0}
+  m_youDied: {fileID: 0}
 --- !u!1 &1787312980649176709
 GameObject:
   m_ObjectHideFlags: 0
