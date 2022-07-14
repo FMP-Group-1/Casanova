@@ -5,10 +5,12 @@ using System;
 
 public class EventManager : MonoBehaviour
 {
+    // Setting up events
     public static event Action<int> WakeEnemiesEvent;
     public static event Action<int> SpawnEnemiesEvent;
     public static event Action<int> AlertEnemiesEvent;
 
+    // Event functions
     public static void StartWakeEnemiesEvent(int triggerGroup)
     {
         WakeEnemiesEvent?.Invoke(triggerGroup);

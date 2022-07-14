@@ -18,6 +18,7 @@ public class TriggerBox : MonoBehaviour
 
     private void OnTriggerEnter( Collider other )
     {
+        // Using OnTriggerEnter to tell the event manager to send the relevant message to subscribers
         if (other.gameObject.tag == "Player")
         {
             switch (m_triggerType)

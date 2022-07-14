@@ -24,25 +24,26 @@ public class SpawnManager : MonoBehaviour
 
     void Start()
     {
+        // Getting the AI Manager, and creating the lists
         m_aiManager = GameObject.Find("AIManager").GetComponent<AIManager>();
         m_spawnerList = new List<Spawner>();
         m_gruntPool = new List<GameObject>();
         m_guardPool = new List<GameObject>();
+
+        // Enemy setup
         SetupSpawnerList();
         CalculateEnemiesNeeded();
         SetupEnemies();
-        EventManager.SpawnEnemiesEvent += SpawnGroup;
-    }
 
-    void Update()
-    {
-        
+        // Subscribing to event
+        EventManager.SpawnEnemiesEvent += SpawnGroup;
     }
 
     private void CalculateEnemiesNeeded()
     {
         int totalGroups = 0;
 
+        // Figuring out how many groups exist
         foreach(Spawner spawner in m_spawnerList)
         {
             if( totalGroups < spawner.GetSpawnGroup())
@@ -51,6 +52,7 @@ public class SpawnManager : MonoBehaviour
             }
         }
 
+        // Looping through each group to find out which one uses the most enemies and how many
         for (int i = 0; i <= totalGroups; i++)
         {
             int totalGruntsNeeded = 0;
@@ -68,6 +70,7 @@ public class SpawnManager : MonoBehaviour
                 }
             }
 
+            // Setting the max enemies num if there is more
             if (totalGruntsNeeded > m_maxGrunts)
             {
                 m_maxGrunts = totalGruntsNeeded;
@@ -81,6 +84,7 @@ public class SpawnManager : MonoBehaviour
 
     private void SetupSpawnerList()
     {
+        // Adding all the spawner objects to a list
         foreach(GameObject spawnerObj in GameObject.FindGameObjectsWithTag("Spawner"))
         {
             m_spawnerList.Add(spawnerObj.GetComponent<Spawner>());
@@ -89,6 +93,7 @@ public class SpawnManager : MonoBehaviour
 
     private void SetupEnemies()
     {
+        // Instantiating enemies based on the max amount needed
         for(int i = 0; i < m_maxGrunts; i++)
         {
             GameObject newEnemy = Instantiate(m_gruntPrefab);
@@ -100,8 +105,10 @@ public class SpawnManager : MonoBehaviour
             m_guardPool.Add(newEnemy);
         }
 
+        // Make AI manager register the enemies in scene now that they've been instantiated
         m_aiManager.RegisterEnemies();
 
+        // Set each enemy to inactive
         foreach(GameObject enemy in m_gruntPool)
         {
             enemy.SetActive(false);
@@ -114,6 +121,7 @@ public class SpawnManager : MonoBehaviour
 
     private void SpawnGroup(int groupNum)
     {
+        // Spawn enemies in matching group number
         foreach(Spawner spawner in m_spawnerList)
         {
             if (groupNum == spawner.GetSpawnGroup())
@@ -126,7 +134,9 @@ public class SpawnManager : MonoBehaviour
 
     private GameObject GetInactiveEnemy(EnemyType typeToGet)
     {
+        // Finding an inactive enemy from the desired type for the purpose of spawning
         // Todo: Review this function, wrong enemy could be used if an inactive enemy isn't found
+        // Also, may be cleaner to create a pool object/list
         GameObject enemyToReturn = m_gruntPool[0];
 
         switch(typeToGet)

@@ -16,9 +16,14 @@ public class Spawner : MonoBehaviour
     {
         EnemyAI enemyScript = enemyToSpawn.GetComponent<EnemyAI>();
 
+        // Setting enemy position and rotation to match spawner
         enemyToSpawn.transform.position = transform.position;
-        enemyToSpawn.SetActive(true);
         enemyToSpawn.transform.rotation = transform.rotation;
+
+        // Enable enemy
+        enemyToSpawn.SetActive(true);
+
+        // Reset the necessary values, then set the state and group num
         enemyScript.ResetToSpawn();
         enemyScript.SetAIState(m_stateToSpawn);
         enemyScript.SetSpawnGroup(m_spawnGroup);
