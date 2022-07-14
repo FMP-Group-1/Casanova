@@ -62,6 +62,9 @@ public class AIManager : MonoBehaviour
     {
         m_player = GameObject.FindGameObjectWithTag("Player");
 
+        EventManager.WakeEnemiesEvent += WakeGroup;
+        EventManager.AlertEnemiesEvent += AlertGroup;
+
         //RegisterEnemies();
     }
 
@@ -111,21 +114,21 @@ public class AIManager : MonoBehaviour
             enemyToRegister.SetAttackingType(AttackingType.Unassigned);
         }
 
-            // Check to make sure enemy isn't already in list
-            //if (!m_activeAttackers.Contains(enemyToRegister) && !m_passiveAttackers.Contains(enemyToRegister))
-            //{
-            //    // If active attackers isn't at max, add to active attackers, otherwise add to the passive attackers
-            //    if (m_activeAttackers.Count < m_maxActiveAttackers)
-            //    {
-            //        m_activeAttackers.Add(enemyToRegister);
-            //        enemyToRegister.SetAttackingType(AttackingType.Active);
-            //    }
-            //    else
-            //    {
-            //        m_passiveAttackers.Add(enemyToRegister);
-            //        enemyToRegister.SetAttackingType(AttackingType.Passive);
-            //    }
-            //}
+        // Check to make sure enemy isn't already in list
+        //if (!m_activeAttackers.Contains(enemyToRegister) && !m_passiveAttackers.Contains(enemyToRegister))
+        //{
+        //    // If active attackers isn't at max, add to active attackers, otherwise add to the passive attackers
+        //    if (m_activeAttackers.Count < m_maxActiveAttackers)
+        //    {
+        //        m_activeAttackers.Add(enemyToRegister);
+        //        enemyToRegister.SetAttackingType(AttackingType.Active);
+        //    }
+        //    else
+        //    {
+        //        m_passiveAttackers.Add(enemyToRegister);
+        //        enemyToRegister.SetAttackingType(AttackingType.Passive);
+        //    }
+        //}
     }
 
         // Unregister enemy from attacker lists
@@ -208,6 +211,28 @@ public class AIManager : MonoBehaviour
         else if (m_activeAttackers.Count < m_maxActiveAttackers && m_passiveAttackers.Count > 0)
         {
             MakeActiveAttacker(FindClosestPassiveAttacker());
+        }
+    }
+
+    private void WakeGroup(int groupToWake)
+    {
+        foreach(EnemyAI enemy in m_enemyList)
+        {
+            if (enemy.gameObject.activeSelf && enemy.GetSpawnGroup() == groupToWake)
+            {
+                enemy.WakeUpAI();
+            }
+        }
+    }
+
+    private void AlertGroup(int groupToAlert)
+    {
+        foreach (EnemyAI enemy in m_enemyList)
+        {
+            if (enemy.gameObject.activeSelf && enemy.GetSpawnGroup() == groupToAlert)
+            {
+                enemy.SetAIState(AIState.InCombat);
+            }
         }
     }
 

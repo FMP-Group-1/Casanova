@@ -126,7 +126,9 @@ public class SpawnManager : MonoBehaviour
 
     private GameObject GetInactiveEnemy(EnemyType typeToGet)
     {
-        // Todo: Review this function, needs to be more foolproof
+        // Todo: Review this function, wrong enemy could be used if an inactive enemy isn't found
+        GameObject enemyToReturn = m_gruntPool[0];
+
         switch(typeToGet)
         {
             case EnemyType.Grunt:
@@ -135,12 +137,10 @@ public class SpawnManager : MonoBehaviour
                 {
                     if (enemy.activeSelf == false)
                     {
-                        return enemy;
+                        enemyToReturn = enemy;
+                        break;
                     }
                 }
-
-                Debug.Log("Inactive enemy not found");
-                return m_gruntPool[0];
 
                 break;
             }
@@ -150,22 +150,21 @@ public class SpawnManager : MonoBehaviour
                 {
                     if (enemy.activeSelf == false)
                     {
-                        return enemy;
+                        enemyToReturn = enemy;
+                        break;
                     }
                 }
-
-                Debug.Log("Inactive enemy not found");
-                return m_guardPool[0];
 
                 break;
             }
             default:
             {
-                Debug.Log("Enemy type not found");
-                return m_gruntPool[0];
+                Debug.Log("ERROR: Enemy type not found");
 
                 break;
             }
         }
+
+        return enemyToReturn;
     }
 }

@@ -23,7 +23,7 @@ public class ConeDetectionVisualizer : Editor
         DrawAIDetectionCone(targetEnemy);
     }
 
-    private void DrawPlayerDetectionCone(GameObject player, EnemyAI targetEnemy)
+    private void DrawPlayerDetectionCone( GameObject player, EnemyAI targetEnemy )
     {
         // Setting line color, drawing the initial arc, then getting the angles for the fov lines with DirFromAngle
         Handles.color = Color.white;
@@ -43,7 +43,7 @@ public class ConeDetectionVisualizer : Editor
         }
     }
 
-    private void DrawAIDetectionCone(EnemyAI targetEnemy)
+    private void DrawAIDetectionCone( EnemyAI targetEnemy )
     {
         // Setting line color, drawing the initial arc, then getting the angles for the fov lines with DirFromAngle
         Handles.color = Color.white;

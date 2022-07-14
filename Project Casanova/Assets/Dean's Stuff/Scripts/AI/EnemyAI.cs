@@ -67,6 +67,7 @@ public class EnemyAI : MonoBehaviour
     private AIManager m_aiManager;
 
     private NavMeshAgent m_navMeshAgent;
+    private int m_spawnGroup = 0;
     [SerializeField]
     [Tooltip("AI's Current State")]
     private AIState m_mainState = AIState.Idle;
@@ -86,10 +87,6 @@ public class EnemyAI : MonoBehaviour
     // Patrol Relevant Variables
     [Header("Patrol Values")]
     private bool m_lookAtPlayerWhileWaking = false;
-    [SerializeField]
-    [Tooltip("The trigger zone which will wake the AI when the player enters it")]
-    private GameObject m_wakeTriggerObj;
-    private BoxCollider m_wakeTrigger;
     [SerializeField]
     [Tooltip("The GameObject which holds the position objects for patrolling")]
     private GameObject m_patrolRoute;
@@ -257,11 +254,6 @@ public class EnemyAI : MonoBehaviour
             m_healthManager.SetInvulnerable( true );
         }
 
-        if (m_wakeTriggerObj != null)
-        {
-            m_wakeTrigger = m_wakeTriggerObj.GetComponent<BoxCollider>();
-        }
-
         SetAIState(m_mainState);
 
 
@@ -277,15 +269,12 @@ public class EnemyAI : MonoBehaviour
             {
                 if (IsPlayerVisible())
                 {
-                    SetAIState(AIState.InCombat);
+                    //SetAIState(AIState.InCombat);
                 }
                 break;
             }
             case AIState.Sleeping:
             {
-
-                // Check if player is in the wake trigger zone to wake up
-                WakeTriggerCheck();
                 break;
             }
             case AIState.Waking:
@@ -1444,18 +1433,6 @@ public void TakeDamage( float damageToTake )
         }
     }
 
-    // Wake up AI if player is detected in trigger zone
-    private void WakeTriggerCheck()
-    {
-        if( m_wakeTrigger != null)
-        {
-            if (m_wakeTrigger.bounds.Intersects(m_playerCollider.bounds))
-            {
-                WakeUpAI();
-            }
-        }
-    }
-
     private EnemyAI FindClosestEnemy()
     {
         EnemyAI closestEnemy = this;
@@ -1813,5 +1790,15 @@ public void TakeDamage( float damageToTake )
     public ZoneHandler GetZoneHandler()
     {
         return m_zoneHandler;
+    }
+
+    public void SetSpawnGroup(int groupToSet)
+    {
+        m_spawnGroup = groupToSet;
+    }
+
+    public int GetSpawnGroup()
+    {
+        return m_spawnGroup;
     }
 }

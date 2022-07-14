@@ -18,8 +18,10 @@ public class Spawner : MonoBehaviour
 
         enemyToSpawn.transform.position = transform.position;
         enemyToSpawn.SetActive(true);
+        enemyToSpawn.transform.rotation = transform.rotation;
         enemyScript.ResetToSpawn();
         enemyScript.SetAIState(m_stateToSpawn);
+        enemyScript.SetSpawnGroup(m_spawnGroup);
     }
 
     public EnemyType GetSpawnType()
