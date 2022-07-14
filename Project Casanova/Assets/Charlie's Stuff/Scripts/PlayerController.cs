@@ -268,44 +268,8 @@ public class PlayerController : MonoBehaviour
     {
         float yVelocityLastFrame = m_playerVelocity.y;
 
-
-        //Use the character Controller's isGrounded functionality to fill a member variable for readability
-         #region Landing Raycast
-       
-        //Raycast for the groundpound
-        RaycastHit hit;
-
-        if( Physics.Raycast( transform.position, -transform.up, out hit, m_fallCheckRange/*, m_groundLayer */) )
-        {
-            //Raycast hits Grounds
-
-            //Now, were we going downwards? (To stop it when jumping)
-            if( m_playerVelocity.y < 0f )
-            {
-                transform.position = hit.point;
-                m_isGrounded = true;
-                m_playerVelocity.y = 0;
-                m_animator.SetBool(an_inAir, false);  //Which in turns set velocity to 0
-            } 
-        }
-        else // If raycast does not hit ground
-        {
-            m_isGrounded = false;
-            m_animator.SetBool( an_inAir, true );
-        }
-
-        if( m_controller.isGrounded )
-		{
-            m_isGrounded = true;
-		}
-
-        #endregion
-
-
-            
-
-		//If you're grounded or CAN'T fall (eg. Attacking in air)
-		if( m_isGrounded || !m_canFall )
+        //If you're grounded or CAN'T fall (eg. Attacking in air)
+        if( m_isGrounded || !m_canFall )
         {
             //Velocity is 0
             m_playerVelocity.y = 0f;
@@ -314,14 +278,59 @@ public class PlayerController : MonoBehaviour
         else if( m_playerVelocity.y > -20 && m_canFall )
         {
             //Accelerate
-            m_playerVelocity.y += m_gravityValue * Time.deltaTime; 
-            
+            m_playerVelocity.y += m_gravityValue * Time.deltaTime;
+
             //if the addition goes UNDER -20, set it to it, and now you'll never come back into this section
             if( m_playerVelocity.y < -20 )
             {
                 m_playerVelocity.y = -20;
             }
         }
+
+        //Jumping
+        if( m_jumpControl.action.triggered && m_isGrounded )
+        {
+            //Jumped
+            m_animator.SetTrigger( an_jumped );
+            m_playerVelocity.y = m_jumpForce;
+        }
+
+        //Use the character Controller's isGrounded functionality to fill a member variable for readability
+        #region Landing Raycast
+
+        //Raycast for the groundpound
+        RaycastHit hit;
+
+        if( Physics.Raycast( transform.position, -transform.up, out hit, m_fallCheckRange/*, m_groundLayer */) 
+            && m_playerVelocity.y < 0f )
+        {
+            //Raycast hits Grounds
+
+            //Now, were we going downwards? (To stop it when jumping)
+            
+            transform.position = hit.point;
+            m_isGrounded = true;
+            m_playerVelocity.y = 0;
+            m_animator.SetBool(an_inAir, false);  //Which in turns set velocity to 0
+
+        }
+        else // If raycast does not hit ground or velocity is not DOWN
+        {
+            m_isGrounded = false;
+            m_animator.SetBool( an_inAir, true );
+        }
+        /*
+        if( m_controller.isGrounded )
+		{
+            m_isGrounded = true;
+		}*/
+
+        #endregion
+
+
+            
+
+
 
        
         //If grounded, reset in air
@@ -331,13 +340,6 @@ public class PlayerController : MonoBehaviour
             m_animator.SetBool( an_inAir, false );
         } 
         
-        //Jumping
-        if( m_jumpControl.action.triggered && m_isGrounded )
-        {
-            //Jumped
-            m_animator.SetTrigger( an_jumped );
-            m_playerVelocity.y = m_jumpForce;
-        }
 
 
         //And if you can fall, move that way.
