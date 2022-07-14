@@ -52,7 +52,6 @@ public class EnemyDamageManager : CharacterDamageManager
 
     protected override void Die()
     {
-
         m_enemyAI.SetAIState( AIState.Dead );
         m_enemyAI.UnregisterAttacker();
         StartCoroutine( DissolveEnemy( 2f ) );

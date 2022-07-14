@@ -11,9 +11,6 @@ public class CharacterDamageManager : MonoBehaviour
     [SerializeField]
     private float m_invulnerableTime = 1f;
 
-    private EnemyAI m_enemyAI;
-    private PlayerController m_playerController;
-
     //The Animator Component
     protected Animator m_animator;
 
@@ -23,6 +20,7 @@ public class CharacterDamageManager : MonoBehaviour
     protected int an_getHitTrigger;
     protected int an_death;
 
+    private bool m_alive = true;
 
     protected virtual void Start()
     {
@@ -63,13 +61,18 @@ public class CharacterDamageManager : MonoBehaviour
             //Set rotation to face who attacked it
             transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, 1f );
 
-            m_animator.SetTrigger( an_getHitTrigger );
-            m_invulnerable = true;
-            StartCoroutine( ResetInvulnerable( m_invulnerableTime ) );
 
-            if ( m_health <= 0.0f )
+            m_invulnerable = true;
+
+            if ( m_health <= 0.0f ) // Die
             {
                 Die();
+            }
+            else // Just get hurt
+			{
+
+                m_animator.SetTrigger( an_getHitTrigger );
+                StartCoroutine( ResetInvulnerable( m_invulnerableTime ) );
             }
 
 
@@ -83,10 +86,20 @@ public class CharacterDamageManager : MonoBehaviour
     protected virtual void Die()
     {
         m_health = 0.0f;
-
+        m_alive = false;
         m_animator.SetTrigger( an_death );
 
     }
+
+    protected void SetAlive( bool alive )
+	{
+        m_alive = alive;
+	}
+
+    protected bool GetAlive()
+	{
+        return m_alive;
+	}
 
     public float GetHealth()
 	{

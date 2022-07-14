@@ -462,7 +462,7 @@ public class PlayerController : MonoBehaviour
         m_meleeController.CanStartNextAttack();
 	}
 
-    public void DeactivateAllTheCanStuff()
+    public void LoseControl()
     {
         m_canRotate = false;
         m_canMove = false;

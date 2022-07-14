@@ -28,18 +28,27 @@ public class PlayerDamageManager : CharacterDamageManager
 
     public override void TakeDamage(Transform othersTransform, float damage = 30f )
     {
-        if( !GetInvulnerable() )
+        if ( GetAlive() )
         {
-            m_playerController.DeactivateAllTheCanStuff();
+            if ( !GetInvulnerable() )
+            {
+                m_playerController.LoseControl();
 
+            }
+            base.TakeDamage( othersTransform, damage );
         }
-        base.TakeDamage( othersTransform, damage );
     }
 
     protected override void Die()
     {
         base.Die();
-        m_playerController.DeactivateAllTheCanStuff();
+        DisplayDeathMessage();
+        m_playerController.LoseControl();
+
+    }
+
+    private void DisplayDeathMessage()
+	{
 
         m_youDied.gameObject.SetActive( true );
         Color newColour = m_defaultColour;
@@ -49,9 +58,6 @@ public class PlayerDamageManager : CharacterDamageManager
 
 
         StartCoroutine( YouDiedFade( 1f, 3f ) );
-        
-        m_animator.SetTrigger( an_death );
-
     }
 
     //Override exclusive to player
