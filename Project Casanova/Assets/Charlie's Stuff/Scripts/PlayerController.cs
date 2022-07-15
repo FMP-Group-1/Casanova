@@ -48,8 +48,6 @@ public class PlayerController : MonoBehaviour
     [Range( 2, 5 )]
     private float m_rotationSpeed = 4f;
     //How far to check for the ground
-    [SerializeField, Range( 0.01f, 0.5f )]
-    float m_fallCheckRange = 0.05f;
 
     //Being Public is not finalised. This will become a getter/setter (Called in Melee.cs)
     public Vector3 m_playerVelocity;
@@ -81,8 +79,6 @@ public class PlayerController : MonoBehaviour
     private int an_dodge;
     private int an_beganFalling;
 
-    [SerializeField]
-    private LayerMask m_groundLayer;
 
 
     [Header("Debug Stuff")]
@@ -98,6 +94,18 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField]
     private Text m_debugText;
+
+
+
+    [Header("Raycast Shit")]
+    [SerializeField, Range(0, 1)]
+    private float m_sphereRadius;
+    [SerializeField]
+    private LayerMask m_landableLayers;
+
+    private Vector3 m_rayOrigin;
+    private Vector3 m_rayDirection;
+
 
     /**************************************************************************************
     * Type: Function
@@ -253,7 +261,24 @@ public class PlayerController : MonoBehaviour
         return moveDirection;
     }
 
-	/**************************************************************************************
+
+
+
+
+
+
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Vector3 newVector = m_rayOrigin;
+        newVector.y = m_rayOrigin.y - m_sphereRadius;
+        Debug.DrawRay( m_rayOrigin, m_rayDirection * m_sphereRadius, Color.yellow );//* m_fallCheckRange );
+        Gizmos.DrawSphere( m_rayOrigin + m_rayDirection * m_sphereRadius, m_sphereRadius );
+
+    }
+
+    /**************************************************************************************
     * Type: Function
     * 
     * Name: Update
@@ -264,11 +289,38 @@ public class PlayerController : MonoBehaviour
     *
     * Description: Update everything
     **************************************************************************************/
-	void Update()
+    void Update()
     {
-        float yVelocityLastFrame = m_playerVelocity.y;
 
-        //If you're grounded or CAN'T fall (eg. Attacking in air)
+        //1st line of update for info if it is needed
+        float yVelocityLastFrame = m_playerVelocity.y;
+        
+        #region Moving
+        // MOVE FIRST
+        //If you're even touching Inputs at all
+        if( GetMoveDirection() != Vector3.zero )
+        {
+            if( m_canMove )
+            {
+                //We are touching inputs AND we can move so, move
+                //Multiply the move direction by  (speed * move amount) rather than just speed, and do it all before delta time
+                m_controller.Move( ( GetMoveDirection() * ( m_playerSpeed * m_moveAmount ) ) * Time.deltaTime );
+            }
+            //Rotate player when moving, not when Idle
+            if( m_canRotate )
+            {
+                //Get the angle where your inputs are, relative to camera
+                float targetAngle = Mathf.Atan2( GetPlayerInput().x, GetPlayerInput().z ) * Mathf.Rad2Deg + m_cameraMainTransform.eulerAngles.y;
+                //Pass that into a quaternion
+                Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
+                //Rotate to it using rotation speed
+                transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * m_rotationSpeed );
+            }
+        }
+        #endregion
+
+        #region Falling
+        //If you're grounded or "CAN'T" fall (eg. Attacking in air)
         if( m_isGrounded || !m_canFall )
         {
             //Velocity is 0
@@ -286,36 +338,39 @@ public class PlayerController : MonoBehaviour
                 m_playerVelocity.y = -20;
             }
         }
+        #endregion
 
-        //Jumping
-        if( m_jumpControl.action.triggered && m_isGrounded )
-        {
-            //Jumped
-            m_animator.SetTrigger( an_jumped );
-            m_playerVelocity.y = m_jumpForce;
-        }
-
-        //Use the character Controller's isGrounded functionality to fill a member variable for readability
-        #region Landing Raycast
-
+        #region Grounded Check
         //Raycast for the groundpound
         RaycastHit hit;
 
-        if( Physics.Raycast( transform.position, -transform.up, out hit, m_fallCheckRange/*, m_groundLayer */) 
-            && m_playerVelocity.y < 0f )
-        {
-            //Raycast hits Grounds
+        //lil but up 
+        m_rayOrigin = transform.position - m_rayDirection * 0.1f;
+        m_rayDirection = Vector3.down;
 
-            //Now, were we going downwards? (To stop it when jumping)
-            
-            transform.position = hit.point;
-            m_isGrounded = true;
-            m_playerVelocity.y = 0;
-            m_animator.SetBool(an_inAir, false);  //Which in turns set velocity to 0
+
+
+        //If the raycast hits something below you
+        //AND going DOWN, or just Flat walkin ( So it don't trigger on a jump)
+        if( Physics.SphereCast( m_rayOrigin, m_sphereRadius, m_rayDirection, out hit, m_sphereRadius, m_landableLayers ))
+        {
+            Debug.DrawLine( hit.point, hit.point + Vector3.right );
+            Debug.DrawLine( hit.point, hit.point + Vector3.back );
+            m_debugText.text = "RAYCAST HIT";
+            if (m_playerVelocity.y <= 0f)
+            {
+
+                m_debugText.text += "\nPlayer Velocity <= 0, so Grounded";
+                transform.position = hit.point;
+                m_isGrounded = true;
+                m_playerVelocity.y = 0;
+                m_animator.SetBool( an_inAir, false );  
+            }
 
         }
         else // If raycast does not hit ground or velocity is not DOWN
         {
+            m_debugText.text = "RAYCAST FAIL";
             m_isGrounded = false;
             m_animator.SetBool( an_inAir, true );
         }
@@ -325,14 +380,33 @@ public class PlayerController : MonoBehaviour
             m_isGrounded = true;
 		}*/
 
+        //You were stationary or going up (You can go from Up 1 to Down -1 in a single frame)
+        if( yVelocityLastFrame >= 0f && m_playerVelocity.y < 0f )
+        {
+            BeginFalling();
+        }
+
         #endregion
 
+        #region Jumping
+        //Jumping
+        if( m_jumpControl.action.triggered && m_isGrounded )
+        {
+            //Jumped
+            m_animator.SetTrigger( an_jumped );
+            m_playerVelocity.y = m_jumpForce;
+        }
+		#endregion
+		
 
-            
 
 
 
-       
+
+
+
+
+
         //If grounded, reset in air
         if( m_isGrounded )
         {
@@ -355,43 +429,19 @@ public class PlayerController : MonoBehaviour
             Dodge();
         }
 
-        //If you're even touching Inputs at all
-        if ( GetMoveDirection() != Vector3.zero )
-        {
-            if ( m_canMove )
-            {
-                //We are touching inputs AND we can move so, move
-                //Multiply the move direction by  (speed * move amount) rather than just speed, and do it all before delta time
-                m_controller.Move( ( GetMoveDirection() * ( m_playerSpeed * m_moveAmount ) ) * Time.deltaTime  );
-            }
-            //Rotate player when moving, not when Idle
-            if ( m_canRotate )
-            {
-                //Get the angle where your inputs are, relative to camera
-                float targetAngle = Mathf.Atan2( GetPlayerInput().x, GetPlayerInput().z ) * Mathf.Rad2Deg + m_cameraMainTransform.eulerAngles.y;
-                //Pass that into a quaternion
-                Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
-                //Rotate to it using rotation speed
-                transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * m_rotationSpeed );
-            }
-        }
 
 
 
 
-        if( yVelocityLastFrame >= 0f && m_playerVelocity.y < 0f )
-        {
-            //m_debugText.text += "\nBALLS";
-            BeginFalling();
-        }
 
 
-        /////////////
-        /// Debug ///
-        /////////////
 
-        //Rotate the Current Direction line renderer
-        m_currentDirectionFaced.SetPosition( 0, transform.position );
+		/////////////
+		/// Debug ///
+		/////////////
+		#region Directional Line Renderers
+		//Rotate the Current Direction line renderer
+		m_currentDirectionFaced.SetPosition( 0, transform.position );
         Vector3 facedDirection = transform.position + transform.forward;
         m_currentDirectionFaced.SetPosition( 1, facedDirection );
 
@@ -407,12 +457,12 @@ public class PlayerController : MonoBehaviour
         m_inputDirectionVisual.SetPosition( 0, transform.position );
         Vector3 inputDirection = transform.position + m_previousDirection;
         m_inputDirectionVisual.SetPosition( 1, inputDirection );
+		#endregion
+	}
 
-    }
 
 
-
-    private void BeginFalling() 
+	private void BeginFalling() 
     { 
         m_animator.SetTrigger( an_beganFalling );
     }

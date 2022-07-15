@@ -363,7 +363,7 @@ public class MeleeController : MonoBehaviour
         while( timer < m_timeToGrow )
 		{
 
-            Debug.Log( m_sphereColliderTransform.localScale );
+            //Debug.Log( m_sphereColliderTransform.localScale );
             m_sphereColliderTransform.localScale = Vector3.Lerp( m_sphereColliderTransform.localScale, MaxSize, (timer/m_timeToGrow) );
             timer += Time.deltaTime;
 
