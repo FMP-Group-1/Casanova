@@ -319,24 +319,14 @@ public class PlayerController : MonoBehaviour
         }
         #endregion
 
-        #region Falling
-        //If you're grounded or "CAN'T" fall (eg. Attacking in air)
-        if( m_isGrounded || !m_canFall )
+        #region Jumping
+        //Jumping
+        if ( m_jumpControl.action.triggered && m_isGrounded )
         {
-            //Velocity is 0
-            m_playerVelocity.y = 0f;
-        }
-        //If you are falling, but not at terminal velocity, 
-        else if( m_playerVelocity.y > -20 && m_canFall )
-        {
-            //Accelerate
-            m_playerVelocity.y += m_gravityValue * Time.deltaTime;
-
-            //if the addition goes UNDER -20, set it to it, and now you'll never come back into this section
-            if( m_playerVelocity.y < -20 )
-            {
-                m_playerVelocity.y = -20;
-            }
+            //Jumped
+            Debug.Log( "Jumped" );
+            m_animator.SetTrigger( an_jumped );
+            m_playerVelocity.y = m_jumpForce;
         }
         #endregion
 
@@ -348,80 +338,104 @@ public class PlayerController : MonoBehaviour
         m_rayOrigin = transform.position - m_rayDirection * 0.1f;
         m_rayDirection = Vector3.down;
 
+        Debug.DrawRay( m_rayOrigin, m_rayDirection * m_sphereRadius, Color.yellow );//* m_fallCheckRange );
 
-
-        //If the raycast hits something below you
-        //AND going DOWN, or just Flat walkin ( So it don't trigger on a jump)
-        if( Physics.SphereCast( m_rayOrigin, m_sphereRadius, m_rayDirection, out hit, m_sphereRadius, m_landableLayers ))
+		//If the raycast hits something below you
+		//AND going DOWN, or just Flat walkin ( So it don't trigger on a jump)
+		//if ( Physics.SphereCast( m_rayOrigin, m_sphereRadius, m_rayDirection, out hit, m_sphereRadius, m_landableLayers ) )
+		//{
+		if ( Physics.Raycast( m_rayOrigin, m_rayDirection, out hit, m_sphereRadius, m_landableLayers )
+            && ( m_playerVelocity.y <= 0f ))
         {
-            Debug.DrawLine( hit.point, hit.point + Vector3.right );
-            Debug.DrawLine( hit.point, hit.point + Vector3.back );
+		    Debug.DrawLine( hit.point, hit.point + Vector3.right );
+            Debug.DrawLine( hit.point, hit.point + Vector3.back ); 
+            
+            
             m_debugText.text = "RAYCAST HIT";
-            if (m_playerVelocity.y <= 0f)
-            {
+            
 
-                m_debugText.text += "\nPlayer Velocity <= 0, so Grounded";
-                transform.position = hit.point;
-                m_isGrounded = true;
-                m_playerVelocity.y = 0;
-                m_animator.SetBool( an_inAir, false );  
-            }
+                //m_debugText.text += "\nPlayer Velocity <= 0, so Grounded";
 
+
+            m_controller.Move( Vector3.down );
+
+
+
+            // transform.position = hit.point;
+            m_isGrounded = true;
+            m_canFall = false;
+            Debug.Log( "Grounded" );
+            //m_debugText.text += "\nLine 365 / Land";
+            m_playerVelocity.y = 0;
+            m_animator.SetBool( an_inAir, false );
         }
         else // If raycast does not hit ground or velocity is not DOWN
         {
-            m_debugText.text = "RAYCAST FAIL";
+            //m_debugText.text = "RAYCAST FAIL";
+            m_canFall = true;
             m_isGrounded = false;
             m_animator.SetBool( an_inAir, true );
         }
+
         /*
         if( m_controller.isGrounded )
 		{
             m_isGrounded = true;
 		}*/
 
-        //You were stationary or going up (You can go from Up 1 to Down -1 in a single frame)
-        if( yVelocityLastFrame >= 0f && m_playerVelocity.y < 0f )
-        {
-            BeginFalling();
-        }
-
         #endregion
 
-        #region Jumping
-        //Jumping
-        if( m_jumpControl.action.triggered && m_isGrounded )
+
+
+
+        //Debug.Log( "Velocity Last Frame: " + yVelocityLastFrame + "\nCurrent Velocity:   " + m_playerVelocity.y );
+        #region Falling
+
+        //If "CAN'T" fall (eg. Attacking in air)
+        if ( !m_canFall )
         {
-            //Jumped
-            m_animator.SetTrigger( an_jumped );
-            m_playerVelocity.y = m_jumpForce;
+            //Velocity is 0
+            m_playerVelocity.y = 0f;
         }
-		#endregion
-		
-
-
-
-
-
-
-
-
-
-        //If grounded, reset in air
-        if( m_isGrounded )
+        //If you are falling, but not at terminal velocity, 
+        else if ( m_playerVelocity.y > -20 && m_canFall )
         {
+            //Accelerate
+            m_playerVelocity.y += m_gravityValue * Time.deltaTime;
 
-            m_animator.SetBool( an_inAir, false );
-        } 
-        
-
+            //if the addition goes UNDER -20, set it to it, and now you'll never come back into this section
+            if ( m_playerVelocity.y < -20 )
+            {
+                m_playerVelocity.y = -20;
+            }
+        }
 
         //And if you can fall, move that way.
-        if( m_canFall )
+        if ( m_canFall )
         {
             //Velocity is only used for falling and jumping
             m_controller.Move( m_playerVelocity * Time.deltaTime );
         }
+
+        //You were stationary or going up (You can go from Up 1 to Down -1 in a single frame)
+        if ( ( yVelocityLastFrame >= 0f && m_playerVelocity.y < 0f ) /*&& !m_isGrounded*/ )
+        {
+            m_debugText.text += "\nBEGIN FALL";
+            BeginFalling();
+        }
+
+
+        #endregion
+
+
+
+
+
+
+
+
+
+
 
         //Dodging
         if ( m_dodgeControl.action.triggered && m_canDodge )
