@@ -57,7 +57,7 @@ public class PlayerDamageManager : CharacterDamageManager
         m_youDied.color = newColour;
 
 
-        StartCoroutine( YouDiedFade( 1f, 3f ) );
+        StartCoroutine( YouDiedFade( 3f ) );
     }
 
     //Override exclusive to player
@@ -66,13 +66,13 @@ public class PlayerDamageManager : CharacterDamageManager
         yield return new WaitForSeconds( timer );
         SetInvulnerable( false );
         
-        m_playerController.ResetAllTheCanStuff();
+        m_playerController.RegainControl();
 
     }
 
 
 
-    IEnumerator YouDiedFade( float aValue, float aTime )
+    IEnumerator YouDiedFade( float aTime )
     {
         for( float alpha = 0.0f; alpha < 1.0f; alpha += Time.deltaTime / aTime )
         {

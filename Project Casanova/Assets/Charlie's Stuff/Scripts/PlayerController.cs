@@ -7,6 +7,15 @@ using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
+    public enum PlayerState
+	{
+        Menu,
+        Game
+	}
+
+    [SerializeField]
+    private PlayerState m_playerState = PlayerState.Menu;
+
     //Input actions
     [SerializeField]
     [Tooltip( "Movement Control Input" )]
@@ -78,6 +87,7 @@ public class PlayerController : MonoBehaviour
     private int an_jumped;
     private int an_dodge;
     private int an_beganFalling;
+    private int an_yVelocity;
 
 
 
@@ -171,6 +181,7 @@ public class PlayerController : MonoBehaviour
         an_jumped = Animator.StringToHash( "jumped" );
         an_dodge = Animator.StringToHash( "dodge" );
         an_beganFalling = Animator.StringToHash( "beganFalling" );
+        an_yVelocity = Animator.StringToHash( "yVelocity" );
     }
 
     /**************************************************************************************
@@ -211,40 +222,54 @@ public class PlayerController : MonoBehaviour
 
         #region Snapping Movement
 
-        float dampingTime = m_dampTime;
-        if( m_canMove )
+        //Only update value when on ground
+        if ( m_canMove )
         {
+
             //Get the absolute values of movement inputs (0-1) for use in a 1d Blend tree animations
-            m_moveAmount = Mathf.Clamp01( Mathf.Abs( GetPlayerInput().x ) + Mathf.Abs( GetPlayerInput().z ) );
+            m_moveAmount =  Mathf.Clamp01( Mathf.Abs( GetPlayerInput().x ) + Mathf.Abs( GetPlayerInput().z ) ) ;
 
-            if (m_moveAmount > 0 && m_moveAmount < 0.001f )
-		    {
-                m_moveAmount = 0f;
-		    }
-
-
-            if( m_moveAmount > 0.05f && m_moveAmount < 0.55f )
+            //Get the absolut (0 to 1) values and set to the 3 levels of 0.0, 0.5 and 1.0
+            if ( m_moveAmount >= 0.0f && m_moveAmount <= 0.05f )
+            {
+                m_moveAmount = 0.0f;
+            }
+            else if ( m_moveAmount > 0.05f && m_moveAmount < 0.55f )
             {
                 m_moveAmount = 0.5f;
             }
-            else if( m_moveAmount >= 0.55f )
+            else if ( m_moveAmount >= 0.55f )
             {
-                m_moveAmount = 1f;
+                m_moveAmount = 1.0f ;
             }
-            else if( m_moveAmount <= 0.05f )
 
+            float animatorCurrentMovingSpeed = m_animator.GetFloat( an_movingSpeed );
+
+            //If animator value not already 0 (Dampening down), and no input and but the animator value is NEARLY 0
+            if ( animatorCurrentMovingSpeed != 0 && m_moveAmount <= 0.05f && animatorCurrentMovingSpeed <= 0.005f )
             {
-                m_moveAmount = 0f;
+                //set exactly to 0
+                m_animator.SetFloat( an_movingSpeed, 0.0f );
+            }
+            else // if not, just do normal damp time stuff
+            {
+                //Animator variable set to move amount
+                m_animator.SetFloat( an_movingSpeed, m_moveAmount, m_dampTime, Time.deltaTime );
+            }
+
+            //If we are in the air, set the animator value to 0. May just overwrite all above but better than MANY else ifs? Right?
+            if ( !m_isGrounded )
+            { 
+                m_animator.SetFloat( an_movingSpeed, 0.0f );
             }
         }
-        else
-		{
-            m_moveAmount = 0f;
-            dampingTime = 0f;
-		}
+        else //We CAN'T move - lost control of some kind, or in combat anim
+        {
+            m_animator.SetFloat( an_movingSpeed, 0.0f );
+        }
 
-        //Animator variable set to move amount
-        m_animator.SetFloat( an_movingSpeed, m_moveAmount, dampingTime, Time.deltaTime );
+
+
 
         #endregion
 
@@ -264,7 +289,17 @@ public class PlayerController : MonoBehaviour
 
 
 
+    private void Activate()
+	{
+        m_playerState = PlayerState.Game;
+        m_animator.SetTrigger( "WakeUp" );
 
+
+        gameObject.GetComponent<MeleeController>().enabled = true;
+
+        gameObject.GetComponent<CharacterController>().enabled = true;
+        gameObject.GetComponent<PlayerDamageManager>().enabled = true;
+    }
 
 
 
@@ -291,28 +326,60 @@ public class PlayerController : MonoBehaviour
     **************************************************************************************/
     void Update()
     {
+        switch ( m_playerState )
+		{
+            case PlayerState.Menu:
+
+                break;
+            case PlayerState.Game:
+                PlayerGameUpdate();
+                break;
+
+        }
+	}
+
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: PlayerGameUpdate
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Update everything for the player during GAME PLAY (so not menu)
+    **************************************************************************************/
+    private void PlayerGameUpdate()
+	{
+
 
         //1st line of update for info if it is needed
         float yVelocityLastFrame = m_playerVelocity.y;
-        
+
+        m_animator.SetFloat( an_yVelocity, m_playerVelocity.y );
+
         #region Moving
         // MOVE FIRST
         //If you're even touching Inputs at all
-        if( GetMoveDirection() != Vector3.zero )
+        if ( GetMoveDirection() != Vector3.zero )
         {
-            if( m_canMove )
+            if ( m_canMove )
             {
                 //We are touching inputs AND we can move so, move
                 //Multiply the move direction by  (speed * move amount) rather than just speed, and do it all before delta time
                 m_controller.Move( ( GetMoveDirection() * ( m_playerSpeed * m_moveAmount ) ) * Time.deltaTime );
             }
+
             //Rotate player when moving, not when Idle
-            if( m_canRotate )
+            if ( m_canRotate )
             {
                 //Get the angle where your inputs are, relative to camera
                 float targetAngle = Mathf.Atan2( GetPlayerInput().x, GetPlayerInput().z ) * Mathf.Rad2Deg + m_cameraMainTransform.eulerAngles.y;
                 //Pass that into a quaternion
                 Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
+
+
                 //Rotate to it using rotation speed
                 transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * m_rotationSpeed );
             }
@@ -364,7 +431,7 @@ public class PlayerController : MonoBehaviour
             // transform.position = hit.point;
             m_isGrounded = true;
             m_canFall = false;
-            Debug.Log( "Grounded" );
+            //Debug.Log( "Grounded" );
             //m_debugText.text += "\nLine 365 / Land";
             m_playerVelocity.y = 0;
             m_animator.SetBool( an_inAir, false );
@@ -427,25 +494,11 @@ public class PlayerController : MonoBehaviour
 
         #endregion
 
-
-
-
-
-
-
-
-
-
-
         //Dodging
         if ( m_dodgeControl.action.triggered && m_canDodge )
         {
             Dodge();
         }
-
-
-
-
 
 
 
@@ -474,8 +527,7 @@ public class PlayerController : MonoBehaviour
 		#endregion
 	}
 
-
-
+    
 	private void BeginFalling() 
     { 
         m_animator.SetTrigger( an_beganFalling );
@@ -530,13 +582,14 @@ public class PlayerController : MonoBehaviour
 
     public void LoseControl()
     {
+        //m_animator.SetFloat( an_movingSpeed, 0.0f );
         m_canRotate = false;
         m_canMove = false;
         m_canDodge = false;
         m_canFall = false;
     }
 
-    public void ResetAllTheCanStuff()
+    public void RegainControl()
 	{
         m_canRotate = true;
         m_canMove = true;
