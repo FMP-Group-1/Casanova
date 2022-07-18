@@ -19,6 +19,8 @@ public class AIManager : MonoBehaviour
     private AttackZoneManager m_attackZoneManager;
 
     private bool m_canAttack = true;
+    [SerializeField]
+    private bool m_useSpawnManager = true;
 
     [SerializeField]
     [Range(0, 30)]
@@ -65,7 +67,10 @@ public class AIManager : MonoBehaviour
         EventManager.WakeEnemiesEvent += WakeGroup;
         EventManager.AlertEnemiesEvent += AlertGroup;
 
-        //RegisterEnemies();
+        if (!m_useSpawnManager)
+        {
+            RegisterEnemies();
+        }
     }
 
     void Update()

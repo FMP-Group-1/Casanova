@@ -107,6 +107,14 @@ public class EnemyAI : MonoBehaviour
 
     // Combat Relevant Variables
     [Header("Combat Values")]
+    private bool m_lookAtPlayer = false;
+    [SerializeField]
+    [Tooltip("The speed the AI will rotate when attempting to look at a target")]
+    private float m_turnSpeed = 75.0f;
+    // Todo: Rename and re-do description for m_rotationBuffer
+    [SerializeField]
+    [Tooltip("The difference from current rotation to target before the AI will lock rotation")]
+    private float m_rotationBuffer = 5.0f;
     [SerializeField]
     [Tooltip("The distance from the player that the AI will stop")]
     private float m_playerStoppingDistance = 1.75f;
@@ -262,6 +270,10 @@ public class EnemyAI : MonoBehaviour
 
     private void Update()
     {
+        if (m_lookAtPlayer)
+        {
+            TurnToLookAt(m_player.gameObject);
+        }
         switch (m_mainState)
         {
             // Idle State
@@ -387,6 +399,11 @@ public class EnemyAI : MonoBehaviour
     {
         // Update zone handler to track status of zones
         m_zoneHandler.Update();
+
+        if (m_lookAtPlayer)
+        {
+            TurnToLookAt(m_player.gameObject);
+        }
 
         // Condition to help space out attacks a bit more
         if (m_aiManager.CanAttack() && m_combatState != CombatState.Pursuing && m_currentAttackingType == AttackingType.Active)
@@ -875,6 +892,44 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.isStopped = true;
     }
 
+    private void TurnToLookAt(GameObject targetObj)
+    {
+        // Getting dir from enemy to player
+        Vector3 dirToPlayer = (m_player.transform.position - transform.position).normalized;
+        float targetAngle = Vector3.SignedAngle(dirToPlayer, Vector3.forward, Vector3.down);
+        float angleFrom = Vector3.SignedAngle(dirToPlayer, transform.forward, Vector3.down);
+
+        Vector3 currentEulerAngles = transform.eulerAngles;
+
+        // Wrapping angle back to 360
+        if (targetAngle < 0.0f)
+        {
+            targetAngle = 360.0f - targetAngle * -1.0f;
+        }
+
+        // Todo: Redo this diff check, difference should never be more than 180
+        float angleDiff = Mathf.Abs(currentEulerAngles.y - targetAngle);
+
+        if (angleDiff > m_rotationBuffer)
+        {
+            // Checking whether it's quicker to rotate clockwise or counter-clockwise
+            if (angleFrom > 0)
+            {
+                currentEulerAngles.y += m_turnSpeed * Time.deltaTime;
+            }
+            else
+            {
+                currentEulerAngles.y -= m_turnSpeed * Time.deltaTime;
+            }
+
+            transform.eulerAngles = currentEulerAngles;
+        }
+        else
+        {
+            transform.LookAt(new Vector3(targetObj.transform.position.x, transform.position.y, targetObj.transform.position.z));
+        }
+    }
+
     private void RadialRun()
     {
         Vector3 offset;
@@ -939,9 +994,6 @@ public class EnemyAI : MonoBehaviour
             }
             case AttackMode.Both:
             {
-                // Todo: This needs more work to make the quick attack work
-                m_navMeshAgent.speed = m_runSpeed;
-                m_navMeshAgent.stoppingDistance = 1.5f;
                 StartQuickAttackAnim();
                 break;
             }
@@ -1535,6 +1587,7 @@ public void TakeDamage( float damageToTake )
         m_animController.SetTrigger(an_walk);
         m_navMeshAgent.speed = m_walkSpeed;
         m_navMeshAgent.updateRotation = true;
+        m_lookAtPlayer = false;
         m_lastUsedAnimTrigger = an_walk;
     }
 
@@ -1545,6 +1598,7 @@ public void TakeDamage( float damageToTake )
         m_navMeshAgent.isStopped = false;
         m_navMeshAgent.speed = m_strafeSpeed;
         m_navMeshAgent.updateRotation = false;
+        m_lookAtPlayer = true;
 
         switch (dirToStrafe)
         {
@@ -1573,6 +1627,7 @@ public void TakeDamage( float damageToTake )
         m_animController.SetTrigger(an_walkBack);
         m_navMeshAgent.speed = m_walkSpeed;
         m_navMeshAgent.updateRotation = false;
+        m_lookAtPlayer = true;
         m_lastUsedAnimTrigger = an_walkBack;
     }
 
@@ -1582,6 +1637,7 @@ public void TakeDamage( float damageToTake )
         m_animController.SetTrigger(an_run);
         m_navMeshAgent.speed = m_runSpeed;
         m_navMeshAgent.updateRotation = true;
+        m_lookAtPlayer = false;
         m_lastUsedAnimTrigger = an_run;
     }
 
@@ -1590,6 +1646,7 @@ public void TakeDamage( float damageToTake )
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(an_idle);
         m_navMeshAgent.updateRotation = true;
+        m_lookAtPlayer = false;
         m_lastUsedAnimTrigger = an_idle;
     }
 
@@ -1598,6 +1655,7 @@ public void TakeDamage( float damageToTake )
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(an_combatIdle);
         m_navMeshAgent.updateRotation = false;
+        m_lookAtPlayer = true;
         m_lastUsedAnimTrigger = an_combatIdle;
     }
 
@@ -1606,14 +1664,16 @@ public void TakeDamage( float damageToTake )
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(an_attack);
         m_navMeshAgent.updateRotation = false;
+        m_lookAtPlayer = false;
         m_lastUsedAnimTrigger = an_attack;
     }
 
     private void StartQuickAttackAnim()
     {
-        m_navMeshAgent.isStopped = false;
+        m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(an_quickAttack);
         m_navMeshAgent.updateRotation = false;
+        m_lookAtPlayer = true;
         m_lastUsedAnimTrigger = an_quickAttack;
     }
 
@@ -1622,6 +1682,7 @@ public void TakeDamage( float damageToTake )
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(an_heavyAttack);
         m_navMeshAgent.updateRotation = false;
+        m_lookAtPlayer = false;
         m_lastUsedAnimTrigger = an_heavyAttack;
     }
 
@@ -1633,6 +1694,7 @@ public void TakeDamage( float damageToTake )
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(animTrigger);
         m_navMeshAgent.updateRotation = false;
+        m_lookAtPlayer = true;
         m_lastUsedAnimTrigger = animTrigger;
     }
 
@@ -1644,6 +1706,7 @@ public void TakeDamage( float damageToTake )
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(animTrigger);
         m_navMeshAgent.updateRotation = false;
+        m_lookAtPlayer = false;
         m_lastUsedAnimTrigger = animTrigger;
     }
 
@@ -1652,6 +1715,7 @@ public void TakeDamage( float damageToTake )
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(an_sleep);
         m_navMeshAgent.updateRotation = false;
+        m_lookAtPlayer = false;
         m_lastUsedAnimTrigger = an_sleep;
     }
 
@@ -1660,6 +1724,7 @@ public void TakeDamage( float damageToTake )
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(an_death);
         m_navMeshAgent.updateRotation = false;
+        m_lookAtPlayer = false;
         m_lastUsedAnimTrigger = an_death;
     }
 
@@ -1726,6 +1791,12 @@ public void TakeDamage( float damageToTake )
     {
         return m_viewAngle;
     }
+
+    public float GetEulerAngles()
+    {
+        return transform.eulerAngles.y;
+    }
+
     /*
     public float GetHealth()
     {
