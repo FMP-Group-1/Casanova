@@ -28098,7 +28098,7 @@ ParticleSystemRenderer:
   m_RenderMode: 0
   m_SortMode: 0
   m_MinParticleSize: 0
-  m_MaxParticleSize: 0.5
+  m_MaxParticleSize: 1
   m_CameraVelocityScale: 0
   m_VelocityScale: 0
   m_LengthScale: 2
@@ -28203,7 +28203,7 @@ ParticleSystem:
     startLifetime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 1
+      scalar: 3
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -28256,7 +28256,7 @@ ParticleSystem:
     startSpeed:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 2
+      scalar: 0.75
       minScalar: 5
       maxCurve:
         serializedVersion: 2
@@ -28688,7 +28688,7 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    maxNumParticles: 1000
+    maxNumParticles: 100
     size3D: 0
     rotation3D: 0
     gravityModifier:
@@ -28748,7 +28748,7 @@ ParticleSystem:
     serializedVersion: 6
     enabled: 1
     type: 4
-    angle: 14.34
+    angle: 9.73
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
     radiusThickness: 1
@@ -28834,7 +28834,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 0.17
+      value: 0.2
       mode: 0
       spread: 0
       speed:
@@ -28893,7 +28893,7 @@ ParticleSystem:
     arc:
       value: 360
       mode: 0
-      spread: 0
+      spread: 0.3
       speed:
         serializedVersion: 2
         minMaxState: 0
@@ -28953,7 +28953,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 10
+      scalar: 20
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -29070,13 +29070,13 @@ ParticleSystem:
         m_Curve:
         - serializedVersion: 3
           time: 0
-          value: 0.46154022
-          inSlope: 2
-          outSlope: 2
+          value: 0.30769044
+          inSlope: 0.75616634
+          outSlope: 0.75616634
           tangentMode: 0
           weightedMode: 0
           inWeight: 0
-          outWeight: 0
+          outWeight: 0.44760352
         - serializedVersion: 3
           time: 1
           value: 1
@@ -29391,9 +29391,38 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 1}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 1, g: 0.86229813, b: 0, a: 1}
-        key1: {r: 0.8207547, g: 0.15528776, b: 0, a: 1}
-        key2: {r: 0.16037738, g: 0.09914651, b: 0.095923826, a: 0}
+        key0: {r: 1, g: 0.86229813, b: 0, a: 0}
+        key1: {r: 0.754717, g: 0.19965854, b: 0.08116763, a: 1}
+        key2: {r: 0.21698111, g: 0.11365624, b: 0.0970274, a: 0}
+        key3: {r: 0.21698111, g: 0.11365624, b: 0.0970274, a: 0}
+        key4: {r: 0, g: 0, b: 0, a: 0}
+        key5: {r: 0, g: 0, b: 0, a: 0}
+        key6: {r: 0, g: 0, b: 0, a: 0}
+        key7: {r: 0, g: 0, b: 0, a: 0}
+        ctime0: 3855
+        ctime1: 16962
+        ctime2: 38357
+        ctime3: 43562
+        ctime4: 0
+        ctime5: 0
+        ctime6: 0
+        ctime7: 0
+        atime0: 0
+        atime1: 15035
+        atime2: 65535
+        atime3: 65535
+        atime4: 0
+        atime5: 0
+        atime6: 0
+        atime7: 0
+        m_Mode: 0
+        m_NumColorKeys: 3
+        m_NumAlphaKeys: 3
+      minGradient:
+        serializedVersion: 2
+        key0: {r: 0.9845997, g: 1, b: 0, a: 1}
+        key1: {r: 0.9433962, g: 0.37047616, b: 0, a: 1}
+        key2: {r: 0.16078432, g: 0.09411765, b: 0.10042102, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
         key5: {r: 0, g: 0, b: 0, a: 0}
@@ -29417,35 +29446,6 @@ ParticleSystem:
         atime7: 0
         m_Mode: 0
         m_NumColorKeys: 3
-        m_NumAlphaKeys: 2
-      minGradient:
-        serializedVersion: 2
-        key0: {r: 1, g: 1, b: 1, a: 1}
-        key1: {r: 1, g: 1, b: 1, a: 1}
-        key2: {r: 0, g: 0, b: 0, a: 0}
-        key3: {r: 0, g: 0, b: 0, a: 0}
-        key4: {r: 0, g: 0, b: 0, a: 0}
-        key5: {r: 0, g: 0, b: 0, a: 0}
-        key6: {r: 0, g: 0, b: 0, a: 0}
-        key7: {r: 0, g: 0, b: 0, a: 0}
-        ctime0: 0
-        ctime1: 65535
-        ctime2: 0
-        ctime3: 0
-        ctime4: 0
-        ctime5: 0
-        ctime6: 0
-        ctime7: 0
-        atime0: 0
-        atime1: 65535
-        atime2: 0
-        atime3: 0
-        atime4: 0
-        atime5: 0
-        atime6: 0
-        atime7: 0
-        m_Mode: 0
-        m_NumColorKeys: 2
         m_NumAlphaKeys: 2
   UVModule:
     serializedVersion: 2
@@ -31898,7 +31898,7 @@ ParticleSystem:
       properties: 0
       emitProbability: 1
   LightsModule:
-    enabled: 1
+    enabled: 0
     ratio: 0.5
     light: {fileID: 1606118450}
     randomDistribution: 1
@@ -32834,7 +32834,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 913719751}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -17.052, y: 18.552, z: -3.02}
+  m_LocalPosition: {x: -17.052, y: 18.57, z: -3.02}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -67349,7 +67349,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 205384983033413686}
-  m_LocalRotation: {x: 0.15614165, y: -4.1007436e-10, z: -6.484377e-11, w: 0.9877347}
+  m_LocalRotation: {x: 0.15614165, y: 4.1007436e-10, z: 6.484377e-11, w: 0.9877347}
   m_LocalPosition: {x: 3.789589, y: 21.34, z: -8.965549}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
@@ -67834,7 +67834,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 529130851429287292}
-  m_LocalRotation: {x: 0.17408219, y: -0.000000025711826, z: 0.0000000045453734, w: 0.98473114}
+  m_LocalRotation: {x: 0.1740822, y: 0.0000000038924606, z: -6.881146e-10, w: 0.98473114}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -67925,7 +67925,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 529130851770757192}
-  m_LocalRotation: {x: 0.13819699, y: 0.000000008520641, z: -0.000000001188935, w: 0.9904048}
+  m_LocalRotation: {x: 0.13819699, y: -0.000000008520641, z: 0.000000001188935, w: 0.9904048}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
