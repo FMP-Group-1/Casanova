@@ -19,6 +19,8 @@ public class AIManager : MonoBehaviour
     private AttackZoneManager m_attackZoneManager;
 
     private bool m_canAttack = true;
+    [SerializeField]
+    private bool m_useSpawnManager = true;
 
     [SerializeField]
     [Range(0, 30)]
@@ -50,6 +52,7 @@ public class AIManager : MonoBehaviour
     {
         // Create the control input
         m_inputs = new DeanControls();
+        m_attackZoneManager = new AttackZoneManager(this);
     }
 
     private void OnEnable()
@@ -60,9 +63,14 @@ public class AIManager : MonoBehaviour
     void Start()
     {
         m_player = GameObject.FindGameObjectWithTag("Player");
-        m_attackZoneManager = new AttackZoneManager(this);
 
-        RegisterEnemies();
+        EventManager.WakeEnemiesEvent += WakeGroup;
+        EventManager.AlertEnemiesEvent += AlertGroup;
+
+        if (!m_useSpawnManager)
+        {
+            RegisterEnemies();
+        }
     }
 
     void Update()
@@ -77,7 +85,7 @@ public class AIManager : MonoBehaviour
         m_canAttack = TotalEnemiesAttacking() < m_maxSimultaneousAttacks;
     }
 
-    private void RegisterEnemies()
+    public void RegisterEnemies()
     {
         foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
         {
@@ -111,21 +119,21 @@ public class AIManager : MonoBehaviour
             enemyToRegister.SetAttackingType(AttackingType.Unassigned);
         }
 
-            // Check to make sure enemy isn't already in list
-            //if (!m_activeAttackers.Contains(enemyToRegister) && !m_passiveAttackers.Contains(enemyToRegister))
-            //{
-            //    // If active attackers isn't at max, add to active attackers, otherwise add to the passive attackers
-            //    if (m_activeAttackers.Count < m_maxActiveAttackers)
-            //    {
-            //        m_activeAttackers.Add(enemyToRegister);
-            //        enemyToRegister.SetAttackingType(AttackingType.Active);
-            //    }
-            //    else
-            //    {
-            //        m_passiveAttackers.Add(enemyToRegister);
-            //        enemyToRegister.SetAttackingType(AttackingType.Passive);
-            //    }
-            //}
+        // Check to make sure enemy isn't already in list
+        //if (!m_activeAttackers.Contains(enemyToRegister) && !m_passiveAttackers.Contains(enemyToRegister))
+        //{
+        //    // If active attackers isn't at max, add to active attackers, otherwise add to the passive attackers
+        //    if (m_activeAttackers.Count < m_maxActiveAttackers)
+        //    {
+        //        m_activeAttackers.Add(enemyToRegister);
+        //        enemyToRegister.SetAttackingType(AttackingType.Active);
+        //    }
+        //    else
+        //    {
+        //        m_passiveAttackers.Add(enemyToRegister);
+        //        enemyToRegister.SetAttackingType(AttackingType.Passive);
+        //    }
+        //}
     }
 
         // Unregister enemy from attacker lists
@@ -208,6 +216,28 @@ public class AIManager : MonoBehaviour
         else if (m_activeAttackers.Count < m_maxActiveAttackers && m_passiveAttackers.Count > 0)
         {
             MakeActiveAttacker(FindClosestPassiveAttacker());
+        }
+    }
+
+    private void WakeGroup(int groupToWake)
+    {
+        foreach(EnemyAI enemy in m_enemyList)
+        {
+            if (enemy.gameObject.activeSelf && enemy.GetSpawnGroup() == groupToWake)
+            {
+                enemy.WakeUpAI();
+            }
+        }
+    }
+
+    private void AlertGroup(int groupToAlert)
+    {
+        foreach (EnemyAI enemy in m_enemyList)
+        {
+            if (enemy.gameObject.activeSelf && enemy.GetSpawnGroup() == groupToAlert)
+            {
+                enemy.SetAIState(AIState.InCombat);
+            }
         }
     }
 

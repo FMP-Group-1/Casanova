@@ -20,9 +20,9 @@ public class ActivePassiveVisualizer : MonoBehaviour
     [SerializeField]
     private Color m_passiveColor = Color.blue;
     [SerializeField]
-    private Color m_activeColor = Color.green;      
+    private Color m_activeColor = Color.green;
     [SerializeField]
-    private Color m_unassignedColor = Color.yellow;    
+    private Color m_unassignedColor = Color.yellow;
 
     void Start()
     {
