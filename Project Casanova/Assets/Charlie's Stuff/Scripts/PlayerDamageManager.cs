@@ -9,6 +9,7 @@ public class PlayerDamageManager : CharacterDamageManager
     private Image m_youDied;
     Color m_defaultColour;
 
+    public Image m_healthBarFill;
 
     private PlayerController m_playerController;
 
@@ -22,7 +23,7 @@ public class PlayerDamageManager : CharacterDamageManager
     // Update is called once per frame
     void Update()
     {
-        
+        m_healthBarFill.fillAmount = GetHealth() / 100;
     }
 
 

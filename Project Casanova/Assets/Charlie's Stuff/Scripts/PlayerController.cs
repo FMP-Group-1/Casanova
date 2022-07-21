@@ -182,6 +182,15 @@ public class PlayerController : MonoBehaviour
         an_dodge = Animator.StringToHash( "dodge" );
         an_beganFalling = Animator.StringToHash( "beganFalling" );
         an_yVelocity = Animator.StringToHash( "yVelocity" );
+
+        if (m_playerState == PlayerState.Menu )
+		{
+            m_animator.SetBool( "MenuState", true );
+		}
+        else
+		{
+            m_animator.SetBool( "MenuState", false );
+        }
     }
 
     /**************************************************************************************
@@ -292,8 +301,9 @@ public class PlayerController : MonoBehaviour
     private void Activate()
 	{
         m_playerState = PlayerState.Game;
-        m_animator.SetTrigger( "WakeUp" );
+        //m_animator.SetTrigger( "WakeUp" );
 
+        m_animator.SetBool( "MenuState", false );
 
         gameObject.GetComponent<MeleeController>().enabled = true;
 
@@ -430,6 +440,7 @@ public class PlayerController : MonoBehaviour
 
             // transform.position = hit.point;
             m_isGrounded = true;
+            m_canDodge = true;
             m_canFall = false;
             //Debug.Log( "Grounded" );
             //m_debugText.text += "\nLine 365 / Land";
@@ -438,6 +449,8 @@ public class PlayerController : MonoBehaviour
         }
         else // If raycast does not hit ground or velocity is not DOWN
         {
+            //Can't dodge in air
+            m_canDodge = false;
             //m_debugText.text = "RAYCAST FAIL";
             m_canFall = true;
             m_isGrounded = false;
@@ -487,7 +500,7 @@ public class PlayerController : MonoBehaviour
         //You were stationary or going up (You can go from Up 1 to Down -1 in a single frame)
         if ( ( yVelocityLastFrame >= 0f && m_playerVelocity.y < 0f ) /*&& !m_isGrounded*/ )
         {
-            m_debugText.text += "\nBEGIN FALL";
+            //m_debugText.text += "\nBEGIN FALL";
             BeginFalling();
         }
 
