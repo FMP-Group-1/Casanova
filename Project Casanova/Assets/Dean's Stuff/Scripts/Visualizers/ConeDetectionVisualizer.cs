@@ -1,3 +1,5 @@
+#if (UNITY_EDITOR)
+
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -70,3 +72,5 @@ public class ConeDetectionVisualizer : Editor
         Handles.DrawLine(targetEnemy.transform.position, targetEnemy.transform.position + viewAngleB * targetEnemy.GetAICheckDist());
     }
 }
+
+#endif

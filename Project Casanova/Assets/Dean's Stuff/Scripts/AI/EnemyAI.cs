@@ -86,7 +86,6 @@ public class EnemyAI : MonoBehaviour
 
     // Patrol Relevant Variables
     [Header("Patrol Values")]
-    private bool m_lookAtPlayerWhileWaking = false;
     [SerializeField]
     [Tooltip("The GameObject which holds the position objects for patrolling")]
     private GameObject m_patrolRoute;
@@ -274,6 +273,7 @@ public class EnemyAI : MonoBehaviour
         {
             TurnToLookAt(m_player.gameObject);
         }
+
         switch (m_mainState)
         {
             // Idle State
@@ -291,10 +291,6 @@ public class EnemyAI : MonoBehaviour
             }
             case AIState.Waking:
             {
-                if (m_lookAtPlayerWhileWaking && !m_isTakingDamage)
-                {
-                    transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
-                }
                 break;
             }
             // Patrol Logic
@@ -400,11 +396,6 @@ public class EnemyAI : MonoBehaviour
         // Update zone handler to track status of zones
         m_zoneHandler.Update();
 
-        if (m_lookAtPlayer)
-        {
-            TurnToLookAt(m_player.gameObject);
-        }
-
         // Condition to help space out attacks a bit more
         if (m_aiManager.CanAttack() && m_combatState != CombatState.Pursuing && m_currentAttackingType == AttackingType.Active)
         {
@@ -492,12 +483,7 @@ public class EnemyAI : MonoBehaviour
             // Maintain the current distance between AI and player
             case CombatState.MaintainDist:
             {
-                TimedZoneCheck();
-                
-                if (!m_isTakingDamage)
-                {
-                    transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
-                }
+                TimedZoneCheck();             
 
                 AiToPlayerRangeCheck();
                 TimedBeginStrafeCheck();
@@ -532,12 +518,6 @@ public class EnemyAI : MonoBehaviour
 
                 BackUp();
                 AiToPlayerRangeCheck();
-                if (!m_isTakingDamage)
-                {
-                    transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
-                }
-                //transform.LookAt(m_player.transform.position);
-
 
                 // AttackCheck needs to be put here because it was causing a loop higher up
                 AttackCheck();
@@ -573,11 +553,6 @@ public class EnemyAI : MonoBehaviour
             // Currently in attack animation
             case CombatState.Attacking:
             {
-                if (!m_isTakingDamage)
-                {
-                    transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
-                }
-
                 // Attack hits
                 if (m_primaryWeaponCollider.enabled && m_primaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) ||
                     m_secondaryWeaponCollider.enabled && m_secondaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds))
@@ -585,7 +560,6 @@ public class EnemyAI : MonoBehaviour
                     m_player.gameObject.GetComponent<CharacterDamageManager>().TakeDamage(transform);
                     DisableCollision();
                 }
-                //transform.LookAt(m_player.transform.position);
                 break;
             }
         }
@@ -762,8 +736,6 @@ public class EnemyAI : MonoBehaviour
                 m_navMeshAgent.destination = m_player.transform.position;
                 m_attackMode = (AttackMode)Random.Range(0, m_attackNum);
 
-                m_attackMode = AttackMode.Both;
-
                 switch(m_attackMode)
                 {
                     case AttackMode.Primary:
@@ -908,7 +880,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         // Todo: Redo this diff check, difference should never be more than 180
-        float angleDiff = Mathf.Abs(currentEulerAngles.y - targetAngle);
+        float angleDiff = currentEulerAngles.y - targetAngle;
 
         if (angleDiff > m_rotationBuffer)
         {
@@ -961,26 +933,12 @@ public class EnemyAI : MonoBehaviour
         }
         Vector3 dir = Vector3.Cross(offset, Vector3.up);
         m_navMeshAgent.SetDestination(transform.position + dir);
-
-        // LookAt so that it looks like actual strafing
-        if (!m_isTakingDamage)
-        {
-            transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
-        }
-        //transform.LookAt(m_player.transform.position);
     }
 
     private void BackUp()
     {
         Vector3 dir = (transform.position - m_player.transform.position).normalized;
         m_navMeshAgent.SetDestination(transform.position + (dir * 2.0f));
-
-        // Keep facing player while back stepping
-        if (!m_isTakingDamage)
-        {
-            transform.LookAt(new Vector3(m_player.transform.position.x, transform.position.y, m_player.transform.position.z));
-        }
-        //transform.LookAt(m_player.transform.position);
     }
 
     private void Attack()
@@ -1073,7 +1031,7 @@ public void TakeDamage( float damageToTake )
 
             // Had to put this setter here to force path recalculation, otherwise AI would attack immediately.
             m_navMeshAgent.SetDestination(m_player.transform.position);
-            m_lookAtPlayerWhileWaking = false;
+            m_lookAtPlayer = false;
         }
         else
         {
@@ -1136,7 +1094,7 @@ public void TakeDamage( float damageToTake )
 
     public void LookAtPlayerOnWake()
     {
-        m_lookAtPlayerWhileWaking = true;
+        m_lookAtPlayer = true;
     }
 
     public void DisableCollision()
