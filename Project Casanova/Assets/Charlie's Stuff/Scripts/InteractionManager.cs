@@ -19,10 +19,11 @@ public class InteractionManager : MonoBehaviour
     TextMeshPro m_text;
 
 
-    bool m_isInteractive = false;
+    private bool m_isInteractive = false;
 
     private void OnEnable()
     {
+        m_interact.action.Enable();
     }
     private void OnDisable()
     {
@@ -35,28 +36,32 @@ public class InteractionManager : MonoBehaviour
 
 	private void Update()
 	{
-		if( m_interact.action.triggered )
+        Debug.Log( "GameObject: " + gameObject.name + " || Bool: " + m_isInteractive );
+
+        if( m_isInteractive )
 		{
-            ActivateInteractable();
-            Destroy( m_text );
-            Destroy(gameObject);
-		}
-	}
+            if( m_interact.action.triggered )
+		    {
+                ActivateInteractable();
+                Destroy(transform.parent.gameObject);
+            }
+        }
+    }
 
 	private void OnTriggerEnter( Collider other )
     {
         if( other.tag == "Player" )
         {
-            m_interact.action.Enable();
             m_text.enabled = true;
+            m_isInteractive = true;
         }
     }
     private void OnTriggerExit( Collider other )
     {
         if( other.tag == "Player" )
         {
+            m_isInteractive = false;
             m_text.enabled = false;
-            m_interact.action.Disable();
         }
     }
 

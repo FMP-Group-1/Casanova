@@ -13,7 +13,6 @@ public class OpenDoor : Interactable
     // Start is called before the first frame update
     void Start()
     {
-
         m_targetAngle -= transform.eulerAngles.y;
     }
 
@@ -25,13 +24,15 @@ public class OpenDoor : Interactable
 
     public override void Interact()
 	{
+        base.Interact();
         //Play door noise?
         //Get the angle where your inputs are, relative to camera
         //Pass that into a quaternion
         Quaternion targetRotation = Quaternion.Euler( 0f, m_targetAngle, 0f );
 
-
+        gameObject.GetComponent<Collider>().enabled = false;
         //Rotate to it using rotation speed
         transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * m_rotationSpeed );
+        transform.rotation = targetRotation;
     }
 }

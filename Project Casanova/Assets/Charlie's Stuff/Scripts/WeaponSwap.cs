@@ -27,7 +27,7 @@ public class WeaponSwap : MonoBehaviour
         yield return new WaitForSeconds( 1f );
         m_swordInHand.SetActive( true );
         m_worldSword.SetActive( false );
-        GetComponent<PlayerController>().RegainControl();
+        //GetComponent<PlayerController>().RegainControl();
 
     }
 }

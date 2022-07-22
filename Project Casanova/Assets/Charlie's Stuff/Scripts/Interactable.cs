@@ -8,10 +8,11 @@ public class Interactable : MonoBehaviour
 
 	private void Start()
 	{
-		m_player = GameObject.FindGameObjectWithTag( "Player" );
 	}
 	public virtual void Interact()
 	{
+		m_player = GameObject.FindGameObjectWithTag( "Player" );
+		m_player.GetComponent<PlayerController>().LoseControl();
 		m_player.GetComponent<Animator>().SetTrigger( "Interact" );
 	}
 }
