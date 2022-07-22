@@ -9,8 +9,6 @@ public class PlayerDamageManager : CharacterDamageManager
     private Image m_youDied;
     Color m_defaultColour;
 
-    public Image m_healthBarFill;
-
     private PlayerController m_playerController;
 
     protected override void Start()
@@ -18,12 +16,12 @@ public class PlayerDamageManager : CharacterDamageManager
         base.Start();
         m_playerController = GetComponent<PlayerController>();
         m_defaultColour = m_youDied.color;
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        m_healthBarFill.fillAmount = GetHealth() / 100;
     }
 
 

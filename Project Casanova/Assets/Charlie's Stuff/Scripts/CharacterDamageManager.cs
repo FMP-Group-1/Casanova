@@ -14,8 +14,9 @@ public class CharacterDamageManager : MonoBehaviour
     //The Animator Component
     protected Animator m_animator;
 
+
     [SerializeField]
-    private HealthDisplay healthDisplay;
+    protected Image m_healthBarFill;
 
     protected int an_getHitTrigger;
     protected int an_death;
@@ -28,14 +29,15 @@ public class CharacterDamageManager : MonoBehaviour
         an_getHitTrigger = Animator.StringToHash( "TakeHit" );
         an_death = Animator.StringToHash( "Death" );
 
-       
+
+        m_healthBarFill.fillAmount = GetHealth() / 100;
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
 
@@ -75,8 +77,7 @@ public class CharacterDamageManager : MonoBehaviour
                 StartCoroutine( ResetInvulnerable( m_invulnerableTime ) );
             }
 
-
-            healthDisplay.UpdateHealth( m_health );
+            m_healthBarFill.fillAmount = GetHealth() / 100;
         }
 
 

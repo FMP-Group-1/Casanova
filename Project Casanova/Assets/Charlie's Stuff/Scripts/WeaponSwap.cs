@@ -9,8 +9,8 @@ public class WeaponSwap : MonoBehaviour
     private GameObject m_worldSword;
     [SerializeField]
     private GameObject m_swordInHand;
-    // Start is called before the first frame update
-    public void DropWeapon( GameObject worldSword )
+
+	public void DropWeapon( GameObject worldSword )
     {
         m_worldSword = worldSword;
         GetComponent<PlayerController>().LoseControl();
@@ -18,11 +18,13 @@ public class WeaponSwap : MonoBehaviour
         m_originalWeapon.GetComponent<Rigidbody>().isKinematic = false;
         m_originalWeapon.transform.parent = null;
 
+        StartCoroutine(EquipSword());
         //m_swordInHand.SetActive(true);
 	}
 
-    private void EquipSword()
+    private IEnumerator EquipSword()
 	{
+        yield return new WaitForSeconds( 1f );
         m_swordInHand.SetActive( true );
         m_worldSword.SetActive( false );
         GetComponent<PlayerController>().RegainControl();
