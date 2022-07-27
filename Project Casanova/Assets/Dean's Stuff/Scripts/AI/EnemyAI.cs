@@ -103,6 +103,7 @@ public class EnemyAI : MonoBehaviour
 
     // Player/Detection Relevant Variables
     private GameObject m_player;
+    private PlayerController m_playerController;
     private Collider m_playerCollider;
 
     // Combat Relevant Variables
@@ -250,6 +251,7 @@ public class EnemyAI : MonoBehaviour
         SetupPatrolRoutes();
 
         m_player = GameObject.FindGameObjectWithTag("Player");
+        m_playerController = m_player.GetComponent<PlayerController>();
         m_playerCollider = m_player.GetComponent<Collider>();
         m_primaryWeaponCollider = m_primaryWeapon.GetComponent<BoxCollider>();
         m_secondaryWeaponCollider = m_secondaryWeapon.GetComponent<BoxCollider>();
@@ -559,7 +561,11 @@ public class EnemyAI : MonoBehaviour
                 if (m_primaryWeaponCollider.enabled && m_primaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) ||
                     m_secondaryWeaponCollider.enabled && m_secondaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds))
                 {
-                    m_player.gameObject.GetComponent<CharacterDamageManager>().TakeDamage(transform);
+                    // Todo: Bad place for triggering the sound, should be done directly from player
+                    m_playerController.GetSoundHandler().PlayDamageSFX();
+
+                    m_player.GetComponent<CharacterDamageManager>().TakeDamage(transform);
+                    m_soundHandler.PlayNormalCollisionSFX();
                     DisableCollision();
                 }
                 break;
@@ -1252,7 +1258,7 @@ public void TakeDamage( float damageToTake )
     {
         bool isColliding = false;
 
-        // If using this method for actual collision, needs a collider.enabled check
+        // Todo: If using this method for actual collision, needs a collider.enabled check
         // But for demonstrating the collision, this is not present currently
 
         if (m_primaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) && m_primaryWeaponCollider.enabled)
@@ -1739,6 +1745,14 @@ public void TakeDamage( float damageToTake )
     public PatrolState GetPatrolState()
     {
         return m_patrolState;
+    }
+
+    public void SetPatrolRoute(GameObject patrolRoute)
+    {
+        m_patrolRoute = patrolRoute;
+        m_patrolRoutePoints.Clear();
+
+        SetupPatrolRoutes();
     }
 
     public float GetViewRadius()

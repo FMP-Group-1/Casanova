@@ -116,6 +116,9 @@ public class PlayerController : MonoBehaviour
     private Vector3 m_rayOrigin;
     private Vector3 m_rayDirection;
 
+    // Dean Note: Adding sound handler here for player sound
+    private PlayerSoundHandler m_soundHandler;
+
 
     /**************************************************************************************
     * Type: Function
@@ -175,6 +178,8 @@ public class PlayerController : MonoBehaviour
         m_cameraMainTransform = Camera.main.transform;
 
         m_playerHealth = gameObject.GetComponent<CharacterDamageManager>();
+
+        m_soundHandler = GetComponent<PlayerSoundHandler>();
 
         an_movingSpeed = Animator.StringToHash( "movingSpeed" );
         an_inAir = Animator.StringToHash( "inAir" );
@@ -581,7 +586,6 @@ public class PlayerController : MonoBehaviour
         //Debug.Log( targetAngle ); 
 
         transform.rotation = Quaternion.Euler( new Vector3( 0f, targetAngle, 0f ) );
-        
     }
     private void ResetDodge()
 	{
@@ -620,4 +624,9 @@ public class PlayerController : MonoBehaviour
 	{
         return m_canDodge;
 	}
+
+    public ref PlayerSoundHandler GetSoundHandler()
+    {
+        return ref m_soundHandler;
+    }
 }

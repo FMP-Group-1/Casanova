@@ -10,10 +10,14 @@ public class OpenDoor : Interactable
     private Transform m_pivotPoint;
     [SerializeField]
     private float m_rotationSpeed;
+
+    private ObjectSoundHandler m_soundHandler;
+
     // Start is called before the first frame update
     void Start()
     {
         m_targetAngle -= transform.eulerAngles.y;
+        m_soundHandler = GetComponent<ObjectSoundHandler>();
     }
 
     // Update is called once per frame
@@ -26,6 +30,7 @@ public class OpenDoor : Interactable
 	{
         base.Interact();
         //Play door noise?
+        m_soundHandler.PlayGateOpenSFX();
         //Get the angle where your inputs are, relative to camera
         //Pass that into a quaternion
         Quaternion targetRotation = Quaternion.Euler( 0f, m_targetAngle, 0f );

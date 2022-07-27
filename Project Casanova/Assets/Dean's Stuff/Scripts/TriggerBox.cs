@@ -39,6 +39,8 @@ public class TriggerBox : MonoBehaviour
                     break;
                 }
             }
+
+            gameObject.SetActive(false);
         }
     }
 }
