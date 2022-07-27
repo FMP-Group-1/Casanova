@@ -36,7 +36,7 @@ public class InteractionManager : MonoBehaviour
 
 	private void Update()
 	{
-        Debug.Log( "GameObject: " + gameObject.name + " || Bool: " + m_isInteractive );
+       // Debug.Log( "GameObject: " + gameObject.name + " || Bool: " + m_isInteractive );
 
         if( m_isInteractive )
 		{
