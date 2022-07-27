@@ -85,6 +85,7 @@ public class CharacterDamageManager : MonoBehaviour
                 m_enemyAI.StopNavMesh();
                 m_enemyAI.DisableCollision();
                 m_enemyAI.SetLastUsedAnimTrigger( an_getHitTrigger );
+                m_enemyAI.PlayDamageSFX();
             }
             //rotate to face the thing, then animate 
 

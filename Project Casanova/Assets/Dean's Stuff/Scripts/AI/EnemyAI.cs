@@ -65,6 +65,7 @@ public enum StrafeDir
 public class EnemyAI : MonoBehaviour
 {
     private AIManager m_aiManager;
+    private EnemySoundHandler m_soundHandler;
 
     private NavMeshAgent m_navMeshAgent;
     private int m_spawnGroup = 0;
@@ -242,6 +243,7 @@ public class EnemyAI : MonoBehaviour
 
         m_navMeshAgent = GetComponent<NavMeshAgent>();
         m_animController = GetComponent<Animator>();
+        m_soundHandler = GetComponent<EnemySoundHandler>();
 
         m_navMeshAgent.speed = m_walkSpeed;
 
@@ -1025,18 +1027,11 @@ public void TakeDamage( float damageToTake )
 
     public void ChangeStateFromWake()
     {
-        if (m_playerDetectionEnabled)
-        {
-            SetAIState(AIState.InCombat);
+        SetAIState(AIState.InCombat);
 
-            // Had to put this setter here to force path recalculation, otherwise AI would attack immediately.
-            m_navMeshAgent.SetDestination(m_player.transform.position);
-            m_lookAtPlayer = false;
-        }
-        else
-        {
-            SetAIState(AIState.Patrolling);
-        }
+        // Had to put this setter here to force path recalculation, otherwise AI would attack immediately.
+        m_navMeshAgent.SetDestination(m_player.transform.position);
+        m_lookAtPlayer = false;
 
         m_healthManager.SetInvulnerable(false);
     }
@@ -1708,6 +1703,12 @@ public void TakeDamage( float damageToTake )
         m_animController.speed = m_prevAnimSpeed;
     }
 
+    public void PlayDamageSFX()
+    {
+        // Todo: Placeholder Function, need to flesh out the logic fully
+        m_soundHandler.PlayDamageSFX();
+    }
+
     public ZoneType GetZoneTypeFromAttackType()
     {
         if(m_currentAttackingType == AttackingType.Passive)
@@ -1774,6 +1775,11 @@ public void TakeDamage( float damageToTake )
     public float GetAgentHeight()
     {
         return m_navMeshAgent.height;
+    }
+
+    public EnemySoundHandler GetSoundHandler()
+    {
+        return m_soundHandler;
     }
 
     public CharacterDamageManager GetHealthManager()
