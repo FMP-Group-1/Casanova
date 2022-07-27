@@ -43,6 +43,7 @@ public class EnemyDamageManager : CharacterDamageManager
             m_enemyAI.StopNavMesh();
             m_enemyAI.DisableCollision();
             m_enemyAI.SetLastUsedAnimTrigger( an_getHitTrigger );
+            m_enemyAI.PlayDamageSFX();
 
             //Check base stuff after as that is where it checks for death, where as above, overwrites with get hurt
             base.TakeDamage( othersTransform, damage );
