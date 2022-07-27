@@ -43,7 +43,7 @@ public class PlayerController : MonoBehaviour
     //Move Speed
     [SerializeField]
     [Tooltip("How fast player runs")]
-    [Range( 3, 8 )]
+    [Range( 0.0f, 8.0f )]
     private float m_playerSpeed = 5.0f;
     [SerializeField]
     [Tooltip( "Player jump force" ), Range( 1.0f, 15.0f )]

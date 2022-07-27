@@ -54,6 +54,7 @@ public class EnemyDamageManager : CharacterDamageManager
     {
         m_enemyAI.SetAIState( AIState.Dead );
         m_enemyAI.UnregisterAttacker();
+        gameObject.GetComponent<Collider>().enabled = false;
         StartCoroutine( DissolveEnemy( 2f ) );
 
         base.Die();
@@ -67,5 +68,11 @@ public class EnemyDamageManager : CharacterDamageManager
         {
             mat.SetFloat( "_FadeStartTime", Time.time );
         }
+    }
+
+    private IEnumerator DespawnEnemy()
+	{
+
+        yield return new WaitForSeconds( 1f );
     }
 }
