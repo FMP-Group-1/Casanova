@@ -30,13 +30,13 @@ public class SwordCollisionManager : MonoBehaviour
             //Asleep? Wake it up
             if ( enemy.GetState() == AIState.Sleeping )
             {
-                enemy.WakeUpAI( WakeTrigger.Attack );
+                enemy.WakeUpAI();
             }
 
             //Then hurt them
             if (enemy.GetState() != AIState.Dead )
 			{
-                enemy.TakeDamage( m_swordDamage );
+                enemy.GetHealthManager().TakeDamage( transform, m_swordDamage );
             }
         }
     }

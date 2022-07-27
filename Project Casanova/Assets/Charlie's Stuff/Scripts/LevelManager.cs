@@ -27,8 +27,6 @@ public class LevelManager : MonoBehaviour
     {
         //Hide Mouse and lock to window
       
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.lockState = CursorLockMode.Locked;
         /* Cursor.visible = true;*/
     }
 

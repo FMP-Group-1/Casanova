@@ -413,6 +413,45 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Other"",
+            ""id"": ""7fb43246-5b17-4a52-a2b7-088b95740a21"",
+            ""actions"": [
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""9d067ed2-c276-4509-8c50-67d171ca31a5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""22a1a170-198a-439a-a921-6a880dc0568c"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cf775b24-de2f-48da-ab49-f50c048b8fc4"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -432,6 +471,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Level = asset.FindActionMap("Level", throwIfNotFound: true);
         m_Level_Reset = m_Level.FindAction("Reset", throwIfNotFound: true);
         m_Level_Quit = m_Level.FindAction("Quit", throwIfNotFound: true);
+        // Other
+        m_Other = asset.FindActionMap("Other", throwIfNotFound: true);
+        m_Other_Interact = m_Other.FindAction("Interact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -634,6 +676,39 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         }
     }
     public LevelActions @Level => new LevelActions(this);
+
+    // Other
+    private readonly InputActionMap m_Other;
+    private IOtherActions m_OtherActionsCallbackInterface;
+    private readonly InputAction m_Other_Interact;
+    public struct OtherActions
+    {
+        private @PlayerControls m_Wrapper;
+        public OtherActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Interact => m_Wrapper.m_Other_Interact;
+        public InputActionMap Get() { return m_Wrapper.m_Other; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(OtherActions set) { return set.Get(); }
+        public void SetCallbacks(IOtherActions instance)
+        {
+            if (m_Wrapper.m_OtherActionsCallbackInterface != null)
+            {
+                @Interact.started -= m_Wrapper.m_OtherActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_OtherActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_OtherActionsCallbackInterface.OnInteract;
+            }
+            m_Wrapper.m_OtherActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
+            }
+        }
+    }
+    public OtherActions @Other => new OtherActions(this);
     public interface ICombatActions
     {
         void OnLightAtatck(InputAction.CallbackContext context);
@@ -651,5 +726,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     {
         void OnReset(InputAction.CallbackContext context);
         void OnQuit(InputAction.CallbackContext context);
+    }
+    public interface IOtherActions
+    {
+        void OnInteract(InputAction.CallbackContext context);
     }
 }
