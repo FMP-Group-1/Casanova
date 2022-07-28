@@ -3,7 +3,17 @@ guid: e70caa7f59dd861458f1b565b4b175a9
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: PainedSilver
+    second: {fileID: 2100000, guid: 20a6fbf97659ca5478275891061d3f95, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: PainedWood
+    second: {fileID: 2100000, guid: ffe1d3822972721489dac4561bfd345c, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
