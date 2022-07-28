@@ -346,7 +346,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1896295725392823049}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: e7a232dae03cf9542b9846dda40d90db, type: 3}
   m_Controller: {fileID: 9100000, guid: 85676edffc5a86b42a42036864554dc1, type: 2}
   m_CullingMode: 2
   m_UpdateMode: 0
@@ -6265,6 +6265,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6752581675753654987, guid: b9ab01473b758f34d819a9f448007d36, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6752581675753654998, guid: b9ab01473b758f34d819a9f448007d36, type: 3}
+      propertyPath: m_PresetInfoIsWorld
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []

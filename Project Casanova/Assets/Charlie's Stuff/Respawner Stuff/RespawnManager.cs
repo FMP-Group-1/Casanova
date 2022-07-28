@@ -19,10 +19,20 @@ public class RespawnManager : MonoBehaviour
 
     }
 
+
+    public void SetRespawnPoint( RespawnPoint newRespawnPoint )
+	{
+        currentRespawnPoint = newRespawnPoint; 
+        switch( newRespawnPoint )
+		{
+            case RespawnPoint.Cell:
+                break;
+		}
+	}
     // Update is called once per frame
     void Update()
     {
-        
+        Debug.Log( "Current Respawn Point: " + currentRespawnPoint.ToString() );
     }
 
     public void CompleteCorridor()
