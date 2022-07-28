@@ -12,6 +12,10 @@ public enum RespawnPoint
 }
 public class RespawnManager : MonoBehaviour
 {
+    [SerializeField]
+    private GameObject[] respawnPoints;
+
+    [HideInInspector]
     public static RespawnPoint currentRespawnPoint = RespawnPoint.Cell;
     // Start is called before the first frame update
     void Start()
