@@ -9,6 +9,12 @@ using UnityEngine.AI;
 // Description: Base enemy AI class which handles navigation, behaviour, and animation
 //*******************************************
 
+public enum EnemyType
+{
+    Grunt,
+    Guard
+}
+
 public enum AIState
 {
     Idle,
@@ -69,6 +75,8 @@ public class EnemyAI : MonoBehaviour
 
     private NavMeshAgent m_navMeshAgent;
     private int m_spawnGroup = 0;
+    [SerializeField]
+    private EnemyType m_enemyType = EnemyType.Grunt;
     [SerializeField]
     [Tooltip("AI's Current State")]
     private AIState m_mainState = AIState.Idle;
@@ -1713,6 +1721,11 @@ public void TakeDamage( float damageToTake )
     {
         // Todo: Placeholder Function, need to flesh out the logic fully
         m_soundHandler.PlayDamageSFX();
+    }
+
+    public EnemyType GetEnemyType()
+    {
+        return m_enemyType;
     }
 
     public ZoneType GetZoneTypeFromAttackType()
