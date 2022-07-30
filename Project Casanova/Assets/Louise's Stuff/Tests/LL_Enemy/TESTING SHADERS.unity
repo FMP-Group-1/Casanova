@@ -134,6 +134,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: Grunt
       objectReference: {fileID: 0}
+    - target: {fileID: 1883161860049010565, guid: a21bc339df1a00b48952a2dd492e8044, type: 3}
+      propertyPath: m_RandomAcceleration.y
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1883161860049010565, guid: a21bc339df1a00b48952a2dd492e8044, type: 3}
+      propertyPath: m_ExternalAcceleration.x
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1883161860049010565, guid: a21bc339df1a00b48952a2dd492e8044, type: 3}
+      propertyPath: m_ExternalAcceleration.y
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1883161860049010565, guid: a21bc339df1a00b48952a2dd492e8044, type: 3}
+      propertyPath: m_ExternalAcceleration.z
+      value: 2.5
+      objectReference: {fileID: 0}
     - target: {fileID: 2137218360557279303, guid: a21bc339df1a00b48952a2dd492e8044, type: 3}
       propertyPath: m_RootOrder
       value: 7
