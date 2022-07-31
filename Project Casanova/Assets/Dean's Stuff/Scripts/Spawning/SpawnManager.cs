@@ -2,12 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum EnemyType
-{
-    Grunt,
-    Guard
-}
-
 public class SpawnManager : MonoBehaviour
 {
     private AIManager m_aiManager;

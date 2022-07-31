@@ -415,7 +415,7 @@ MonoBehaviour:
   m_attackNum: 3
   m_primaryWeapon: {fileID: 3392882356838612548}
   m_secondaryWeapon: {fileID: 7967657024663342773}
-  m_playerDetectionEnabled: 1
+  m_playerDetectionEnabled: 0
   m_viewRadius: 7.5
   m_viewAngle: 145
   m_sleepToWakeAnimNum: 2
@@ -489,13 +489,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12634f86da4391548a811b6d291254ae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_damageSFX: {fileID: 8300000, guid: de58066fed41d6e4a9706fc574af5b68, type: 3}
-  m_normalAttackSFX: {fileID: 0}
-  m_normalCollisionSFX: {fileID: 0}
-  m_quickAttackSFX: {fileID: 0}
-  m_quickCollisionSFX: {fileID: 0}
-  m_heavyAttackSFX: {fileID: 0}
-  m_heavyCollisionSFX: {fileID: 0}
 --- !u!82 &6715561916125065828
 AudioSource:
   m_ObjectHideFlags: 0
@@ -552,7 +545,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0

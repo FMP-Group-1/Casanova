@@ -149,6 +149,9 @@ public class MeleeController : MonoBehaviour
             //The triggers now affect the animation played
 
 
+            // Dean Note: Adding sound effect to play here, may need changing, let me know
+            m_playerController.GetSoundHandler().PlayNormalAttackSFX();
+
         }
 
         //rotate Collider sweeper to angle to the sword (ALL THE TIME)
