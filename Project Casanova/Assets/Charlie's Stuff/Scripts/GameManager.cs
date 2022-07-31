@@ -14,6 +14,10 @@ public class GameManager : MonoBehaviour
     {
         m_uiManager = GetComponent<UIManager>();
         m_uiManager.BeginScene();
+
+        EventManager.StartSpawnEnemiesEvent( 0 );
+        EventManager.StartWakeEnemiesEvent( 0 );
+        EventManager.StartSpawnEnemiesEvent( 1 );
     }
 
 

@@ -27,14 +27,14 @@ public class RespawnManager : MonoBehaviour
 
 
     public void SetRespawnPoint( RespawnPoint newRespawnPoint )
-	{
-        currentRespawnPoint = newRespawnPoint; 
+    {
+        currentRespawnPoint = newRespawnPoint;
         switch( newRespawnPoint )
-		{
+        {
             case RespawnPoint.Cell:
                 break;
-		}
-	}
+        }
+    }
     // Update is called once per frame
     void Update()
     {
@@ -54,9 +54,22 @@ public class RespawnManager : MonoBehaviour
 
     public void Respawn()
     {
+        int enumIntValue = (int)currentRespawnPoint;
         m_player.GetComponent<CharacterController>().enabled = false;
-        m_player.transform.position = respawnPoints[ (int)currentRespawnPoint ].position;
+        m_player.transform.position = respawnPoints[ enumIntValue ].position;
         m_player.GetComponent<CharacterController>().enabled = true;
+
+
+
+
+        EventManager.StartSpawnEnemiesEvent( enumIntValue );
+        EventManager.StartWakeEnemiesEvent( enumIntValue );
+        //Prep Next Room
+        EventManager.StartSpawnEnemiesEvent( enumIntValue+1 );
+
+
+
+
     }
 
 
@@ -73,31 +86,5 @@ public class RespawnManager : MonoBehaviour
 
 
 
-
-
-    public void CompleteCorridor()
-    {
-        currentRespawnPoint = RespawnPoint.Hall;
-    }
-    public void CompleteArmory()
-    {
-
-        currentRespawnPoint = RespawnPoint.Armory;
-    }
-    public void CompleteGuardRoom()
-    {
-        currentRespawnPoint = RespawnPoint.GuardRoom;
-    }
-    public void SpawnInArena( int wave )
-    {
-        currentRespawnPoint = RespawnPoint.Arena;
-        switch( wave )
-		{
-            default:
-                break;
-
-            case 1:
-                break;
-		}
-    }
 }
+
