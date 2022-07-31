@@ -12,7 +12,7 @@ public class CheckpointTrigger : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        respawnManager = GameObject.FindGameObjectWithTag( "RespawnManager" ).GetComponent<RespawnManager>();
+        //respawnManager = GameObject.FindGameObjectWithTag( "RespawnManager" ).GetComponent<RespawnManager>();
     }
 
     // Update is called once per frame

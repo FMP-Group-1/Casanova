@@ -13,14 +13,16 @@ public enum RespawnPoint
 public class RespawnManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject[] respawnPoints;
+    private Transform[] respawnPoints;
 
     [HideInInspector]
     public static RespawnPoint currentRespawnPoint = RespawnPoint.Cell;
+
+    private GameObject m_player;
     // Start is called before the first frame update
     void Start()
     {
-
+        m_player = GameObject.FindGameObjectWithTag( "Player" );
     }
 
 
@@ -36,8 +38,42 @@ public class RespawnManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log( "Current Respawn Point: " + currentRespawnPoint.ToString() );
+        //Debug.Log( "Current Respawn Point: " + currentRespawnPoint.ToString() );
     }
+
+
+
+
+
+
+
+
+
+
+
+
+    public void Respawn()
+    {
+        m_player.GetComponent<CharacterController>().enabled = false;
+        m_player.transform.position = respawnPoints[ (int)currentRespawnPoint ].position;
+        m_player.GetComponent<CharacterController>().enabled = true;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void CompleteCorridor()
     {

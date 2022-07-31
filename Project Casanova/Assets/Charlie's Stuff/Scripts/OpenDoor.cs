@@ -6,10 +6,9 @@ public class OpenDoor : Interactable
 {
     [SerializeField]
     private float m_targetAngle;
-    [SerializeField]
-    private Transform m_pivotPoint;
-    [SerializeField]
-    private float m_rotationSpeed;
+
+    [SerializeField, Range(0.0f, 2.0f)]
+    private float m_rotationTime;
     // Start is called before the first frame update
     void Start()
     {
@@ -30,9 +29,25 @@ public class OpenDoor : Interactable
         //Pass that into a quaternion
         Quaternion targetRotation = Quaternion.Euler( 0f, m_targetAngle, 0f );
 
-        gameObject.GetComponent<Collider>().enabled = false;
+        //gameObject.GetComponent<Collider>().enabled = false;
         //Rotate to it using rotation speed
-        transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * m_rotationSpeed );
-        transform.rotation = targetRotation;
+        StartCoroutine(OpenCellDoor(targetRotation));
+
+
+    }
+
+    private IEnumerator OpenCellDoor(Quaternion targetRotation)
+	{
+        yield return new WaitForSeconds( 1.0f );
+
+        
+        float timer = 0f;
+        while (timer < m_rotationTime )
+		{
+            timer += Time.deltaTime;
+            transform.rotation = Quaternion.Slerp( transform.rotation, targetRotation, Time.deltaTime * m_rotationTime );
+            yield return null;
+        }
+        //transform.rotation = targetRotation;
     }
 }
