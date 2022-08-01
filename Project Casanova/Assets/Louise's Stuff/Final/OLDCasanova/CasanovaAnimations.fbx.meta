@@ -47,7 +47,7 @@ ModelImporter:
     second: Dodge Roll
   - first:
       74: 3653273255058068508
-    second: Leave Dodge
+    second: Leave Dodge OLD
   - first:
       74: 4348485665485846014
     second: Death
@@ -113,10 +113,112 @@ ModelImporter:
     second: Air Heavy Groundpound (Mid Air)
   - first:
       74: 7174005904406548871
-    second: Air Heavy Groundpound
+    second: Air Heavy Groundpound OLD
   - first:
       74: -5074501206546859175
-    second: Leave Groundpound
+    second: Leave Groundpound OLD
+  - first:
+      74: -1417443214069099940
+    second: CasanovaAnimations OLD
+  - first:
+      74: -2237677735718047366
+    second: Idle (Loop) OLD
+  - first:
+      74: 8797874688918152569
+    second: Walk (Loop) OLD
+  - first:
+      74: -4359750110535572823
+    second: Walk Turn OLD
+  - first:
+      74: -8350921842908875248
+    second: Run (Loop) OLD
+  - first:
+      74: 4975108590150817163
+    second: Run Turn OLD
+  - first:
+      74: 8928752536198619415
+    second: Jump OLD
+  - first:
+      74: 4350914477921137404
+    second: Fall (Loop) OLD
+  - first:
+      74: 2492927321025186641
+    second: Normal Landing OLD
+  - first:
+      74: 4274220184246791487
+    second: Hard Landing OLD
+  - first:
+      74: -3112874576706968316
+    second: Hit Stagger (Once) OLD
+  - first:
+      74: -5095563706330148656
+    second: Hit Stagger (Loopable) OLD
+  - first:
+      74: -8134617220760866845
+    second: Hit Recovery OLD
+  - first:
+      74: 4855128857979569193
+    second: Dodge Roll OLD
+  - first:
+      74: 1648935679941101798
+    second: Death OLD
+  - first:
+      74: -7988945066836384926
+    second: Go to Heavy/Whirlwind OLD
+  - first:
+      74: -2939437422875365731
+    second: Heavy #1 OLD
+  - first:
+      74: 7899575664283034067
+    second: Leave Heavy #1 OLD
+  - first:
+      74: 8487605172777719577
+    second: Heavy #2 OLD
+  - first:
+      74: -1368690231291969139
+    second: Leave Heavy #2 OLD
+  - first:
+      74: -6049971959409834570
+    second: Light #1 OLD
+  - first:
+      74: 8634787308716448829
+    second: Leave Light #1 OLD
+  - first:
+      74: -7904532482709991375
+    second: Leave Light #2 OLD
+  - first:
+      74: 7473749555658284331
+    second: Light #3 OLD
+  - first:
+      74: 512405540204515468
+    second: Leave Light #3 OLD
+  - first:
+      74: -1146744601093414567
+    second: Whirlwind Charge (Loop) OLD
+  - first:
+      74: -6010749484564491828
+    second: Early Whirlwind Release OLD
+  - first:
+      74: -4526297986694478762
+    second: First Whirlwind OLD
+  - first:
+      74: -7191111984815904934
+    second: Hold Whirlwind (Loop) OLD
+  - first:
+      74: 4021430548608281543
+    second: Release Whirlwind OLD
+  - first:
+      74: 2663907528795272680
+    second: Leave Whirlwind OLD
+  - first:
+      74: 2523264602884752438
+    second: Air Light #1 OLD
+  - first:
+      74: -2674178643905901668
+    second: Air Light #2 OLD
+  - first:
+      74: -2143788872342941340
+    second: Air Heavy Groundpound (Mid Air) OLD
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -129,8 +231,7 @@ ModelImporter:
     resampleCurves: 1
     optimizeGameObjects: 0
     motionNodeName: 
-    rigImportErrors: "Copied Avatar Rig Configuration mis-match. Transform hierarchy
-      does not match:\n\tTransform 'hairstrand3_2_j' for human bone 'Jaw' not found\n"
+    rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
@@ -147,7 +248,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: CasanovaAnimations
+      name: CasanovaAnimations OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1
@@ -176,7 +277,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Idle (Loop)
+      name: Idle (Loop) OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1
@@ -205,7 +306,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Walk (Loop)
+      name: Walk (Loop) OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 505
@@ -234,7 +335,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Walk Turn
+      name: Walk Turn OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1062
@@ -263,7 +364,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Run (Loop)
+      name: Run (Loop) OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 810
@@ -292,7 +393,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Run Turn
+      name: Run Turn OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1144
@@ -321,7 +422,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Jump
+      name: Jump OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 845
@@ -350,7 +451,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Fall (Loop)
+      name: Fall (Loop) OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 870
@@ -379,7 +480,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Normal Landing
+      name: Normal Landing OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 905
@@ -408,7 +509,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Hard Landing
+      name: Hard Landing OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 930
@@ -437,7 +538,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Hit Stagger (Once)
+      name: Hit Stagger (Once) OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1180
@@ -466,7 +567,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Hit Stagger (Loopable)
+      name: Hit Stagger (Loopable) OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1228
@@ -495,7 +596,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Hit Recovery
+      name: Hit Recovery OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1202
@@ -524,7 +625,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Dodge Roll
+      name: Dodge Roll OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1263
@@ -553,7 +654,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Leave Dodge
+      name: Leave Dodge OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1291
@@ -582,7 +683,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Death
+      name: Death OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1315
@@ -611,7 +712,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Go to Heavy/Whirlwind
+      name: Go to Heavy/Whirlwind OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1950
@@ -640,7 +741,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Heavy #1
+      name: Heavy #1 OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1448
@@ -669,7 +770,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Leave Heavy #1
+      name: Leave Heavy #1 OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1645
@@ -698,7 +799,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Heavy #2
+      name: Heavy #2 OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1480
@@ -727,7 +828,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Leave Heavy #2
+      name: Leave Heavy #2 OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1535
@@ -756,7 +857,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Light #1
+      name: Light #1 OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1680
@@ -785,7 +886,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Leave Light #1
+      name: Leave Light #1 OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1728
@@ -843,7 +944,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Leave Light #2
+      name: Leave Light #2 OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1895
@@ -872,7 +973,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Light #3
+      name: Light #3 OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1730
@@ -901,7 +1002,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Leave Light #3
+      name: Leave Light #3 OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1770
@@ -930,7 +1031,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Whirlwind Charge (Loop)
+      name: Whirlwind Charge (Loop) OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1999
@@ -959,7 +1060,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Early Whirlwind Release
+      name: Early Whirlwind Release OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 2145
@@ -988,7 +1089,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: First Whirlwind
+      name: First Whirlwind OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 2030
@@ -1017,7 +1118,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Hold Whirlwind (Loop)
+      name: Hold Whirlwind (Loop) OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 2046
@@ -1046,7 +1147,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Release Whirlwind
+      name: Release Whirlwind OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 2066
@@ -1075,7 +1176,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Leave Whirlwind
+      name: Leave Whirlwind OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 2095
@@ -1104,7 +1205,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Air Light #1
+      name: Air Light #1 OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 2256
@@ -1133,7 +1234,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Air Light #2
+      name: Air Light #2 OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 2305
@@ -1162,7 +1263,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Air Heavy Groundpound (Mid Air)
+      name: Air Heavy Groundpound (Mid Air) OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 2355
@@ -1191,7 +1292,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Air Heavy Groundpound
+      name: Air Heavy Groundpound OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 2369
@@ -1220,7 +1321,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Leave Groundpound
+      name: Leave Groundpound OLD
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 2415
@@ -1294,7 +1395,427 @@ ModelImporter:
   humanDescription:
     serializedVersion: 3
     human: []
-    skeleton: []
+    skeleton:
+    - name: Casanova(Clone)
+      parentName: 
+      position: {x: 0, y: 0, z: 0}
+      rotation: {x: 0, y: 0, z: 0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Casanova
+      parentName: Casanova(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Eyes
+      parentName: Casanova
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Clothes
+      parentName: Casanova
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: HeadAndHands
+      parentName: Casanova
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: Hair
+      parentName: Casanova
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: root_j
+      parentName: Casanova(Clone)
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: -0.00045954247, y: 0, z: -0, w: 0.9999999}
+      scale: {x: 1, y: 1, z: 1}
+    - name: hip_j
+      parentName: root_j
+      position: {x: -1.110223e-18, y: 0.90091735, z: -0.015634812}
+      rotation: {x: 0.048329454, y: 0, z: -0, w: 0.99883145}
+      scale: {x: 1, y: 1, z: 1}
+    - name: waist_j
+      parentName: hip_j
+      position: {x: -1.3766766e-16, y: 0.13083342, z: 5.3290704e-17}
+      rotation: {x: -0.044365633, y: 0, z: -0, w: 0.9990154}
+      scale: {x: 1, y: 1, z: 1}
+    - name: spine1_j
+      parentName: waist_j
+      position: {x: -1.11029765e-17, y: 0.12277447, z: 3.1086245e-17}
+      rotation: {x: -0.035649452, y: 0, z: -0, w: 0.9993644}
+      scale: {x: 1, y: 1, z: 1}
+    - name: chest_j
+      parentName: spine1_j
+      position: {x: 1.1098314e-17, y: 0.12502009, z: -2.3980816e-16}
+      rotation: {x: -0.035261184, y: 0, z: -0, w: 0.99937814}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_shoulder_j
+      parentName: chest_j
+      position: {x: -0.041945465, y: 0.16615431, z: 0.083567105}
+      rotation: {x: -0.0490509, y: -0.1818763, z: 0.72949976, w: 0.6575296}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_upperarm_j
+      parentName: l_shoulder_j
+      position: {x: 0.003384077, y: 0.1996478, z: 0.0032590653}
+      rotation: {x: 0.15820944, y: -0.045450643, z: -0.05173648, w: 0.9850012}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_lowerarm_j
+      parentName: l_upperarm_j
+      position: {x: -1.4210854e-16, y: 0.22552617, z: 0}
+      rotation: {x: 0.023142762, y: -0.0036554025, z: -0.042975754, w: 0.99880135}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_hand_j
+      parentName: l_lowerarm_j
+      position: {x: -8.5265126e-16, y: 0.26258808, z: 1.7763568e-17}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_thumb1_j
+      parentName: l_hand_j
+      position: {x: -0.033249736, y: 0.0381601, z: 0.034673125}
+      rotation: {x: 0.31841877, y: -0.6578559, z: -0.261861, w: 0.63028866}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_thumb2_j
+      parentName: l_thumb1_j
+      position: {x: 1.8651746e-16, y: 0.043269232, z: -1.4210854e-16}
+      rotation: {x: -0.009454504, y: -0.02691263, z: 0.03535162, w: 0.9989678}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_thumb3_j
+      parentName: l_thumb2_j
+      position: {x: 3.5527136e-17, y: 0.03087645, z: 7.105427e-16}
+      rotation: {x: -0.040342268, y: -0.01087912, z: 0.0037678538, w: 0.99911964}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_thumb4_j
+      parentName: l_thumb3_j
+      position: {x: -1.12857545e-17, y: 0.026942775, z: 8.17656e-17}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_indexfinger1_j
+      parentName: l_hand_j
+      position: {x: -0.02693554, y: 0.103934765, z: 0.036218304}
+      rotation: {x: 0.09516629, y: -0.2830387, z: 0.12543546, w: 0.9460965}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_indexfinger2_j
+      parentName: l_indexfinger1_j
+      position: {x: -4.2632563e-16, y: 0.051420417, z: 1.4210854e-16}
+      rotation: {x: -0.0076997634, y: 0.009296892, z: 0.03340776, w: 0.99936897}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_indexfinger3_j
+      parentName: l_indexfinger2_j
+      position: {x: -4.2632563e-16, y: 0.021630313, z: 4.2632563e-16}
+      rotation: {x: 0.0003653041, y: 0.0004344013, z: -0.009791593, w: 0.9999519}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_indexfinger4_j
+      parentName: l_indexfinger3_j
+      position: {x: 2.1116799e-16, y: 0.023481807, z: -6.766865e-17}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_middlefinger1_ctrl
+      parentName: l_hand_j
+      position: {x: -0.015962, y: 0.11160405, z: 0.016911656}
+      rotation: {x: 0.06689884, y: -0.09076555, z: 0.13156424, w: 0.9848741}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_middlefinger2_j
+      parentName: l_middlefinger1_ctrl
+      position: {x: -0.0004300113, y: 0.05091259, z: -0.0014362497}
+      rotation: {x: -0.01683869, y: 0.0078121116, z: 0.040082213, w: 0.999024}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_middlefinger3_j
+      parentName: l_middlefinger2_j
+      position: {x: -4.2632563e-16, y: 0.021872941, z: -3.5527136e-17}
+      rotation: {x: -0.031017685, y: -0.00003522144, z: 0.0103379525, w: 0.9994654}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_middlefinger4_j
+      parentName: l_middlefinger3_j
+      position: {x: -5.791253e-17, y: 0.02652754, z: 3.3398317e-17}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_ringfinger1_j
+      parentName: l_hand_j
+      position: {x: -0.012945551, y: 0.108137995, z: -0.0077734035}
+      rotation: {x: 0.04541267, y: -0.07102987, z: 0.13535972, w: 0.9872033}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_ringfinger2_j
+      parentName: l_ringfinger1_j
+      position: {x: 1.4210854e-16, y: 0.051142443, z: 5.3290704e-17}
+      rotation: {x: -0.00756274, y: 0.007811429, z: 0.035396524, w: 0.9993142}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_ringfinger3_j
+      parentName: l_ringfinger2_j
+      position: {x: 1.4210854e-16, y: 0.019924738, z: 1.4210854e-16}
+      rotation: {x: 0.015233312, y: -0.00075588207, z: -0.038441744, w: 0.99914443}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_ringfinger4_j
+      parentName: l_ringfinger3_j
+      position: {x: 6.439193e-17, y: 0.018980872, z: -6.098382e-18}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_pinkyfinger1_j
+      parentName: l_hand_j
+      position: {x: -0.013621395, y: 0.10230403, z: -0.030146439}
+      rotation: {x: 0.025741661, y: 0.042293727, z: 0.1373521, w: 0.98928416}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_pinkyfinger2_j
+      parentName: l_pinkyfinger1_j
+      position: {x: -5.684342e-16, y: 0.04297584, z: -4.4408918e-17}
+      rotation: {x: -0.00024202277, y: 0.010973039, z: 0.03866972, w: 0.9991918}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_pinkyfinger3_j
+      parentName: l_pinkyfinger2_j
+      position: {x: 1.4210854e-16, y: 0.015931636, z: 4.4408918e-17}
+      rotation: {x: 0.009812254, y: -0.0005286314, z: -0.0044021835, w: 0.99994206}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_pinkyfinger4_j
+      parentName: l_pinkyfinger3_j
+      position: {x: 5.034604e-17, y: 0.01600442, z: 1.5138715e-17}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_shoulder_j
+      parentName: chest_j
+      position: {x: 0.0419455, y: 0.16615494, z: 0.08356721}
+      rotation: {x: -0.6575316, y: 0.7294983, z: 0.18187527, w: -0.049050722}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_upperarm_j
+      parentName: r_shoulder_j
+      position: {x: -0.0033818253, y: -0.1996483, z: -0.0032592728}
+      rotation: {x: 0.15820865, y: -0.04545393, z: -0.051734168, w: 0.9850013}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_lowerarm_j
+      parentName: r_upperarm_j
+      position: {x: 0.000000004991029, y: -0.22552545, z: 0.0000000028743667}
+      rotation: {x: 0.023141555, y: -0.0036549217, z: -0.042971686, w: 0.9988015}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_hand_j
+      parentName: r_lowerarm_j
+      position: {x: -0.0000022825254, y: -0.26258633, z: -0.00000029918516}
+      rotation: {x: -0.0000002708685, y: 0.000002324147, z: -0.00000027300413, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_thumb1_j
+      parentName: r_hand_j
+      position: {x: 0.03324987, y: -0.038159847, z: -0.034673117}
+      rotation: {x: 0.31815335, y: -0.65826577, z: -0.26198173, w: 0.6299446}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_thumb2_j
+      parentName: r_thumb1_j
+      position: {x: 0.00000027675097, y: -0.043270502, z: -0.00000029562474}
+      rotation: {x: -0.009450267, y: -0.026912527, z: 0.035349753, w: 0.9989679}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_thumb3_j
+      parentName: r_thumb2_j
+      position: {x: 0.0000002547948, y: -0.030877152, z: 0.000000136545}
+      rotation: {x: -0.036945485, y: -0.012896512, z: -0.01603111, w: 0.9991055}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_thumb4_j
+      parentName: r_thumb3_j
+      position: {x: -0.0000003743083, y: -0.026942553, z: -0.00000052415}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_indexfinger1_j
+      parentName: r_hand_j
+      position: {x: 0.026936837, y: -0.10393526, z: -0.036218233}
+      rotation: {x: 0.0939717, y: -0.28339705, z: 0.12552246, w: 0.946097}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_indexfinger2_j
+      parentName: r_indexfinger1_j
+      position: {x: -0.00000012619628, y: -0.05142115, z: 0.0000003758238}
+      rotation: {x: -0.0076975496, y: 0.009295668, z: 0.03340936, w: 0.9993689}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_indexfinger3_j
+      parentName: r_indexfinger2_j
+      position: {x: -0.00000012729716, y: -0.021629792, z: 0.0000001901274}
+      rotation: {x: 0.0003653041, y: 0.0004344013, z: -0.009791593, w: 0.9999519}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_indexfinger4_j
+      parentName: r_indexfinger3_j
+      position: {x: 0.00000035985678, y: -0.023482079, z: -0.00000036509013}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_middlefinger1_ctrl
+      parentName: r_hand_j
+      position: {x: 0.01596333, y: -0.111605346, z: -0.01691146}
+      rotation: {x: 0.06689171, y: -0.09076843, z: 0.13157459, w: 0.984873}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_middlefinger2_j
+      parentName: r_middlefinger1_ctrl
+      position: {x: 0.00042956488, y: -0.050912283, z: 0.0014363748}
+      rotation: {x: -0.016844096, y: 0.007812526, z: 0.0400591, w: 0.99902487}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_middlefinger3_j
+      parentName: r_middlefinger2_j
+      position: {x: 0.0000007002904, y: -0.021873474, z: -0.00000021768321}
+      rotation: {x: -0.031017685, y: -0.00003522144, z: 0.0103379525, w: 0.9994654}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_middlefinger4_j
+      parentName: r_middlefinger3_j
+      position: {x: -0.00000059446313, y: -0.026527265, z: 0.00000025590967}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_ringfinger1_j
+      parentName: r_hand_j
+      position: {x: 0.012946867, y: -0.10813945, z: 0.0077736676}
+      rotation: {x: 0.04560118, y: -0.07092856, z: 0.13547666, w: 0.9871858}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_ringfinger2_j
+      parentName: r_ringfinger1_j
+      position: {x: 0.00000017886182, y: -0.051141903, z: -0.00000011512591}
+      rotation: {x: -0.0075607905, y: 0.0078115882, z: 0.035399448, w: 0.9993142}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_ringfinger3_j
+      parentName: r_ringfinger2_j
+      position: {x: 0.00000006785311, y: -0.019924443, z: -0.000000015119182}
+      rotation: {x: 0.015234128, y: -0.0007559002, z: -0.03844336, w: 0.99914443}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_ringfinger4_j
+      parentName: r_ringfinger3_j
+      position: {x: 0.000000025991728, y: -0.018981094, z: 0.00000001392512}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_pinkyfinger1_j
+      parentName: r_hand_j
+      position: {x: 0.013622633, y: -0.10230453, z: 0.030146485}
+      rotation: {x: 0.025739074, y: 0.042293087, z: 0.13735709, w: 0.98928344}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_pinkyfinger2_j
+      parentName: r_pinkyfinger1_j
+      position: {x: 0.000000004225309, y: -0.042976122, z: 0.000000039039175}
+      rotation: {x: -0.0002399366, y: 0.0109727895, z: 0.038694054, w: 0.99919087}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_pinkyfinger3_j
+      parentName: r_pinkyfinger2_j
+      position: {x: -0.0000006490454, y: -0.015931943, z: 0.0000001179161}
+      rotation: {x: 0.009812254, y: -0.0005286314, z: -0.0044021835, w: 0.99994206}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_pinkyfinger4_j
+      parentName: r_pinkyfinger3_j
+      position: {x: 0.00000018196637, y: -0.016004574, z: 0.00000001329132}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: spine2_j
+      parentName: chest_j
+      position: {x: 5.4424547e-17, y: 0.23157345, z: -1.0658141e-16}
+      rotation: {x: 0.3002696, y: 0, z: -0, w: 0.9538544}
+      scale: {x: 1, y: 1, z: 1}
+    - name: neck_j
+      parentName: spine2_j
+      position: {x: -4.8849813e-17, y: 0.08580236, z: 2.842171e-16}
+      rotation: {x: -0.21962972, y: 0, z: -0, w: 0.9755833}
+      scale: {x: 1, y: 1, z: 1}
+    - name: head_j
+      parentName: neck_j
+      position: {x: 5.2409473e-18, y: 0.09228798, z: -1.5987211e-16}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: hairbun5_follicle
+      parentName: head_j
+      position: {x: 1.2796685e-16, y: -1.6758075, z: 0.054085024}
+      rotation: {x: -0.016122729, y: 0, z: -0, w: 0.99987006}
+      scale: {x: 1, y: 1, z: 1}
+    - name: hairbun_crv
+      parentName: hairbun5_follicle
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: hairstrand3_follicle
+      parentName: head_j
+      position: {x: 1.2796685e-16, y: -1.6758075, z: 0.054085024}
+      rotation: {x: -0.016122729, y: 0, z: -0, w: 0.99987006}
+      scale: {x: 1, y: 1, z: 1}
+    - name: hairstrand3_crv
+      parentName: hairstrand3_follicle
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: hairstrand4_follicle
+      parentName: head_j
+      position: {x: 0.022638312, y: -1.6758075, z: 0.049119215}
+      rotation: {x: -0.015748303, y: 0.21423246, z: 0.0034544605, w: 0.97664964}
+      scale: {x: 1, y: 1, z: 1}
+    - name: hairstrand4_crv
+      parentName: hairstrand4_follicle
+      position: {x: -0, y: 0, z: 0}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_eye_j
+      parentName: head_j
+      position: {x: -0.03416843, y: 0.027267167, z: 0.09305536}
+      rotation: {x: -0.016122729, y: -7.7619426e-17, z: -2.8892708e-34, w: 0.99987006}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_upper_eyelid_j
+      parentName: head_j
+      position: {x: -0.03416843, y: 0.027267167, z: 0.09305536}
+      rotation: {x: -0.016122729, y: 0, z: -0, w: 0.99987006}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_lower_eyelid_j
+      parentName: head_j
+      position: {x: -0.03416843, y: 0.027267167, z: 0.09305536}
+      rotation: {x: -0.016122729, y: 0, z: -0, w: 0.99987006}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_eye_j
+      parentName: head_j
+      position: {x: 0.0341684, y: 0.027264401, z: 0.093055494}
+      rotation: {x: -0.016122729, y: 4.8512144e-17, z: -9.630902e-35, w: 0.99987006}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_upper_eyelid_j
+      parentName: head_j
+      position: {x: 0.0341684, y: 0.027264401, z: 0.093055494}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_lower_eyelid_j
+      parentName: head_j
+      position: {x: 0.0341684, y: 0.027264401, z: 0.093055494}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_upperleg_j
+      parentName: hip_j
+      position: {x: -0.112140685, y: -0.08059527, z: 0.013515725}
+      rotation: {x: -0.0020190696, y: 0.012774542, z: 0.99934906, w: 0.03367847}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_lowerleg_j
+      parentName: l_upperleg_j
+      position: {x: 1.7763567e-16, y: 0.3206617, z: 1.2434498e-16}
+      rotation: {x: 0.0015411812, y: -0.00028541184, z: -0.00007935161, w: 0.9999988}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_foot_j
+      parentName: l_lowerleg_j
+      position: {x: -0.000057373098, y: 0.36006793, z: -0.0011117494}
+      rotation: {x: 0.7292844, y: 0.039788, z: 0.009059541, w: 0.68299276}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_ball_j
+      parentName: l_foot_j
+      position: {x: 0.024510238, y: 0.11897129, z: -0.13007818}
+      rotation: {x: -0.000018163639, y: -0.0000034615116, z: -0.03153273, w: 0.9995027}
+      scale: {x: 1, y: 1, z: 1}
+    - name: l_ball_j_end
+      parentName: l_ball_j
+      position: {x: -0, y: 0.100199185, z: -2.8865798e-17}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_upperleg_j
+      parentName: hip_j
+      position: {x: 0.112141, y: -0.080595426, z: 0.013515701}
+      rotation: {x: -0.034674432, y: 0.9991825, z: -0.020622281, w: -0.0025959734}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_lowerleg_j
+      parentName: r_upperleg_j
+      position: {x: -0.00000018513606, y: -0.32066146, z: -0.000000046310582}
+      rotation: {x: -0.014005865, y: -0.00036156294, z: 0.0052692057, w: 0.999888}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_foot_j
+      parentName: r_lowerleg_j
+      position: {x: 0.000057599467, y: -0.36006755, z: 0.0011118102}
+      rotation: {x: 0.7353513, y: 0.019987047, z: 0.021687109, w: 0.67704403}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_ball_j
+      parentName: r_foot_j
+      position: {x: -0.02451, y: -0.118971296, z: 0.13007869}
+      rotation: {x: 3.853776e-34, y: -8.128302e-17, z: -0.031526655, w: 0.99950296}
+      scale: {x: 1, y: 1, z: 1}
+    - name: r_ball_j_end
+      parentName: r_ball_j
+      position: {x: -0.00000025079746, y: -0.10019919, z: 1.1124434e-15}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
     armTwist: 0.5
     foreArmTwist: 0.5
     upperLegTwist: 0.5
@@ -1307,11 +1828,11 @@ ModelImporter:
     hasTranslationDoF: 0
     hasExtraRoot: 1
     skeletonHasParents: 1
-  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  lastHumanDescriptionAvatarSource: {fileID: 9000000, guid: c3b0d5bbd1f9d204aa4288ef22fcddad, type: 3}
   autoGenerateAvatarMappingIfUnspecified: 1
-  animationType: 3
+  animationType: 2
   humanoidOversampling: 1
-  avatarSetup: 1
+  avatarSetup: 2
   addHumanoidExtraRootOnlyWhenUsingAvatar: 1
   additionalBone: 0
   userData: 
