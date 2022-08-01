@@ -14,6 +14,7 @@ public class SpawnManager : MonoBehaviour
     private List<Spawner> m_spawnerList;
     private int m_maxGrunts;
     private int m_maxGuards;
+    private GameObject m_initialSpawnPoint;
 
 
     void Start()
@@ -23,6 +24,7 @@ public class SpawnManager : MonoBehaviour
         m_spawnerList = new List<Spawner>();
         m_gruntPool = new List<GameObject>();
         m_guardPool = new List<GameObject>();
+        m_initialSpawnPoint = GameObject.FindGameObjectWithTag("InitialSpawnPoint");
 
         // Enemy setup
         SetupSpawnerList();
@@ -90,12 +92,12 @@ public class SpawnManager : MonoBehaviour
         // Instantiating enemies based on the max amount needed
         for(int i = 0; i < m_maxGrunts; i++)
         {
-            GameObject newEnemy = Instantiate(m_gruntPrefab);
+            GameObject newEnemy = Instantiate(m_gruntPrefab, m_initialSpawnPoint.transform.position, m_initialSpawnPoint.transform.rotation);
             m_gruntPool.Add(newEnemy);
         }
         for (int i = 0; i < m_maxGuards; i++)
         {
-            GameObject newEnemy = Instantiate(m_guardPrefab);
+            GameObject newEnemy = Instantiate(m_guardPrefab, m_initialSpawnPoint.transform.position, m_initialSpawnPoint.transform.rotation);
             m_guardPool.Add(newEnemy);
         }
 
