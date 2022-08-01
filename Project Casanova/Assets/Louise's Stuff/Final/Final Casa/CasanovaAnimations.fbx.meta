@@ -50,7 +50,7 @@ ModelImporter:
     second: Death
   - first:
       74: -8358006633727901087
-    second: Go to Heavy/Whirlwind
+    second: Go to Heavy
   - first:
       74: 8468016409139532108
     second: Heavy #1
@@ -65,7 +65,7 @@ ModelImporter:
     second: Leave Heavy #2
   - first:
       74: -8099294024616142270
-    second: Light #1
+    second: Light #1 (No Wait)
   - first:
       74: 8559381737849631567
     second: Leave Light #1
@@ -74,10 +74,10 @@ ModelImporter:
     second: Light #2
   - first:
       74: 6181881667548506576
-    second: Leave Light #2 (BROKE)
+    second: Leave Light #2
   - first:
       74: -5374101825793744262
-    second: Light #3
+    second: Light #3 (No Wait)
   - first:
       74: 925657504542421371
     second: Leave Light #3
@@ -107,7 +107,7 @@ ModelImporter:
     second: Air Light #2
   - first:
       74: -7097693785483955580
-    second: Mid-Air Ground pound (Enter)
+    second: Mid-Air Ground pound (OLD)
   - first:
       74: -6970690416115262229
     second: Ground pound (Land)
@@ -132,6 +132,15 @@ ModelImporter:
   - first:
       74: -7747736659498492812
     second: Strafe Left (Loop) (UNUSED)
+  - first:
+      74: 2739760509116561013
+    second: Light #2 (No Wait)
+  - first:
+      74: -7988594926343163632
+    second: Air Light #1 (No Wait)
+  - first:
+      74: -5704998328513111134
+    second: Air Light #2 (No Wait)
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -155,8 +164,24 @@ ModelImporter:
       that will be discarded.\n\t'l_upperarm_j' has translation animation that will
       be discarded.\n\t'r_shoulder_j' has translation animation that will be discarded.\n\t'r_upperarm_j'
       has translation animation that will be discarded.\n"
-    animationRetargetingWarnings: 
-    animationDoRetargetingWarnings: 0
+    animationRetargetingWarnings: "\nRetargeting quality report for clip 'CasanovaAnimations':\n\tLeftLowerLeg
+      average position error 0.5 mm and maximum position error 12.0 mm at time 92:21
+      (90.6%) Frame 2229\n\tRightLowerLeg average position error 1.8 mm and maximum
+      position error 9.4 mm at time 35: 0 (34.1%) Frame 840\n\tLeftUpperArm average
+      position error 10.2 mm and maximum position error 53.8 mm at time 61:16 (60.1%)
+      Frame 1480\n\tLeftLowerArm average position error 10.2 mm and maximum position
+      error 53.9 mm at time 61:16 (60.1%) Frame 1480\n\tLeftHand average position
+      error 10.2 mm and maximum position error 53.8 mm at time 61: 4 (59.7%) Frame
+      1468\n\tRightUpperArm average position error 35.7 mm and maximum position error
+      80.0 mm at time 61:16 (60.1%) Frame 1480\n\tRightLowerArm average position
+      error 35.7 mm and maximum position error 79.8 mm at time 61:16 (60.1%) Frame
+      1480\n\tRightHand average position error 35.6 mm and maximum position error
+      79.7 mm at time 61:16 (60.1%) Frame 1480\n\tHead average position error 9.2
+      mm and maximum position error 53.8 mm at time 61:16 (60.1%) Frame 1480\n\tLeftFoot
+      average orientation error 0.0 deg and maximum orientation error 17.7 deg at
+      time 54:16 (53.3%) Frame 1312\n\tRightFoot average orientation error 0.0 deg
+      and maximum orientation error 9.5 deg at time 54:17 (53.4%) Frame 1313\n"
+    animationDoRetargetingWarnings: 1
     importAnimatedCustomProperties: 0
     importConstraints: 1
     animationCompression: 3
@@ -1113,7 +1138,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Go to Heavy/Whirlwind
+      name: Go to Heavy
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1950
@@ -1317,7 +1342,7 @@ ModelImporter:
       loopBlend: 0
       loopBlendOrientation: 1
       loopBlendPositionY: 1
-      loopBlendPositionXZ: 0
+      loopBlendPositionXZ: 1
       keepOriginalOrientation: 1
       keepOriginalPositionY: 1
       keepOriginalPositionXZ: 0
@@ -1428,7 +1453,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Light #1
+      name: Light #1 (No Wait)
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1680
@@ -1554,7 +1579,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Light #2
+      name: Light #2 (No Wait)
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1705
@@ -1617,7 +1642,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Leave Light #2 (BROKE)
+      name: Leave Light #2
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1916
@@ -1630,10 +1655,10 @@ ModelImporter:
       hasAdditiveReferencePose: 0
       loopTime: 0
       loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
+      loopBlendOrientation: 1
+      loopBlendPositionY: 1
       loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
+      keepOriginalOrientation: 1
       keepOriginalPositionY: 1
       keepOriginalPositionXZ: 0
       heightFromFeet: 0
@@ -1680,7 +1705,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Light #3
+      name: Light #3 (No Wait)
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 1730
@@ -2184,7 +2209,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Air Light #1
+      name: Air Light #1 (No Wait)
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 2256
@@ -2247,7 +2272,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Air Light #2
+      name: Air Light #2 (No Wait)
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 2305
@@ -2310,7 +2335,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Mid-Air Ground pound (Enter)
+      name: Mid-Air Ground pound (OLD)
       takeName: CasanovaAnimations
       internalID: 0
       firstFrame: 2355
