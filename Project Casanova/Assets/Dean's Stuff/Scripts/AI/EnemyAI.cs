@@ -1840,6 +1840,11 @@ public void TakeDamage( float damageToTake )
         return m_currentAttackingType;
     }
 
+    public AttackMode GetAttackMode()
+    {
+        return m_attackMode;
+    }
+
     public void SetAttackingType( AttackingType typeToSet )
     {
         m_currentAttackingType = typeToSet;

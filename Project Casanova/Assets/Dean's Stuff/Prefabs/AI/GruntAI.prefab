@@ -10264,6 +10264,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: -0.0257
       objectReference: {fileID: 0}
+    - target: {fileID: 1540374096262931821, guid: dc52ceac82c031a459d36c0e47b3d5df, type: 3}
+      propertyPath: ColorModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc52ceac82c031a459d36c0e47b3d5df, type: 3}
 --- !u!4 &1441938738555848979 stripped
@@ -10271,6 +10275,28 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1540374095607797416, guid: dc52ceac82c031a459d36c0e47b3d5df, type: 3}
   m_PrefabInstance: {fileID: 99723165216120763}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1441938740013611729 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1540374096262931818, guid: dc52ceac82c031a459d36c0e47b3d5df, type: 3}
+  m_PrefabInstance: {fileID: 99723165216120763}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6320590975744390253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1441938740013611729}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b393cd2f0b67b34c9c2f0a0a2f34a51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parentObject: {fileID: 982664744915213519}
+  m_lightAttackColorMin: {r: 0.44878364, g: 0.9528302, b: 0.33708617, a: 0}
+  m_lightAttackColorMax: {r: 0.089321055, g: 0.38679248, b: 0, a: 0}
+  m_heavyAttackColorMin: {r: 1, g: 0.24056602, b: 0.24056602, a: 0}
+  m_heavyAttackColorMax: {r: 0.2830189, g: 0, b: 0, a: 0}
 --- !u!1001 &1441938738553279698
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10333,3 +10359,25 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 1540374095607797416, guid: dc52ceac82c031a459d36c0e47b3d5df, type: 3}
   m_PrefabInstance: {fileID: 1441938738553279698}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &99723165636293048 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1540374096262931818, guid: dc52ceac82c031a459d36c0e47b3d5df, type: 3}
+  m_PrefabInstance: {fileID: 1441938738553279698}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6295752204405154722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 99723165636293048}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b393cd2f0b67b34c9c2f0a0a2f34a51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_parentObject: {fileID: 982664744915213519}
+  m_lightAttackColorMin: {r: 0.44878364, g: 0.9528302, b: 0.33708617, a: 0}
+  m_lightAttackColorMax: {r: 0.089321055, g: 0.38679248, b: 0, a: 0}
+  m_heavyAttackColorMin: {r: 1, g: 0.24056602, b: 0.24056602, a: 0}
+  m_heavyAttackColorMax: {r: 0.2830189, g: 0, b: 0, a: 0}
