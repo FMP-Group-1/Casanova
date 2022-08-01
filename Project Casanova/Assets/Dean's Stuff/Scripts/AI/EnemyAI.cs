@@ -852,6 +852,11 @@ public class EnemyAI : MonoBehaviour
 
     private void SetupPatrolRoutes()
     {
+        if (m_patrolRoutePoints.Count > 0)
+        {
+            m_patrolRoutePoints.Clear();
+        }
+
         // Adding patrol points to a list that the ai can use to follow
         if (m_patrolRoute != null)
         {
@@ -1092,7 +1097,13 @@ public void TakeDamage( float damageToTake )
 
     public void ResetToSpawn()
     {
-        // Todo: Add reset logic for respawning here
+        m_lastUsedAnimTrigger = an_triggerNone;
+        m_navMeshAgent.speed = m_walkSpeed;
+
+        SetupPatrolRoutes();
+        DisableCollision();
+
+        // Todo: Health Manager reset to go here
     }
 
     public void WakeUpAI()
