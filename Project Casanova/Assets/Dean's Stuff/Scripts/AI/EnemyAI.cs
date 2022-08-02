@@ -566,8 +566,7 @@ public class EnemyAI : MonoBehaviour
             case CombatState.Attacking:
             {
                 // Attack hits
-                if (m_primaryWeaponCollider.enabled && m_primaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) ||
-                    m_secondaryWeaponCollider.enabled && m_secondaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds))
+                if (IsAttackCollidingWithPlayer())
                 {
                     // Todo: Bad place for triggering the sound, should be done directly from player
                     m_playerController.GetSoundHandler().PlayDamageSFX();
@@ -1199,9 +1198,6 @@ public class EnemyAI : MonoBehaviour
         if (m_timeSinceLastAttack >= m_attackTimer && m_aiManager.CanAttack() && m_attackEnabled && m_currentAttackingType == AttackingType.Active)
         {
             SetCombatState(CombatState.MovingToAttack);
-
-            // Disabled for now since control of it has been handed to AI manager
-            //m_aiManager.SetCanAttack(false);
         }
     }
 
@@ -1272,13 +1268,10 @@ public class EnemyAI : MonoBehaviour
     {
         bool isColliding = false;
 
-        // Todo: If using this method for actual collision, needs a collider.enabled check
-        // But for demonstrating the collision, this is not present currently
-
-        if (m_primaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) && m_primaryWeaponCollider.enabled)
+        if (m_primaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) && m_primaryWeaponCollider.enabled ||
+            m_secondaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) && m_secondaryWeaponCollider.enabled)
         {
             isColliding = true;
-            m_primaryWeaponCollider.enabled = false;
         }
 
         return isColliding;
