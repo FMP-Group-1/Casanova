@@ -137,9 +137,6 @@ public class SpawnManager : MonoBehaviour
 
     private GameObject GetAvailableEnemy(EnemyType typeToGet)
     {
-        // Finding an inactive enemy from the desired type for the purpose of spawning
-        // Todo: Review this function, wrong enemy could be used if an inactive enemy isn't found
-        // Also, may be cleaner to create a pool object/list
         GameObject enemyToReturn = m_gruntPool[0];
 
         if (typeToGet == EnemyType.Grunt)

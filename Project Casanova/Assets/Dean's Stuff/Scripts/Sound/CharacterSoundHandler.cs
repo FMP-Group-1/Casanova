@@ -4,9 +4,24 @@ using UnityEngine;
 
 public class CharacterSoundHandler : SoundHandler
 {
+    public virtual void PlayFootstepSFX()
+    {
+
+    }
+
+    public virtual void PlayDodgeSFX()
+    {
+
+    }
+
     public virtual void PlayDamageSFX()
     {
         
+    }
+
+    public virtual void PlayAttackGruntSFX()
+    {
+
     }
 
     public virtual void PlayNormalAttackSFX()

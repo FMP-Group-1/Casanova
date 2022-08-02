@@ -120,7 +120,6 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     [Tooltip("The speed the AI will rotate when attempting to look at a target")]
     private float m_turnSpeed = 75.0f;
-    // Todo: Rename and re-do description for m_rotationBuffer
     [SerializeField]
     [Tooltip("The difference from current rotation to target before the AI will lock rotation")]
     private float m_rotationBuffer = 5.0f;
@@ -159,6 +158,9 @@ public class EnemyAI : MonoBehaviour
     private float m_AIAvoidanceDist = 1.5f;
     private float m_strafeDist;
     private float m_attackTimer;
+    [SerializeField]
+    [Tooltip("The chance that the AI will takeover a zone which is already occupied by another AI.")]
+    private float m_zoneTakeoverChance = 25.0f;
     [SerializeField]
     [Tooltip("Whether the AI can attack. For debugging")]
     private bool m_attackEnabled = true;
@@ -888,21 +890,11 @@ public class EnemyAI : MonoBehaviour
     {
         // Getting dir from enemy to player
         Vector3 dirToPlayer = (m_player.transform.position - transform.position).normalized;
-        float targetAngle = Vector3.SignedAngle(dirToPlayer, Vector3.forward, Vector3.down);
         float angleFrom = Vector3.SignedAngle(dirToPlayer, transform.forward, Vector3.down);
 
         Vector3 currentEulerAngles = transform.eulerAngles;
 
-        // Wrapping angle back to 360
-        if (targetAngle < 0.0f)
-        {
-            targetAngle = 360.0f - targetAngle * -1.0f;
-        }
-
-        // Todo: Redo this diff check, difference should never be more than 180
-        float angleDiff = currentEulerAngles.y - targetAngle;
-
-        if (angleDiff > m_rotationBuffer)
+        if (Mathf.Abs(angleFrom) > m_rotationBuffer)
         {
             // Checking whether it's quicker to rotate clockwise or counter-clockwise
             if (angleFrom > 0)
@@ -1177,15 +1169,9 @@ public class EnemyAI : MonoBehaviour
             }
             SetCombatState(CombatState.Pursuing);
         }
+
         // Player moved closer than strafe range
         // Empty zone, then back up
-
-        //** Old if condition, might not work the way originally intended, leaving commented incase needed again
-        // Using minStrafeRange - (minStrafeRange * 0.25f) to act as a buffer for preventing the AI backing up prematurely
-        // Todo: Could use a rework for the buffer logic, perhaps a member variable?
-        //if (DistanceSqrCheck(m_player, minStrafeRange - (minStrafeRange * 0.25f)) && m_combatState != CombatState.BackingUp)
-
-
         if (DistanceSqrCheck(m_player, minStrafeRange) && m_combatState != CombatState.BackingUp)
         {
             SetCombatState(CombatState.BackingUp);
@@ -1268,8 +1254,8 @@ public class EnemyAI : MonoBehaviour
     {
         bool isColliding = false;
 
-        if (m_primaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) && m_primaryWeaponCollider.enabled ||
-            m_secondaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) && m_secondaryWeaponCollider.enabled)
+        if (m_primaryWeaponCollider.enabled && m_primaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) ||
+            m_secondaryWeaponCollider.enabled && m_secondaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds))
         {
             isColliding = true;
         }
@@ -1312,10 +1298,9 @@ public class EnemyAI : MonoBehaviour
             }
             else if (m_zoneHandler.GetCurrentAttackZone().IsOccupied())
             {
-                // Simple code for now to randomise whether an AI can force another AI out of zone
-                // Todo: Refactor
-                int takeoverChance = Random.Range(0, 2);
-                if (takeoverChance > 0)
+                // Code to randomise whether an AI can force another AI out of zone
+                float takeoverRand = Random.Range(0.0f, 100.0f);
+                if (takeoverRand < m_zoneTakeoverChance)
                 {
                     m_zoneHandler.TakeOverOccupiedZone();
                 }
@@ -1732,7 +1717,6 @@ public class EnemyAI : MonoBehaviour
 
     public void PlayDamageSFX()
     {
-        // Todo: Placeholder Function, need to flesh out the logic fully
         m_soundHandler.PlayDamageSFX();
     }
 

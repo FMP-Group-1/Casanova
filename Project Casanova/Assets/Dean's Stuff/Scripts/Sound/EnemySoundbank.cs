@@ -5,7 +5,13 @@ using UnityEngine;
 public class EnemySoundbank : MonoBehaviour
 {
     [SerializeField]
+    private AudioClip m_footstepSFX;
+    [SerializeField]
+    private AudioClip m_dodgeSFX;
+    [SerializeField]
     private AudioClip m_damageSFX;
+    [SerializeField]
+    private AudioClip m_attackGruntSFX;
     [SerializeField]
     private AudioClip m_normalAttackSFX;
     [SerializeField]
@@ -20,10 +26,29 @@ public class EnemySoundbank : MonoBehaviour
     private AudioClip m_quickCollisionSFX;
     [SerializeField]
     private AudioClip m_deathSFX;
+    [SerializeField]
+    private AudioClip m_wakeSFX;
+    [SerializeField]
+    private AudioClip m_tauntSFX;
+
+    public ref AudioClip GetFootstepSFX()
+    {
+        return ref m_footstepSFX;
+    }
+
+    public ref AudioClip GetDodgeSFX()
+    {
+        return ref m_dodgeSFX;
+    }
 
     public ref AudioClip GetDamageSFX()
     {
         return ref m_damageSFX;
+    }
+
+    public ref AudioClip GetAttackGruntSFX()
+    {
+        return ref m_attackGruntSFX;
     }
 
     public ref AudioClip GetNormalAttackSFX()
@@ -59,5 +84,15 @@ public class EnemySoundbank : MonoBehaviour
     public ref AudioClip GetDeathSFX()
     {
         return ref m_deathSFX;
+    }
+
+    public ref AudioClip GetWakeSFX()
+    {
+        return ref m_wakeSFX;
+    }
+
+    public ref AudioClip GetTauntSFX()
+    {
+        return ref m_tauntSFX;
     }
 }
