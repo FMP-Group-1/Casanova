@@ -1637,7 +1637,7 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(an_attack);
         m_navMeshAgent.updateRotation = false;
-        m_lookAtPlayer = false;
+        m_lookAtPlayer = true;
         m_lastUsedAnimTrigger = an_attack;
     }
 
@@ -1655,7 +1655,7 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(an_heavyAttack);
         m_navMeshAgent.updateRotation = false;
-        m_lookAtPlayer = false;
+        m_lookAtPlayer = true;
         m_lastUsedAnimTrigger = an_heavyAttack;
     }
 
@@ -1721,6 +1721,20 @@ public class EnemyAI : MonoBehaviour
     private void ResumeAnimation()
     {
         m_animController.speed = m_prevAnimSpeed;
+    }
+
+    public void LockAttack()
+    {
+        m_navMeshAgent.isStopped = true;
+        m_navMeshAgent.updateRotation = false;
+        m_lookAtPlayer = false;
+    }
+
+    public void UnlockAttack()
+    {
+        m_navMeshAgent.isStopped = false;
+        m_navMeshAgent.updateRotation = false;
+        m_lookAtPlayer = true;
     }
 
     public void PlayDamageSFX()
