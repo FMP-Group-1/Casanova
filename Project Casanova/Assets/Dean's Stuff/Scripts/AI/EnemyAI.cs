@@ -189,7 +189,7 @@ public class EnemyAI : MonoBehaviour
     private float m_zoneTimer = 0.0f;
     private float m_strafeCheckInterval = 2.0f;
     private float m_strafeTimer = 0.0f;
-    private bool m_isStaggered = false;
+    private bool m_isStaggerable = true;
 
     // Vision Detection Relevant Variables
     [Header("Player Detection Values")]
@@ -892,10 +892,11 @@ public class EnemyAI : MonoBehaviour
         Vector3 dirToPlayer = (m_player.transform.position - transform.position).normalized;
         float angleFrom = Vector3.SignedAngle(dirToPlayer, transform.forward, Vector3.down);
 
-        Vector3 currentEulerAngles = transform.eulerAngles;
 
         if (Mathf.Abs(angleFrom) > m_rotationBuffer)
         {
+            Vector3 currentEulerAngles = transform.eulerAngles;
+
             // Checking whether it's quicker to rotate clockwise or counter-clockwise
             if (angleFrom > 0)
             {
@@ -993,7 +994,7 @@ public class EnemyAI : MonoBehaviour
     private void RecoverFromHit()
     {
         SetCombatState(CombatState.Pursuing);
-        SetStaggered(false);
+        SetStaggerable(true);
     }
 
     /*
@@ -1821,14 +1822,14 @@ public class EnemyAI : MonoBehaviour
         m_aiManager = aiManagerRef;
     }
 
-    public void SetStaggered(bool isStaggered)
+    public void SetStaggerable(bool isStaggered)
     {
-        m_isStaggered = isStaggered;
+        m_isStaggerable = isStaggered;
     }
 
-    public bool IsStaggered()
+    public bool IsStaggerable()
     {
-        return m_isStaggered;
+        return m_isStaggerable;
     }
 
     public AttackingType GetAttackingType()
