@@ -120,7 +120,6 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     [Tooltip("The speed the AI will rotate when attempting to look at a target")]
     private float m_turnSpeed = 75.0f;
-    // Todo: Rename and re-do description for m_rotationBuffer
     [SerializeField]
     [Tooltip("The difference from current rotation to target before the AI will lock rotation")]
     private float m_rotationBuffer = 5.0f;
@@ -160,6 +159,9 @@ public class EnemyAI : MonoBehaviour
     private float m_strafeDist;
     private float m_attackTimer;
     [SerializeField]
+    [Tooltip("The chance that the AI will takeover a zone which is already occupied by another AI.")]
+    private float m_zoneTakeoverChance = 25.0f;
+    [SerializeField]
     [Tooltip("Whether the AI can attack. For debugging")]
     private bool m_attackEnabled = true;
     [SerializeField]
@@ -187,7 +189,7 @@ public class EnemyAI : MonoBehaviour
     private float m_zoneTimer = 0.0f;
     private float m_strafeCheckInterval = 2.0f;
     private float m_strafeTimer = 0.0f;
-    private bool m_isTakingDamage = false;
+    private bool m_isStaggered = false;
 
     // Vision Detection Relevant Variables
     [Header("Player Detection Values")]
@@ -566,8 +568,7 @@ public class EnemyAI : MonoBehaviour
             case CombatState.Attacking:
             {
                 // Attack hits
-                if (m_primaryWeaponCollider.enabled && m_primaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) ||
-                    m_secondaryWeaponCollider.enabled && m_secondaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds))
+                if (IsAttackCollidingWithPlayer())
                 {
                     // Todo: Bad place for triggering the sound, should be done directly from player
                     m_playerController.GetSoundHandler().PlayDamageSFX();
@@ -852,6 +853,11 @@ public class EnemyAI : MonoBehaviour
 
     private void SetupPatrolRoutes()
     {
+        if (m_patrolRoutePoints.Count > 0)
+        {
+            m_patrolRoutePoints.Clear();
+        }
+
         // Adding patrol points to a list that the ai can use to follow
         if (m_patrolRoute != null)
         {
@@ -884,21 +890,11 @@ public class EnemyAI : MonoBehaviour
     {
         // Getting dir from enemy to player
         Vector3 dirToPlayer = (m_player.transform.position - transform.position).normalized;
-        float targetAngle = Vector3.SignedAngle(dirToPlayer, Vector3.forward, Vector3.down);
         float angleFrom = Vector3.SignedAngle(dirToPlayer, transform.forward, Vector3.down);
 
         Vector3 currentEulerAngles = transform.eulerAngles;
 
-        // Wrapping angle back to 360
-        if (targetAngle < 0.0f)
-        {
-            targetAngle = 360.0f - targetAngle * -1.0f;
-        }
-
-        // Todo: Redo this diff check, difference should never be more than 180
-        float angleDiff = currentEulerAngles.y - targetAngle;
-
-        if (angleDiff > m_rotationBuffer)
+        if (Mathf.Abs(angleFrom) > m_rotationBuffer)
         {
             // Checking whether it's quicker to rotate clockwise or counter-clockwise
             if (angleFrom > 0)
@@ -986,11 +982,6 @@ public class EnemyAI : MonoBehaviour
 
         m_navMeshAgent.speed = m_runSpeed;
         m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
-
-        // Telling the AI manager that the attack is over and other AI can attack again
-        // Very basic currently, and will be expanded upon in the future
-        // Disabled for now since control of it is being handled by AI manager
-        //m_aiManager.SetCanAttack(true);
     }
 
     private void ResetAttackTimer()
@@ -1002,28 +993,28 @@ public class EnemyAI : MonoBehaviour
     private void RecoverFromHit()
     {
         SetCombatState(CombatState.Pursuing);
-        m_isTakingDamage = false;
+        SetStaggered(false);
     }
 
     /*
-public void TakeDamage( float damageToTake )
-{
-    if (m_mainState != AIState.Dead)
+    public void TakeDamage( float damageToTake )
     {
-        m_health -= damageToTake;
-
-        if (m_mainState != AIState.Sleeping)
+        if (m_mainState != AIState.Dead)
         {
-            ResetLastUsedAnimTrigger();
-            //PlayDamageAnim();
-        }
+            m_health -= damageToTake;
 
-        if (m_health <= 0.0f)
-        {
-            Die();
+            if (m_mainState != AIState.Sleeping)
+            {
+                ResetLastUsedAnimTrigger();
+                //PlayDamageAnim();
+            }
+
+            if (m_health <= 0.0f)
+            {
+                Die();
+            }
         }
-    }
-}*/
+    }*/
 
     /*
     private void Die()
@@ -1092,7 +1083,13 @@ public void TakeDamage( float damageToTake )
 
     public void ResetToSpawn()
     {
-        // Todo: Add reset logic for respawning here
+        m_lastUsedAnimTrigger = an_triggerNone;
+        m_navMeshAgent.speed = m_walkSpeed;
+
+        SetupPatrolRoutes();
+        DisableCollision();
+
+        // Todo: Health Manager reset to go here
     }
 
     public void WakeUpAI()
@@ -1172,15 +1169,9 @@ public void TakeDamage( float damageToTake )
             }
             SetCombatState(CombatState.Pursuing);
         }
+
         // Player moved closer than strafe range
         // Empty zone, then back up
-
-        //** Old if condition, might not work the way originally intended, leaving commented incase needed again
-        // Using minStrafeRange - (minStrafeRange * 0.25f) to act as a buffer for preventing the AI backing up prematurely
-        // Todo: Could use a rework for the buffer logic, perhaps a member variable?
-        //if (DistanceSqrCheck(m_player, minStrafeRange - (minStrafeRange * 0.25f)) && m_combatState != CombatState.BackingUp)
-
-
         if (DistanceSqrCheck(m_player, minStrafeRange) && m_combatState != CombatState.BackingUp)
         {
             SetCombatState(CombatState.BackingUp);
@@ -1193,9 +1184,6 @@ public void TakeDamage( float damageToTake )
         if (m_timeSinceLastAttack >= m_attackTimer && m_aiManager.CanAttack() && m_attackEnabled && m_currentAttackingType == AttackingType.Active)
         {
             SetCombatState(CombatState.MovingToAttack);
-
-            // Disabled for now since control of it has been handed to AI manager
-            //m_aiManager.SetCanAttack(false);
         }
     }
 
@@ -1266,13 +1254,10 @@ public void TakeDamage( float damageToTake )
     {
         bool isColliding = false;
 
-        // Todo: If using this method for actual collision, needs a collider.enabled check
-        // But for demonstrating the collision, this is not present currently
-
-        if (m_primaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) && m_primaryWeaponCollider.enabled)
+        if (m_primaryWeaponCollider.enabled && m_primaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds) ||
+            m_secondaryWeaponCollider.enabled && m_secondaryWeaponCollider.bounds.Intersects(m_playerCollider.bounds))
         {
             isColliding = true;
-            m_primaryWeaponCollider.enabled = false;
         }
 
         return isColliding;
@@ -1313,10 +1298,9 @@ public void TakeDamage( float damageToTake )
             }
             else if (m_zoneHandler.GetCurrentAttackZone().IsOccupied())
             {
-                // Simple code for now to randomise whether an AI can force another AI out of zone
-                // Todo: Refactor
-                int takeoverChance = Random.Range(0, 2);
-                if (takeoverChance > 0)
+                // Code to randomise whether an AI can force another AI out of zone
+                float takeoverRand = Random.Range(0.0f, 100.0f);
+                if (takeoverRand < m_zoneTakeoverChance)
                 {
                     m_zoneHandler.TakeOverOccupiedZone();
                 }
@@ -1631,7 +1615,7 @@ public void TakeDamage( float damageToTake )
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(an_attack);
         m_navMeshAgent.updateRotation = false;
-        m_lookAtPlayer = false;
+        m_lookAtPlayer = true;
         m_lastUsedAnimTrigger = an_attack;
     }
 
@@ -1649,7 +1633,7 @@ public void TakeDamage( float damageToTake )
         m_navMeshAgent.isStopped = true;
         m_animController.SetTrigger(an_heavyAttack);
         m_navMeshAgent.updateRotation = false;
-        m_lookAtPlayer = false;
+        m_lookAtPlayer = true;
         m_lastUsedAnimTrigger = an_heavyAttack;
     }
 
@@ -1717,9 +1701,22 @@ public void TakeDamage( float damageToTake )
         m_animController.speed = m_prevAnimSpeed;
     }
 
+    public void LockAttack()
+    {
+        m_navMeshAgent.isStopped = true;
+        m_navMeshAgent.updateRotation = false;
+        m_lookAtPlayer = false;
+    }
+
+    public void UnlockAttack()
+    {
+        m_navMeshAgent.isStopped = false;
+        m_navMeshAgent.updateRotation = false;
+        m_lookAtPlayer = true;
+    }
+
     public void PlayDamageSFX()
     {
-        // Todo: Placeholder Function, need to flesh out the logic fully
         m_soundHandler.PlayDamageSFX();
     }
 
@@ -1824,9 +1821,24 @@ public void TakeDamage( float damageToTake )
         m_aiManager = aiManagerRef;
     }
 
+    public void SetStaggered(bool isStaggered)
+    {
+        m_isStaggered = isStaggered;
+    }
+
+    public bool IsStaggered()
+    {
+        return m_isStaggered;
+    }
+
     public AttackingType GetAttackingType()
     {
         return m_currentAttackingType;
+    }
+
+    public AttackMode GetAttackMode()
+    {
+        return m_attackMode;
     }
 
     public void SetAttackingType( AttackingType typeToSet )

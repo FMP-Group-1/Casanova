@@ -332,6 +332,21 @@ public class AIManager : MonoBehaviour
         return total;
     }
 
+    public int RemainingEnemiesInGroup(int groupNum)
+    {
+        int enemiesRemaining = 0;
+
+        for (int i = 0; i < m_enemyList.Count; i++)
+        {
+            if (m_enemyList[i].GetSpawnGroup() == groupNum && m_enemyList[i].gameObject.activeSelf)
+            {
+                enemiesRemaining++;
+            }
+        }
+
+        return enemiesRemaining;
+    }
+
     public AttackZoneManager GetAttackZoneManager()
     {
         return m_attackZoneManager;

@@ -7,6 +7,8 @@ public class PlayerSoundHandler : CharacterSoundHandler
     [SerializeField]
     private AudioClip m_damageSFX;
     [SerializeField]
+    private AudioClip m_attackGruntSFX;
+    [SerializeField]
     private AudioClip m_normalAttackSFX;
     [SerializeField]
     private AudioClip m_normalCollisionSFX;
@@ -29,6 +31,11 @@ public class PlayerSoundHandler : CharacterSoundHandler
     public override void PlayDamageSFX()
     {
         m_audioSource.PlayOneShot(m_damageSFX);
+    }
+
+    public override void PlayAttackGruntSFX()
+    {
+        m_audioSource.PlayOneShot(m_attackGruntSFX);
     }
 
     public override void PlayNormalAttackSFX()
@@ -56,12 +63,12 @@ public class PlayerSoundHandler : CharacterSoundHandler
         m_audioSource.PlayOneShot(m_deathSFX);
     }
 
-    public void PlayFootstepSFX()
+    public override void PlayFootstepSFX()
     {
         m_audioSource.PlayOneShot(m_footstepSFX);
     }
 
-    public void PlayDodgeSFX()
+    public override void PlayDodgeSFX()
     {
         m_audioSource.PlayOneShot(m_dodgeSFX);
     }
