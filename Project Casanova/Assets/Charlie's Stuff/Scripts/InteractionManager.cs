@@ -43,7 +43,7 @@ public class InteractionManager : MonoBehaviour
             if( m_interact.action.triggered )
 		    {
                 ActivateInteractable();
-                Destroy(transform.parent.gameObject);
+                transform.parent.gameObject.SetActive(false);
             }
         }
     }

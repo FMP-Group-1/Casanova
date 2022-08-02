@@ -3,7 +3,12 @@ guid: 1ca5a7d3421d0814cb18940d27e147d1
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: PainedSilver
+    second: {fileID: 2100000, guid: 20a6fbf97659ca5478275891061d3f95, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
