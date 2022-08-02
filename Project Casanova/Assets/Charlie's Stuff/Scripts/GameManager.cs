@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     private RespawnManager m_respawnManager;
     private GateManager m_gateManager;
 
+    private AIManager m_aiManager;
+
     void Start()
     {
         //Very Begining of Game
@@ -28,6 +30,7 @@ public class GameManager : MonoBehaviour
         m_uiManager = GetComponent<UIManager>();
         m_respawnManager = GetComponent<RespawnManager>();
         m_gateManager = GetComponent<GateManager>();
+        m_aiManager = GetComponent<AIManager>();
 
         m_respawnManager.SetRespawnPoint( Room.Cell );
         m_uiManager.BeginScene();
@@ -39,8 +42,12 @@ public class GameManager : MonoBehaviour
 
 	private void Update()
 	{
-		
-	}
+        if ( m_aiManager.RemainingEnemiesInGroup( 0 ) <= 0 )
+		{
+            Debug.Log( "MANDEM BE DED" );
+		}
+
+    }
 
     public void CompleteRoom( Room room )
 	{

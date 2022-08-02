@@ -22,7 +22,7 @@ public class SpawnManager : MonoBehaviour
     void Start()
     {
         // Getting the AI Manager, and creating the lists
-        m_aiManager = GameObject.Find("AIManager").GetComponent<AIManager>();
+        m_aiManager = gameObject.GetComponent<AIManager>();
         m_spawnerList = new List<Spawner>();
         m_gruntPool = new List<GameObject>();
         m_availableGrunts = new List<GameObject>();

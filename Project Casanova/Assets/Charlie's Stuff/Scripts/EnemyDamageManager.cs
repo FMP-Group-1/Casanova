@@ -8,10 +8,14 @@ public class EnemyDamageManager : CharacterDamageManager
     private EnemyAI m_enemyAI;
     private List<Material> m_materialList = new List<Material>();
 
+    private SpawnManager m_spawnManager;
 
     protected override void Start()
     {
         base.Start();
+
+        m_spawnManager = GameObject.FindGameObjectWithTag( "GameController" ).GetComponent<SpawnManager>();
+
         m_enemyAI = GetComponent<EnemyAI>();
 
         int iteration = 0;
@@ -57,7 +61,7 @@ public class EnemyDamageManager : CharacterDamageManager
         m_enemyAI.SetAIState( AIState.Dead );
         m_enemyAI.UnregisterAttacker();
         gameObject.GetComponent<Collider>().enabled = false;
-        StartCoroutine( DissolveEnemy( 2f ) );
+        StartCoroutine( DissolveEnemy( 3f ) );
 
         base.Die();
     }
@@ -65,16 +69,50 @@ public class EnemyDamageManager : CharacterDamageManager
     private IEnumerator DissolveEnemy( float time )
 	{
         yield return new WaitForSeconds( time );
+        int iteration = 0;
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
 
+        foreach( Renderer child in renderers )
+        {
+            m_materialList.Add( renderers[ iteration ].material );
+            m_materialList[ iteration ] = renderers[ iteration ].material;
+            m_materialList[ iteration ].SetFloat( "_FadeStartTime", float.MaxValue );
+            m_materialList[ iteration ].SetInt( "_ForceVisible", 0 );
+            iteration++;
+        }
         foreach ( Material mat in m_materialList )
         {
             mat.SetFloat( "_FadeStartTime", Time.time );
         }
+        StartCoroutine(ResetEnemy());
     }
 
-    private IEnumerator DespawnEnemy()
-	{
+    private void ResetShader( )
+    {
+        int iteration = 0;
+        Renderer[] renderers = GetComponentsInChildren<Renderer>();
 
+        foreach( Renderer child in renderers )
+        {
+            m_materialList.Add( renderers[ iteration ].material );
+            m_materialList[ iteration ] = renderers[ iteration ].material;
+            m_materialList[ iteration ].SetFloat( "_FadeStartTime", float.MaxValue );
+            m_materialList[ iteration ].SetInt( "_ForceVisible", 1 );
+            iteration++;
+        }
+    }
+
+    private IEnumerator ResetEnemy()
+	{
         yield return new WaitForSeconds( 1f );
+
+        gameObject.SetActive( false );
+        SetHealth( 100 ); 
+        ResetShader();
+        m_spawnManager.AddToAvailable(gameObject.GetComponent<EnemyAI>());
+        SetInvulnerable(false);
+        SetAlive(true);
+        gameObject.GetComponent<Collider>().enabled = true;
+
     }
 }
