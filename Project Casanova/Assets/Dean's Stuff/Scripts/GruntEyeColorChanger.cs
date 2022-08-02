@@ -7,8 +7,16 @@ public class GruntEyeColorChanger : MonoBehaviour
     private EnemyAI m_parentAI;
 
     [SerializeField]
-    private GameObject m_parentObject;
+    private GameObject m_eye1;
+    [SerializeField]
+    private GameObject m_eye2;
+    [SerializeField]
+    private GameObject m_trail1;
+    [SerializeField]
+    private GameObject m_trail2;
+    [SerializeField]
     private Color m_neutralColorMin;
+    [SerializeField]
     private Color m_neutralColorMax;
     [SerializeField]
     private Color m_lightAttackColorMin;    
@@ -18,20 +26,19 @@ public class GruntEyeColorChanger : MonoBehaviour
     private Color m_heavyAttackColorMin;
     [SerializeField]
     private Color m_heavyAttackColorMax;
-    private ParticleSystem m_particleSystem;
-    private ParticleSystem.MainModule m_particleSettings;
+    private ParticleSystem m_particleEye1;
+    private ParticleSystem m_particleEye2;
+    private ParticleSystem m_particleTrail1;
+    private ParticleSystem m_particleTrail2;
     private CombatState m_prevAIState;
 
     void Start()
     {
-        m_parentAI = m_parentObject.GetComponent<EnemyAI>();
-        m_particleSystem = GetComponent<ParticleSystem>();
-        m_particleSettings = m_particleSystem.main;
-
-        ChangeEyeColor(m_lightAttackColorMin, m_lightAttackColorMax);
-
-        m_neutralColorMin = m_particleSettings.startColor.colorMin;
-        m_neutralColorMax = m_particleSettings.startColor.colorMax;
+        m_parentAI = GetComponent<EnemyAI>();
+        m_particleEye1 = m_eye1.GetComponent<ParticleSystem>();
+        m_particleEye2 = m_eye2.GetComponent<ParticleSystem>();
+        m_particleTrail1 = m_trail1.GetComponent<ParticleSystem>();
+        m_particleTrail2 = m_trail2.GetComponent<ParticleSystem>();
 
         m_prevAIState = m_parentAI.GetCombatState();
     }
@@ -44,13 +51,18 @@ public class GruntEyeColorChanger : MonoBehaviour
     private void ChangeEyeColor(Color min, Color max)
     {
         //ParticleSystem.MinMaxGradient grad = new ParticleSystem.MinMaxGradient(min, max);
-        ParticleSystem.ColorOverLifetimeModule col = m_particleSystem.colorOverLifetime;
+        ParticleSystem.ColorOverLifetimeModule eyeCol1 = m_particleEye1.colorOverLifetime;
+        ParticleSystem.ColorOverLifetimeModule eyeCol2 = m_particleEye2.colorOverLifetime;
+        ParticleSystem.ColorOverLifetimeModule trailCol1 = m_particleTrail1.colorOverLifetime;
+        ParticleSystem.ColorOverLifetimeModule trailCol2 = m_particleTrail2.colorOverLifetime;
 
         Gradient grad = new Gradient();
         grad.SetKeys(new GradientColorKey[] { new GradientColorKey(min, 0.0f), new GradientColorKey(max, 1.0f) }, new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(0.0f, 1.0f) });
 
-        m_particleSettings.startColor = grad;
-        col.color = grad;
+        eyeCol1.color = grad;
+        eyeCol2.color = grad;
+        trailCol1.color = grad;
+        trailCol2.color = grad;
     }
 
     private void TrackAIState()
