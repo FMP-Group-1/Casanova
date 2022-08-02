@@ -53,20 +53,26 @@ public class SpawnManager : MonoBehaviour
         }
 
         // Looping through each group to find out which one uses the most enemies and how many
-        for (int i = 0; i <= totalGroups; i++)
+        for (int i = 0; i < totalGroups; i++)
         {
             int totalGruntsNeeded = 0;
             int totalGuardsNeeded = 0;
 
             foreach(Spawner spawner in m_spawnerList)
             {
-                if (spawner.GetSpawnType() == EnemyType.Grunt && spawner.GetSpawnGroup() == i)
+                if (spawner.GetSpawnType() == EnemyType.Grunt)
                 {
-                    totalGruntsNeeded++;
+                    if (spawner.GetSpawnGroup() == i || spawner.GetSpawnGroup() == i + 1)
+                    {
+                        totalGruntsNeeded++;
+                    }
                 }
                 if (spawner.GetSpawnType() == EnemyType.Guard && spawner.GetSpawnGroup() == i)
                 {
-                    totalGuardsNeeded++;
+                    if (spawner.GetSpawnGroup() == i || spawner.GetSpawnGroup() == i + 1)
+                    {
+                        totalGuardsNeeded++;
+                    }
                 }
             }
 
