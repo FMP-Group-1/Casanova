@@ -187,7 +187,7 @@ public class EnemyAI : MonoBehaviour
     private float m_zoneTimer = 0.0f;
     private float m_strafeCheckInterval = 2.0f;
     private float m_strafeTimer = 0.0f;
-    private bool m_isTakingDamage = false;
+    private bool m_isStaggered = false;
 
     // Vision Detection Relevant Variables
     [Header("Player Detection Values")]
@@ -991,11 +991,6 @@ public class EnemyAI : MonoBehaviour
 
         m_navMeshAgent.speed = m_runSpeed;
         m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
-
-        // Telling the AI manager that the attack is over and other AI can attack again
-        // Very basic currently, and will be expanded upon in the future
-        // Disabled for now since control of it is being handled by AI manager
-        //m_aiManager.SetCanAttack(true);
     }
 
     private void ResetAttackTimer()
@@ -1007,28 +1002,28 @@ public class EnemyAI : MonoBehaviour
     private void RecoverFromHit()
     {
         SetCombatState(CombatState.Pursuing);
-        m_isTakingDamage = false;
+        SetStaggered(false);
     }
 
     /*
-public void TakeDamage( float damageToTake )
-{
-    if (m_mainState != AIState.Dead)
+    public void TakeDamage( float damageToTake )
     {
-        m_health -= damageToTake;
-
-        if (m_mainState != AIState.Sleeping)
+        if (m_mainState != AIState.Dead)
         {
-            ResetLastUsedAnimTrigger();
-            //PlayDamageAnim();
-        }
+            m_health -= damageToTake;
 
-        if (m_health <= 0.0f)
-        {
-            Die();
+            if (m_mainState != AIState.Sleeping)
+            {
+                ResetLastUsedAnimTrigger();
+                //PlayDamageAnim();
+            }
+
+            if (m_health <= 0.0f)
+            {
+                Die();
+            }
         }
-    }
-}*/
+    }*/
 
     /*
     private void Die()
@@ -1833,6 +1828,16 @@ public void TakeDamage( float damageToTake )
     public void SetAIManagerRef( AIManager aiManagerRef )
     {
         m_aiManager = aiManagerRef;
+    }
+
+    public void SetStaggered(bool isStaggered)
+    {
+        m_isStaggered = isStaggered;
+    }
+
+    public bool IsStaggered()
+    {
+        return m_isStaggered;
     }
 
     public AttackingType GetAttackingType()
