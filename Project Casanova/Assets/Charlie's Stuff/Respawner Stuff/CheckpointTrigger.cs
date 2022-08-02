@@ -6,7 +6,7 @@ public class CheckpointTrigger : MonoBehaviour
 {
     [SerializeField]
 
-    private RespawnPoint whatPointThisSets;
+    private Room whatPointThisSets;
 
     RespawnManager respawnManager;
     // Start is called before the first frame update
