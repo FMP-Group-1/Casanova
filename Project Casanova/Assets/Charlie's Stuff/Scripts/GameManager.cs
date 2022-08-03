@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
 
     private AIManager m_aiManager;
 
+    private bool m_roomComplete;
+
     void Start()
     {
         //Very Begining of Game
@@ -42,15 +44,46 @@ public class GameManager : MonoBehaviour
 
 	private void Update()
 	{
-        if ( m_aiManager.RemainingEnemiesInGroup( 0 ) <= 0 )
+        if( !m_roomComplete )
 		{
-            Debug.Log( "MANDEM BE DED" );
-		}
+
+            switch( m_currentRoom )
+		    {
+                case Room.Cell:
+
+                    break;
+
+                case Room.Hall:
+
+                    //If you're in the hall, check if this group is a1l dead
+                    if( m_aiManager.RemainingEnemiesInGroup( 0 ) <= 0 )
+                    {
+                        CompleteRoom( Room.Hall );
+                    }
+                    break;
+                case Room.Armory:
+
+                    //If you're in the hall, check if this group is a1l dead
+                    if( m_aiManager.RemainingEnemiesInGroup( 1 ) <= 0 )
+                    {
+                        CompleteRoom( Room.Armory );
+                    }
+                    break;
+            }
+        }
 
     }
 
-    public void CompleteRoom( Room room )
+    public void EnterRoom( Room room )
 	{
+        m_roomComplete = false;
+        m_currentRoom = room;
+        Debug.Log( m_currentRoom );
+	}
+
+    public void CompleteRoom( Room room )
+    {
+        m_roomComplete = true;
         switch( room )
         {
             case Room.Hall:

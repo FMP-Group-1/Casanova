@@ -20,7 +20,7 @@ public class GateMover : MonoBehaviour
     void Start()
     {
         m_visualGate = transform.GetChild( 0 ).gameObject;
-        OpenGate();
+        //OpenGate();
     }
 
     public void OpenGate()
@@ -47,18 +47,22 @@ public class GateMover : MonoBehaviour
 
     IEnumerator MoveGate( float yTarget, float overTime )
 	{
-        float timeElapsed = 0.0f;
 
         Vector3 currentPosition = m_visualGate.transform.position;
+        
         Vector3 targetPosition = transform.position;
         targetPosition.y += yTarget;
 
+
+        float timeElapsed = 0.0f;
+
         while ( timeElapsed < overTime )
 		{
-            timeElapsed += Time.deltaTime;
 
-            currentPosition.y = Mathf.Lerp( m_visualGate.transform.position.y, targetPosition.y, Time.deltaTime * overTime );
+            currentPosition.y = Mathf.Lerp( m_visualGate.transform.position.y, targetPosition.y, timeElapsed / overTime );
             m_visualGate.transform.position = currentPosition;
+
+            timeElapsed += Time.deltaTime;
 
             yield return null;
         }

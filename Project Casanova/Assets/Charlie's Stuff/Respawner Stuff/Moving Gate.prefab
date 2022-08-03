@@ -59,7 +59,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5abe8126aaacef54885cea467ca53b0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_gateCloseTime: 3
+  m_gateOpenSpeed: 1
+  m_gateCloseSpeed: 4
   m_openYTarget: 5
 --- !u!1001 &4491499831670334984
 PrefabInstance:

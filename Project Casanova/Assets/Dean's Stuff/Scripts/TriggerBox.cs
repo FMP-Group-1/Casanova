@@ -16,6 +16,9 @@ public class TriggerBox : MonoBehaviour
     [SerializeField]
     private int m_triggerGroup;
 
+    [SerializeField]
+    private Room m_roomEntered;
+
     private void OnTriggerEnter( Collider other )
     {
         // Using OnTriggerEnter to tell the event manager to send the relevant message to subscribers
@@ -39,6 +42,9 @@ public class TriggerBox : MonoBehaviour
                     break;
                 }
             }
+
+            GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().EnterRoom(m_roomEntered);
+            
 
             gameObject.SetActive(false);
         }

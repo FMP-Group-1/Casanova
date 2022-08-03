@@ -9,6 +9,8 @@ public class GateManager : MonoBehaviour
     [SerializeField]
     GateMover m_armoryExit;
     [SerializeField]
+    GateMover m_guardRoomEntrance;
+    [SerializeField]
     GateMover m_guardRoomExit;
     [SerializeField]
     GateMover m_arenaExitGate;
@@ -22,11 +24,13 @@ public class GateManager : MonoBehaviour
     public void OpenArmoryExitGate()
     {
         m_armoryExit.OpenGate();
+        m_guardRoomEntrance.OpenGate();
     }
     public void OpenGuardRoomExitGate()
 	{
         m_guardRoomExit.OpenGate();
-	}
+
+    }
     public void OpenArenaExitGate()
     {
         m_arenaExitGate.OpenGate();
