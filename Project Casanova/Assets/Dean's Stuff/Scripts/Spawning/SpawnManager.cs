@@ -2,12 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum EnemyType
-{
-    Grunt,
-    Guard
-}
-
 public class SpawnManager : MonoBehaviour
 {
     private AIManager m_aiManager;
@@ -16,19 +10,25 @@ public class SpawnManager : MonoBehaviour
     [SerializeField]
     private GameObject m_guardPrefab;
     private List<GameObject> m_gruntPool;
+    private List<GameObject> m_availableGrunts;
     private List<GameObject> m_guardPool;
+    private List<GameObject> m_availableGuards;
     private List<Spawner> m_spawnerList;
     private int m_maxGrunts;
     private int m_maxGuards;
+    private GameObject m_initialSpawnPoint;
 
 
     void Start()
     {
         // Getting the AI Manager, and creating the lists
-        m_aiManager = GameObject.Find("AIManager").GetComponent<AIManager>();
+        m_aiManager = gameObject.GetComponent<AIManager>();
         m_spawnerList = new List<Spawner>();
         m_gruntPool = new List<GameObject>();
+        m_availableGrunts = new List<GameObject>();
         m_guardPool = new List<GameObject>();
+        m_availableGuards = new List<GameObject>();
+        m_initialSpawnPoint = GameObject.FindGameObjectWithTag("InitialSpawnPoint");
 
         // Enemy setup
         SetupSpawnerList();
@@ -60,13 +60,19 @@ public class SpawnManager : MonoBehaviour
 
             foreach(Spawner spawner in m_spawnerList)
             {
-                if (spawner.GetSpawnType() == EnemyType.Grunt && spawner.GetSpawnGroup() == i)
+                if (spawner.GetSpawnType() == EnemyType.Grunt)
                 {
-                    totalGruntsNeeded++;
+                    if (spawner.GetSpawnGroup() == i || spawner.GetSpawnGroup() == i + 1)
+                    {
+                        totalGruntsNeeded++;
+                    }
                 }
                 if (spawner.GetSpawnType() == EnemyType.Guard && spawner.GetSpawnGroup() == i)
                 {
-                    totalGuardsNeeded++;
+                    if (spawner.GetSpawnGroup() == i || spawner.GetSpawnGroup() == i + 1)
+                    {
+                        totalGuardsNeeded++;
+                    }
                 }
             }
 
@@ -96,13 +102,15 @@ public class SpawnManager : MonoBehaviour
         // Instantiating enemies based on the max amount needed
         for(int i = 0; i < m_maxGrunts; i++)
         {
-            GameObject newEnemy = Instantiate(m_gruntPrefab);
+            GameObject newEnemy = Instantiate(m_gruntPrefab, m_initialSpawnPoint.transform.position, m_initialSpawnPoint.transform.rotation);
             m_gruntPool.Add(newEnemy);
+            m_availableGrunts.Add(newEnemy);
         }
         for (int i = 0; i < m_maxGuards; i++)
         {
-            GameObject newEnemy = Instantiate(m_guardPrefab);
+            GameObject newEnemy = Instantiate(m_guardPrefab, m_initialSpawnPoint.transform.position, m_initialSpawnPoint.transform.rotation);
             m_guardPool.Add(newEnemy);
+            m_availableGuards.Add(newEnemy);
         }
 
         // Make AI manager register the enemies in scene now that they've been instantiated
@@ -126,55 +134,68 @@ public class SpawnManager : MonoBehaviour
         {
             if (groupNum == spawner.GetSpawnGroup())
             {
-                GameObject enemyToSpawn = GetInactiveEnemy(spawner.GetSpawnType());
+                GameObject enemyToSpawn = GetAvailableEnemy(spawner.GetSpawnType());
+
+                if (enemyToSpawn == null)
+                {
+                    Debug.Log("ATTEMPTED SPAWN: No Available Enemy Found");
+                }
+
                 spawner.Spawn(enemyToSpawn);
+                RemoveFromAvailable(enemyToSpawn.GetComponent<EnemyAI>());
             }
         }
     }
 
-    private GameObject GetInactiveEnemy(EnemyType typeToGet)
+    private GameObject GetAvailableEnemy(EnemyType typeToGet)
     {
-        // Finding an inactive enemy from the desired type for the purpose of spawning
-        // Todo: Review this function, wrong enemy could be used if an inactive enemy isn't found
-        // Also, may be cleaner to create a pool object/list
-        GameObject enemyToReturn = m_gruntPool[0];
+        GameObject enemyToReturn = null;
 
-        switch(typeToGet)
+        if (typeToGet == EnemyType.Grunt && m_availableGrunts.Count > 0)
         {
-            case EnemyType.Grunt:
-            {
-                foreach(GameObject enemy in m_gruntPool)
-                {
-                    if (enemy.activeSelf == false)
-                    {
-                        enemyToReturn = enemy;
-                        break;
-                    }
-                }
-
-                break;
-            }
-            case EnemyType.Guard:
-            {
-                foreach (GameObject enemy in m_guardPool)
-                {
-                    if (enemy.activeSelf == false)
-                    {
-                        enemyToReturn = enemy;
-                        break;
-                    }
-                }
-
-                break;
-            }
-            default:
-            {
-                Debug.Log("ERROR: Enemy type not found");
-
-                break;
-            }
+            enemyToReturn = m_availableGrunts[0];
+        }
+        else if (typeToGet == EnemyType.Guard && m_availableGuards.Count > 0)
+        {
+            enemyToReturn = m_availableGuards[0];
         }
 
         return enemyToReturn;
+    }
+
+    public void AddToAvailable( EnemyAI enemyToAdd )
+    {
+        if (enemyToAdd.GetEnemyType() == EnemyType.Grunt)
+        {
+            if (!m_availableGrunts.Contains(enemyToAdd.gameObject))
+            {
+                m_availableGrunts.Add(enemyToAdd.gameObject);
+            }
+        }
+        else if (enemyToAdd.GetEnemyType() == EnemyType.Guard)
+        {
+            if (!m_availableGuards.Contains(enemyToAdd.gameObject))
+            {
+                m_availableGuards.Add(enemyToAdd.gameObject);
+            }
+        }
+    }
+
+    public void RemoveFromAvailable(EnemyAI enemyToRemove)
+    {
+        if (enemyToRemove.GetEnemyType() == EnemyType.Grunt)
+        {
+            if (m_availableGrunts.Contains(enemyToRemove.gameObject))
+            {
+                m_availableGrunts.Remove(enemyToRemove.gameObject);
+            }
+        }
+        else if (enemyToRemove.GetEnemyType() == EnemyType.Guard)
+        {
+            if (m_availableGuards.Contains(enemyToRemove.gameObject))
+            {
+                m_availableGuards.Remove(enemyToRemove.gameObject);
+            }
+        }
     }
 }

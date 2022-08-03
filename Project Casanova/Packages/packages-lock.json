@@ -1,12 +1,13 @@
 {
   "dependencies": {
     "com.samdriver.driven-decals": {
-      "version": "file:D:/Projects/FMP/driven-decals-master",
+      "version": "https://github.com/Anatta336/driven-decals.git",
       "depth": 0,
-      "source": "local",
+      "source": "git",
       "dependencies": {
         "com.unity.render-pipelines.universal": "7.3.1"
-      }
+      },
+      "hash": "d334d4b6aa4e080a9cf911eab591cbcebd59e0e7"
     },
     "com.unity.animation.rigging": {
       "version": "1.0.3",

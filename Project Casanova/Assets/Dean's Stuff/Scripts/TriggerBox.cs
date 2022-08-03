@@ -39,6 +39,13 @@ public class TriggerBox : MonoBehaviour
                     break;
                 }
             }
+
+            gameObject.SetActive(false);
         }
+    }
+
+    public int GetGroup()
+    {
+        return m_triggerGroup;
     }
 }

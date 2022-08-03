@@ -5,17 +5,17 @@ using UnityEngine;
 public class SoundHandler : MonoBehaviour
 {
     protected AudioSource m_audioSource;
-    private void Awake()
+    protected virtual void Awake()
     {
         m_audioSource = GetComponent<AudioSource>();
     }
 
-    void Start()
+    protected virtual void Start()
     {
         
     }
 
-    void Update()
+    protected virtual void Update()
     {
         
     }

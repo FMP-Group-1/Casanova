@@ -5,18 +5,15 @@ using UnityEngine.UI;
 
 public class PlayerDamageManager : CharacterDamageManager
 {
-    [SerializeField]
-    private Image m_youDied;
-    Color m_defaultColour;
-
     private PlayerController m_playerController;
+
+    GameObject m_gameController;
 
     protected override void Start()
     {
         base.Start();
         m_playerController = GetComponent<PlayerController>();
-        m_defaultColour = m_youDied.color;
-
+        m_gameController = GameObject.FindGameObjectWithTag( "GameController" );
     }
 
     // Update is called once per frame
@@ -44,19 +41,23 @@ public class PlayerDamageManager : CharacterDamageManager
         DisplayDeathMessage();
         m_playerController.LoseControl();
 
+        StartCoroutine( Respawn() );
     }
+
+    public void debugDie()
+	{
+        Die();
+	}
+
+    private IEnumerator Respawn()
+	{
+        yield return new WaitForSeconds( 6.0f );
+        m_gameController.GetComponent<RespawnManager>().Respawn();
+	}
 
     private void DisplayDeathMessage()
 	{
-
-        m_youDied.gameObject.SetActive( true );
-        Color newColour = m_defaultColour;
-        newColour.a = 0f;
-
-        m_youDied.color = newColour;
-
-
-        StartCoroutine( YouDiedFade( 3f ) );
+        m_gameController.GetComponent<UIManager>().DisplayDeathUI();
     }
 
     //Override exclusive to player
@@ -67,17 +68,5 @@ public class PlayerDamageManager : CharacterDamageManager
         
         m_playerController.RegainControl();
 
-    }
-
-
-
-    IEnumerator YouDiedFade( float aTime )
-    {
-        for( float alpha = 0.0f; alpha < 1.0f; alpha += Time.deltaTime / aTime )
-        {
-            Color newColor = new Color(1, 1, 1, alpha);
-            m_youDied.color = newColor;
-            yield return null;
-        }
     }
 }

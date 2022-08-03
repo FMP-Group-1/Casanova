@@ -113,6 +113,7 @@ public class MeleeController : MonoBehaviour
          */
         if ( m_canStartNextAttack && m_attackType != Attack.Nothing )
         {
+
             //Stop being able to move or fall or rotate because we are in an attack
             m_playerController.m_canMove = false;
             m_playerController.m_canFall = false;
@@ -148,6 +149,9 @@ public class MeleeController : MonoBehaviour
 
             //The triggers now affect the animation played
 
+
+            // Dean Note: Adding sound effect to play here, may need changing, let me know
+            m_playerController.GetSoundHandler().PlayNormalAttackSFX();
 
         }
 

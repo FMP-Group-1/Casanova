@@ -302,21 +302,6 @@ public class AIManager : MonoBehaviour
         }
     }
 
-    // Check if any of the active attackers are currently attacking
-    // Todo: Review this function, might not be needed as currently not in use
-    public bool AreEnemiesAttacking()
-    {
-        foreach (EnemyAI enemy in m_activeAttackers)
-        {
-            if (enemy.GetCombatState() == CombatState.Attacking || enemy.GetCombatState() == CombatState.MovingToAttack)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     public int TotalEnemiesAttacking()
     {
         int total = 0;
@@ -330,6 +315,21 @@ public class AIManager : MonoBehaviour
         }
 
         return total;
+    }
+
+    public int RemainingEnemiesInGroup(int groupNum)
+    {
+        int enemiesRemaining = 0;
+
+        for (int i = 0; i < m_enemyList.Count; i++)
+        {
+            if (m_enemyList[i].GetSpawnGroup() == groupNum && m_enemyList[i].gameObject.activeSelf)
+            {
+                enemiesRemaining++;
+            }
+        }
+
+        return enemiesRemaining;
     }
 
     public AttackZoneManager GetAttackZoneManager()

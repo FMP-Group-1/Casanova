@@ -4,54 +4,48 @@ using UnityEngine;
 
 public class CharacterSoundHandler : SoundHandler
 {
-    [SerializeField]
-    private AudioClip m_damageSFX;
-    [SerializeField]
-    private AudioClip m_normalAttackSFX;
-    [SerializeField]
-    private AudioClip m_normalCollisionSFX;
-    [SerializeField]
-    private AudioClip m_quickAttackSFX;
-    [SerializeField]
-    private AudioClip m_quickCollisionSFX;
-    [SerializeField]
-    private AudioClip m_heavyAttackSFX;
-    [SerializeField]
-    private AudioClip m_heavyCollisionSFX;
-
-
-    public void PlayDamageSFX()
+    public virtual void PlayFootstepSFX()
     {
-        m_audioSource.PlayOneShot(m_damageSFX);
+
     }
 
-    public void PlayNormalAttackSFX()
+    public virtual void PlayDodgeSFX()
     {
-        m_audioSource.PlayOneShot(m_normalAttackSFX);
+
     }
 
-    public void PlayNormalCollisionSFX()
+    public virtual void PlayDamageSFX()
     {
-        m_audioSource.PlayOneShot(m_normalCollisionSFX);
+        
     }
 
-    public void PlayQuickAttackSFX()
+    public virtual void PlayAttackGruntSFX()
     {
-        m_audioSource.PlayOneShot(m_quickAttackSFX);
+
     }
 
-    public void PlayQuickCollisionSFX()
+    public virtual void PlayNormalAttackSFX()
     {
-        m_audioSource.PlayOneShot(m_quickCollisionSFX);
+        
     }
 
-    public void PlayHeavyAttackSFX()
+    public virtual void PlayNormalCollisionSFX()
     {
-        m_audioSource.PlayOneShot(m_heavyAttackSFX);
+        
     }
 
-    public void PlayHeavyCollisionSFX()
+    public virtual void PlayHeavyAttackSFX()
     {
-        m_audioSource.PlayOneShot(m_heavyCollisionSFX);
+        
+    }
+
+    public virtual void PlayHeavyCollisionSFX()
+    {
+        
+    }
+
+    public virtual void PlayDeathSFX()
+    {
+
     }
 }

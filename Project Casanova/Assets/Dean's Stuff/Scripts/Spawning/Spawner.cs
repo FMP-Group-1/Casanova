@@ -10,6 +10,8 @@ public class Spawner : MonoBehaviour
     private AIState m_stateToSpawn;
     [SerializeField]
     private int m_spawnGroup;
+    [SerializeField]
+    private GameObject m_patrolRoute;
 
 
     public void Spawn(GameObject enemyToSpawn)
@@ -20,6 +22,11 @@ public class Spawner : MonoBehaviour
         enemyToSpawn.transform.position = transform.position;
         enemyToSpawn.transform.rotation = transform.rotation;
 
+        if (m_patrolRoute != null)
+        {
+            enemyScript.SetPatrolRoute(m_patrolRoute);
+        }
+
         // Enable enemy
         enemyToSpawn.SetActive(true);
 
@@ -27,6 +34,7 @@ public class Spawner : MonoBehaviour
         enemyScript.ResetToSpawn();
         enemyScript.SetAIState(m_stateToSpawn);
         enemyScript.SetSpawnGroup(m_spawnGroup);
+
     }
 
     public EnemyType GetSpawnType()
