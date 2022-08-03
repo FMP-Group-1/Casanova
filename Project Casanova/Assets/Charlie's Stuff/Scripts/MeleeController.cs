@@ -113,6 +113,7 @@ public class MeleeController : MonoBehaviour
          */
         if ( m_canStartNextAttack && m_attackType != Attack.Nothing )
         {
+
             //Stop being able to move or fall or rotate because we are in an attack
             m_playerController.m_canMove = false;
             m_playerController.m_canFall = false;
