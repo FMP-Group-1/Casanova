@@ -1039,7 +1039,21 @@ public class EnemyAI : MonoBehaviour
 
     public void ChangeStateFromWake()
     {
-        SetAIState(AIState.InCombat);
+        if (m_combatOnWake)
+        {
+            SetAIState(AIState.InCombat);
+        }
+        else
+        {
+            if (m_patrolRoute != null)
+            {
+                SetAIState(AIState.Patrolling);        
+            }
+            else
+            {
+                SetAIState(AIState.Idle);
+            }
+        }
 
         // Had to put this setter here to force path recalculation, otherwise AI would attack immediately.
         m_navMeshAgent.SetDestination(m_player.transform.position);
