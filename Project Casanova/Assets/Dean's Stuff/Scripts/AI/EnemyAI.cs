@@ -1550,8 +1550,19 @@ public class EnemyAI : MonoBehaviour
 
         m_navMeshAgent.isStopped = false;
         m_navMeshAgent.speed = m_strafeSpeed;
-        m_navMeshAgent.updateRotation = false;
-        m_lookAtPlayer = true;
+
+        // Hacky bit of code, but added as an afterthought as the Guard has no functional strafe anim
+        // So this makes the guard look where it's walking when strafing, whereas the grunt can just float
+        if (m_enemyType == EnemyType.Grunt)
+        {
+            m_navMeshAgent.updateRotation = false;
+            m_lookAtPlayer = true;
+        }
+        else
+        {
+            m_navMeshAgent.updateRotation = true;
+            m_lookAtPlayer = false;
+        }
 
         switch (dirToStrafe)
         {
