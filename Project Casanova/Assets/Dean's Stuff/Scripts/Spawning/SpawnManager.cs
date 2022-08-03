@@ -53,7 +53,7 @@ public class SpawnManager : MonoBehaviour
         }
 
         // Looping through each group to find out which one uses the most enemies and how many
-        for (int i = 0; i < totalGroups; i++)
+        for (int i = 0; i <= totalGroups; i++)
         {
             int totalGruntsNeeded = 0;
             int totalGuardsNeeded = 0;
@@ -135,6 +135,12 @@ public class SpawnManager : MonoBehaviour
             if (groupNum == spawner.GetSpawnGroup())
             {
                 GameObject enemyToSpawn = GetAvailableEnemy(spawner.GetSpawnType());
+
+                if (enemyToSpawn == null)
+                {
+                    Debug.Log("ATTEMPTED SPAWN: No Available Enemy Found");
+                }
+
                 spawner.Spawn(enemyToSpawn);
                 RemoveFromAvailable(enemyToSpawn.GetComponent<EnemyAI>());
             }
@@ -143,19 +149,15 @@ public class SpawnManager : MonoBehaviour
 
     private GameObject GetAvailableEnemy(EnemyType typeToGet)
     {
-        GameObject enemyToReturn = m_gruntPool[0];
+        GameObject enemyToReturn = null;
 
-        if (typeToGet == EnemyType.Grunt)
+        if (typeToGet == EnemyType.Grunt && m_availableGrunts.Count > 0)
         {
             enemyToReturn = m_availableGrunts[0];
         }
-        else if (typeToGet == EnemyType.Guard)
+        else if (typeToGet == EnemyType.Guard && m_availableGuards.Count > 0)
         {
             enemyToReturn = m_availableGuards[0];
-        }
-        else
-        {
-            Debug.Log("ERROR: No available enemy found in pool.");
         }
 
         return enemyToReturn;
