@@ -60,13 +60,19 @@ public class SpawnManager : MonoBehaviour
 
             foreach(Spawner spawner in m_spawnerList)
             {
-                if (spawner.GetSpawnType() == EnemyType.Grunt && spawner.GetSpawnGroup() == i)
+                if (spawner.GetSpawnType() == EnemyType.Grunt)
                 {
-                    totalGruntsNeeded++;
+                    if (spawner.GetSpawnGroup() == i || spawner.GetSpawnGroup() == i + 1)
+                    {
+                        totalGruntsNeeded++;
+                    }
                 }
                 if (spawner.GetSpawnType() == EnemyType.Guard && spawner.GetSpawnGroup() == i)
                 {
-                    totalGuardsNeeded++;
+                    if (spawner.GetSpawnGroup() == i || spawner.GetSpawnGroup() == i + 1)
+                    {
+                        totalGuardsNeeded++;
+                    }
                 }
             }
 
@@ -129,6 +135,12 @@ public class SpawnManager : MonoBehaviour
             if (groupNum == spawner.GetSpawnGroup())
             {
                 GameObject enemyToSpawn = GetAvailableEnemy(spawner.GetSpawnType());
+
+                if (enemyToSpawn == null)
+                {
+                    Debug.Log("ATTEMPTED SPAWN: No Available Enemy Found");
+                }
+
                 spawner.Spawn(enemyToSpawn);
                 RemoveFromAvailable(enemyToSpawn.GetComponent<EnemyAI>());
             }
@@ -137,19 +149,15 @@ public class SpawnManager : MonoBehaviour
 
     private GameObject GetAvailableEnemy(EnemyType typeToGet)
     {
-        GameObject enemyToReturn = m_gruntPool[0];
+        GameObject enemyToReturn = null;
 
-        if (typeToGet == EnemyType.Grunt)
+        if (typeToGet == EnemyType.Grunt && m_availableGrunts.Count > 0)
         {
             enemyToReturn = m_availableGrunts[0];
         }
-        else if (typeToGet == EnemyType.Guard)
+        else if (typeToGet == EnemyType.Guard && m_availableGuards.Count > 0)
         {
             enemyToReturn = m_availableGuards[0];
-        }
-        else
-        {
-            Debug.Log("ERROR: No available enemy found in pool.");
         }
 
         return enemyToReturn;

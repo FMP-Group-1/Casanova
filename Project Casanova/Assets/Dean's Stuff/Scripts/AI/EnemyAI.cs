@@ -189,7 +189,7 @@ public class EnemyAI : MonoBehaviour
     private float m_zoneTimer = 0.0f;
     private float m_strafeCheckInterval = 2.0f;
     private float m_strafeTimer = 0.0f;
-    private bool m_isStaggered = false;
+    private bool m_isStaggerable = true;
 
     // Vision Detection Relevant Variables
     [Header("Player Detection Values")]
@@ -881,6 +881,11 @@ public class EnemyAI : MonoBehaviour
         m_zoneHandler.Init(ref thisEnemy, ref attackZoneManager);
     }
 
+    public void StartNavMesh()
+    {
+        m_navMeshAgent.isStopped = false;
+    }
+
     public void StopNavMesh()
     {
         m_navMeshAgent.isStopped = true;
@@ -892,10 +897,11 @@ public class EnemyAI : MonoBehaviour
         Vector3 dirToPlayer = (m_player.transform.position - transform.position).normalized;
         float angleFrom = Vector3.SignedAngle(dirToPlayer, transform.forward, Vector3.down);
 
-        Vector3 currentEulerAngles = transform.eulerAngles;
 
         if (Mathf.Abs(angleFrom) > m_rotationBuffer)
         {
+            Vector3 currentEulerAngles = transform.eulerAngles;
+
             // Checking whether it's quicker to rotate clockwise or counter-clockwise
             if (angleFrom > 0)
             {
@@ -993,7 +999,7 @@ public class EnemyAI : MonoBehaviour
     private void RecoverFromHit()
     {
         SetCombatState(CombatState.Pursuing);
-        SetStaggered(false);
+        SetStaggerable(true);
     }
 
     /*
@@ -1109,6 +1115,7 @@ public class EnemyAI : MonoBehaviour
         m_secondaryWeaponCollider.enabled = false;
     }
 
+    // Todo: Create Functions for enabling primary/secondary colliders separately for better control in the animation events
     private void EnableCollision()
     {
         switch (m_attackMode)
@@ -1126,6 +1133,33 @@ public class EnemyAI : MonoBehaviour
                 break;
             }
             case AttackMode.Both:
+            {
+                m_primaryWeaponCollider.enabled = true;
+                m_secondaryWeaponCollider.enabled = true;
+
+                break;
+            }
+        }
+    }
+
+    // Using string as a parameter so it can be called from animation events
+    private void EnableCollision( string colliderToEnable )
+    {
+        switch (colliderToEnable)
+        {
+            case "Primary":
+            {
+                m_primaryWeaponCollider.enabled = true;
+
+                break;
+            }
+            case "Secondary":
+            {
+                m_secondaryWeaponCollider.enabled = true;
+
+                break;
+            }
+            case "Both":
             {
                 m_primaryWeaponCollider.enabled = true;
                 m_secondaryWeaponCollider.enabled = true;
@@ -1548,8 +1582,19 @@ public class EnemyAI : MonoBehaviour
 
         m_navMeshAgent.isStopped = false;
         m_navMeshAgent.speed = m_strafeSpeed;
-        m_navMeshAgent.updateRotation = false;
-        m_lookAtPlayer = true;
+
+        // Hacky bit of code, but added as an afterthought as the Guard has no functional strafe anim
+        // So this makes the guard look where it's walking when strafing, whereas the grunt can just float
+        if (m_enemyType == EnemyType.Grunt)
+        {
+            m_navMeshAgent.updateRotation = false;
+            m_lookAtPlayer = true;
+        }
+        else
+        {
+            m_navMeshAgent.updateRotation = true;
+            m_lookAtPlayer = false;
+        }
 
         switch (dirToStrafe)
         {
@@ -1821,14 +1866,14 @@ public class EnemyAI : MonoBehaviour
         m_aiManager = aiManagerRef;
     }
 
-    public void SetStaggered(bool isStaggered)
+    public void SetStaggerable(bool isStaggered)
     {
-        m_isStaggered = isStaggered;
+        m_isStaggerable = isStaggered;
     }
 
-    public bool IsStaggered()
+    public bool IsStaggerable()
     {
-        return m_isStaggered;
+        return m_isStaggerable;
     }
 
     public AttackingType GetAttackingType()
