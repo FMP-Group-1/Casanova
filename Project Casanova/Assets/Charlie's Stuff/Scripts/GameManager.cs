@@ -38,7 +38,6 @@ public class GameManager : MonoBehaviour
         m_uiManager.BeginScene();
 
         EventManager.StartSpawnEnemiesEvent( 0 );
-        //EventManager.StartWakeEnemiesEvent( 0 );
         EventManager.StartSpawnEnemiesEvent( 1 );
     }
 
@@ -94,40 +93,32 @@ public class GameManager : MonoBehaviour
     {
         m_aiManager.DeactivateActiveEnemies();
 
-        switch ( m_respawnManager.GetRespawnPoint() )
+        Room respawnPoint = m_respawnManager.GetRespawnPoint();
+        switch ( respawnPoint )
         {
             case Room.Cell:
                 EventManager.StartSpawnEnemiesEvent( 0 );
-                EventManager.StartWakeEnemiesEvent( 0 );
-                EventManager.StartSpawnEnemiesEvent( 1 );
                 break;
             case Room.Hall:
                 EventManager.StartSpawnEnemiesEvent( 1 );
-                EventManager.StartWakeEnemiesEvent( 1 );
-                EventManager.StartSpawnEnemiesEvent( 2 );
-                m_gateManager.OpenCellHallExitGate();
                 break;
             case Room.Armory:
 
                 EventManager.StartSpawnEnemiesEvent( 2 );
-                EventManager.StartWakeEnemiesEvent( 2 );
-                EventManager.StartSpawnEnemiesEvent( 3 );
-                m_gateManager.OpenArmoryExitGate();
                 break;
             case Room.GuardRoom:
 
                 EventManager.StartSpawnEnemiesEvent( 3 );
-                EventManager.StartWakeEnemiesEvent( 3 );
-                m_gateManager.OpenGuardRoomExitGate();
                 break;
             case Room.Arena:
 
                 EventManager.StartSpawnEnemiesEvent( 3 );
-                EventManager.StartWakeEnemiesEvent( 3 ); 
                 break;
         }
+
+        m_gateManager.ResetGate( respawnPoint );
         //This sets this room as active room
-        CompleteRoom( m_respawnManager.GetRespawnPoint() );
+        //CompleteRoom( m_respawnManager.GetRespawnPoint() );
     }
 
     public void EnterRoom( Room room )

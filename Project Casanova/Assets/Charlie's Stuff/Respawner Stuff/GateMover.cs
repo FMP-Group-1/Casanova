@@ -10,6 +10,9 @@ public class GateMover : MonoBehaviour
     float m_gateCloseTime = 1f;
 
     [SerializeField]
+    GameObject m_gateTrigger;
+
+    [SerializeField]
     private float m_openYTarget = 5.0f;
 
     private float m_closedY = 0.0f;
@@ -21,6 +24,13 @@ public class GateMover : MonoBehaviour
     {
         m_visualGate = transform.GetChild( 0 ).gameObject;
         //OpenGate();
+    }
+
+    public void ResetGate()
+	{
+        OpenGate();
+        m_gateTrigger.SetActive(true);
+
     }
 
     public void OpenGate()

@@ -5,7 +5,7 @@ using UnityEngine;
 public class GateManager : MonoBehaviour
 {
     [SerializeField]
-    GateMover m_cellExit;
+    GateMover m_cellsExit;
     [SerializeField]
     GateMover m_armoryExit;
     [SerializeField]
@@ -15,11 +15,26 @@ public class GateManager : MonoBehaviour
     [SerializeField]
     GateMover m_arenaExitGate;
 
-
+    public void ResetGate(Room roomExit)
+	{
+        switch ( roomExit )
+        {
+            case Room.Hall:
+                m_cellsExit.ResetGate();
+                break;
+            case Room.Armory:
+                m_armoryExit.ResetGate();
+                m_guardRoomEntrance.ResetGate();
+                break;
+            case Room.GuardRoom:
+                m_guardRoomExit.ResetGate();
+                break;
+        }
+	}
     //I know this is awful, but it just needed to be made to work and time was not my friend
     public void OpenCellHallExitGate()
     {
-        m_cellExit.OpenGate();
+        m_cellsExit.OpenGate();
     }
     public void OpenArmoryExitGate()
     {
