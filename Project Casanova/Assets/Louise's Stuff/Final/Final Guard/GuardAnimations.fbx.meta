@@ -279,7 +279,14 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.3333331
+      - time: 0.32992142
+        functionName: LockAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.35695514
         functionName: EnableCollision
         data: Primary
         objectReferenceParameter: {instanceID: 0}
@@ -329,7 +336,7 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.22222222
+      - time: 0.23272091
         functionName: EnableCollision
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -359,6 +366,27 @@ ModelImporter:
         messageOptions: 0
       - time: 0.9962965
         functionName: EndAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.2259257
+        functionName: LockAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.45185208
+        functionName: UnlockAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.5888889
+        functionName: LockAttack
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
@@ -409,6 +437,13 @@ ModelImporter:
         messageOptions: 0
       - time: 0.9962964
         functionName: EndAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.59629637
+        functionName: LockAttack
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
