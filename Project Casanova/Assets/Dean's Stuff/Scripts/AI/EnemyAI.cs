@@ -881,6 +881,11 @@ public class EnemyAI : MonoBehaviour
         m_zoneHandler.Init(ref thisEnemy, ref attackZoneManager);
     }
 
+    public void StartNavMesh()
+    {
+        m_navMeshAgent.isStopped = false;
+    }
+
     public void StopNavMesh()
     {
         m_navMeshAgent.isStopped = true;
@@ -1128,6 +1133,33 @@ public class EnemyAI : MonoBehaviour
                 break;
             }
             case AttackMode.Both:
+            {
+                m_primaryWeaponCollider.enabled = true;
+                m_secondaryWeaponCollider.enabled = true;
+
+                break;
+            }
+        }
+    }
+
+    // Using string as a parameter so it can be called from animation events
+    private void EnableCollision( string colliderToEnable )
+    {
+        switch (colliderToEnable)
+        {
+            case "Primary":
+            {
+                m_primaryWeaponCollider.enabled = true;
+
+                break;
+            }
+            case "Secondary":
+            {
+                m_secondaryWeaponCollider.enabled = true;
+
+                break;
+            }
+            case "Both":
             {
                 m_primaryWeaponCollider.enabled = true;
                 m_secondaryWeaponCollider.enabled = true;
