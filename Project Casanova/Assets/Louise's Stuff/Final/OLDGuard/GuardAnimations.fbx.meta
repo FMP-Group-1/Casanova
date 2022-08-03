@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 63d0cd6a26abfc3429872c1137cfcfb6
+guid: 4e6e9a1022801884fb5afec023d6c41f
 ModelImporter:
   serializedVersion: 20200
   internalIDToNameTable:
@@ -7,11 +7,11 @@ ModelImporter:
       74: -2401785803122067391
     second: GuardAnimations
   - first:
-      74: 5668123760576180098
-    second: Neutral Pose
+      74: -7569947036002351513
+    second: Sleep to Wake 1
   - first:
-      74: -2847920329658826247
-    second: Sleep to Wake #1
+      74: 1209084295816000605
+    second: Sleep to Wake 2
   - first:
       74: -4654236363785164044
     second: Idle (Loop)
@@ -22,11 +22,23 @@ ModelImporter:
       74: -4245369584142766788
     second: Normal Attack
   - first:
+      74: -1432093072099223760
+    second: Light Attack
+  - first:
       74: 3971412263066827745
     second: Heavy Attack
   - first:
-      74: 2045480207370431675
-    second: Death - WIP
+      74: 7407970224775743946
+    second: Dodge/Block
+  - first:
+      74: 3927188372841940063
+    second: Hit Stagger
+  - first:
+      74: 5213872098438207883
+    second: Weakened State
+  - first:
+      74: 4348485665485846014
+    second: Death
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -38,7 +50,7 @@ ModelImporter:
     bakeSimulation: 0
     resampleCurves: 1
     optimizeGameObjects: 0
-    motionNodeName: root_j
+    motionNodeName: 
     rigImportErrors: 
     rigImportWarnings: 
     animationImportErrors: 
@@ -60,7 +72,7 @@ ModelImporter:
       takeName: GuardAnimations
       internalID: 0
       firstFrame: 1
-      lastFrame: 800
+      lastFrame: 1285
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -85,40 +97,11 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Neutral Pose
+      name: Sleep to Wake 1
       takeName: GuardAnimations
       internalID: 0
       firstFrame: 10
-      lastFrame: 10
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 1
-    - serializedVersion: 16
-      name: Sleep to Wake #1
-      takeName: GuardAnimations
-      internalID: 0
-      firstFrame: 10
-      lastFrame: 175
+      lastFrame: 140
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -137,7 +120,50 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.99629635
+        functionName: ChangeStateFromWake
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 1
+    - serializedVersion: 16
+      name: Sleep to Wake 2
+      takeName: GuardAnimations
+      internalID: 0
+      firstFrame: 1205
+      lastFrame: 1285
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 0.9962967
+        functionName: ChangeStateFromWake
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
@@ -146,8 +172,8 @@ ModelImporter:
       name: Idle (Loop)
       takeName: GuardAnimations
       internalID: 0
-      firstFrame: 175
-      lastFrame: 280
+      firstFrame: 198
+      lastFrame: 303
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -175,8 +201,8 @@ ModelImporter:
       name: Walk (Loop)
       takeName: GuardAnimations
       internalID: 0
-      firstFrame: 303
-      lastFrame: 385
+      firstFrame: 328
+      lastFrame: 408
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -195,7 +221,35 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.05357236
+        functionName: StartNavMesh
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.22653823
+        functionName: StopNavMesh
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.4117527
+        functionName: StartNavMesh
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.7148149
+        functionName: StopNavMesh
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
@@ -204,8 +258,8 @@ ModelImporter:
       name: Normal Attack
       takeName: GuardAnimations
       internalID: 0
-      firstFrame: 385
-      lastFrame: 455
+      firstFrame: 408
+      lastFrame: 478
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -224,7 +278,92 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.3333331
+        functionName: EnableCollision
+        data: Primary
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.47777787
+        functionName: DisableCollision
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.99629605
+        functionName: EndAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 1
+    - serializedVersion: 16
+      name: Light Attack
+      takeName: GuardAnimations
+      internalID: 0
+      firstFrame: 780
+      lastFrame: 915
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 0.22222222
+        functionName: EnableCollision
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.3148146
+        functionName: DisableCollision
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.5777778
+        functionName: EnableCollision
+        data: Secondary
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.659259
+        functionName: DisableCollision
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.9962965
+        functionName: EndAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
@@ -233,8 +372,58 @@ ModelImporter:
       name: Heavy Attack
       takeName: GuardAnimations
       internalID: 0
-      firstFrame: 455
-      lastFrame: 600
+      firstFrame: 490
+      lastFrame: 640
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 0.61851835
+        functionName: EnableCollision
+        data: Both
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.69259244
+        functionName: DisableCollision
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.9962964
+        functionName: EndAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 1
+    - serializedVersion: 16
+      name: Dodge/Block
+      takeName: GuardAnimations
+      internalID: 0
+      firstFrame: 930
+      lastFrame: 970
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
@@ -259,11 +448,76 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Death - WIP
+      name: Hit Stagger
       takeName: GuardAnimations
       internalID: 0
-      firstFrame: 700
-      lastFrame: 777
+      firstFrame: 970
+      lastFrame: 1020
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events:
+      - time: 0.99629575
+        functionName: RecoverFromHit
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 1
+    - serializedVersion: 16
+      name: Weakened State
+      takeName: GuardAnimations
+      internalID: 0
+      firstFrame: 1030
+      lastFrame: 1200
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 1
+    - serializedVersion: 16
+      name: Death
+      takeName: GuardAnimations
+      internalID: 0
+      firstFrame: 648
+      lastFrame: 775
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
