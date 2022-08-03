@@ -19,6 +19,10 @@ public class EnemyEyeColorChanger : MonoBehaviour
     [SerializeField]
     private Color m_neutralColorMax;
     [SerializeField]
+    private Color m_normalAttackColorMin;
+    [SerializeField]
+    private Color m_normalAttackColorMax;
+    [SerializeField]
     private Color m_lightAttackColorMin;    
     [SerializeField]
     private Color m_lightAttackColorMax;
@@ -77,7 +81,7 @@ public class EnemyEyeColorChanger : MonoBehaviour
                 {
                     case AttackMode.Primary:
                     {
-                        ChangeEyeColor(m_neutralColorMin, m_neutralColorMax);
+                        ChangeEyeColor(m_normalAttackColorMin, m_normalAttackColorMax);
                         break;
                     }
                     case AttackMode.Secondary:
