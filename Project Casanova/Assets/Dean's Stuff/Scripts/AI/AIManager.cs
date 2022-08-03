@@ -212,6 +212,7 @@ public class AIManager : MonoBehaviour
         {
             if (enemy.gameObject.activeSelf)
             {
+                UnregisterAttacker(enemy);
                 enemy.gameObject.SetActive(false);
             }
         }
