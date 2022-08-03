@@ -206,6 +206,17 @@ public class AIManager : MonoBehaviour
         }
     }
 
+    public void DeactivateActiveEnemies()
+    {
+        foreach (EnemyAI enemy in m_enemyList)
+        {
+            if (enemy.gameObject.activeSelf)
+            {
+                enemy.gameObject.SetActive(false);
+            }
+        }
+    }
+
     // Function for ensuring the active attacker count is always correct
     private void ActiveAttackerCount()
     {
@@ -411,10 +422,8 @@ public class AIManager : MonoBehaviour
                 {
                     if (enemy.GetState() != AIState.Dead)
                     {
-                        //enemy.SetAIState(AIState.InCombat);
-                        //m_canAttack = true;
-
-                        enemy.TestAttack();
+                        enemy.SetAIState(AIState.InCombat);
+                        m_canAttack = true;
                     }
                 }
             }

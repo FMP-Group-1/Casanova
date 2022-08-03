@@ -1939,11 +1939,4 @@ public class EnemyAI : MonoBehaviour
     {
         m_combatOnWake = shouldCombatOnWake;
     }
-
-    public void TestAttack()
-    {
-        m_attackMode = (AttackMode)1;
-        m_combatState = CombatState.Attacking;
-        Attack();
-    }
 }
