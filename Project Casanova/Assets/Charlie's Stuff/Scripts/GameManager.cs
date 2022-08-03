@@ -77,10 +77,10 @@ public class GameManager : MonoBehaviour
     public void Die()
 	{
         m_uiManager.DisplayDeathUI();
-        StartCoroutine( Respawn() );
+        StartCoroutine( BeginRespawn() );
 
     }
-    private IEnumerator Respawn()
+    private IEnumerator BeginRespawn()
     {
         yield return new WaitForSeconds( 4.0f );
 
@@ -88,6 +88,46 @@ public class GameManager : MonoBehaviour
         float fadeTimeAndDelay = 4.0f;
         m_uiManager.Respawn( fadeTimeAndDelay );
         StartCoroutine( m_respawnManager.Respawn( fadeTimeAndDelay ) );
+    }
+
+    public void ActuallyRespawn()
+    {
+        m_aiManager.DeactivateActiveEnemies();
+
+        switch ( m_respawnManager.GetRespawnPoint() )
+        {
+            case Room.Cell:
+                EventManager.StartSpawnEnemiesEvent( 0 );
+                EventManager.StartWakeEnemiesEvent( 0 );
+                EventManager.StartSpawnEnemiesEvent( 1 );
+                break;
+            case Room.Hall:
+                EventManager.StartSpawnEnemiesEvent( 1 );
+                EventManager.StartWakeEnemiesEvent( 1 );
+                EventManager.StartSpawnEnemiesEvent( 2 );
+                m_gateManager.OpenCellHallExitGate();
+                break;
+            case Room.Armory:
+
+                EventManager.StartSpawnEnemiesEvent( 2 );
+                EventManager.StartWakeEnemiesEvent( 2 );
+                EventManager.StartSpawnEnemiesEvent( 3 );
+                m_gateManager.OpenArmoryExitGate();
+                break;
+            case Room.GuardRoom:
+
+                EventManager.StartSpawnEnemiesEvent( 3 );
+                EventManager.StartWakeEnemiesEvent( 3 );
+                m_gateManager.OpenGuardRoomExitGate();
+                break;
+            case Room.Arena:
+
+                EventManager.StartSpawnEnemiesEvent( 3 );
+                EventManager.StartWakeEnemiesEvent( 3 ); 
+                break;
+        }
+        //This sets this room as active room
+        CompleteRoom( m_respawnManager.GetRespawnPoint() );
     }
 
     public void EnterRoom( Room room )

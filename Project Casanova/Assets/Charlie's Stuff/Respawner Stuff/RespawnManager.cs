@@ -37,6 +37,12 @@ public class RespawnManager : MonoBehaviour
                 break;
         }
     }
+
+    public Room GetRespawnPoint()
+	{
+        return currentRespawnPoint;
+	}
+
     // Update is called once per frame
     void Update()
     {
@@ -62,7 +68,7 @@ public class RespawnManager : MonoBehaviour
 
         m_player.GetComponent<PlayerDamageManager>().Respawn( respawnPoints[ enumIntValue ].transform );
 
-        m_gameManager.EnterRoom( currentRespawnPoint );
+        m_gameManager.ActuallyRespawn();
         //m_gameManager.CompleteRoom( currentRespawnPoint );
         //Bring player back to life shit
 
