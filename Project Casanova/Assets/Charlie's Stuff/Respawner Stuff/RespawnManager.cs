@@ -62,7 +62,8 @@ public class RespawnManager : MonoBehaviour
 
         m_player.GetComponent<PlayerDamageManager>().Respawn( respawnPoints[ enumIntValue ].transform );
 
-        m_gameManager.CompleteRoom( currentRespawnPoint );
+        m_gameManager.EnterRoom( currentRespawnPoint );
+        //m_gameManager.CompleteRoom( currentRespawnPoint );
         //Bring player back to life shit
 
         switch ( currentRespawnPoint )
