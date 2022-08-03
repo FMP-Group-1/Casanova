@@ -74,6 +74,22 @@ public class GameManager : MonoBehaviour
 
     }
 
+    public void Die()
+	{
+        m_uiManager.DisplayDeathUI();
+        StartCoroutine( Respawn() );
+
+    }
+    private IEnumerator Respawn()
+    {
+        yield return new WaitForSeconds( 4.0f );
+
+        //Both these need same value. Value will fade out for that time, and delay the ACTUAL stuff until then
+        float fadeTimeAndDelay = 4.0f;
+        m_uiManager.Respawn( fadeTimeAndDelay );
+        StartCoroutine( m_respawnManager.Respawn( fadeTimeAndDelay ) );
+    }
+
     public void EnterRoom( Room room )
 	{
         m_roomComplete = false;
@@ -86,6 +102,8 @@ public class GameManager : MonoBehaviour
         m_roomComplete = true;
         switch( room )
         {
+            case Room.Cell:
+                break;
             case Room.Hall:
                 m_gateManager.OpenCellHallExitGate();
                 m_respawnManager.SetRespawnPoint( Room.Hall );

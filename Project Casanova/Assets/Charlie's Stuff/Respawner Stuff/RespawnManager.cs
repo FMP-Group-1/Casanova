@@ -18,10 +18,14 @@ public class RespawnManager : MonoBehaviour
     private Room currentRespawnPoint;
 
     private GameObject m_player;
+
+    private GameManager m_gameManager;
+
     // Start is called before the first frame update
     void Start()
     {
         m_player = GameObject.FindGameObjectWithTag( "Player" );
+        m_gameManager = gameObject.GetComponent<GameManager>();
     }
 
     public void SetRespawnPoint( Room newRespawnPoint )
@@ -50,17 +54,18 @@ public class RespawnManager : MonoBehaviour
 
 
 
-    public void Respawn()
+    public IEnumerator Respawn( float delay )
     {
-
+        yield return new WaitForSeconds( delay );
+        //Honestly cannot think of a beter way without a major overhaul that i DO NOT have time for (Made a note in the parent to keep it on order)
         int enumIntValue = (int)currentRespawnPoint;
-        m_player.GetComponent<CharacterController>().enabled = false;
-        m_player.transform.position = respawnPoints[ enumIntValue ].position;
-        m_player.GetComponent<CharacterController>().enabled = true;
 
+        m_player.GetComponent<PlayerDamageManager>().Respawn( respawnPoints[ enumIntValue ].transform );
+
+        m_gameManager.CompleteRoom( currentRespawnPoint );
         //Bring player back to life shit
 
-        switch( currentRespawnPoint )
+        switch ( currentRespawnPoint )
         {
             case Room.Cell:
 
