@@ -190,6 +190,7 @@ public class EnemyAI : MonoBehaviour
     private float m_strafeCheckInterval = 2.0f;
     private float m_strafeTimer = 0.0f;
     private bool m_isStaggerable = true;
+    private bool m_combatOnWake = false;
 
     // Vision Detection Relevant Variables
     [Header("Player Detection Values")]
@@ -1089,13 +1090,12 @@ public class EnemyAI : MonoBehaviour
 
     public void ResetToSpawn()
     {
+        m_combatOnWake = false;
         m_lastUsedAnimTrigger = an_triggerNone;
         m_navMeshAgent.speed = m_walkSpeed;
 
         SetupPatrolRoutes();
         DisableCollision();
-
-        // Todo: Health Manager reset to go here
     }
 
     public void WakeUpAI()
@@ -1919,5 +1919,17 @@ public class EnemyAI : MonoBehaviour
     public int GetSpawnGroup()
     {
         return m_spawnGroup;
+    }
+
+    public void SetCombatOnWake(bool shouldCombatOnWake)
+    {
+        m_combatOnWake = shouldCombatOnWake;
+    }
+
+    public void TestAttack()
+    {
+        m_attackMode = (AttackMode)1;
+        m_combatState = CombatState.Attacking;
+        Attack();
     }
 }

@@ -236,7 +236,15 @@ public class AIManager : MonoBehaviour
         {
             if (enemy.gameObject.activeSelf && enemy.GetSpawnGroup() == groupToAlert)
             {
-                enemy.SetAIState(AIState.InCombat);
+                if (enemy.GetState() == AIState.Sleeping)
+                {
+                    enemy.SetCombatOnWake(true);
+                    enemy.WakeUpAI();
+                }
+                else
+                {
+                    enemy.SetAIState(AIState.InCombat);
+                }
             }
         }
     }
@@ -403,8 +411,10 @@ public class AIManager : MonoBehaviour
                 {
                     if (enemy.GetState() != AIState.Dead)
                     {
-                        enemy.SetAIState(AIState.InCombat);
-                        m_canAttack = true;
+                        //enemy.SetAIState(AIState.InCombat);
+                        //m_canAttack = true;
+
+                        enemy.TestAttack();
                     }
                 }
             }
