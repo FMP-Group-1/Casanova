@@ -881,6 +881,11 @@ public class EnemyAI : MonoBehaviour
         m_zoneHandler.Init(ref thisEnemy, ref attackZoneManager);
     }
 
+    public void StartNavMesh()
+    {
+        m_navMeshAgent.isStopped = false;
+    }
+
     public void StopNavMesh()
     {
         m_navMeshAgent.isStopped = true;
@@ -1110,6 +1115,7 @@ public class EnemyAI : MonoBehaviour
         m_secondaryWeaponCollider.enabled = false;
     }
 
+    // Todo: Create Functions for enabling primary/secondary colliders separately for better control in the animation events
     private void EnableCollision()
     {
         switch (m_attackMode)
@@ -1127,6 +1133,33 @@ public class EnemyAI : MonoBehaviour
                 break;
             }
             case AttackMode.Both:
+            {
+                m_primaryWeaponCollider.enabled = true;
+                m_secondaryWeaponCollider.enabled = true;
+
+                break;
+            }
+        }
+    }
+
+    // Using string as a parameter so it can be called from animation events
+    private void EnableCollision( string colliderToEnable )
+    {
+        switch (colliderToEnable)
+        {
+            case "Primary":
+            {
+                m_primaryWeaponCollider.enabled = true;
+
+                break;
+            }
+            case "Secondary":
+            {
+                m_secondaryWeaponCollider.enabled = true;
+
+                break;
+            }
+            case "Both":
             {
                 m_primaryWeaponCollider.enabled = true;
                 m_secondaryWeaponCollider.enabled = true;
@@ -1549,8 +1582,19 @@ public class EnemyAI : MonoBehaviour
 
         m_navMeshAgent.isStopped = false;
         m_navMeshAgent.speed = m_strafeSpeed;
-        m_navMeshAgent.updateRotation = false;
-        m_lookAtPlayer = true;
+
+        // Hacky bit of code, but added as an afterthought as the Guard has no functional strafe anim
+        // So this makes the guard look where it's walking when strafing, whereas the grunt can just float
+        if (m_enemyType == EnemyType.Grunt)
+        {
+            m_navMeshAgent.updateRotation = false;
+            m_lookAtPlayer = true;
+        }
+        else
+        {
+            m_navMeshAgent.updateRotation = true;
+            m_lookAtPlayer = false;
+        }
 
         switch (dirToStrafe)
         {
