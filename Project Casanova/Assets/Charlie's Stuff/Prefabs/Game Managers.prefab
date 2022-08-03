@@ -13,6 +13,9 @@ GameObject:
   - component: {fileID: 2513216317872617939}
   - component: {fileID: 7498542484105378076}
   - component: {fileID: 2568592228101711801}
+  - component: {fileID: 1022091467757128719}
+  - component: {fileID: 1773965456491247855}
+  - component: {fileID: 1991337341106252668}
   m_Layer: 0
   m_Name: Game Managers
   m_TagString: GameController
@@ -94,3 +97,55 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+--- !u!114 &1022091467757128719
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5239563710317587115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dbaf900312bbe1e43b8c3ece8a8ea996, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_cellExit: {fileID: 0}
+  m_armoryExit: {fileID: 0}
+  m_guardRoomExit: {fileID: 0}
+  m_arenaExitGate: {fileID: 0}
+--- !u!114 &1773965456491247855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5239563710317587115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f76699024aeb5f546af3eb23a96507e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_gruntPrefab: {fileID: 982664744915213519, guid: d6a56c6cab414b7428d7d01bd75866ba, type: 3}
+  m_guardPrefab: {fileID: 5360444400079614259, guid: 2ebd1ad0215a2884a8c0a524d2e8fa8d, type: 3}
+--- !u!114 &1991337341106252668
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5239563710317587115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b05c827128c40f468d17d893dc778a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_useSpawnManager: 1
+  m_attackZonesNum: 15
+  m_activeAttackerMinDist: 2.5
+  m_activeAttackerMaxDist: 5
+  m_passiveAttackerMaxDist: 10
+  m_zoneDistanceBuffer: 2
+  m_maxActiveAttackers: 3
+  m_maxSimultaneousAttacks: 2
+  m_obsCheckDebug: {fileID: 0}
+  m_debugInputsActive: 0
