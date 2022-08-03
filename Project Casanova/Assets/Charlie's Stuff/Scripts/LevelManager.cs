@@ -65,13 +65,14 @@ public class LevelManager : MonoBehaviour
         //Reset Level
 		if ( m_resetLevel.action.triggered )
 		{
-            Scene scene = SceneManager.GetActiveScene(); 
-            SceneManager.LoadScene( scene.name );
+            GameObject.FindGameObjectWithTag( "Player" ).GetComponent<PlayerDamageManager>().debugDie();
         }
         //Quit Game
         if( m_quitGame.action.triggered )
-		{
-            Application.Quit();
+        {/*
+            Scene scene = SceneManager.GetActiveScene();
+            SceneManager.LoadScene( scene.name );*/
+            //Application.Quit();
 		}
 	}
 }

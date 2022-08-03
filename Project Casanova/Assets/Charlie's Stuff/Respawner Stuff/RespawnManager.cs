@@ -13,55 +13,88 @@ public enum RespawnPoint
 public class RespawnManager : MonoBehaviour
 {
     [SerializeField]
-    private GameObject[] respawnPoints;
+    private Transform[] respawnPoints;
 
-    [HideInInspector]
-    public static RespawnPoint currentRespawnPoint = RespawnPoint.Cell;
+    private Room currentRespawnPoint;
+
+    private GameObject m_player;
     // Start is called before the first frame update
     void Start()
     {
-
+        m_player = GameObject.FindGameObjectWithTag( "Player" );
     }
 
-
-    public void SetRespawnPoint( RespawnPoint newRespawnPoint )
-	{
-        currentRespawnPoint = newRespawnPoint; 
+    public void SetRespawnPoint( Room newRespawnPoint )
+    {
+        currentRespawnPoint = newRespawnPoint;
         switch( newRespawnPoint )
-		{
-            case RespawnPoint.Cell:
+        {
+            case Room.Cell:
                 break;
-		}
-	}
+        }
+    }
     // Update is called once per frame
     void Update()
     {
-        Debug.Log( "Current Respawn Point: " + currentRespawnPoint.ToString() );
+        //Debug.Log( "Current Respawn Point: " + currentRespawnPoint.ToString() );
     }
 
-    public void CompleteCorridor()
-    {
-        currentRespawnPoint = RespawnPoint.Hall;
-    }
-    public void CompleteArmory()
+
+
+
+
+
+
+
+
+
+
+
+    public void Respawn()
     {
 
-        currentRespawnPoint = RespawnPoint.Armory;
-    }
-    public void CompleteGuardRoom()
-    {
-        currentRespawnPoint = RespawnPoint.GuardRoom;
-    }
-    public void SpawnInArena( int wave )
-    {
-        currentRespawnPoint = RespawnPoint.Arena;
-        switch( wave )
-		{
-            default:
+        int enumIntValue = (int)currentRespawnPoint;
+        m_player.GetComponent<CharacterController>().enabled = false;
+        m_player.transform.position = respawnPoints[ enumIntValue ].position;
+        m_player.GetComponent<CharacterController>().enabled = true;
+
+        //Bring player back to life shit
+
+        switch( currentRespawnPoint )
+        {
+            case Room.Cell:
+
+                EventManager.StartSpawnEnemiesEvent( 0 );
+                EventManager.StartSpawnEnemiesEvent( 1 );
+
                 break;
+            case Room.Hall:
 
-            case 1:
+                //Respwan the trigger box
+                EventManager.StartSpawnEnemiesEvent( 1 );
+                EventManager.StartSpawnEnemiesEvent( 2 );
+
                 break;
-		}
+            case Room.Armory:
+
+                //Respwan the trigger box
+                EventManager.StartSpawnEnemiesEvent( 2 );
+                EventManager.StartSpawnEnemiesEvent( 3 );
+
+                break;
+            case Room.GuardRoom:
+
+                //Respwan the trigger box
+                EventManager.StartSpawnEnemiesEvent( 3 );
+
+                break;
+            case Room.Arena:
+
+                //Respwan the trigger box
+                EventManager.StartSpawnEnemiesEvent( 3 );
+
+                break;
+        }
     }
 }
+

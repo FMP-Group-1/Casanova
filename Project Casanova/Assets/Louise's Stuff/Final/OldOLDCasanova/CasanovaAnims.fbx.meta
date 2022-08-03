@@ -5,10 +5,10 @@ ModelImporter:
   internalIDToNameTable:
   - first:
       74: 9168556489164213634
-    second: All Casanova Animations
+    second: OLD All Casanova Animations
   - first:
       74: -3100369314251171874
-    second: Idle
+    second: Idle OLD
   - first:
       74: 2667949614841947897
     second: Walk (Loop)
@@ -57,6 +57,54 @@ ModelImporter:
   - first:
       74: -1174142106460280515
     second: Normal Attck - Combo#1
+  - first:
+      74: 8797874688918152569
+    second: Walk (Loop) OLD
+  - first:
+      74: 7815535229351968616
+    second: Walk Turn  OLD
+  - first:
+      74: -8350921842908875248
+    second: Run (Loop) OLD
+  - first:
+      74: 4975108590150817163
+    second: Run Turn OLD
+  - first:
+      74: -274797554550453157
+    second: Jump - Up OLD
+  - first:
+      74: 789696141229565072
+    second: Jump - Fall (Loop) OLD
+  - first:
+      74: 2304268955184130306
+    second: Jump - Normal Landing OLD
+  - first:
+      74: 307070305964211862
+    second: Jump - Hard Landing OLD
+  - first:
+      74: 3670143073260399227
+    second: Hit taken (Once) OLD
+  - first:
+      74: -580735805036389117
+    second: Hit taken (Loop) OLD
+  - first:
+      74: -7119133588195843984
+    second: Hit recovery OLD
+  - first:
+      74: 246842869590145588
+    second: Dodge roll OLD
+  - first:
+      74: -5433016635091606518
+    second: Dodge recovery OLD
+  - first:
+      74: 1648935679941101798
+    second: Death OLD
+  - first:
+      74: 1067971510410235371
+    second: Death - Still OLD
+  - first:
+      74: 504185624653805907
+    second: Normal Attck - Combo#1 OLD
   externalObjects: {}
   materials:
     materialImportMode: 2
@@ -93,7 +141,7 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: All Casanova Animations
+      name: OLD All Casanova Animations
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 1
@@ -122,7 +170,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: Idle
+      name: Idle OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 1
@@ -185,7 +233,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Walk (Loop)
+      name: Walk (Loop) OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 505
@@ -214,7 +262,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Walk Turn
+      name: Walk Turn  OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 1062
@@ -243,7 +291,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Run (Loop)
+      name: Run (Loop) OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 810
@@ -266,13 +314,27 @@ ModelImporter:
       mirror: 0
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
-      events: []
+      events:
+      - time: 0.27821523
+        functionName: PlayFootstepSFX
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.76902884
+        functionName: PlayFootstepSFX
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Run Turn
+      name: Run Turn OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 1144
@@ -301,7 +363,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Jump - Up
+      name: Jump - Up OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 845
@@ -330,7 +392,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Jump - Fall (Loop)
+      name: Jump - Fall (Loop) OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 870
@@ -359,7 +421,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Jump - Normal Landing
+      name: Jump - Normal Landing OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 905
@@ -388,7 +450,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Jump - Hard Landing
+      name: Jump - Hard Landing OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 930
@@ -417,7 +479,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Hit taken (Once)
+      name: Hit taken (Once) OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 1180
@@ -446,7 +508,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Hit taken (Loop)
+      name: Hit taken (Loop) OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 1228
@@ -475,7 +537,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Hit recovery
+      name: Hit recovery OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 1202
@@ -504,7 +566,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Dodge roll
+      name: Dodge roll OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 1260
@@ -535,12 +597,19 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
+      - time: 0.17777696
+        functionName: PlayDodgeSFX
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
       transformMask: []
       maskType: 3
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Dodge recovery
+      name: Dodge recovery OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 1300
@@ -569,7 +638,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Death
+      name: Death OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 1315
@@ -598,7 +667,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Death - Still
+      name: Death - Still OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 1415
@@ -627,7 +696,7 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 1
     - serializedVersion: 16
-      name: Normal Attck - Combo#1
+      name: Normal Attck - Combo#1 OLD
       takeName: CasanovaAnims
       internalID: 0
       firstFrame: 1420
