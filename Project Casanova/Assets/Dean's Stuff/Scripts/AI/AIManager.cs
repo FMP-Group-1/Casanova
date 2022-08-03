@@ -17,6 +17,7 @@ public class AIManager : MonoBehaviour
     private List<EnemyAI> m_passiveAttackers = new List<EnemyAI>();
     private List<EnemyAI> m_unassignedAttackers = new List<EnemyAI>();
     private AttackZoneManager m_attackZoneManager;
+    private SpawnManager m_spawnManager;
 
     private bool m_canAttack = true;
     [SerializeField]
@@ -63,6 +64,7 @@ public class AIManager : MonoBehaviour
     void Start()
     {
         m_player = GameObject.FindGameObjectWithTag("Player");
+        m_spawnManager = GetComponent<SpawnManager>();
 
         EventManager.WakeEnemiesEvent += WakeGroup;
         EventManager.AlertEnemiesEvent += AlertGroup;
@@ -213,9 +215,12 @@ public class AIManager : MonoBehaviour
             if (enemy.gameObject.activeSelf)
             {
                 UnregisterAttacker(enemy);
+                m_spawnManager.AddToAvailable( enemy );
                 enemy.gameObject.SetActive(false);
             }
         }
+
+        m_attackZoneManager.ClearZones();
     }
 
     // Function for ensuring the active attacker count is always correct
