@@ -67,6 +67,7 @@ public class GuardHandTrails : MonoBehaviour
             }
             else
             {
+                handTrail.Clear();
                 handTrail.Pause();
             }
         }
