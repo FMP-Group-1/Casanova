@@ -214,11 +214,13 @@ public class AIManager : MonoBehaviour
         {
             if (enemy.gameObject.activeSelf)
             {
-
+                UnregisterAttacker(enemy);
                 m_spawnManager.AddToAvailable( enemy );
                 enemy.gameObject.SetActive(false);
             }
         }
+
+        m_attackZoneManager.ClearZones();
     }
 
     // Function for ensuring the active attacker count is always correct
