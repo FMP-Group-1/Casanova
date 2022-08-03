@@ -9,8 +9,6 @@ public class GuardHandTrails : MonoBehaviour
     private GameObject m_lHand;
     [SerializeField]
     private GameObject m_rHand;
-    //private List<ParticleSystem> m_lHandParticleList = new List<ParticleSystem>();
-    //private List<ParticleSystem> m_rHandParticleList = new List<ParticleSystem>();
     private List<ParticleSystem> m_handParticleList = new List<ParticleSystem>();
     private CombatState m_prevAIState;
 
