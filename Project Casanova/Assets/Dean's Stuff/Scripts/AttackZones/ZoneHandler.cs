@@ -102,7 +102,7 @@ public class ZoneHandler
 
                 if (rightNum < 0)
                 {
-                    rightNum = m_attackZoneManager.GetTotalZonesNum() - zoneNumOffset;
+                    rightNum = m_attackZoneManager.GetTotalZonesNum() - (zoneNumOffset % m_attackZoneManager.GetTotalZonesNum());
                 }
 
                 // Randomising which direction to check so AI don't bias a direction
@@ -141,7 +141,7 @@ public class ZoneHandler
 
                 if (rightNum < 0)
                 {
-                    rightNum = m_attackZoneManager.GetTotalZonesNum() - zoneNumOffset;
+                    rightNum = m_attackZoneManager.GetTotalZonesNum() - (zoneNumOffset % m_attackZoneManager.GetTotalZonesNum());
                 }
 
                 if (dirToCheckFirst == 0)

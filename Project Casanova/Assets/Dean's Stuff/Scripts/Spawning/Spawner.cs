@@ -22,6 +22,9 @@ public class Spawner : MonoBehaviour
         enemyToSpawn.transform.position = transform.position;
         enemyToSpawn.transform.rotation = transform.rotation;
 
+        // Reset the necessary values, then set the state and group num
+        enemyScript.ResetToSpawn();
+
         if (m_patrolRoute != null)
         {
             enemyScript.SetPatrolRoute(m_patrolRoute);
@@ -29,9 +32,6 @@ public class Spawner : MonoBehaviour
 
         // Enable enemy
         enemyToSpawn.SetActive(true);
-
-        // Reset the necessary values, then set the state and group num
-        enemyScript.ResetToSpawn();
         enemyScript.SetAIState(m_stateToSpawn);
         enemyScript.SetSpawnGroup(m_spawnGroup);
 
