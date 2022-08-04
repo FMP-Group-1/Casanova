@@ -988,6 +988,7 @@ public class EnemyAI : MonoBehaviour
     {
         SetCombatState(CombatState.BackingUp);
         ResetAttackTimer();
+        SetStaggerable(true);
 
         m_navMeshAgent.speed = m_runSpeed;
         m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
