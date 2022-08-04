@@ -63,9 +63,25 @@ public class GameManager : MonoBehaviour
                 case Room.Armory:
 
                     //If you're in the hall, check if this group is a1l dead
-                    if( m_aiManager.RemainingEnemiesInGroup( 1 ) <= 0 )
+                    if ( m_aiManager.RemainingEnemiesInGroup( 1 ) <= 0 )
                     {
                         CompleteRoom( Room.Armory );
+                    }
+                    break;
+                case Room.GuardRoom:
+
+                    //If you're in the hall, check if this group is a1l dead
+                    if ( m_aiManager.RemainingEnemiesInGroup( 2 ) <= 0 )
+                    {
+                        CompleteRoom( Room.GuardRoom );
+                    }
+                    break;
+                case Room.Arena:
+
+                    //If you're in the hall, check if this group is a1l dead
+                    if ( m_aiManager.RemainingEnemiesInGroup( 3 ) <= 0 )
+                    {
+                        CompleteRoom( Room.Arena );
                     }
                     break;
             }
