@@ -79,19 +79,19 @@ public class EnemyEyeColorChanger : MonoBehaviour
             {
                 switch (m_parentAI.GetAttackMode())
                 {
-                    case AttackMode.Primary:
+                    case AttackMode.Normal:
                     {
                         ChangeEyeColor(m_normalAttackColorMin, m_normalAttackColorMax);
                         break;
                     }
-                    case AttackMode.Secondary:
-                    {
-                        ChangeEyeColor(m_heavyAttackColorMin, m_heavyAttackColorMax);
-                        break;
-                    }
-                    case AttackMode.Both:
+                    case AttackMode.Quick:
                     {
                         ChangeEyeColor(m_lightAttackColorMin, m_lightAttackColorMax);
+                        break;
+                    }
+                    case AttackMode.Heavy:
+                    {
+                        ChangeEyeColor(m_heavyAttackColorMin, m_heavyAttackColorMax);
                         break;
                     }
                 }

@@ -1106,6 +1106,8 @@ public class EnemyAI : MonoBehaviour
 
     public void ResetToSpawn()
     {
+        m_patrolRoute = null;
+
         m_combatOnWake = false;
         m_lastUsedAnimTrigger = an_triggerNone;
         m_navMeshAgent.speed = m_walkSpeed;
