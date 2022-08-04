@@ -29,8 +29,7 @@ public class CharacterDamageManager : MonoBehaviour
         an_getHitTrigger = Animator.StringToHash( "TakeHit" );
         an_death = Animator.StringToHash( "Death" );
 
-
-        m_healthBarFill.fillAmount = GetHealth() / 100;
+        UpdateHealthBar();
 
     }
 
@@ -40,6 +39,11 @@ public class CharacterDamageManager : MonoBehaviour
 
     }
 
+    protected void UpdateHealthBar()
+	{
+
+        m_healthBarFill.fillAmount = GetHealth() / 100;
+    }
 
     public virtual void TakeDamage(Transform othersTransform, float damage = 30f )
     {
@@ -77,7 +81,7 @@ public class CharacterDamageManager : MonoBehaviour
                 StartCoroutine( ResetInvulnerable( m_invulnerableTime ) );
             }
 
-            m_healthBarFill.fillAmount = GetHealth() / 100;
+            UpdateHealthBar();
         }
 
 

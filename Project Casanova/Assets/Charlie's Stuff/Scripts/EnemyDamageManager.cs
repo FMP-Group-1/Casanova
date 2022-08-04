@@ -102,7 +102,7 @@ public class EnemyDamageManager : CharacterDamageManager
         }
     }
 
-    private IEnumerator ResetEnemy()
+    public IEnumerator ResetEnemy()
 	{
         yield return new WaitForSeconds( 1f );
 
@@ -113,6 +113,8 @@ public class EnemyDamageManager : CharacterDamageManager
         SetInvulnerable(false);
         SetAlive(true);
         gameObject.GetComponent<Collider>().enabled = true;
+
+        UpdateHealthBar();
 
     }
 }

@@ -217,6 +217,7 @@ public class AIManager : MonoBehaviour
                 UnregisterAttacker(enemy);
                 m_spawnManager.AddToAvailable( enemy );
                 enemy.gameObject.SetActive(false);
+                enemy.gameObject.GetComponent<EnemyDamageManager>().ResetEnemy();
             }
         }
 
