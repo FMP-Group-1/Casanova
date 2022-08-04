@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4968322127530137986}
   - component: {fileID: 7140441744079154504}
   - component: {fileID: 8419026843572105678}
+  - component: {fileID: 5396144764065468568}
   m_Layer: 0
   m_Name: Table_large
   m_TagString: Untagged
@@ -95,3 +96,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1.5816593, y: 0.9193056, z: 2.1791687}
   m_Center: {x: -0.004807472, y: 0.41305795, z: -0.008437872}
+--- !u!205 &5396144764065468568
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8653400185727798429}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: -0.004807472, y: 0.41305795, z: -0.008437872}
+  m_Size: 2.1791687
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.29322952
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 7140441744079154504}
+  m_Enabled: 1

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 3741115756307204567}
   - component: {fileID: 1445633199913712925}
   - component: {fileID: 274295293539557791}
+  - component: {fileID: 562933775694239915}
   m_Layer: 0
   m_Name: BowlNSpoon
   m_TagString: Untagged
@@ -96,3 +97,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -6135658284012336263, guid: fc6cedd95aa7a2d4a865ed6393c51f1b, type: 3}
+--- !u!205 &562933775694239915
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1085112201686129864}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: -0.012654215, y: 0.046715368, z: -0.008946538}
+  m_Size: 0.28285885
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.29322952
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 1445633199913712925}
+  m_Enabled: 1

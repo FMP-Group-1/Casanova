@@ -4907,7 +4907,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8051070938864164142}
   - component: {fileID: 8051070938864164136}
-  - component: {fileID: 8051070938864164137}
   m_Layer: 0
   m_Name: Fire light
   m_TagString: Untagged
@@ -4991,22 +4990,6 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
---- !u!114 &8051070938864164137
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8051070938864164139}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f88d7bd0ed9708742806dcdad6e7f621, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  light: {fileID: 8051070938864164136}
-  minIntensity: 0.1
-  maxIntensity: 0.3
-  smoothing: 10
 --- !u!1 &8051070939265546425
 GameObject:
   m_ObjectHideFlags: 0
