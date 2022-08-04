@@ -23,7 +23,6 @@ public class EnemySoundHandler : CharacterSoundHandler
     public override void PlayFootstepSFX()
     {
         m_audioSource.PlayOneShot(m_soundbank.GetFootstepSFX());
-
     }
 
     public override void PlayDodgeSFX()

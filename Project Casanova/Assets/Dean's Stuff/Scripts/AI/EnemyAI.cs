@@ -1129,7 +1129,6 @@ public class EnemyAI : MonoBehaviour
         m_secondaryWeaponCollider.enabled = false;
     }
 
-    // Todo: Create Functions for enabling primary/secondary colliders separately for better control in the animation events
     private void EnableCollision()
     {
         switch (m_attackMode)
