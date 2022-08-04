@@ -23,6 +23,8 @@ public class CharacterDamageManager : MonoBehaviour
 
     private bool m_alive = true;
 
+    private bool m_staggerable = true;
+
     protected virtual void Start()
     {
         m_animator = GetComponent<Animator>();
@@ -40,6 +42,10 @@ public class CharacterDamageManager : MonoBehaviour
 
     }
 
+    public void SetStaggerable(bool shouldStagger)
+    {
+        m_staggerable = shouldStagger;
+    }
 
     public virtual void TakeDamage(Transform othersTransform, float damage = 30f )
     {
@@ -72,8 +78,10 @@ public class CharacterDamageManager : MonoBehaviour
             }
             else // Just get hurt
 			{
-
-                m_animator.SetTrigger( an_getHitTrigger );
+                if (m_staggerable)
+                {
+                    m_animator.SetTrigger( an_getHitTrigger );
+                }
                 StartCoroutine( ResetInvulnerable( m_invulnerableTime ) );
             }
 

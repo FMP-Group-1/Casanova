@@ -198,7 +198,6 @@ public class EnemyAI : MonoBehaviour
     private float m_zoneTimer = 0.0f;
     private float m_strafeCheckInterval = 2.0f;
     private float m_strafeTimer = 0.0f;
-    private bool m_isStaggerable = true;
     private bool m_combatOnWake = false;
 
     // Vision Detection Relevant Variables
@@ -1864,19 +1863,15 @@ public class EnemyAI : MonoBehaviour
         m_aiManager = aiManagerRef;
     }
 
+    public void SetStaggerable(bool isStaggerable)
+    {
+        m_healthManager.SetStaggerable(isStaggerable);
+    }
+
+    // Fixed set for anim events
     public void SetUnstaggerable()
     {
-        m_isStaggerable = false;
-    }
-
-    public void SetStaggerable(bool isStaggered)
-    {
-        m_isStaggerable = isStaggered;
-    }
-
-    public bool IsStaggerable()
-    {
-        return m_isStaggerable;
+        m_healthManager.SetStaggerable(false);
     }
 
     public AttackingType GetAttackingType()
