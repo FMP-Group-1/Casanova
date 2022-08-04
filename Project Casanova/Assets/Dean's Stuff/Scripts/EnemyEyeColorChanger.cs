@@ -49,7 +49,7 @@ public class EnemyEyeColorChanger : MonoBehaviour
 
     void Update()
     {
-        TrackAIState();
+        UpdateEyes();
     }
 
     private void ChangeEyeColor(Color min, Color max)
@@ -69,7 +69,7 @@ public class EnemyEyeColorChanger : MonoBehaviour
         trailCol2.color = grad;
     }
 
-    private void TrackAIState()
+    private void UpdateEyes()
     {
         CombatState currentState = m_parentAI.GetCombatState();
 

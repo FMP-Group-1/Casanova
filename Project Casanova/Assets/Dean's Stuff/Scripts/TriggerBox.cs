@@ -15,6 +15,11 @@ public class TriggerBox : MonoBehaviour
     private TriggerType m_triggerType = TriggerType.Spawn;
     [SerializeField]
     private int m_triggerGroup;
+    [SerializeField]
+    private bool m_spawnNextGroupOnAlert = false;
+
+    [SerializeField]
+    private Room m_roomEntered;
 
     private void OnTriggerEnter( Collider other )
     {
@@ -35,10 +40,18 @@ public class TriggerBox : MonoBehaviour
                 }
                 case TriggerType.Alert:
                 {
+                    if (m_spawnNextGroupOnAlert)
+                    {
+                        EventManager.StartSpawnEnemiesEvent(m_triggerGroup + 1);
+                    }
+
                     EventManager.StartAlertEnemiesEvent(m_triggerGroup);
                     break;
                 }
             }
+
+            GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().EnterRoom(m_roomEntered);
+            
 
             gameObject.SetActive(false);
         }

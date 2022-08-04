@@ -203,6 +203,18 @@ public class AttackZoneManager
         return false;
     }
 
+    public void ClearZones()
+    {
+        foreach(AttackZone attackZone in m_activeAttackZones)
+        {
+            attackZone.EmptyZone();
+        }
+        foreach (AttackZone attackZone in m_passiveAttackZones)
+        {
+            attackZone.EmptyZone();
+        }
+    }
+
     public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject gameObject )
     {
         if (!angleIsGlobal)

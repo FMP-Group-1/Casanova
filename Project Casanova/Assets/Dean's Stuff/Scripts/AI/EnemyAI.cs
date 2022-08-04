@@ -190,6 +190,7 @@ public class EnemyAI : MonoBehaviour
     private float m_strafeCheckInterval = 2.0f;
     private float m_strafeTimer = 0.0f;
     private bool m_isStaggerable = true;
+    private bool m_combatOnWake = false;
 
     // Vision Detection Relevant Variables
     [Header("Player Detection Values")]
@@ -1038,7 +1039,21 @@ public class EnemyAI : MonoBehaviour
 
     public void ChangeStateFromWake()
     {
-        SetAIState(AIState.InCombat);
+        if (m_combatOnWake)
+        {
+            SetAIState(AIState.InCombat);
+        }
+        else
+        {
+            if (m_patrolRoute != null)
+            {
+                SetAIState(AIState.Patrolling);        
+            }
+            else
+            {
+                SetAIState(AIState.Idle);
+            }
+        }
 
         // Had to put this setter here to force path recalculation, otherwise AI would attack immediately.
         m_navMeshAgent.SetDestination(m_player.transform.position);
@@ -1089,13 +1104,12 @@ public class EnemyAI : MonoBehaviour
 
     public void ResetToSpawn()
     {
+        m_combatOnWake = false;
         m_lastUsedAnimTrigger = an_triggerNone;
         m_navMeshAgent.speed = m_walkSpeed;
 
         SetupPatrolRoutes();
         DisableCollision();
-
-        // Todo: Health Manager reset to go here
     }
 
     public void WakeUpAI()
@@ -1919,5 +1933,10 @@ public class EnemyAI : MonoBehaviour
     public int GetSpawnGroup()
     {
         return m_spawnGroup;
+    }
+
+    public void SetCombatOnWake(bool shouldCombatOnWake)
+    {
+        m_combatOnWake = shouldCombatOnWake;
     }
 }

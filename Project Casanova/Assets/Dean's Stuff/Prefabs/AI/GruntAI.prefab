@@ -285,7 +285,7 @@ Animator:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 982664744915213519}
   m_Enabled: 1
-  m_Avatar: {fileID: 0}
+  m_Avatar: {fileID: 9000000, guid: 2932efe41359c164abb224d48c0a5294, type: 3}
   m_Controller: {fileID: 9100000, guid: d452933eecdc47b47877936c68c0a9b3, type: 2}
   m_CullingMode: 2
   m_UpdateMode: 0
@@ -955,7 +955,7 @@ Cloth:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3968339955538336910}
-  m_Enabled: 1
+  m_Enabled: 0
   m_StretchingStiffness: 1
   m_BendingStiffness: 0.5
   m_UseTethers: 1
@@ -967,8 +967,8 @@ Cloth:
   m_WorldAccelerationScale: 1
   m_Friction: 0.5
   m_CollisionMassScale: 0
-  m_UseContinuousCollision: 1
-  m_UseVirtualParticles: 1
+  m_UseContinuousCollision: 0
+  m_UseVirtualParticles: 0
   m_SolverFrequency: 240
   m_SleepThreshold: 0.1
   m_Coefficients:
