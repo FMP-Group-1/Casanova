@@ -57,9 +57,9 @@ public enum AttackingType
 
 public enum AttackMode
 {
-    Primary,
-    Secondary,
-    Both
+    Normal,
+    Quick,
+    Heavy
 }
 
 public enum StrafeDir
@@ -117,6 +117,15 @@ public class EnemyAI : MonoBehaviour
     // Combat Relevant Variables
     [Header("Combat Values")]
     private bool m_lookAtPlayer = false;
+    [SerializeField]
+    [Tooltip("Normal Attack Damage")]
+    private float m_normalAttackDmg = 10.0f;
+    [SerializeField]
+    [Tooltip("Quick Attack Damage")]
+    private float m_quickAttackDmg = 5.0f;
+    [SerializeField]
+    [Tooltip("Heavy Attack Damage")]
+    private float m_heavyAttackDmg = 15.0f;
     [SerializeField]
     [Tooltip("The speed the AI will rotate when attempting to look at a target")]
     private float m_turnSpeed = 75.0f;
@@ -182,7 +191,7 @@ public class EnemyAI : MonoBehaviour
     [Tooltip("The secondary weapon object which should have a box collider attached for attack collisions")]
     private GameObject m_secondaryWeapon;
     private BoxCollider m_secondaryWeaponCollider;
-    private AttackMode m_attackMode = AttackMode.Primary;
+    private AttackMode m_attackMode = AttackMode.Normal;
     private AttackingType m_currentAttackingType = AttackingType.Passive;
     private ZoneHandler m_zoneHandler = new ZoneHandler();
     private float m_zoneCheckInterval = 5.0f;
@@ -268,13 +277,6 @@ public class EnemyAI : MonoBehaviour
         m_secondaryWeaponCollider = m_secondaryWeapon.GetComponent<BoxCollider>();
 
         DisableCollision();
-
-        if (m_mainState == AIState.Sleeping)
-        {
-            // So if sleeping, can't get hurt
-            // Todo: Review this, should they be invuln while sleeping?
-            m_healthManager.SetInvulnerable( true );
-        }
 
         SetAIState(m_mainState);
 
@@ -756,17 +758,17 @@ public class EnemyAI : MonoBehaviour
 
                 switch(m_attackMode)
                 {
-                    case AttackMode.Primary:
+                    case AttackMode.Normal:
                     {
                         m_navMeshAgent.stoppingDistance = m_normalAttkStoppingDistance;
                         break;
                     }
-                    case AttackMode.Both:
+                    case AttackMode.Quick:
                     {
                         m_navMeshAgent.stoppingDistance = m_quickAttkStoppingDistance;
                         break;
                     }
-                    case AttackMode.Secondary:
+                    case AttackMode.Heavy:
                     {
                         m_navMeshAgent.stoppingDistance = m_heavyAttkStoppingDistance;
                         break;
@@ -964,17 +966,17 @@ public class EnemyAI : MonoBehaviour
     {
         switch (m_attackMode)
         {
-            case AttackMode.Primary:
+            case AttackMode.Normal:
             {
                 StartAttackAnim();
                 break;
             }
-            case AttackMode.Both:
+            case AttackMode.Quick:
             {
                 StartQuickAttackAnim();
                 break;
             }
-            case AttackMode.Secondary:
+            case AttackMode.Heavy:
             {
                 StartHeavyAttackAnim();
                 break;
@@ -1131,28 +1133,8 @@ public class EnemyAI : MonoBehaviour
 
     private void EnableCollision()
     {
-        switch (m_attackMode)
-        {
-            case AttackMode.Primary:
-            {
-                m_primaryWeaponCollider.enabled = true;
-
-                break;
-            }
-            case AttackMode.Secondary:
-            {
-                m_secondaryWeaponCollider.enabled = true;
-
-                break;
-            }
-            case AttackMode.Both:
-            {
-                m_primaryWeaponCollider.enabled = true;
-                m_secondaryWeaponCollider.enabled = true;
-
-                break;
-            }
-        }
+        m_primaryWeaponCollider.enabled = true;
+        m_secondaryWeaponCollider.enabled = true;
     }
 
     // Using string as a parameter so it can be called from animation events
@@ -1879,6 +1861,11 @@ public class EnemyAI : MonoBehaviour
         m_aiManager = aiManagerRef;
     }
 
+    public void SetUnstaggerable()
+    {
+        m_isStaggerable = false;
+    }
+
     public void SetStaggerable(bool isStaggered)
     {
         m_isStaggerable = isStaggered;
@@ -1897,6 +1884,35 @@ public class EnemyAI : MonoBehaviour
     public AttackMode GetAttackMode()
     {
         return m_attackMode;
+    }
+
+    public float GetCurrentAttackDamage()
+    {
+        float attackDamage = m_normalAttackDmg;
+
+        switch (m_attackMode)
+        {
+            case AttackMode.Normal:
+            {
+                attackDamage = m_normalAttackDmg;
+
+                break;
+            }
+            case AttackMode.Quick:
+            {
+                attackDamage = m_quickAttackDmg;
+
+                break;
+            }
+            case AttackMode.Heavy:
+            {
+                attackDamage = m_heavyAttackDmg;
+
+                break;
+            }
+        }
+
+        return attackDamage;
     }
 
     public void SetAttackingType( AttackingType typeToSet )
