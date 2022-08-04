@@ -144,7 +144,7 @@ ParticleSystem:
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
-  useRigidbodyForVelocity: 1
+  useRigidbodyForVelocity: 0
   startDelay:
     serializedVersion: 2
     minMaxState: 0
@@ -4948,7 +4948,7 @@ ParticleSystem:
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
-  useRigidbodyForVelocity: 1
+  useRigidbodyForVelocity: 0
   startDelay:
     serializedVersion: 2
     minMaxState: 0
@@ -9752,7 +9752,7 @@ ParticleSystem:
   playOnAwake: 1
   useUnscaledTime: 0
   autoRandomSeed: 1
-  useRigidbodyForVelocity: 1
+  useRigidbodyForVelocity: 0
   startDelay:
     serializedVersion: 2
     minMaxState: 0
@@ -14705,6 +14705,10 @@ PrefabInstance:
     - target: {fileID: 7898982521370236720, guid: 9bc136cac450d13459ee438eac56903f, type: 3}
       propertyPath: m_Name
       value: Longtorch_smaller (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7898982521370236720, guid: 9bc136cac450d13459ee438eac56903f, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9bc136cac450d13459ee438eac56903f, type: 3}

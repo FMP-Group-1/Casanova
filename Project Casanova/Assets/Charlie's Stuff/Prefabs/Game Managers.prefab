@@ -109,8 +109,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dbaf900312bbe1e43b8c3ece8a8ea996, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_cellExit: {fileID: 0}
+  m_cellsExit: {fileID: 0}
   m_armoryExit: {fileID: 0}
+  m_guardRoomEntrance: {fileID: 0}
   m_guardRoomExit: {fileID: 0}
   m_arenaExitGate: {fileID: 0}
 --- !u!114 &1773965456491247855
@@ -126,7 +127,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_gruntPrefab: {fileID: 982664744915213519, guid: d6a56c6cab414b7428d7d01bd75866ba, type: 3}
-  m_guardPrefab: {fileID: 5360444400079614259, guid: 2ebd1ad0215a2884a8c0a524d2e8fa8d, type: 3}
+  m_guardPrefab: {fileID: 7537732103394667408, guid: c00a225a6b7438c4096b6b8f89178464, type: 3}
 --- !u!114 &1991337341106252668
 MonoBehaviour:
   m_ObjectHideFlags: 0
