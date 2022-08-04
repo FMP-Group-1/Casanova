@@ -49245,30 +49245,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 99723165943833004, guid: a21bc339df1a00b48952a2dd492e8044, type: 3}
-      propertyPath: m_Damping
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 99723165943833004, guid: a21bc339df1a00b48952a2dd492e8044, type: 3}
-      propertyPath: m_BendingStiffness
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 99723165943833004, guid: a21bc339df1a00b48952a2dd492e8044, type: 3}
-      propertyPath: m_WorldVelocityScale
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 99723165943833004, guid: a21bc339df1a00b48952a2dd492e8044, type: 3}
-      propertyPath: m_RandomAcceleration.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 99723165943833004, guid: a21bc339df1a00b48952a2dd492e8044, type: 3}
-      propertyPath: m_ExternalAcceleration.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 99723165943833004, guid: a21bc339df1a00b48952a2dd492e8044, type: 3}
-      propertyPath: m_ExternalAcceleration.z
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 497912524621530741, guid: a21bc339df1a00b48952a2dd492e8044, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -49370,28 +49346,9 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7231108338055074214, guid: 0f33aff69fe7b434ab872a375ee206ba, type: 3}
-      propertyPath: m_Damping
-      value: 0.8
-      objectReference: {fileID: 0}
-    - target: {fileID: 7231108338055074214, guid: 0f33aff69fe7b434ab872a375ee206ba, type: 3}
-      propertyPath: m_SolverFrequency
-      value: 240
-      objectReference: {fileID: 0}
-    - target: {fileID: 7231108338055074214, guid: 0f33aff69fe7b434ab872a375ee206ba, type: 3}
-      propertyPath: m_BendingStiffness
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 7231108338055074214, guid: 0f33aff69fe7b434ab872a375ee206ba, type: 3}
-      propertyPath: m_WorldVelocityScale
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 7537732103394667408, guid: 0f33aff69fe7b434ab872a375ee206ba, type: 3}
       propertyPath: m_Name
       value: Guard
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 7231108338239162221, guid: 0f33aff69fe7b434ab872a375ee206ba, type: 3}
-    - {fileID: 7231108338754763552, guid: 0f33aff69fe7b434ab872a375ee206ba, type: 3}
-    - {fileID: 7231108338055074214, guid: 0f33aff69fe7b434ab872a375ee206ba, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0f33aff69fe7b434ab872a375ee206ba, type: 3}
