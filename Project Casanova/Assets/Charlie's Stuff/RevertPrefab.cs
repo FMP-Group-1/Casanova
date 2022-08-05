@@ -24,10 +24,27 @@ public class RevertPrefab : EditorWindow
     private static void RevertPrefabs()
     {
         GameObject[] prefabs = GameObject.FindGameObjectsWithTag( "Revert" );
-        foreach ( GameObject prefab in prefabs )
+        
+        if ( prefabs.Length == 0 )
+		{
+            Debug.Log( "Nothing Tagged with \"Revert\"" );
+		}
+        
+        foreach ( GameObject go in prefabs )
         {
-            prefab.tag = null;
-            PrefabUtility.RevertPrefabInstance( prefab, InteractionMode.AutomatedAction );
+            //Debug.Log( go.name );
+            
+            if (PrefabUtility.GetPrefabAssetType(go) != PrefabAssetType.NotAPrefab)
+            {
+                PrefabUtility.RevertPrefabInstance( go, InteractionMode.AutomatedAction );
+                Debug.Log( go.name + " Reverted" );
+            }
+            else
+			{
+
+                Debug.Log( go.name + " is not a prefab" );
+                go.tag = "Untagged";
+            }
         }
     }
 
