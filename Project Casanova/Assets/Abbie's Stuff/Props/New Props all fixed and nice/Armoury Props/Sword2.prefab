@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 384414390653369704}
   - component: {fileID: 3673368633343357645}
   - component: {fileID: 1521823077568005639}
+  - component: {fileID: 8128150283930874000}
   m_Layer: 0
   m_Name: Sword2
   m_TagString: Untagged
@@ -82,3 +83,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!205 &8128150283930874000
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1017363225437628370}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0.00012645125, y: -0.35262167, z: 0.00052696466}
+  m_Size: 1.2035005
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.08140703
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 1521823077568005639}
+  m_Enabled: 1

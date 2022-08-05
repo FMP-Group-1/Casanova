@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5115079706920618887}
   - component: {fileID: 8166066751090394146}
   - component: {fileID: 6248539115572162792}
+  - component: {fileID: 8861082455207413409}
   m_Layer: 0
   m_Name: ShieldRound
   m_TagString: Untagged
@@ -82,3 +83,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!205 &8861082455207413409
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5600148380989804861}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0.026458949, y: 0.009386957, z: 0.0012227297}
+  m_Size: 0.73682916
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.03602893
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 6248539115572162792}
+  m_Enabled: 1

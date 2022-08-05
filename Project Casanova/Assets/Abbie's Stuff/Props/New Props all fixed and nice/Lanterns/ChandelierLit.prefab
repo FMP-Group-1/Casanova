@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5962828589676814466}
+  - component: {fileID: -17649547739662783}
   m_Layer: 0
   m_Name: ChandelierLit
   m_TagString: Untagged
@@ -33,6 +34,25 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!205 &-17649547739662783
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3962540749201037460}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: -1.8374329, y: 4.634221, z: -12.089286}
+  m_Size: 5.599907
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.16388522
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 4891109300723563426}
+  m_Enabled: 1
 --- !u!1 &8123710075193399966
 GameObject:
   m_ObjectHideFlags: 0
@@ -283,5 +303,10 @@ PrefabInstance:
 --- !u!4 &6029080897593229517 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2528400001576238427, guid: a27e4a2c13ea4734da7d1a8c2c8f3ef9, type: 3}
+  m_PrefabInstance: {fileID: 8123710075814493590}
+  m_PrefabAsset: {fileID: 0}
+--- !u!23 &4891109300723563426 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 3701258210117912116, guid: a27e4a2c13ea4734da7d1a8c2c8f3ef9, type: 3}
   m_PrefabInstance: {fileID: 8123710075814493590}
   m_PrefabAsset: {fileID: 0}
