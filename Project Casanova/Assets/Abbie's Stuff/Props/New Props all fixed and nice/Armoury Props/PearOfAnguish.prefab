@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1847998804142614215}
   - component: {fileID: 3317660382567033186}
   - component: {fileID: 715586097410448808}
+  - component: {fileID: 7517872668007166026}
   m_Layer: 0
   m_Name: PearOfAnguish
   m_TagString: Untagged
@@ -83,3 +84,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!205 &7517872668007166026
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1364231918022048893}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: -0.005959466, y: 0.17503, z: 0}
+  m_Size: 0.7961799
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.05800148
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 715586097410448808}
+  m_Enabled: 1

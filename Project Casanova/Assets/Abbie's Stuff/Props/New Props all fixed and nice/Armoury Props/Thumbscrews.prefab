@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4497307655653278822}
   - component: {fileID: 704389932714871747}
   - component: {fileID: 3324370797400964873}
+  - component: {fileID: 773572026453133119}
   m_Layer: 0
   m_Name: Thumbscrews
   m_TagString: Untagged
@@ -81,3 +82,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!205 &773572026453133119
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3828752172492496604}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: -0.0037842467, y: 0.21736649, z: 0.00080162287}
+  m_Size: 0.43054867
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.030207397
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 3324370797400964873}
+  m_Enabled: 1

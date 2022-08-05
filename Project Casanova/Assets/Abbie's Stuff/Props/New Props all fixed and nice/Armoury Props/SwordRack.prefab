@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4709903235287743923}
   - component: {fileID: 7401673960046791033}
   - component: {fileID: 8176728097450333691}
+  - component: {fileID: 6287726030192845741}
   m_Layer: 0
   m_Name: SwordRack
   m_TagString: Untagged
@@ -96,3 +97,22 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -3038060785980689871, guid: 42d5c2f8e278a27418ea1765b2033c0e, type: 3}
+--- !u!205 &6287726030192845741
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9059266834258634924}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0.22526191, y: 0.54762286, z: 0.0066184998}
+  m_Size: 1.3216441
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.06921663
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 7401673960046791033}
+  m_Enabled: 1
