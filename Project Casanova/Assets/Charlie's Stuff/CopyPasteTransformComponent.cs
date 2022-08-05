@@ -40,26 +40,8 @@ public static class CopyPasteTransformComponent
             selectionTr.localScale = _data.localScale;
         }
     }
-    [MenuItem( "Tools/Revert Prefab &p" )]
-	static void RevertPrefab()
-    {
-        GameObject[] selection = Selection.gameObjects;
-        if ( selection.Length < 1 ) return;
-        Undo.RegisterCompleteObjectUndo( selection, "Revert Prefab" );
-        foreach ( GameObject go in selection )
-        {
-            if ( PrefabUtility.GetPrefabType( go ) == PrefabType.PrefabInstance )
-            {
-                PrefabUtility.RevertPrefabInstance( go );
-            }
-            else
-            { 
-                Debug.Log( "Nope" );
-            }
-        }
-    }
 
-    [MenuItem( "Edit/Copy Center Position &k", false, -101 )]
+[MenuItem( "Edit/Copy Center Position &k", false, -101 )]
     public static void CopyCenterPosition()
     {
         if ( Selection.gameObjects.Length == 0 ) return;
