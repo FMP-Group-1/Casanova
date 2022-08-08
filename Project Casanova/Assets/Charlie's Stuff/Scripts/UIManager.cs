@@ -5,6 +5,16 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
+
+    private enum Menu
+	{
+        Main,
+        Options,
+        Controls,
+        Credits
+	}
+
+    private Menu m_currentMenu = Menu.Main;
     //Input actions
     [SerializeField]
     private Image m_blackScreen;
@@ -13,21 +23,79 @@ public class UIManager : MonoBehaviour
 
 
     [SerializeField]
-    CanvasGroup m_menuUIGroup;
+    CanvasGroup m_mainMenu;
+    [SerializeField]
+    CanvasGroup m_optionsUIGroup;
+    [SerializeField]
+    CanvasGroup m_controlsUIGroup;
+    [SerializeField]
+    CanvasGroup m_creditsUIGroup;
     [SerializeField]
     CanvasGroup m_gameUIGroup;
+
+    [SerializeField]
+    Image m_background;
 
     float m_uiFadeInTime = 1.5f;
     float m_blackScreenFade = 2.5f;
 
-    void Start()
-    {
-        
+    private float m_menuSwapSpeed = 0.75f;
+
+	private void Start()
+	{
     }
 
-    void Update()
-    {
+	public void QuitGame()
+	{
+        Application.Quit();
+	}
 
+    public void SwapMenus( string menuToGoTo )
+    {
+        CanvasGroup groupToFadeOut;
+        switch ( m_currentMenu )
+        {
+            default: 
+                groupToFadeOut = m_mainMenu; 
+                break;
+            case Menu.Main:
+                groupToFadeOut = m_mainMenu;
+                break;
+            case Menu.Options:
+                groupToFadeOut = m_optionsUIGroup;
+                GetComponent<OptionsManager>().RefreshSliders();
+                break;
+            case Menu.Controls:
+                groupToFadeOut = m_controlsUIGroup;
+                break;
+            case Menu.Credits:
+                groupToFadeOut = m_creditsUIGroup;
+                break;
+        }
+        StartCoroutine( FadeOutGroup( groupToFadeOut, m_menuSwapSpeed ) );
+
+        CanvasGroup groupToFadeIn;
+        switch ( menuToGoTo )
+        {
+            default:
+                groupToFadeIn = m_mainMenu;
+                m_currentMenu = Menu.Main;
+                break;
+            case "Options":
+                groupToFadeIn = m_optionsUIGroup;
+                m_currentMenu = Menu.Options;
+                break;
+            case "Controls":
+                groupToFadeIn = m_controlsUIGroup;
+                m_currentMenu = Menu.Controls;
+                break;
+            case "Credits":
+                groupToFadeIn = m_creditsUIGroup;
+                m_currentMenu = Menu.Credits;
+                break;
+        }
+
+        StartCoroutine( FadeInGroup( groupToFadeIn, m_menuSwapSpeed, m_menuSwapSpeed ) );
     }
 
     public void Respawn( float howLongFade )
@@ -53,24 +121,28 @@ public class UIManager : MonoBehaviour
     public void BeginScene()
     {
         m_gameUIGroup.gameObject.SetActive( false );
-
-        m_menuUIGroup.gameObject.SetActive( false );
+        m_optionsUIGroup.gameObject.SetActive ( false );
+        m_controlsUIGroup.gameObject.SetActive ( false );
+        m_creditsUIGroup.gameObject.SetActive ( false );
+        m_mainMenu.gameObject.SetActive( false );
 
         m_blackScreen.gameObject.SetActive( true );
 
         StartCoroutine( FadeOut( m_blackScreen, m_blackScreenFade ) );
 
         //Make Menu UI fade in delay same as Black fade out to make it look like it was queued up
-        StartCoroutine( FadeInGroup( m_menuUIGroup, 1.5f, m_blackScreenFade ) );
-        
+        StartCoroutine( FadeInGroup( m_mainMenu, 1.5f, m_blackScreenFade ) );
+        StartCoroutine( FadeIn( m_background, 1.5f, m_blackScreenFade ) );
+
 
     }
 
     public void StartGame()
 	{
-        float menuFadeOutTime = 2.0f; 
+        float menuFadeOutTime = 2.0f;
 
-		StartCoroutine( FadeOutGroup( m_menuUIGroup, menuFadeOutTime ) );
+        StartCoroutine( FadeOutGroup( m_mainMenu, menuFadeOutTime ) );
+        StartCoroutine( FadeOut( m_background, menuFadeOutTime ) );
         //Make Game UI fade in delay same as menu fade out to make it look like it was queued up
         StartCoroutine( FadeInGroup( m_gameUIGroup, 1.5f, menuFadeOutTime ) );
 	}

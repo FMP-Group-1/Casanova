@@ -32,7 +32,7 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: cbd82434fb64d624494164a64b757d24, type: 3}
+        m_Texture: {fileID: 2800000, guid: 736aaa8c89a0bbd4581b6ae2a7c51490, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _OutlineTex:
@@ -142,116 +142,74 @@ MonoBehaviour:
     m_StrikethroughOffset: 0
     m_StrikethroughThickness: 0
     m_TabWidth: 0
-  spriteSheet: {fileID: 2800000, guid: cbd82434fb64d624494164a64b757d24, type: 3}
+  spriteSheet: {fileID: 2800000, guid: 736aaa8c89a0bbd4581b6ae2a7c51490, type: 3}
   m_SpriteCharacterTable:
   - m_ElementType: 2
     m_Unicode: 65534
-    m_GlyphIndex: 1
+    m_GlyphIndex: 35
     m_Scale: 1
-    m_Name: Key_2
-    m_HashCode: 90313658
+    m_Name: key_0
+    m_HashCode: 125754008
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 0
     m_Scale: 1
-    m_Name: Key_1
-    m_HashCode: 90313657
+    m_Name: key_1
+    m_HashCode: 125754009
+  - m_ElementType: 2
+    m_Unicode: 65534
+    m_GlyphIndex: 1
+    m_Scale: 1
+    m_Name: key_2
+    m_HashCode: 125754010
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 2
     m_Scale: 1
-    m_Name: Key_3
-    m_HashCode: 90313659
+    m_Name: key_3
+    m_HashCode: 125754011
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 3
     m_Scale: 1
-    m_Name: Key_4
-    m_HashCode: 90313660
+    m_Name: key_4
+    m_HashCode: 125754012
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 4
     m_Scale: 1
-    m_Name: Key_5
-    m_HashCode: 90313661
+    m_Name: key_5
+    m_HashCode: 125754013
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 5
     m_Scale: 1
-    m_Name: Key_6
-    m_HashCode: 90313662
+    m_Name: key_6
+    m_HashCode: 125754014
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 6
     m_Scale: 1
-    m_Name: Key_7
-    m_HashCode: 90313663
+    m_Name: key_7
+    m_HashCode: 125754015
+  - m_ElementType: 2
+    m_Unicode: 65534
+    m_GlyphIndex: 11
+    m_Scale: 1
+    m_Name: key_8
+    m_HashCode: 125754000
+  - m_ElementType: 2
+    m_Unicode: 65534
+    m_GlyphIndex: 12
+    m_Scale: 1
+    m_Name: key_9
+    m_HashCode: 125754001
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 7
     m_Scale: 1
     m_Name: xb_A
     m_HashCode: 4207332
-  - m_ElementType: 2
-    m_Unicode: 65534
-    m_GlyphIndex: 8
-    m_Scale: 1
-    m_Name: xb_B
-    m_HashCode: 4207335
-  - m_ElementType: 2
-    m_Unicode: 65534
-    m_GlyphIndex: 9
-    m_Scale: 1
-    m_Name: Inputs_9
-    m_HashCode: 605037187
-  - m_ElementType: 2
-    m_Unicode: 65534
-    m_GlyphIndex: 10
-    m_Scale: 1
-    m_Name: Inputs_10
-    m_HashCode: -1508609061
-  - m_ElementType: 2
-    m_Unicode: 65534
-    m_GlyphIndex: 11
-    m_Scale: 1
-    m_Name: Inputs_11
-    m_HashCode: -1508609062
-  - m_ElementType: 2
-    m_Unicode: 65534
-    m_GlyphIndex: 12
-    m_Scale: 1
-    m_Name: Inputs_12
-    m_HashCode: -1508609063
-  - m_ElementType: 2
-    m_Unicode: 65534
-    m_GlyphIndex: 13
-    m_Scale: 1
-    m_Name: Inputs_13
-    m_HashCode: -1508609064
-  - m_ElementType: 2
-    m_Unicode: 65534
-    m_GlyphIndex: 14
-    m_Scale: 1
-    m_Name: Inputs_14
-    m_HashCode: -1508609057
-  - m_ElementType: 2
-    m_Unicode: 65534
-    m_GlyphIndex: 15
-    m_Scale: 1
-    m_Name: Inputs_15
-    m_HashCode: -1508609058
-  - m_ElementType: 2
-    m_Unicode: 65534
-    m_GlyphIndex: 16
-    m_Scale: 1
-    m_Name: Inputs_16
-    m_HashCode: -1508609059
-  - m_ElementType: 2
-    m_Unicode: 65534
-    m_GlyphIndex: 17
-    m_Scale: 1
-    m_Name: Inputs_17
-    m_HashCode: -1508609060
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 18
@@ -266,124 +224,172 @@ MonoBehaviour:
     m_HashCode: 4207356
   - m_ElementType: 2
     m_Unicode: 65534
+    m_GlyphIndex: 8
+    m_Scale: 1
+    m_Name: xb_B
+    m_HashCode: 4207335
+  - m_ElementType: 2
+    m_Unicode: 65534
+    m_GlyphIndex: 9
+    m_Scale: 1
+    m_Name: ps_cross
+    m_HashCode: 1036472610
+  - m_ElementType: 2
+    m_Unicode: 65534
     m_GlyphIndex: 20
     m_Scale: 1
-    m_Name: Inputs_20
-    m_HashCode: -1508609096
+    m_Name: ps_square
+    m_HashCode: -736579203
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 21
     m_Scale: 1
-    m_Name: Inputs_21
-    m_HashCode: -1508609095
+    m_Name: ps_triangle
+    m_HashCode: -950614062
+  - m_ElementType: 2
+    m_Unicode: 65534
+    m_GlyphIndex: 10
+    m_Scale: 1
+    m_Name: ps_circle
+    m_HashCode: -138904946
+  - m_ElementType: 2
+    m_Unicode: 65534
+    m_GlyphIndex: 13
+    m_Scale: 1
+    m_Name: key_a
+    m_HashCode: 125754057
+  - m_ElementType: 2
+    m_Unicode: 65534
+    m_GlyphIndex: 14
+    m_Scale: 1
+    m_Name: key_b
+    m_HashCode: 125754058
+  - m_ElementType: 2
+    m_Unicode: 65534
+    m_GlyphIndex: 15
+    m_Scale: 1
+    m_Name: key_b
+    m_HashCode: 125754058
+  - m_ElementType: 2
+    m_Unicode: 65534
+    m_GlyphIndex: 16
+    m_Scale: 1
+    m_Name: key_d
+    m_HashCode: 125754060
+  - m_ElementType: 2
+    m_Unicode: 65534
+    m_GlyphIndex: 17
+    m_Scale: 1
+    m_Name: key_e
+    m_HashCode: 125754061
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 22
     m_Scale: 1
-    m_Name: Inputs_22
-    m_HashCode: -1508609094
+    m_Name: key_f
+    m_HashCode: 125754062
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 23
     m_Scale: 1
-    m_Name: Inputs_23
-    m_HashCode: -1508609093
+    m_Name: key_g
+    m_HashCode: 125754063
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 24
     m_Scale: 1
-    m_Name: Inputs_24
-    m_HashCode: -1508609092
+    m_Name: key_h
+    m_HashCode: 125754048
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 25
     m_Scale: 1
-    m_Name: Inputs_25
-    m_HashCode: -1508609091
+    m_Name: key_i
+    m_HashCode: 125754049
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 26
     m_Scale: 1
-    m_Name: Inputs_26
-    m_HashCode: -1508609090
+    m_Name: key_j
+    m_HashCode: 125754050
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 27
     m_Scale: 1
-    m_Name: Inputs_27
-    m_HashCode: -1508609089
+    m_Name: key_k
+    m_HashCode: 125754051
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 28
     m_Scale: 1
-    m_Name: Inputs_28
-    m_HashCode: -1508609104
+    m_Name: key_l
+    m_HashCode: 125754052
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 29
     m_Scale: 1
-    m_Name: Inputs_29
-    m_HashCode: -1508609103
+    m_Name: xb_leftStick
+    m_HashCode: -261098504
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 30
     m_Scale: 1
-    m_Name: Inputs_30
-    m_HashCode: -1508609127
+    m_Name: xb_rightStick
+    m_HashCode: -1213296989
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 31
     m_Scale: 1
-    m_Name: Inputs_31
-    m_HashCode: -1508609128
+    m_Name: ps_leftStick
+    m_HashCode: -1167224095
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 32
     m_Scale: 1
-    m_Name: Inputs_32
-    m_HashCode: -1508609125
+    m_Name: ps_rightStick
+    m_HashCode: 1232916250
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 33
     m_Scale: 1
-    m_Name: Inputs_33
-    m_HashCode: -1508609126
+    m_Name: key_m
+    m_HashCode: 125754053
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 34
     m_Scale: 1
-    m_Name: Inputs_34
-    m_HashCode: -1508609123
+    m_Name: key_n
+    m_HashCode: 125754054
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 35
     m_Scale: 1
-    m_Name: Inputs_35
-    m_HashCode: -1508609124
+    m_Name: key_o
+    m_HashCode: 125754055
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 36
     m_Scale: 1
-    m_Name: Inputs_36
-    m_HashCode: -1508609121
+    m_Name: key_p
+    m_HashCode: 125754072
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 37
     m_Scale: 1
-    m_Name: Inputs_37
-    m_HashCode: -1508609122
+    m_Name: key_q
+    m_HashCode: 125754073
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 38
     m_Scale: 1
-    m_Name: Inputs_38
-    m_HashCode: -1508609135
+    m_Name: key_r
+    m_HashCode: 125754074
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 39
     m_Scale: 1
-    m_Name: Inputs_39
-    m_HashCode: -1508609136
+    m_Name: key_s
+    m_HashCode: 125754075
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 40
@@ -412,68 +418,68 @@ MonoBehaviour:
     m_Unicode: 65534
     m_GlyphIndex: 44
     m_Scale: 1
-    m_Name: Inputs_44
-    m_HashCode: -1508608902
+    m_Name: key_t
+    m_HashCode: 125754076
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 45
     m_Scale: 1
-    m_Name: Inputs_45
-    m_HashCode: -1508608901
+    m_Name: key_u
+    m_HashCode: 125754077
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 46
     m_Scale: 1
-    m_Name: Inputs_46
-    m_HashCode: -1508608904
+    m_Name: key_v
+    m_HashCode: 125754078
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 47
     m_Scale: 1
-    m_Name: Inputs_47
-    m_HashCode: -1508608903
+    m_Name: key_w
+    m_HashCode: 125754079
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 48
     m_Scale: 1
-    m_Name: Inputs_48
-    m_HashCode: -1508608906
+    m_Name: key_x
+    m_HashCode: 125754064
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 49
     m_Scale: 1
-    m_Name: Inputs_49
-    m_HashCode: -1508608905
+    m_Name: key_y
+    m_HashCode: 125754065
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 50
     m_Scale: 1
-    m_Name: Inputs_50
-    m_HashCode: -1508608929
+    m_Name: key_z
+    m_HashCode: 125754066
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 51
     m_Scale: 1
-    m_Name: Inputs_51
-    m_HashCode: -1508608930
+    m_Name: xb_lt
+    m_HashCode: 138840989
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 52
     m_Scale: 1
-    m_Name: Inputs_52
-    m_HashCode: -1508608931
+    m_Name: xb_rt
+    m_HashCode: 138841539
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 53
     m_Scale: 1
-    m_Name: Inputs_53
-    m_HashCode: -1508608932
+    m_Name: ps_r2
+    m_HashCode: 128864188
   - m_ElementType: 2
     m_Unicode: 65534
     m_GlyphIndex: 54
     m_Scale: 1
-    m_Name: Inputs_54
-    m_HashCode: -1508608933
+    m_Name: ps_l2
+    m_HashCode: 128864226
   m_SpriteGlyphTable:
   - m_Index: 0
     m_Metrics:

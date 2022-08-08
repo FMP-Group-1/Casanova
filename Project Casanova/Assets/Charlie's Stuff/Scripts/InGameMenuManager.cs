@@ -7,16 +7,13 @@ public class InGameMenuManager : MonoBehaviour
 {
     GameObject playerGameObject;
     private Animator m_cinemachineAnimator;
-
-    private GameObject m_gameController;
     private UIManager m_uiManager;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        m_gameController = GameObject.FindGameObjectWithTag( "GameController" );
-        m_uiManager = m_gameController.GetComponent<UIManager>();
+        m_uiManager = GameObject.FindGameObjectWithTag( Settings.g_ControllerTag ).GetComponent<UIManager>();
 
 
         playerGameObject = GameObject.FindGameObjectWithTag( "Player" );
