@@ -58,13 +58,10 @@ public class UIManager : MonoBehaviour
 
         m_blackScreen.gameObject.SetActive( true );
 
-
-        float blackscreenFadeTime = 2.0f;
-
-        StartCoroutine( FadeOut( m_blackScreen, blackscreenFadeTime ) );
+        StartCoroutine( FadeOut( m_blackScreen, m_blackScreenFade ) );
 
         //Make Menu UI fade in delay same as Black fade out to make it look like it was queued up
-        StartCoroutine( FadeInGroup( m_menuUIGroup, 1.5f, blackscreenFadeTime ) );
+        StartCoroutine( FadeInGroup( m_menuUIGroup, 1.5f, m_blackScreenFade ) );
         
 
     }

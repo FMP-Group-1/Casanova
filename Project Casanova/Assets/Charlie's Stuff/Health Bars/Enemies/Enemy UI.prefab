@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6752581675753654999}
   - component: {fileID: 6752581675753654998}
   - component: {fileID: 6752581675753654985}
-  - component: {fileID: 6752581675753654984}
+  - component: {fileID: 4908687697411053011}
   m_Layer: 6
   m_Name: Enemy UI
   m_TagString: Untagged
@@ -101,7 +101,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 0
---- !u!114 &6752581675753654984
+--- !u!114 &4908687697411053011
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -110,7 +110,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 6752581675753654986}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1464db53c401694395c1a3858fc7881, type: 3}
+  m_Script: {fileID: 11500000, guid: 0f7a4d56e81da1747b9e53adbc40a24e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &5551299068974838155
