@@ -10,9 +10,15 @@ public class GateMover : MonoBehaviour
     float m_gateCloseTime = 1f;
 
     [SerializeField]
+    GameObject m_gateTrigger;
+
+    [SerializeField]
     private float m_openYTarget = 5.0f;
 
     private float m_closedY = 0.0f;
+
+    [SerializeField]
+    private bool m_openGate = false;
 
     GameObject m_visualGate;
 
@@ -20,7 +26,18 @@ public class GateMover : MonoBehaviour
     void Start()
     {
         m_visualGate = transform.GetChild( 0 ).gameObject;
+        if ( m_openGate )
+		{
+
+            OpenGate();
+        }
+    }
+
+    public void ResetGate()
+	{
         OpenGate();
+        m_gateTrigger.SetActive(true);
+
     }
 
     public void OpenGate()
@@ -47,18 +64,22 @@ public class GateMover : MonoBehaviour
 
     IEnumerator MoveGate( float yTarget, float overTime )
 	{
-        float timeElapsed = 0.0f;
 
         Vector3 currentPosition = m_visualGate.transform.position;
+        
         Vector3 targetPosition = transform.position;
         targetPosition.y += yTarget;
 
+
+        float timeElapsed = 0.0f;
+
         while ( timeElapsed < overTime )
 		{
-            timeElapsed += Time.deltaTime;
 
-            currentPosition.y = Mathf.Lerp( m_visualGate.transform.position.y, targetPosition.y, Time.deltaTime * overTime );
+            currentPosition.y = Mathf.Lerp( m_visualGate.transform.position.y, targetPosition.y, timeElapsed / overTime );
             m_visualGate.transform.position = currentPosition;
+
+            timeElapsed += Time.deltaTime;
 
             yield return null;
         }

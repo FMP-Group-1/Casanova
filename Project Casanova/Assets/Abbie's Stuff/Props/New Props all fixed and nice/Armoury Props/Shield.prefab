@@ -11,12 +11,13 @@ GameObject:
   - component: {fileID: 7717794862682608020}
   - component: {fileID: 6680181971689610801}
   - component: {fileID: 8885656309628136187}
+  - component: {fileID: 6511842333248372182}
   m_Layer: 0
   m_Name: Shield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &7717794862682608020
 Transform:
@@ -82,3 +83,22 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!205 &6511842333248372182
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6940272588555307822}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: -0.014092073, y: 0.053054333, z: -0.00007432699}
+  m_Size: 1.1564109
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.049164698
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 8885656309628136187}
+  m_Enabled: 1

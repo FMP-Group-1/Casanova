@@ -48,7 +48,7 @@ public class EnemyDamageManager : CharacterDamageManager
             m_enemyAI.DisableCollision();
             m_enemyAI.SetLastUsedAnimTrigger( an_getHitTrigger );
             m_enemyAI.PlayDamageSFX();
-            m_enemyAI.SetStaggerable(true);
+            SetStaggerable(true);
 
             //Check base stuff after as that is where it checks for death, where as above, overwrites with get hurt
             base.TakeDamage( othersTransform, damage );
@@ -102,7 +102,7 @@ public class EnemyDamageManager : CharacterDamageManager
         }
     }
 
-    private IEnumerator ResetEnemy()
+    public IEnumerator ResetEnemy()
 	{
         yield return new WaitForSeconds( 1f );
 
@@ -113,6 +113,8 @@ public class EnemyDamageManager : CharacterDamageManager
         SetInvulnerable(false);
         SetAlive(true);
         gameObject.GetComponent<Collider>().enabled = true;
+
+        UpdateHealthBar();
 
     }
 }

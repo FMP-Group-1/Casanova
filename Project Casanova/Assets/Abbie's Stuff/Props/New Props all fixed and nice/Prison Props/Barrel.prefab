@@ -12,12 +12,14 @@ GameObject:
   - component: {fileID: 4548425681914918223}
   - component: {fileID: 1800232891248902533}
   - component: {fileID: 5022649977073324236}
+  - component: {fileID: 4204439437874794832}
+  - component: {fileID: -181930989381660488}
   m_Layer: 0
   m_Name: Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &626170336160938730
 Transform:
@@ -92,8 +94,40 @@ MeshCollider:
   m_GameObject: {fileID: 286904601308962896}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: 5738463845122611173, guid: 5168bb8be74d7be44948c8de7205d585, type: 3}
+--- !u!65 &4204439437874794832
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 286904601308962896}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.8307213, y: 1.0017238, z: 0.83072275}
+  m_Center: {x: 0.0000004172325, y: 0.50136256, z: -0.00085031986}
+--- !u!205 &-181930989381660488
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 286904601308962896}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0.0000004172325, y: 0.50136256, z: -0.00085031986}
+  m_Size: 1.0017238
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.030207397
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 1800232891248902533}
+  m_Enabled: 1

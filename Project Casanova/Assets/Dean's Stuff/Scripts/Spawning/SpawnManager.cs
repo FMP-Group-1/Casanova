@@ -67,7 +67,7 @@ public class SpawnManager : MonoBehaviour
                         totalGruntsNeeded++;
                     }
                 }
-                if (spawner.GetSpawnType() == EnemyType.Guard && spawner.GetSpawnGroup() == i)
+                if (spawner.GetSpawnType() == EnemyType.Guard)
                 {
                     if (spawner.GetSpawnGroup() == i || spawner.GetSpawnGroup() == i + 1)
                     {

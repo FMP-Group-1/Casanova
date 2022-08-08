@@ -59,7 +59,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5abe8126aaacef54885cea467ca53b0c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_gateCloseTime: 3
+  m_gateOpenTime: 3
+  m_gateCloseTime: 1
+  m_gateTrigger: {fileID: 4583744794861489435}
   m_openYTarget: 5
 --- !u!1001 &4491499831670334984
 PrefabInstance:
@@ -192,6 +194,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c6107f662498ad0419e5e445ff4366da, type: 3}
+--- !u!1 &4583744794861489435 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9182574802465152050, guid: c6107f662498ad0419e5e445ff4366da, type: 3}
+  m_PrefabInstance: {fileID: 4680283154204889385}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1414374169886190072 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6004258636785613009, guid: c6107f662498ad0419e5e445ff4366da, type: 3}

@@ -12,7 +12,7 @@ public class GateCloseTrigger : MonoBehaviour
 		if ( other.tag == "Player" )
 		{
 			m_gateToClose.GetComponent<GateMover>().CloseGate();
-			gameObject.SetActive( false );
+			//gameObject.SetActive( false );
 		}
 	}
 }

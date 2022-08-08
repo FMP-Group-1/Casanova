@@ -12,12 +12,13 @@ GameObject:
   - component: {fileID: 5785177828878364015}
   - component: {fileID: 235749796480354055}
   - component: {fileID: 235749796480354072}
+  - component: {fileID: 8450382927470296540}
   m_Layer: 0
   m_Name: Tapestry
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &7486899032859452106
 Transform:
@@ -48,7 +49,7 @@ Cloth:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7830950152012429424}
-  m_Enabled: 1
+  m_Enabled: 0
   m_StretchingStiffness: 1
   m_BendingStiffness: 0
   m_UseTethers: 1
@@ -1829,3 +1830,22 @@ SkinnedMeshRenderer:
     m_Center: {x: -0.043568127, y: -0.89738095, z: -0.0018341839}
     m_Extent: {x: 0.086310335, y: 0.94328797, z: 0.73810387}
   m_DirtyAABB: 0
+--- !u!205 &8450382927470296540
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7830950152012429424}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: -0.043568127, y: -0.89738095, z: -0.0018341541}
+  m_Size: 1.8865759
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.046378322
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 235749796480354072}
+  m_Enabled: 1

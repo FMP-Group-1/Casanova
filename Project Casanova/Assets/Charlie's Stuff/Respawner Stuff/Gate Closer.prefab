@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 8584460240289951673}
   - component: {fileID: 7473713195961681964}
   - component: {fileID: 1731781010657588060}
+  - component: {fileID: 9198649808171650878}
   m_Layer: 0
   m_Name: Gate Closer
   m_TagString: Untagged
@@ -86,3 +87,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_gateToClose: {fileID: 0}
+--- !u!114 &9198649808171650878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9182574802465152050}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea4a260c0e8bd51409789419785094e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_triggerType: 2
+  m_triggerGroup: 1
+  m_spawnNextGroupOnAlert: 1
+  m_roomEntered: 2

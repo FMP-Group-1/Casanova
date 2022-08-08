@@ -35,13 +35,34 @@ public class PlayerDamageManager : CharacterDamageManager
         }
     }
 
+    public void Respawn( Transform spawnPos )
+	{
+        //need to test if i actually need to disable controller
+        GetComponent<CharacterController>().enabled = false;
+        transform.position = spawnPos.position;
+        GetComponent<CharacterController>().enabled = true;
+
+        SetAlive( true );
+        SetHealth( 100f );
+        SetInvulnerable( false );
+        m_animator.SetTrigger( "Respawn" );
+
+    }
+
     protected override void Die()
     {
         base.Die();
-        DisplayDeathMessage();
         m_playerController.LoseControl();
 
-        StartCoroutine( Respawn() );
+        m_gameController.GetComponent<GameManager>().Die();
+        /*
+        m_animator.ResetTrigger( "light" );
+        m_animator.ResetTrigger( "heavy" );
+        m_animator.ResetTrigger( "attacked" );
+        m_animator.ResetTrigger( "dodge" );
+        m_animator.ResetTrigger( an_getHitTrigger );
+        m_animator.ResetTrigger( an_death );*/
+        
     }
 
     public void debugDie()
@@ -49,16 +70,6 @@ public class PlayerDamageManager : CharacterDamageManager
         Die();
 	}
 
-    private IEnumerator Respawn()
-	{
-        yield return new WaitForSeconds( 6.0f );
-        m_gameController.GetComponent<RespawnManager>().Respawn();
-	}
-
-    private void DisplayDeathMessage()
-	{
-        m_gameController.GetComponent<UIManager>().DisplayDeathUI();
-    }
 
     //Override exclusive to player
     public override IEnumerator ResetInvulnerable( float timer )

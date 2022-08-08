@@ -17,6 +17,9 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     CanvasGroup m_gameUIGroup;
 
+    float m_uiFadeInTime = 1.5f;
+    float m_blackScreenFade = 2.5f;
+
     void Start()
     {
         
@@ -27,13 +30,23 @@ public class UIManager : MonoBehaviour
 
     }
 
+    public void Respawn( float howLongFade )
+	{
+        //Fade Black Screen in
+        StartCoroutine( FadeIn( m_blackScreen, howLongFade ) );
+
+        //Turn off You Died
+        StartCoroutine( FadeOut( m_youDied, 0.1f, howLongFade + 0.5f ) );
+
+        //Fade back in with 0.5 wait
+        StartCoroutine( FadeOut( m_blackScreen, howLongFade, howLongFade + 0.5f ) );
+        StartCoroutine( FadeInGroup( m_gameUIGroup, m_uiFadeInTime, howLongFade * 2 + 0.5f ) );
+
+    }
+
     public void DisplayDeathUI()
 	{
-        Color newColour = m_youDied.color;
-        newColour.a = 0f;
-        m_youDied.color = newColour;
-        m_youDied.gameObject.SetActive( true );
-
+        StartCoroutine( FadeOutGroup( m_gameUIGroup, 2.0f ) );
         StartCoroutine( FadeIn( m_youDied, 3.0f ) );
 	}
 
@@ -45,13 +58,10 @@ public class UIManager : MonoBehaviour
 
         m_blackScreen.gameObject.SetActive( true );
 
-
-        float blackscreenFadeTime = 2.0f;
-
-        StartCoroutine( FadeOut( m_blackScreen, blackscreenFadeTime ) );
+        StartCoroutine( FadeOut( m_blackScreen, m_blackScreenFade ) );
 
         //Make Menu UI fade in delay same as Black fade out to make it look like it was queued up
-        StartCoroutine( FadeInGroup( m_menuUIGroup, 1.5f, blackscreenFadeTime ) );
+        StartCoroutine( FadeInGroup( m_menuUIGroup, 1.5f, m_blackScreenFade ) );
         
 
     }

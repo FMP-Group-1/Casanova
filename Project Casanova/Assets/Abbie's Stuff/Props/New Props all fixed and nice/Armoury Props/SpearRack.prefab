@@ -12,12 +12,13 @@ GameObject:
   - component: {fileID: 955144959853205796}
   - component: {fileID: 3073051497468980718}
   - component: {fileID: 4423724161822388584}
+  - component: {fileID: 7112001727635751851}
   m_Layer: 0
   m_Name: SpearRack
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 1
+  m_StaticEditorFlags: 21
   m_IsActive: 1
 --- !u!4 &4246473140487657089
 Transform:
@@ -95,3 +96,22 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 0.49274445, y: 1.6601609, z: 1.6409054}
   m_Center: {x: 0.0039811134, y: 0.82202417, z: 0.009392053}
+--- !u!205 &7112001727635751851
+LODGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3577353981475769403}
+  serializedVersion: 2
+  m_LocalReferencePoint: {x: 0.0039811134, y: 0.82202417, z: 0.009392023}
+  m_Size: 1.6601609
+  m_FadeMode: 0
+  m_AnimateCrossFading: 0
+  m_LastLODIsBillboard: 0
+  m_LODs:
+  - screenRelativeHeight: 0.07960584
+    fadeTransitionWidth: 0
+    renderers:
+    - renderer: {fileID: 3073051497468980718}
+  m_Enabled: 1

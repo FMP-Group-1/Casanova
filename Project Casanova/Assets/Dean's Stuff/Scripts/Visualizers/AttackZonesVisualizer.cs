@@ -18,7 +18,7 @@ public class AttackZonesVisualizer : Editor
     void OnSceneGUI()
     {
         // Setting object refs
-        AIManager aiManager = GameObject.Find("AIManager").GetComponent<AIManager>();
+        AIManager aiManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<AIManager>();
         GameObject player = GameObject.FindGameObjectWithTag("Player");
 
         if (EditorApplication.isPlaying)
