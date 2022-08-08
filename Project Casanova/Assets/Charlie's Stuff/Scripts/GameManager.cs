@@ -25,6 +25,9 @@ public class GameManager : MonoBehaviour
 
     private bool m_roomComplete;
 
+    [SerializeField] 
+    private GameObject m_cellExitTrigger;
+
     void Start()
     {
         //Very Begining of Game
@@ -114,6 +117,7 @@ public class GameManager : MonoBehaviour
         {
             case Room.Cell:
                 EventManager.StartSpawnEnemiesEvent( 0 );
+                m_cellExitTrigger.SetActive( true );
                 break;
             case Room.Hall:
                 EventManager.StartSpawnEnemiesEvent( 1 );
@@ -133,8 +137,6 @@ public class GameManager : MonoBehaviour
         }
 
         m_gateManager.ResetGate( respawnPoint );
-        //This sets this room as active room
-        //CompleteRoom( m_respawnManager.GetRespawnPoint() );
     }
 
     public void EnterRoom( Room room )
