@@ -72,33 +72,6 @@ public class RespawnManager : MonoBehaviour
         //m_gameManager.CompleteRoom( currentRespawnPoint );
         //Bring player back to life shit
 
-        switch ( currentRespawnPoint )
-        {
-            case Room.Cell:
-
-
-                break;
-            case Room.Hall:
-
-                //Respwan the trigger box
-
-                break;
-            case Room.Armory:
-
-                //Respwan the trigger box
-
-                break;
-            case Room.GuardRoom:
-
-                //Respwan the trigger box
-
-                break;
-            case Room.Arena:
-
-                //Respwan the trigger box
-
-                break;
-        }
     }
 }
 
