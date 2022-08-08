@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 7133682484995517673}
   - component: {fileID: 7133682484995517676}
   - component: {fileID: 7133682484995517675}
-  - component: {fileID: 7133682484995517674}
+  - component: {fileID: 7828510368173873731}
   m_Layer: 0
   m_Name: Text
   m_TagString: Untagged
@@ -117,7 +117,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - {fileID: -9115770256606269218, guid: 2a11ea405def7b14e813d209086ed93e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -159,10 +159,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Press <sprite=17> to Pick Up
+  m_text: Press <sprite=17> to Open
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 2a11ea405def7b14e813d209086ed93e, type: 2}
+  m_sharedMaterial: {fileID: -9115770256606269218, guid: 2a11ea405def7b14e813d209086ed93e, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -231,7 +231,7 @@ MonoBehaviour:
   _SortingLayer: 0
   _SortingLayerID: 0
   _SortingOrder: 0
---- !u!114 &7133682484995517674
+--- !u!114 &7828510368173873731
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -240,7 +240,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7133682484995517672}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1464db53c401694395c1a3858fc7881, type: 3}
+  m_Script: {fileID: 11500000, guid: 0f7a4d56e81da1747b9e53adbc40a24e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7254794482469885092
