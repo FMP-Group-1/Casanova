@@ -11,13 +11,12 @@ GameObject:
   - component: {fileID: 5092758961277499912}
   - component: {fileID: 8143289740199654829}
   - component: {fileID: 6261746853323080039}
-  - component: {fileID: 4694901695155314144}
   m_Layer: 3
   m_Name: Floor - PREFAB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 95
+  m_StaticEditorFlags: 31
   m_IsActive: 1
 --- !u!4 &5092758961277499912
 Transform:
@@ -82,17 +81,3 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &4694901695155314144
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5613400375287718066}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 4
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: -629719859055844128, guid: 1e36731637bad58408ad0dc39bbaefd2, type: 3}

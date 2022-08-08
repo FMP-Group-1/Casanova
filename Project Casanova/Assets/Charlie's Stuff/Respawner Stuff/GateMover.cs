@@ -17,13 +17,20 @@ public class GateMover : MonoBehaviour
 
     private float m_closedY = 0.0f;
 
+    [SerializeField]
+    private bool m_openGate = false;
+
     GameObject m_visualGate;
 
     // Start is called before the first frame update
     void Start()
     {
         m_visualGate = transform.GetChild( 0 ).gameObject;
-        //OpenGate();
+        if ( m_openGate )
+		{
+
+            OpenGate();
+        }
     }
 
     public void ResetGate()
