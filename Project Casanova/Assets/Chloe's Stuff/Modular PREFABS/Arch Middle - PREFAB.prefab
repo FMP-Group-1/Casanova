@@ -16,7 +16,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 23
+  m_StaticEditorFlags: 87
   m_IsActive: 1
 --- !u!4 &1111114857402602859
 Transform:
@@ -88,7 +88,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 23
+  m_StaticEditorFlags: 87
   m_IsActive: 1
 --- !u!4 &2669290710682605281
 Transform:
@@ -170,7 +170,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 23
+  m_StaticEditorFlags: 87
   m_IsActive: 1
 --- !u!4 &3946590081049375908
 Transform:
@@ -255,17 +255,33 @@ PrefabInstance:
       propertyPath: m_StaticEditorFlags
       value: 23
       objectReference: {fileID: 0}
+    - target: {fileID: 6525446425422431822, guid: 4a615ee554ff6544badd492383699f9b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 87
+      objectReference: {fileID: 0}
     - target: {fileID: 7739033373442178166, guid: 4a615ee554ff6544badd492383699f9b, type: 3}
       propertyPath: m_Name
       value: WallLanternFire
       objectReference: {fileID: 0}
     - target: {fileID: 7739033373442178166, guid: 4a615ee554ff6544badd492383699f9b, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 23
+      value: 87
       objectReference: {fileID: 0}
     - target: {fileID: 8152418771726008533, guid: 4a615ee554ff6544badd492383699f9b, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 23
+      value: 87
+      objectReference: {fileID: 0}
+    - target: {fileID: 8550571509145743819, guid: 4a615ee554ff6544badd492383699f9b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 87
+      objectReference: {fileID: 0}
+    - target: {fileID: 8550571510831004803, guid: 4a615ee554ff6544badd492383699f9b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 87
+      objectReference: {fileID: 0}
+    - target: {fileID: 8550571510907803567, guid: 4a615ee554ff6544badd492383699f9b, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 87
       objectReference: {fileID: 0}
     - target: {fileID: 8720140466423734967, guid: 4a615ee554ff6544badd492383699f9b, type: 3}
       propertyPath: m_RootOrder
@@ -321,11 +337,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9197589526900832269, guid: 4a615ee554ff6544badd492383699f9b, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 23
+      value: 87
       objectReference: {fileID: 0}
     - target: {fileID: 9197589528235932524, guid: 4a615ee554ff6544badd492383699f9b, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 23
+      value: 87
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4a615ee554ff6544badd492383699f9b, type: 3}
