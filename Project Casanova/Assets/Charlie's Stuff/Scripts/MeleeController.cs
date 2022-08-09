@@ -83,6 +83,7 @@ public class MeleeController : MonoBehaviour
     **************************************************************************************/
     void Update()
     {
+        if ( !Settings.g_paused ) { 
         //Light Attack
         if ( m_playerControls.Combat.LightAtatck.triggered )
         {
@@ -153,33 +154,33 @@ public class MeleeController : MonoBehaviour
             // Dean Note: Adding sound effect to play here, may need changing, let me know
             m_playerController.GetSoundHandler().PlayNormalAttackSFX();
 
-        }
+            }
 
-        //rotate Collider sweeper to angle to the sword (ALL THE TIME)
-        //Verbose for Readability
-        //Rotate From...
-        Vector3 startPosition= transform.position;
-        //... to....
-        Vector3 targetPosition = m_swordTip.position;
+            //rotate Collider sweeper to angle to the sword (ALL THE TIME)
+            //Verbose for Readability
+            //Rotate From...
+            Vector3 startPosition= transform.position;
+            //... to....
+            Vector3 targetPosition = m_swordTip.position;
 
-        //This is now the angle (between -180 and 180) between origin and target
-        float targetAngle = Mathf.Rad2Deg * ( Mathf.Atan2( targetPosition.x - startPosition.x, targetPosition.z - startPosition.z ) );
+            //This is now the angle (between -180 and 180) between origin and target
+            float targetAngle = Mathf.Rad2Deg * ( Mathf.Atan2( targetPosition.x - startPosition.x, targetPosition.z - startPosition.z ) );
 
   
 
-        //Create a Quaternion, with new angle, to be what we want the new rotation point to be
-        Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
+            //Create a Quaternion, with new angle, to be what we want the new rotation point to be
+            Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
 
-        //Lerp instead of SET it as I believe that will stop issues like frame rate skipping past or soemthing
-        m_colliderSweeper.transform.rotation = Quaternion.Lerp( m_colliderSweeper.transform.rotation, targetRotation, 0.99f );
+            //Lerp instead of SET it as I believe that will stop issues like frame rate skipping past or soemthing
+            m_colliderSweeper.transform.rotation = Quaternion.Lerp( m_colliderSweeper.transform.rotation, targetRotation, 0.99f );
 
 
-        //Just SET it version
-        ////Create a vector 3, with new angle, to be what we want the new rotation point to be
-        //Vector3 targetRotation = new Vector3 ( 0f, targetAngle, 0f );
+            //Just SET it version
+            ////Create a vector 3, with new angle, to be what we want the new rotation point to be
+            //Vector3 targetRotation = new Vector3 ( 0f, targetAngle, 0f );
 
-        //m_colliderSweeper.transform.rotation = Quaternion.Euler(targetRotation);
-
+            //m_colliderSweeper.transform.rotation = Quaternion.Euler(targetRotation);
+        }
 
     }
 

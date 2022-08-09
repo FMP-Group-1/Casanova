@@ -358,7 +358,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Quit"",
+                    ""name"": ""Pause"",
                     ""type"": ""Button"",
                     ""id"": ""7ea267d8-806e-43dc-a7c3-7964ef094b29"",
                     ""expectedControlType"": ""Button"",
@@ -397,7 +397,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Quit"",
+                    ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -408,7 +408,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Quit"",
+                    ""action"": ""Pause"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -470,7 +470,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         // Level
         m_Level = asset.FindActionMap("Level", throwIfNotFound: true);
         m_Level_Reset = m_Level.FindAction("Reset", throwIfNotFound: true);
-        m_Level_Quit = m_Level.FindAction("Quit", throwIfNotFound: true);
+        m_Level_Pause = m_Level.FindAction("Pause", throwIfNotFound: true);
         // Other
         m_Other = asset.FindActionMap("Other", throwIfNotFound: true);
         m_Other_Interact = m_Other.FindAction("Interact", throwIfNotFound: true);
@@ -640,13 +640,13 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputActionMap m_Level;
     private ILevelActions m_LevelActionsCallbackInterface;
     private readonly InputAction m_Level_Reset;
-    private readonly InputAction m_Level_Quit;
+    private readonly InputAction m_Level_Pause;
     public struct LevelActions
     {
         private @PlayerControls m_Wrapper;
         public LevelActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
         public InputAction @Reset => m_Wrapper.m_Level_Reset;
-        public InputAction @Quit => m_Wrapper.m_Level_Quit;
+        public InputAction @Pause => m_Wrapper.m_Level_Pause;
         public InputActionMap Get() { return m_Wrapper.m_Level; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -659,9 +659,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Reset.started -= m_Wrapper.m_LevelActionsCallbackInterface.OnReset;
                 @Reset.performed -= m_Wrapper.m_LevelActionsCallbackInterface.OnReset;
                 @Reset.canceled -= m_Wrapper.m_LevelActionsCallbackInterface.OnReset;
-                @Quit.started -= m_Wrapper.m_LevelActionsCallbackInterface.OnQuit;
-                @Quit.performed -= m_Wrapper.m_LevelActionsCallbackInterface.OnQuit;
-                @Quit.canceled -= m_Wrapper.m_LevelActionsCallbackInterface.OnQuit;
+                @Pause.started -= m_Wrapper.m_LevelActionsCallbackInterface.OnPause;
+                @Pause.performed -= m_Wrapper.m_LevelActionsCallbackInterface.OnPause;
+                @Pause.canceled -= m_Wrapper.m_LevelActionsCallbackInterface.OnPause;
             }
             m_Wrapper.m_LevelActionsCallbackInterface = instance;
             if (instance != null)
@@ -669,9 +669,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @Reset.started += instance.OnReset;
                 @Reset.performed += instance.OnReset;
                 @Reset.canceled += instance.OnReset;
-                @Quit.started += instance.OnQuit;
-                @Quit.performed += instance.OnQuit;
-                @Quit.canceled += instance.OnQuit;
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
             }
         }
     }
@@ -725,7 +725,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     public interface ILevelActions
     {
         void OnReset(InputAction.CallbackContext context);
-        void OnQuit(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
     }
     public interface IOtherActions
     {

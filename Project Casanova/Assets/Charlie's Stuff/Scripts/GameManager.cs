@@ -28,7 +28,22 @@ public class GameManager : MonoBehaviour
     [SerializeField] 
     private GameObject m_cellExitTrigger;
 
-    void Start()
+    [SerializeField, Tooltip( "Pause Input" )]
+    private InputActionReference m_pauseInput;
+
+
+	private void OnEnable()
+	{
+        m_pauseInput.action.Enable();
+
+    }
+
+	private void OnDisable()
+	{
+
+        m_pauseInput.action.Disable();
+    }
+	void Start()
     {
         //Very Begining of Game
         m_currentRoom = Room.Cell;
@@ -46,7 +61,27 @@ public class GameManager : MonoBehaviour
 
 	private void Update()
 	{
-        if( !m_roomComplete )
+        if ( m_pauseInput.action.triggered )
+		{
+            if ( Settings.g_paused )
+			{
+                Time.timeScale = 1;
+                Settings.g_paused = false;
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+            }
+			else
+			{
+                Time.timeScale = 0;
+                Settings.g_paused = true;
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+            }
+            m_uiManager.PauseMenu( Settings.g_paused );
+            
+		}
+
+        if ( !m_roomComplete )
 		{
 
             switch( m_currentRoom )

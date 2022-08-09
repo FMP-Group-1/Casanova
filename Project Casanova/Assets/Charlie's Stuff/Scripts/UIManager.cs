@@ -11,7 +11,8 @@ public class UIManager : MonoBehaviour
         Main,
         Options,
         Controls,
-        Credits
+        Credits,
+        Game
 	}
 
     private Menu m_currentMenu = Menu.Main;
@@ -34,6 +35,11 @@ public class UIManager : MonoBehaviour
     CanvasGroup m_gameUIGroup;
 
     [SerializeField]
+    CanvasGroup m_backButton;
+
+
+
+    [SerializeField]
     Image m_background;
 
     float m_uiFadeInTime = 1.5f;
@@ -43,6 +49,8 @@ public class UIManager : MonoBehaviour
 
 	private void Start()
 	{
+
+
     }
 
 	public void QuitGame()
@@ -71,6 +79,9 @@ public class UIManager : MonoBehaviour
             case Menu.Credits:
                 groupToFadeOut = m_creditsUIGroup;
                 break;
+            case Menu.Game:
+                groupToFadeOut = m_gameUIGroup;
+                break;
         }
         StartCoroutine( FadeOutGroup( groupToFadeOut, m_menuSwapSpeed ) );
 
@@ -79,23 +90,46 @@ public class UIManager : MonoBehaviour
         {
             default:
                 groupToFadeIn = m_mainMenu;
+                StartCoroutine( FadeOutGroup(m_backButton, m_menuSwapSpeed ) );
                 m_currentMenu = Menu.Main;
                 break;
             case "Options":
                 groupToFadeIn = m_optionsUIGroup;
                 m_currentMenu = Menu.Options;
+                StartCoroutine( FadeInGroup( m_backButton, m_menuSwapSpeed, m_menuSwapSpeed ) );
                 break;
             case "Controls":
                 groupToFadeIn = m_controlsUIGroup;
                 m_currentMenu = Menu.Controls;
+                StartCoroutine( FadeInGroup( m_backButton, m_menuSwapSpeed, m_menuSwapSpeed ) );
                 break;
             case "Credits":
                 groupToFadeIn = m_creditsUIGroup;
                 m_currentMenu = Menu.Credits;
+                StartCoroutine( FadeInGroup( m_backButton, m_menuSwapSpeed, m_menuSwapSpeed ) );
                 break;
         }
 
         StartCoroutine( FadeInGroup( groupToFadeIn, m_menuSwapSpeed, m_menuSwapSpeed ) );
+    }
+
+    public void PauseMenu(bool paused)
+    {
+        if ( paused )
+		{
+
+            m_optionsUIGroup.gameObject.SetActive( true );
+            m_gameUIGroup.gameObject.SetActive( false );
+            m_optionsUIGroup.gameObject.GetComponentInChildren<Button>().interactable = true;
+            //GetComponent<OptionsManager>().RefreshSliders();
+        }
+		else
+		{
+
+            m_optionsUIGroup.gameObject.SetActive( false );
+            m_gameUIGroup.gameObject.SetActive( true );
+        }
+
     }
 
     public void Respawn( float howLongFade )
@@ -209,6 +243,13 @@ public class UIManager : MonoBehaviour
             group.alpha = alpha;
             yield return null;
         }
+        Button[] activeButtons = group.gameObject.GetComponentsInChildren<Button>();
+
+        foreach ( Button button in activeButtons )
+        {
+            button.interactable = true;
+        }
+
         group.alpha = 1.0f;
     }
 
@@ -216,6 +257,13 @@ public class UIManager : MonoBehaviour
     {
         yield return new WaitForSeconds( delay );
         
+        Button[] activeButtons = group.gameObject.GetComponentsInChildren<Button>();
+        
+        foreach( Button button in activeButtons )
+		{
+            button.interactable = false;
+		}
+
         group.alpha = 1.0f;
 
         for ( float alpha = group.alpha; alpha > 0.0f; alpha -= Time.deltaTime / time )
