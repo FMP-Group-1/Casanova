@@ -179,6 +179,9 @@ public class UIManager : MonoBehaviour
         StartCoroutine( FadeOut( m_background, menuFadeOutTime ) );
         //Make Game UI fade in delay same as menu fade out to make it look like it was queued up
         StartCoroutine( FadeInGroup( m_gameUIGroup, 1.5f, menuFadeOutTime ) );
+
+        //It's deactivated, but need alpha as 1 so when we reactivate, it shows up
+        m_optionsUIGroup.alpha = 1;
 	}
 
 

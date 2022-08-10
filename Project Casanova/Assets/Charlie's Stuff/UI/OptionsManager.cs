@@ -6,9 +6,7 @@ using UnityEngine.UI;
 public class OptionsManager : MonoBehaviour
 {
 	[SerializeField]
-	private Slider xCameraSensitivity;
-	[SerializeField]
-	private Slider yCameraSensitivity;
+	private Slider m_cameraSensitivitySlider;
 	[SerializeField]
 	private Slider audioVolume;
 
@@ -19,10 +17,8 @@ public class OptionsManager : MonoBehaviour
 	private void OnEnable()
 	{
 
-		xCameraSensitivity.minValue = Settings.g_minXCameraSensitiviy;
-		xCameraSensitivity.maxValue = Settings.g_maxXCameraSensitiviy;
-		yCameraSensitivity.minValue = Settings.g_minYCameraSensitiviy;
-		yCameraSensitivity.maxValue = Settings.g_maxYCameraSensitiviy;
+		m_cameraSensitivitySlider.minValue = Settings.g_minCameraSensitiviy;
+		m_cameraSensitivitySlider.maxValue = Settings.g_maxCameraSensitiviy;
 
 		RefreshSliders();
 	}
@@ -30,13 +26,12 @@ public class OptionsManager : MonoBehaviour
 	public void RefreshSliders()
 	{
 
-		xCameraSensitivity.value = Settings.g_currentXCameraSensitiviy;
-		yCameraSensitivity.value = Settings.g_currentYCameraSensitiviy;
+		m_cameraSensitivitySlider.value = Settings.g_currentXCameraSensitiviy;
 	}
 
 	public Vector2 GetSensitivity()
 	{
-		return new Vector2(xCameraSensitivity.value, yCameraSensitivity.value);
+		return new Vector2(m_cameraSensitivitySlider.value, m_cameraSensitivitySlider.value/100);
 	}
 
 }
