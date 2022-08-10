@@ -575,7 +575,7 @@ public class EnemyAI : MonoBehaviour
                     // Todo: Bad place for triggering the sound, should be done directly from player
                     m_playerController.GetSoundHandler().PlayDamageSFX();
 
-                    m_player.GetComponent<CharacterDamageManager>().TakeDamage(transform);
+                    m_player.GetComponent<CharacterDamageManager>().TakeDamage(transform, GetCurrentAttackDamage());
                     m_soundHandler.PlayNormalCollisionSFX();
                     DisableCollision();
                 }
