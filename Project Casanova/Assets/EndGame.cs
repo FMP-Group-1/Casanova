@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class EndGame : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+	UIManager m_uiUIManager;
+	private void OnTriggerEnter( Collider other )
+	{
+		if (other.tag == "Player" )
+		{
+			CompleteGame();
+		}
+	}
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+	private void CompleteGame()
+	{
+		Settings.g_canPause = false;
+	}
 }

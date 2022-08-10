@@ -120,6 +120,8 @@ public class PlayerController : MonoBehaviour
     private PlayerSoundHandler m_soundHandler;
 
 
+    private bool m_menuLock = true;
+
     /**************************************************************************************
     * Type: Function
     * 
@@ -597,6 +599,11 @@ public class PlayerController : MonoBehaviour
         m_meleeController.CanStartNextAttack();
 	}
 
+    public void SetMenuLock(bool locked)
+	{
+        m_menuLock = locked;
+    }
+
     public void LoseControl()
     {
         //m_animator.SetFloat( an_movingSpeed, 0.0f );
@@ -608,10 +615,13 @@ public class PlayerController : MonoBehaviour
 
     public void RegainControl()
 	{
-        m_canRotate = true;
-        m_canMove = true;
-        m_canDodge = true;
-        m_canFall = true;
+        if ( !m_menuLock )
+        {
+            m_canRotate = true;
+            m_canMove = true;
+            m_canDodge = true;
+            m_canFall = true;
+        }
     }
 
 

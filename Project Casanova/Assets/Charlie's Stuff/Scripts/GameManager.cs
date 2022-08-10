@@ -16,6 +16,15 @@ public enum Room
 
 public class GameManager : MonoBehaviour
 {
+    [SerializeField]
+    private Animator m_cinemachineAnimator;
+
+    [Header( "Player" )]
+    [SerializeField]
+    PlayerController m_playerController;
+    [SerializeField]
+    PlayerDamageManager m_playerHealthManager;
+
     private Room m_currentRoom;
     private UIManager m_uiManager;
     private RespawnManager m_respawnManager;
@@ -25,9 +34,11 @@ public class GameManager : MonoBehaviour
 
     private bool m_roomComplete;
 
+    [Header("Cell Exit Trigger")]
     [SerializeField] 
     private GameObject m_cellExitTrigger;
 
+    [Header( "Pause Input" )]
     [SerializeField, Tooltip( "Pause Input" )]
     private InputActionReference m_pauseInput;
 
@@ -47,6 +58,8 @@ public class GameManager : MonoBehaviour
 	void Start()
     {
         //Very Begining of Game
+        Settings.g_canPause = false;
+        Settings.g_paused = false;
         m_currentRoom = Room.Cell;
         m_uiManager = GetComponent<UIManager>();
         m_respawnManager = GetComponent<RespawnManager>();
@@ -62,27 +75,32 @@ public class GameManager : MonoBehaviour
 
 	private void Update()
 	{
+
         //If Pause Clicked
         if ( m_pauseInput.action.triggered )
-		{
-            //If we are ALREADY paused, unpause
-            if ( Settings.g_paused )
-			{
-                Time.timeScale = 1;
-                Settings.g_paused = false;
-                Cursor.visible = false;
-                Cursor.lockState = CursorLockMode.Locked;
+        {
+            if ( Settings.g_canPause )
+            {
+
+                //If we are ALREADY paused, unpause
+                if ( Settings.g_paused )
+                {
+                    Time.timeScale = 1;
+                    Settings.g_paused = false;
+                    Cursor.visible = false;
+                    Cursor.lockState = CursorLockMode.Locked;
+                }
+                else //Pause
+                {
+                    Time.timeScale = 0;
+                    Settings.g_paused = true;
+                    Cursor.visible = true;
+                    Cursor.lockState = CursorLockMode.None;
+                }
+                m_uiManager.PauseMenu( Settings.g_paused );
+
             }
-			else //Pause
-			{
-                Time.timeScale = 0;
-                Settings.g_paused = true;
-                Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
-            }
-            m_uiManager.PauseMenu( Settings.g_paused );
-            
-		}
+        }
 
         if ( !m_roomComplete )
 		{
@@ -129,8 +147,28 @@ public class GameManager : MonoBehaviour
         }
 
     }
+
+
+    public void PlayGame()
+    {
+        //Manage UI Elements
+        m_uiManager.StartGame();
+        m_playerController.SetMenuLock( false );
+
+        m_cinemachineAnimator.Play( "Game State" );
+        m_playerController.gameObject.GetComponent<Animator>().SetTrigger( "WakeUp" );
+        m_playerController.GetComponent<MeleeController>().enabled = true;
+
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.lockState = CursorLockMode.Locked;
+
+    }
+
+
     public void ReturnToMenu()
-	{
+    {
+        m_playerController.LoseControl();
+        m_playerHealthManager.SetInvulnerable( true );
         Time.timeScale = 1f;
         StartCoroutine(ReloadScene());
     }
@@ -157,8 +195,9 @@ public class GameManager : MonoBehaviour
         }
     }
 
-        public void Die()
+    public void Die()
 	{
+        Settings.g_canPause = false;
         m_uiManager.DisplayDeathUI();
         BeginRespawn();
 
@@ -167,6 +206,9 @@ public class GameManager : MonoBehaviour
     public void RespawnFromMenu()
 	{
         Time.timeScale = 1;
+        m_playerController.SetMenuLock( true );
+        m_playerController.LoseControl();
+        m_playerHealthManager.SetInvulnerable( true );
         BeginRespawn();
     }
 
@@ -183,6 +225,8 @@ public class GameManager : MonoBehaviour
     {
         m_aiManager.DeactivateActiveEnemies();
 
+        Settings.g_paused = false;
+        m_playerController.SetMenuLock( false );
         Room respawnPoint = m_respawnManager.GetRespawnPoint();
         switch ( respawnPoint )
         {
@@ -208,6 +252,8 @@ public class GameManager : MonoBehaviour
         }
 
         m_gateManager.ResetGate( respawnPoint );
+
+        Settings.g_canPause = true;
     }
 
     public void EnterRoom( Room room )

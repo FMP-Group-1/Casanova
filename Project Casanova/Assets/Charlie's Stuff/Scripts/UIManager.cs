@@ -33,6 +33,8 @@ public class UIManager : MonoBehaviour
     CanvasGroup m_gameUIGroup;
     [SerializeField]
     CanvasGroup m_deadUIGroup;
+    [SerializeField]
+    CanvasGroup m_winGroup;
 
     [SerializeField]
     CanvasGroup m_pauseScreen;
@@ -48,14 +50,13 @@ public class UIManager : MonoBehaviour
     [SerializeField]
     Image m_background;
 
-    float m_uiFadeInTime = 1.5f;
-    float m_blackScreenFade = 2.5f;
+    float m_uiFadeInTime = 1f;
+    float m_blackScreenFade = 1.5f;
 
-    private float m_menuSwapSpeed = 0.75f;
+    private float m_menuSwapSpeed = 0.25f;
 
 	private void Start()
 	{
-
 
     }
 
@@ -192,7 +193,8 @@ public class UIManager : MonoBehaviour
 
         m_pauseScreen.alpha = 0.0f;
         StartCoroutine( FadeIn( m_blackScreen, fadeTime ) );
-	}
+
+    }
 
 
     public void DisplayDeathUI()
@@ -217,9 +219,19 @@ public class UIManager : MonoBehaviour
         StartCoroutine( FadeOut( m_blackScreen, m_blackScreenFade ) );
 
         //Make Menu UI fade in delay same as Black fade out to make it look like it was queued up
-        StartCoroutine( FadeInGroup( m_mainMenu, 1.5f, m_blackScreenFade ) );
-        StartCoroutine( FadeIn( m_background, 1.5f, m_blackScreenFade ) );
+        StartCoroutine( FadeInGroup( m_mainMenu, 1.5f, m_blackScreenFade / 2 ) );
+        StartCoroutine( FadeIn( m_background, 1.5f, m_blackScreenFade / 2 ) );
 
+
+    }
+
+
+    public void CompleteGame()
+	{
+
+        StartCoroutine( FadeOutGroup( m_gameUIGroup, 1.5f ) );
+        StartCoroutine( FadeInGroup( m_winGroup, 1.5f ) );
+        
 
     }
 
@@ -230,12 +242,17 @@ public class UIManager : MonoBehaviour
         StartCoroutine( FadeOutGroup( m_mainMenu, menuFadeOutTime ) );
         StartCoroutine( FadeOut( m_background, menuFadeOutTime ) );
         //Make Game UI fade in delay same as menu fade out to make it look like it was queued up
-        StartCoroutine( FadeInGroup( m_gameUIGroup, 1.5f, menuFadeOutTime ) );
+        StartCoroutine( FadeInGroup( m_gameUIGroup, 1.5f, menuFadeOutTime / 2 ) );
 
         //If these screens are used in the MAIN menu, their alpha is set to 0 and deactivated.
         //To stop needing to set them to 1 eevrytime I pause, if we just do it here, they stay deactivated, but alpha is 1
         m_optionsUIGroup.alpha = 1;
         m_controlsUIGroup.alpha = 1;
+        //Make Confirm Button for Options interactable
+        m_optionsUIGroup.gameObject.GetComponentInChildren<Button>().interactable = true ;
+
+        Settings.g_canPause = true;
+
     }
 
 

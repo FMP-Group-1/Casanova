@@ -6,6 +6,8 @@ public static class Settings
 {
 
 	public static bool g_paused = false;
+	public static bool g_canPause = false;
+
 	public static string g_ControllerTag = "GameController";
 
 	public static float g_audioVolume = 1f;
