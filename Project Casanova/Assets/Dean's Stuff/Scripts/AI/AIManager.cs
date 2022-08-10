@@ -436,4 +436,11 @@ public class AIManager : MonoBehaviour
             }
         }
     }
+
+	private void OnDestroy()
+	{
+
+        EventManager.WakeEnemiesEvent -= WakeGroup;
+        EventManager.AlertEnemiesEvent -= AlertGroup;
+    }
 }

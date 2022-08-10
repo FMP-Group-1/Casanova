@@ -31,8 +31,9 @@ public class GameManager : MonoBehaviour
     [SerializeField, Tooltip( "Pause Input" )]
     private InputActionReference m_pauseInput;
 
+    AsyncOperation m_sceneLoad;
 
-	private void OnEnable()
+    private void OnEnable()
 	{
         m_pauseInput.action.Enable();
 
@@ -61,8 +62,10 @@ public class GameManager : MonoBehaviour
 
 	private void Update()
 	{
+        //If Pause Clicked
         if ( m_pauseInput.action.triggered )
 		{
+            //If we are ALREADY paused, unpause
             if ( Settings.g_paused )
 			{
                 Time.timeScale = 1;
@@ -70,7 +73,7 @@ public class GameManager : MonoBehaviour
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;
             }
-			else
+			else //Pause
 			{
                 Time.timeScale = 0;
                 Settings.g_paused = true;
@@ -126,20 +129,53 @@ public class GameManager : MonoBehaviour
         }
 
     }
+    public void ReturnToMenu()
+	{
+        Time.timeScale = 1f;
+        StartCoroutine(ReloadScene());
+    }
 
-    public void Die()
+    IEnumerator ReloadScene()
+	{
+        float respawnFadeTime = 2.0f;
+        m_uiManager.ReturnToMenu( respawnFadeTime );
+        yield return new WaitForSeconds( respawnFadeTime + 0.1f );
+        Scene scene = SceneManager.GetActiveScene();
+        StartCoroutine( ReloadSceneAsync( scene.name ) );
+    }
+    private IEnumerator ReloadSceneAsync( string scene )
+    {
+        // The Application loads the Scene in the background as the current Scene runs.
+        // This is particularly good for creating loading screens.
+        // You could also load the Scene by using sceneBuildIndex. In this case Scene2 has
+        // a sceneBuildIndex of 1 as shown in Build Settings.
+
+        m_sceneLoad = SceneManager.LoadSceneAsync( scene );
+        while ( !m_sceneLoad.isDone )
+        {
+            yield return null;
+        }
+    }
+
+        public void Die()
 	{
         m_uiManager.DisplayDeathUI();
-        StartCoroutine( BeginRespawn() );
+        BeginRespawn();
 
     }
-    private IEnumerator BeginRespawn()
-    {
-        yield return new WaitForSeconds( 4.0f );
 
+    public void RespawnFromMenu()
+	{
+        Time.timeScale = 1;
+        BeginRespawn();
+    }
+
+    private void BeginRespawn()
+    {
         //Both these need same value. Value will fade out for that time, and delay the ACTUAL stuff until then
         float fadeTimeAndDelay = 4.0f;
         m_uiManager.Respawn( fadeTimeAndDelay );
+        //UI Manager puts an additional 0.5seconds on the clcok so it's fully black when we move eevrything in respawn Manager
         StartCoroutine( m_respawnManager.Respawn( fadeTimeAndDelay ) );
     }
 

@@ -9,6 +9,8 @@ public class PlayerDamageManager : CharacterDamageManager
 
     GameObject m_gameController;
 
+    private float m_respawnDelay;
+
     protected override void Start()
     {
         base.Start();

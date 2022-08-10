@@ -19,8 +19,6 @@ public class UIManager : MonoBehaviour
     //Input actions
     [SerializeField]
     private Image m_blackScreen;
-    [SerializeField]
-    private Image m_youDied;
 
 
     [SerializeField]
@@ -33,10 +31,18 @@ public class UIManager : MonoBehaviour
     CanvasGroup m_creditsUIGroup;
     [SerializeField]
     CanvasGroup m_gameUIGroup;
+    [SerializeField]
+    CanvasGroup m_deadUIGroup;
+
+    [SerializeField]
+    CanvasGroup m_pauseScreen;
+    [SerializeField]
+    CanvasGroup m_pauseBackButton;
 
     [SerializeField]
     CanvasGroup m_backButton;
 
+    private string m_pauseScreenToHide;
 
 
     [SerializeField]
@@ -117,28 +123,63 @@ public class UIManager : MonoBehaviour
     {
         if ( paused )
 		{
-
-            m_optionsUIGroup.gameObject.SetActive( true );
+            //Pause
+            GetComponent<OptionsManager>().RefreshSliders();
+            m_pauseScreen.gameObject.SetActive( true );
             m_gameUIGroup.gameObject.SetActive( false );
-            m_optionsUIGroup.gameObject.GetComponentInChildren<Button>().interactable = true;
-            //GetComponent<OptionsManager>().RefreshSliders();
         }
 		else
 		{
-
-            m_optionsUIGroup.gameObject.SetActive( false );
+            //Unpause
+            m_pauseScreen.gameObject.SetActive( false );
             m_gameUIGroup.gameObject.SetActive( true );
         }
 
     }
 
+    public void DisplayPauseScreen( string screen )
+	{
+        switch ( screen )
+		{
+			case "Options":
+                m_optionsUIGroup.gameObject.SetActive( true );
+
+                break;
+            case "Controls":
+                m_controlsUIGroup.gameObject.SetActive( true );
+                break;
+		}
+        m_pauseBackButton.gameObject.SetActive( true );
+        m_pauseScreen.gameObject.SetActive( false );
+        m_pauseScreenToHide = screen;
+
+    }
+
+    public void ReturnToPause()
+	{
+        switch ( m_pauseScreenToHide )
+        {
+            case "Options":
+                m_optionsUIGroup.gameObject.SetActive( false );
+
+                break;
+            case "Controls":
+                m_controlsUIGroup.gameObject.SetActive( false );
+                break;
+        }
+
+        m_pauseBackButton.gameObject.SetActive( false );
+        m_pauseScreen.gameObject.SetActive( true );
+    }
+
     public void Respawn( float howLongFade )
 	{
+        m_pauseScreen.gameObject.SetActive ( false );
         //Fade Black Screen in
         StartCoroutine( FadeIn( m_blackScreen, howLongFade ) );
 
         //Turn off You Died
-        StartCoroutine( FadeOut( m_youDied, 0.1f, howLongFade + 0.5f ) );
+        StartCoroutine( FadeOutGroup( m_deadUIGroup, 0.1f, howLongFade + 0.5f ) );
 
         //Fade back in with 0.5 wait
         StartCoroutine( FadeOut( m_blackScreen, howLongFade, howLongFade + 0.5f ) );
@@ -146,10 +187,18 @@ public class UIManager : MonoBehaviour
 
     }
 
+    public void ReturnToMenu(float fadeTime)
+	{
+
+        m_pauseScreen.alpha = 0.0f;
+        StartCoroutine( FadeIn( m_blackScreen, fadeTime ) );
+	}
+
+
     public void DisplayDeathUI()
 	{
         StartCoroutine( FadeOutGroup( m_gameUIGroup, 2.0f ) );
-        StartCoroutine( FadeIn( m_youDied, 3.0f ) );
+        StartCoroutine( FadeInGroup( m_deadUIGroup, 3.0f ) );
 	}
 
     public void BeginScene()
@@ -159,6 +208,9 @@ public class UIManager : MonoBehaviour
         m_controlsUIGroup.gameObject.SetActive ( false );
         m_creditsUIGroup.gameObject.SetActive ( false );
         m_mainMenu.gameObject.SetActive( false );
+        m_pauseScreen.gameObject.SetActive( false );
+        m_pauseBackButton.gameObject.SetActive( false );
+        m_deadUIGroup.gameObject.SetActive( false );
 
         m_blackScreen.gameObject.SetActive( true );
 
@@ -180,9 +232,11 @@ public class UIManager : MonoBehaviour
         //Make Game UI fade in delay same as menu fade out to make it look like it was queued up
         StartCoroutine( FadeInGroup( m_gameUIGroup, 1.5f, menuFadeOutTime ) );
 
-        //It's deactivated, but need alpha as 1 so when we reactivate, it shows up
+        //If these screens are used in the MAIN menu, their alpha is set to 0 and deactivated.
+        //To stop needing to set them to 1 eevrytime I pause, if we just do it here, they stay deactivated, but alpha is 1
         m_optionsUIGroup.alpha = 1;
-	}
+        m_controlsUIGroup.alpha = 1;
+    }
 
 
 
