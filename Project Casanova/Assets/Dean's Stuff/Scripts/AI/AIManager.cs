@@ -107,6 +107,7 @@ public class AIManager : MonoBehaviour
                 // Notifying user that an enemy has failed to register with the manager
                 Debug.Log("AIManager: Failed to add EnemyAI script of Enemy: " + enemy.name);
             }
+
         }
 
         //Debug.Log("AIManager: Enemies in list: " + m_enemyList.Count);
@@ -169,8 +170,9 @@ public class AIManager : MonoBehaviour
         if (!m_activeAttackers.Contains(enemy))
         {
             m_activeAttackers.Add(enemy);
-            enemy.SetAttackingType(AttackingType.Active);
         }
+
+        enemy.SetAttackingType(AttackingType.Active);
     }
 
     // Adds specified enemy to passive attacker list, and makes sure they're removed from active list
@@ -187,8 +189,9 @@ public class AIManager : MonoBehaviour
         if (!m_passiveAttackers.Contains(enemy))
         {
             m_passiveAttackers.Add(enemy);
-            enemy.SetAttackingType(AttackingType.Passive);
         }
+        
+        enemy.SetAttackingType(AttackingType.Passive);
     }
 
     public void MakeUnasssignedAttacker( EnemyAI enemy )
@@ -204,8 +207,9 @@ public class AIManager : MonoBehaviour
         if (!m_unassignedAttackers.Contains(enemy))
         {
             m_unassignedAttackers.Add(enemy);
-            enemy.SetAttackingType(AttackingType.Unassigned);
         }
+        
+        enemy.SetAttackingType(AttackingType.Unassigned);
     }
 
     public void DeactivateActiveEnemies()

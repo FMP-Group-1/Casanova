@@ -88,6 +88,12 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     [Tooltip("The run speed of the AI")]
     private float m_runSpeed = 3.0f;
+    [SerializeField]
+    [Tooltip("The speed the AI will rotate when attempting to look at a target")]
+    private float m_turnSpeed = 75.0f;
+    [SerializeField]
+    [Tooltip("The difference from current rotation to target before the AI will lock rotation")]
+    private float m_rotationBuffer = 5.0f;
 
     // Animation Relevant Variables
     private Animator m_animController;
@@ -115,8 +121,8 @@ public class EnemyAI : MonoBehaviour
     private Collider m_playerCollider;
 
     // Combat Relevant Variables
-    [Header("Combat Values")]
     private bool m_lookAtPlayer = false;
+    [Header("Combat Values")]
     [SerializeField]
     [Tooltip("Normal Attack Damage")]
     private float m_normalAttackDmg = 10.0f;
@@ -126,12 +132,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     [Tooltip("Heavy Attack Damage")]
     private float m_heavyAttackDmg = 15.0f;
-    [SerializeField]
-    [Tooltip("The speed the AI will rotate when attempting to look at a target")]
-    private float m_turnSpeed = 75.0f;
-    [SerializeField]
-    [Tooltip("The difference from current rotation to target before the AI will lock rotation")]
-    private float m_rotationBuffer = 5.0f;
+
     [SerializeField]
     [Tooltip("The distance from the player that the AI will stop")]
     private float m_playerStoppingDistance = 1.75f;
@@ -560,7 +561,7 @@ public class EnemyAI : MonoBehaviour
                 if (HasReachedDestination())
                 {
                     SetCombatState(CombatState.MaintainDist);
-                    m_zoneHandler.UnreserveZone();
+                    m_zoneHandler.ClearReservedZone();
                     m_zoneHandler.OccupyCurrentZone();
                     //Debug.Log("AI: " + name + " reached destination.");
                 }
@@ -1034,6 +1035,8 @@ public class EnemyAI : MonoBehaviour
     public void UnregisterAttacker()
     {
         m_aiManager.UnregisterAttacker(this);
+        m_zoneHandler.ClearOccupiedZone();
+        m_zoneHandler.ClearReservedZone();
     }
 
     public void ChangeStateFromWake()
