@@ -572,9 +572,6 @@ public class EnemyAI : MonoBehaviour
                 // Attack hits
                 if (IsAttackCollidingWithPlayer())
                 {
-                    // Todo: Bad place for triggering the sound, should be done directly from player
-                    m_playerController.GetSoundHandler().PlayDamageSFX();
-
                     m_player.GetComponent<CharacterDamageManager>().TakeDamage(transform, GetCurrentAttackDamage());
                     m_soundHandler.PlayNormalCollisionSFX();
                     DisableCollision();
@@ -1755,11 +1752,6 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.isStopped = false;
         m_navMeshAgent.updateRotation = false;
         m_lookAtPlayer = true;
-    }
-
-    public void PlayDamageSFX()
-    {
-        m_soundHandler.PlayDamageSFX();
     }
 
     public EnemyType GetEnemyType()

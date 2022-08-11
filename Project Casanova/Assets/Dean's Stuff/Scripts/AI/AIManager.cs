@@ -358,6 +358,19 @@ public class AIManager : MonoBehaviour
         return enemiesRemaining;
     }
 
+    public bool IsCombatActive()
+    {
+        foreach (EnemyAI enemy in m_enemyList)
+        {
+            if (enemy.gameObject.activeSelf && enemy.GetState() == AIState.InCombat)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public AttackZoneManager GetAttackZoneManager()
     {
         return m_attackZoneManager;

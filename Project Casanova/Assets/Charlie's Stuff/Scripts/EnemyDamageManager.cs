@@ -47,13 +47,21 @@ public class EnemyDamageManager : CharacterDamageManager
             m_enemyAI.StopNavMesh();
             m_enemyAI.DisableCollision();
             m_enemyAI.SetLastUsedAnimTrigger( an_getHitTrigger );
-            m_enemyAI.PlayDamageSFX();
-            SetStaggerable(true);
 
             //Check base stuff after as that is where it checks for death, where as above, overwrites with get hurt
             base.TakeDamage( othersTransform, damage );
 
         }
+    }
+
+    protected override void PlayDamageSFX()
+    {
+        m_enemyAI.GetSoundHandler().PlayDamageSFX();
+    }
+
+    protected override void PlayDeathSFX()
+    {
+        m_enemyAI.GetSoundHandler().PlayDeathSFX();
     }
 
     protected override void Die()
