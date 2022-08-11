@@ -56,7 +56,6 @@ GameObject:
   m_Component:
   - component: {fileID: 637091165300465559}
   - component: {fileID: 1107285687897126927}
-  - component: {fileID: 1107285687897126926}
   m_Layer: 0
   m_Name: Guard
   m_TagString: Untagged
@@ -132,25 +131,6 @@ SkinnedMeshRenderer:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
   m_DirtyAABB: 0
---- !u!95 &1107285687897126926
-Animator:
-  serializedVersion: 3
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 260284804488381741}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b74eb007ef869414eb81cee12250e4f1, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &424383073850567042
 GameObject:
   m_ObjectHideFlags: 0
