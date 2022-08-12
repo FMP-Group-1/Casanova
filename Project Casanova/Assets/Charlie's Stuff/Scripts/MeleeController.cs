@@ -12,14 +12,14 @@ public class MeleeController : MonoBehaviour
     private PlayerController m_playerController;
 
     [SerializeField]
+    private SwordCollisionManager m_currentWeaponManager;
+    private Collider m_weaponCollider;
+
+    [SerializeField]
     private bool m_canStartNextAttack = true;
 
     //For box collider rotations
-    [SerializeField]
-    private Transform m_swordTip;
     //Object with the collider that actually rotates
-    [SerializeField]
-    private GameObject m_colliderSweeper;
 
     //How fast the player rotates at begining of an attack
     [SerializeField, Range(0f, 1f)]
@@ -32,6 +32,7 @@ public class MeleeController : MonoBehaviour
     [SerializeField]
     ParticleSystem m_swordTrail;
 
+    [Header("Ground Pound")]
     [SerializeField, Range(0f, 5f)]
     float m_timeToGrow = 1f;
     [SerializeField, Range(5f, 10f)]
@@ -60,13 +61,16 @@ public class MeleeController : MonoBehaviour
     **************************************************************************************/
     void Start()
     {
+        m_weaponCollider = m_currentWeaponManager.gameObject.GetComponent<Collider>();
+
         m_playerControls = new PlayerControls();
+        m_swordTrail.Stop();
 
         m_playerController = GetComponent<PlayerController>();
 
         m_playerControls.Enable();
         m_animator = GetComponent<Animator>();
-        m_colliderSweeper.SetActive(false);
+        m_weaponCollider.enabled = false;
     }
 
 
@@ -157,41 +161,27 @@ public class MeleeController : MonoBehaviour
             m_playerController.GetSoundHandler().PlayNormalAttackSFX();
 
             }
-
-            //rotate Collider sweeper to angle to the sword (ALL THE TIME)
-            //Verbose for Readability
-            //Rotate From...
-            Vector3 startPosition= transform.position;
-            //... to....
-            Vector3 targetPosition = m_swordTip.position;
-
-            //This is now the angle (between -180 and 180) between origin and target
-            float targetAngle = Mathf.Rad2Deg * ( Mathf.Atan2( targetPosition.x - startPosition.x, targetPosition.z - startPosition.z ) );
-
-  
-
-            //Create a Quaternion, with new angle, to be what we want the new rotation point to be
-            Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
-
-            //Lerp instead of SET it as I believe that will stop issues like frame rate skipping past or soemthing
-            m_colliderSweeper.transform.rotation = Quaternion.Lerp( m_colliderSweeper.transform.rotation, targetRotation, 0.99f );
-
-
-            //Just SET it version
-            ////Create a vector 3, with new angle, to be what we want the new rotation point to be
-            //Vector3 targetRotation = new Vector3 ( 0f, targetAngle, 0f );
-
-            //m_colliderSweeper.transform.rotation = Quaternion.Euler(targetRotation);
         }
 
     }
 
+    public void SetCanAttack(bool canAttack)
+	{
+        m_canStartNextAttack |= canAttack;
+	}
 
+    void SetAttackDamage( float damage = 10f )
+	{
+        m_currentWeaponManager.SetDamage( damage );
 
-    public void SwapWeapon(GameObject newWeapon)
+    }
+
+    public void SwapWeapon(GameObject newWeapon, SwordCollisionManager manager)
 	{
         m_swordTrail = newWeapon.GetComponentInChildren<ParticleSystem>();
-	}
+        m_currentWeaponManager = manager;
+
+    }
 
 
 
@@ -211,7 +201,7 @@ public class MeleeController : MonoBehaviour
     {
         m_swordTrail.Play();
         //Set collider sweeper on
-        m_colliderSweeper.SetActive( true );
+        m_weaponCollider.enabled =  true ;
         //You can dodge when the collisions are happening, as then when dodging it will turn off the collider.
         m_playerController.SetDodge( true );
 
@@ -232,7 +222,7 @@ public class MeleeController : MonoBehaviour
     {
         m_swordTrail.Stop();
         //Set collider sweeper off
-        m_colliderSweeper.SetActive( false );
+        m_weaponCollider.enabled = false;
 
     }
 
@@ -266,8 +256,10 @@ public class MeleeController : MonoBehaviour
     * Description: Called by Animation Events when the attack animation FIRST begins.
     *               Used mainly for rotating the player to the direction they're inputting
     **************************************************************************************/
-    private void AttackBegin()
+    private void AttackBegin(float damage)
 	{
+        //Set Damage based on this attack
+        SetAttackDamage( damage );
         //Prevent dodging so it can't blend and leave the collider on
         m_playerController.SetDodge( false );
 

@@ -86,7 +86,7 @@ public class CharacterDamageManager : MonoBehaviour
                 if (m_staggerable)
                 {
                     m_animator.SetTrigger( an_getHitTrigger );
-                    m_staggerable = false;
+                    //m_staggerable = false;
                 }
                 StartCoroutine( ResetInvulnerable( m_invulnerableTime ) );
 
@@ -145,6 +145,12 @@ public class CharacterDamageManager : MonoBehaviour
         m_staggerable = true;
     }
 
+
+    protected bool GetStaggerable()
+	{
+        return m_staggerable;
+
+    }
 
     public void SetIFrames()
 	{

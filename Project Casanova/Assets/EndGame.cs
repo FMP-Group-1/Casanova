@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class EndGame : MonoBehaviour
 {
+
+	private void Start()
+	{
+		
+	}
 	UIManager m_uiUIManager;
 	private void OnTriggerEnter( Collider other )
 	{

@@ -43,16 +43,34 @@ public class EnemyDamageManager : CharacterDamageManager
     {
         if ( !GetInvulnerable() )
         {
-            m_enemyAI.ResetLastUsedAnimTrigger();
-            m_enemyAI.StopNavMesh();
-            m_enemyAI.DisableCollision();
-            m_enemyAI.SetLastUsedAnimTrigger( an_getHitTrigger );
 
+
+            m_enemyAI.DisableCollision();
             //Check base stuff after as that is where it checks for death, where as above, overwrites with get hurt
             base.TakeDamage( othersTransform, damage );
 
+            if ( GetAlive() )
+			{
+                if ( GetStaggerable() )
+                {
+                    m_enemyAI.ResetLastUsedAnimTrigger();
+                    SetStaggerable( false );
+                    ResetStagerable( 6f );
+                    m_enemyAI.SetLastUsedAnimTrigger( an_getHitTrigger );
+                }
+                m_enemyAI.StopNavMesh();
+            }
         }
     }
+
+
+    IEnumerator ResetStagerable(float time )
+	{
+        yield return new WaitForSeconds( time );
+        SetStaggerable( true );
+
+    }
+
 
     protected override void PlayDamageSFX()
     {

@@ -142,6 +142,22 @@ public class GameManager : MonoBehaviour
                     {
                         CompleteRoom( Room.Arena );
                     }
+                    /*
+                    //Wave Logic
+                    //If you're in the hall, check if this group is a1l dead
+                    if ( m_aiManager.RemainingEnemiesInGroup( 4 ) <= 0 )
+                    {
+                        EventManager.StartSpawnEnemiesEvent( 5 );
+                    }
+                    //If you're in the hall, check if this group is a1l dead
+                    if ( m_aiManager.RemainingEnemiesInGroup( 6 ) <= 0 )
+                    {
+                        EventManager.StartSpawnEnemiesEvent( 7 );
+                    }
+                    //If you're in the hall, check if this group is a1l dead
+                    if ( m_aiManager.RemainingEnemiesInGroup( 3 ) <= 0 )
+                    {
+                    }*/
                     break;
             }
         }

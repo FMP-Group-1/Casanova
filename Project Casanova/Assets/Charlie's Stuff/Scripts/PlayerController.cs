@@ -522,7 +522,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-
+        /*
 		/////////////
 		/// Debug ///
 		/////////////
@@ -545,6 +545,7 @@ public class PlayerController : MonoBehaviour
         Vector3 inputDirection = transform.position + m_previousDirection;
         m_inputDirectionVisual.SetPosition( 1, inputDirection );
 		#endregion
+        */
 	}
 
     
@@ -621,6 +622,7 @@ public class PlayerController : MonoBehaviour
             m_canMove = true;
             m_canDodge = true;
             m_canFall = true;
+            m_meleeController.SetCanAttack( true );
         }
     }
 

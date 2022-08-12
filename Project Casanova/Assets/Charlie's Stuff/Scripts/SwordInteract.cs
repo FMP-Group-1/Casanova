@@ -7,6 +7,6 @@ public class SwordInteract : Interactable
 	public override void Interact()
 	{
 		base.Interact();
-		m_player.GetComponent<WeaponSwap>().DropWeapon(gameObject);
+		m_player.GetComponent<WeaponSwap>().DropTableLeg(gameObject);
 	}
 }
