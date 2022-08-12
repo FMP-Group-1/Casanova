@@ -64,11 +64,28 @@ public class EnemyDamageManager : CharacterDamageManager
         m_enemyAI.GetSoundHandler().PlayDeathSFX();
     }
 
+
+
+    void ResetAllColliders(bool reset)
+    {
+        GetComponent<Collider>().enabled = false;
+
+        Collider[] allColliders = GetComponentsInChildren<Collider>();
+        foreach ( Collider collider in allColliders )
+        {
+            collider.enabled = false;
+        }
+    }
+
+
+
     protected override void Die()
     {
         m_enemyAI.SetAIState( AIState.Dead );
         m_enemyAI.UnregisterAttacker();
-        gameObject.GetComponent<Collider>().enabled = false;
+
+        ResetAllColliders( false );
+
         StartCoroutine( DissolveEnemy( 3f ) );
 
         base.Die();
@@ -115,6 +132,7 @@ public class EnemyDamageManager : CharacterDamageManager
         yield return new WaitForSeconds( 1f );
 
         gameObject.SetActive( false );
+        ResetAllColliders( true );
         SetHealth( 100 ); 
         ResetShader();
         m_spawnManager.AddToAvailable(gameObject.GetComponent<EnemyAI>());

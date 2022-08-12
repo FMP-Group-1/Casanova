@@ -232,6 +232,7 @@ public class GameManager : MonoBehaviour
         {
             case Room.Cell:
                 EventManager.StartSpawnEnemiesEvent( 0 );
+                EventManager.StartSpawnEnemiesEvent( 1 );
                 m_cellExitTrigger.SetActive( true );
                 break;
             case Room.Hall:

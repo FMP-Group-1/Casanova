@@ -110,6 +110,7 @@ MonoBehaviour:
   m_aiMask:
     serializedVersion: 2
     m_Bits: 64
+  m_masks: {fileID: 418197415326262858}
 --- !u!136 &847713752576573670
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -635,6 +636,10 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0.00006350809
       objectReference: {fileID: 0}
+    - target: {fileID: 5335711403028452717, guid: 35f261e9b9cbdfa479dd773693fa08e9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7495867751621442082, guid: 35f261e9b9cbdfa479dd773693fa08e9, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -710,6 +715,11 @@ GameObject:
 --- !u!1 &6249674991734647774 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4326036264239944136, guid: 35f261e9b9cbdfa479dd773693fa08e9, type: 3}
+  m_PrefabInstance: {fileID: 7688318861649033750}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &418197415326262858 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8034378924303883356, guid: 35f261e9b9cbdfa479dd773693fa08e9, type: 3}
   m_PrefabInstance: {fileID: 7688318861649033750}
   m_PrefabAsset: {fileID: 0}
 --- !u!65 &2069871788779175960

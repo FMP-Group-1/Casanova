@@ -50,6 +50,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60f2fafdaa2e6c34d940b21fe81c837a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_cinemachineAnimator: {fileID: 0}
+  m_playerController: {fileID: 0}
+  m_playerHealthManager: {fileID: 0}
   m_cellExitTrigger: {fileID: 0}
   m_pauseInput: {fileID: 264803734330199796, guid: 718be9eb4c7d2ee4198df765b1d66ceb, type: 3}
 --- !u!114 &2513216317872617939
@@ -79,12 +82,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_blackScreen: {fileID: 0}
-  m_youDied: {fileID: 0}
   m_mainMenu: {fileID: 0}
   m_optionsUIGroup: {fileID: 0}
   m_controlsUIGroup: {fileID: 0}
   m_creditsUIGroup: {fileID: 0}
   m_gameUIGroup: {fileID: 0}
+  m_deadUIGroup: {fileID: 0}
+  m_winGroup: {fileID: 0}
+  m_pauseScreen: {fileID: 0}
+  m_pauseBackButton: {fileID: 0}
   m_backButton: {fileID: 0}
   m_background: {fileID: 0}
 --- !u!114 &2568592228101711801
@@ -135,7 +141,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_gruntPrefab: {fileID: 982664744915213519, guid: d6a56c6cab414b7428d7d01bd75866ba, type: 3}
-  m_guardPrefab: {fileID: 7537732103394667408, guid: c00a225a6b7438c4096b6b8f89178464, type: 3}
+  m_guardPrefab: {fileID: 260284804488381741, guid: 03baa25afb5b1bf40862529875314259, type: 3}
 --- !u!114 &1991337341106252668
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -257,8 +257,23 @@ public class EnemyAI : MonoBehaviour
     //Health Manager Component
     private CharacterDamageManager m_healthManager;
 
+    //Charlie being a stinker and messign your stuff up
+    [SerializeField]
+    private GameObject m_masks;
+    private GameObject[] m_masksArray;
+    int maskEquipped;
+
     private void Awake()
     {
+        m_masksArray = new GameObject[ m_masks.transform.childCount ];
+
+        for (int i = 0; i< m_masksArray.Length; i++ )
+		{
+            m_masksArray[i] = m_masks.transform.GetChild(i).gameObject;
+		}
+
+        ResetMasks();
+
         SetupStringToHashes();
 
         m_healthManager = GetComponent<CharacterDamageManager>();
@@ -283,6 +298,18 @@ public class EnemyAI : MonoBehaviour
 
 
         m_lastUsedAnimTrigger = an_triggerNone;
+    }
+
+    private void ResetMasks()
+	{
+        ///////////////////
+        foreach ( GameObject mask in m_masksArray )
+        {
+            mask.SetActive( false );
+        }
+        maskEquipped = Random.Range( 0, m_masksArray.Length );
+        m_masksArray[ maskEquipped ].SetActive( true );
+        ///////////////////
     }
 
     private void Update()
@@ -1116,6 +1143,7 @@ public class EnemyAI : MonoBehaviour
 
         SetupPatrolRoutes();
         DisableCollision();
+        ResetMasks();
     }
 
     public void WakeUpAI()
