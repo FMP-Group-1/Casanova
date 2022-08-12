@@ -348,7 +348,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 008b1f37736fc1145bf3749a885c8988, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_health: 100
+  m_maxHealth: 100
   m_invulnerableTime: 1
   m_healthBarFill: {fileID: 0}
 --- !u!114 &7215116252869855177
@@ -365,6 +365,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_tableLeg: {fileID: 0}
   m_swordInHand: {fileID: 0}
+  m_tableLegRB: {fileID: 0}
 --- !u!114 &4730243356041363906
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10346,6 +10347,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 2994040687530490970}
     m_Modifications:
+    - target: {fileID: 1358880667476622938, guid: a9b36f6a0a0edbc4aa8496a692507c31, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2280562355253068397, guid: a9b36f6a0a0edbc4aa8496a692507c31, type: 3}
       propertyPath: m_Name
       value: Table_Leg_Weapon
@@ -10358,6 +10363,10 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: ffe1d3822972721489dac4561bfd345c, type: 2}
+    - target: {fileID: 6068703265816333568, guid: a9b36f6a0a0edbc4aa8496a692507c31, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6857731628274523532, guid: a9b36f6a0a0edbc4aa8496a692507c31, type: 3}
       propertyPath: m_Layer
       value: 7
@@ -10486,6 +10495,10 @@ PrefabInstance:
     - target: {fileID: 2024529860070362947, guid: 9714b11dd8efd10489b157f98e77ef91, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 3611929190794163853, guid: 9714b11dd8efd10489b157f98e77ef91, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8748807104103803625, guid: 9714b11dd8efd10489b157f98e77ef91, type: 3}
       propertyPath: m_Name

@@ -180,6 +180,7 @@ public class MeleeController : MonoBehaviour
 	{
         m_swordTrail = newWeapon.GetComponentInChildren<ParticleSystem>();
         m_currentWeaponManager = manager;
+        m_weaponCollider = newWeapon.GetComponent<Collider>();
 
     }
 

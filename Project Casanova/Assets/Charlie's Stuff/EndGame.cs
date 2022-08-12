@@ -21,5 +21,6 @@ public class EndGame : MonoBehaviour
 	private void CompleteGame()
 	{
 		Settings.g_canPause = false;
+		GameObject.FindGameObjectWithTag( Settings.g_ControllerTag ).GetComponent<UIManager>().CompleteGame();
 	}
 }

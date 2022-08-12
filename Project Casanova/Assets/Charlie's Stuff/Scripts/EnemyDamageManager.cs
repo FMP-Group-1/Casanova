@@ -151,7 +151,7 @@ public class EnemyDamageManager : CharacterDamageManager
 
         gameObject.SetActive( false );
         ResetAllColliders( true );
-        SetHealth( 100 ); 
+        ResetHealth(); 
         ResetShader();
         m_spawnManager.AddToAvailable(gameObject.GetComponent<EnemyAI>());
         SetInvulnerable(false);

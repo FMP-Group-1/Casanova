@@ -51,7 +51,6 @@ public class UIManager : MonoBehaviour
     Image m_background;
 
     float m_uiFadeInTime = 1f;
-    float m_blackScreenFade = 1.5f;
 
     private float m_menuSwapSpeed = 0.25f;
 
@@ -199,8 +198,8 @@ public class UIManager : MonoBehaviour
 
     public void DisplayDeathUI()
 	{
-        StartCoroutine( FadeOutGroup( m_gameUIGroup, 2.0f ) );
-        StartCoroutine( FadeInGroup( m_deadUIGroup, 3.0f ) );
+        StartCoroutine( FadeOutGroup( m_gameUIGroup, m_uiFadeInTime ) );
+        StartCoroutine( FadeInGroup( m_deadUIGroup, m_uiFadeInTime + 0.5f ) );
 	}
 
     public void BeginScene()
@@ -216,11 +215,11 @@ public class UIManager : MonoBehaviour
 
         m_blackScreen.gameObject.SetActive( true );
 
-        StartCoroutine( FadeOut( m_blackScreen, m_blackScreenFade ) );
+        StartCoroutine( FadeOut( m_blackScreen, m_uiFadeInTime ) );
 
         //Make Menu UI fade in delay same as Black fade out to make it look like it was queued up
-        StartCoroutine( FadeInGroup( m_mainMenu, 1.5f, m_blackScreenFade / 2 ) );
-        StartCoroutine( FadeIn( m_background, 1.5f, m_blackScreenFade / 2 ) );
+        StartCoroutine( FadeInGroup( m_mainMenu, 1.5f, m_uiFadeInTime / 2 ) );
+        StartCoroutine( FadeIn( m_background, 1.5f, m_uiFadeInTime / 2 ) );
 
 
     }
@@ -229,8 +228,8 @@ public class UIManager : MonoBehaviour
     public void CompleteGame()
 	{
 
-        StartCoroutine( FadeOutGroup( m_gameUIGroup, 1.5f ) );
-        StartCoroutine( FadeInGroup( m_winGroup, 1.5f ) );
+        StartCoroutine( FadeOutGroup( m_gameUIGroup, m_uiFadeInTime ) );
+        StartCoroutine( FadeInGroup( m_winGroup, m_uiFadeInTime ) );
         
 
     }

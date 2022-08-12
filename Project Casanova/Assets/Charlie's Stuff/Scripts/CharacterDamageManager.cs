@@ -6,7 +6,11 @@ using UnityEngine.UI;
 public class CharacterDamageManager : MonoBehaviour
 {
     [SerializeField]
-    private float m_health = 100.0f;
+    private float m_maxHealth = 100.0f;
+    private float m_health;
+
+    private float m_healthPercentage;
+
     private bool m_invulnerable = false;
     [SerializeField]
     private float m_invulnerableTime = 1f;
@@ -27,6 +31,7 @@ public class CharacterDamageManager : MonoBehaviour
 
     protected virtual void Start()
     {
+        m_health = m_maxHealth;
         m_animator = GetComponent<Animator>();
         an_getHitTrigger = Animator.StringToHash( "TakeHit" );
         an_death = Animator.StringToHash( "Death" );
@@ -48,11 +53,11 @@ public class CharacterDamageManager : MonoBehaviour
 
     protected void UpdateHealthBar()
     {
-
-        m_healthBarFill.fillAmount = GetHealth() / 100;
+        m_healthPercentage = GetHealth() / m_maxHealth;
+        m_healthBarFill.fillAmount = m_healthPercentage;
     }
 
-    public virtual void TakeDamage(Transform othersTransform, float damage = 30f )
+    public virtual void TakeDamage(Transform othersTransform, float damage )
     {
         if( !m_invulnerable )
         {
@@ -126,6 +131,11 @@ public class CharacterDamageManager : MonoBehaviour
     protected bool GetAlive()
 	{
         return m_alive;
+	}
+
+   protected void ResetHealth()
+	{
+        m_health = m_maxHealth;
 	}
 
     public float GetHealth()

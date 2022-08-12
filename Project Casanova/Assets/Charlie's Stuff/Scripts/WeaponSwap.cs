@@ -10,17 +10,27 @@ public class WeaponSwap : MonoBehaviour
     [SerializeField]
     private GameObject m_swordInHand;
 
+    [SerializeField]
+    Rigidbody m_tableLegRB;
+
 	public void DropTableLeg( GameObject worldSword )
     {
         m_worldSword = worldSword;
         GetComponent<PlayerController>().LoseControl();
 
 
-        //Deactivate Trigger
-        m_tableLeg.GetComponent<Collider>().enabled = false;
+        //Deactivate Trigger box
+        m_tableLeg.GetComponents<Collider>()[ 0 ].enabled = false;
         //Activate Collider on the MESH to work as the physics collider
-        m_tableLeg.GetComponentInChildren<Collider>().enabled = true;
-        m_tableLeg.GetComponentInChildren<Rigidbody>().isKinematic = false;
+        m_tableLeg.GetComponents<Collider>()[ 1 ].enabled = true;
+
+        m_tableLegRB = m_tableLeg.GetComponent<Rigidbody>();
+
+        m_tableLegRB.isKinematic = false;
+        m_tableLegRB.mass = 1;
+        m_tableLegRB.useGravity = true;
+        m_tableLegRB.constraints = RigidbodyConstraints.None;
+
         m_tableLeg.GetComponent<DespawnTableLeg>().Despawn();
         m_tableLeg.transform.parent = null;
 
