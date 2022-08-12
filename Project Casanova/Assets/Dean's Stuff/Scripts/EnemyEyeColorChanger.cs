@@ -45,6 +45,7 @@ public class EnemyEyeColorChanger : MonoBehaviour
     private ParticleSystem m_particleTrail1;
     private ParticleSystem m_particleTrail2;
     private CombatState m_prevAIState;
+    private bool m_prevAttackLock = false;
 
     void Start()
     {
@@ -82,6 +83,7 @@ public class EnemyEyeColorChanger : MonoBehaviour
     private void UpdateEyes()
     {
         CombatState currentState = m_parentAI.GetCombatState();
+        bool isAttackLocked = m_parentAI.IsAttackLocked();
 
         if (m_prevAIState != currentState)
         {
@@ -108,14 +110,26 @@ public class EnemyEyeColorChanger : MonoBehaviour
                 //    }
                 //}
 
-                ChangeEyeColor(m_attackColorMin, m_attackColorMax);
+                ChangeEyeColor(m_preAttackColorMin, m_preAttackColorMax);
             }
             else if (m_prevAIState == CombatState.Attacking)
             {
                 ChangeEyeColor(m_neutralColorMin, m_neutralColorMax);
             }
         }
+        if (currentState == CombatState.Attacking && m_prevAttackLock != isAttackLocked)
+        {
+            if (isAttackLocked)
+            {
+                ChangeEyeColor(m_attackColorMin, m_attackColorMax);
+            }
+            else
+            {
+                ChangeEyeColor(m_preAttackColorMin, m_preAttackColorMax);
+            }
+        }
 
         m_prevAIState = currentState;
+        m_prevAttackLock = isAttackLocked;
     }
 }

@@ -300,7 +300,14 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 0.12992086
+      - time: 0.12117754
+        functionName: LockAttack
+        data: 
+        objectReferenceParameter: {instanceID: 0}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.14304422
         functionName: PlayNormalAttackSFX
         data: 
         objectReferenceParameter: {instanceID: 0}
@@ -323,13 +330,6 @@ ModelImporter:
         messageOptions: 0
       - time: 0.9962964
         functionName: EndAttack
-        data: 
-        objectReferenceParameter: {instanceID: 0}
-        floatParameter: 0
-        intParameter: 0
-        messageOptions: 0
-      - time: 0.16842163
-        functionName: LockAttack
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

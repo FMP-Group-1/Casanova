@@ -5,23 +5,23 @@ using UnityEngine;
 public class PlayerSoundHandler : CharacterSoundHandler
 {
     [SerializeField]
-    private AudioClip m_damageSFX;
+    private AudioClip[] m_damageSFX;
     [SerializeField]
-    private AudioClip m_attackGruntSFX;
+    private AudioClip[] m_attackGruntSFX;
     [SerializeField]
     private AudioClip m_normalAttackSFX;
     [SerializeField]
-    private AudioClip m_normalCollisionSFX;
+    private AudioClip[] m_normalCollisionSFX;
     [SerializeField]
     private AudioClip m_heavyAttackSFX;
     [SerializeField]
-    private AudioClip m_heavyCollisionSFX;
+    private AudioClip[] m_heavyCollisionSFX;
     [SerializeField]
-    private AudioClip m_footstepSFX;
+    private AudioClip[] m_footstepSFX;
     [SerializeField]
     private AudioClip m_dodgeSFX;
     [SerializeField]
-    private AudioClip m_deathSFX;
+    private AudioClip[] m_deathSFX;
 
     protected override void Awake()
     {
@@ -30,12 +30,12 @@ public class PlayerSoundHandler : CharacterSoundHandler
 
     public override void PlayDamageSFX()
     {
-        m_audioSource.PlayOneShot(m_damageSFX);
+        m_audioSource.PlayOneShot(RandomiseSFX(ref m_damageSFX));
     }
 
     public override void PlayAttackGruntSFX()
     {
-        m_audioSource.PlayOneShot(m_attackGruntSFX);
+        m_audioSource.PlayOneShot(RandomiseSFX(ref m_attackGruntSFX));
     }
 
     public override void PlayNormalAttackSFX()
@@ -45,7 +45,7 @@ public class PlayerSoundHandler : CharacterSoundHandler
 
     public override void PlayNormalCollisionSFX()
     {
-        m_audioSource.PlayOneShot(m_normalCollisionSFX);
+        m_audioSource.PlayOneShot(RandomiseSFX(ref m_normalCollisionSFX));
     }
 
     public override void PlayHeavyAttackSFX()
@@ -55,21 +55,33 @@ public class PlayerSoundHandler : CharacterSoundHandler
 
     public override void PlayHeavyCollisionSFX()
     {
-        m_audioSource.PlayOneShot(m_heavyCollisionSFX);
+        m_audioSource.PlayOneShot(RandomiseSFX(ref m_heavyCollisionSFX));
     }
 
     public override void PlayDeathSFX()
     {
-        m_audioSource.PlayOneShot(m_deathSFX);
+        m_audioSource.PlayOneShot(RandomiseSFX(ref m_deathSFX));
     }
 
     public override void PlayFootstepSFX()
     {
-        m_audioSource.PlayOneShot(m_footstepSFX);
+        m_audioSource.PlayOneShot(RandomiseSFX(ref m_footstepSFX));
     }
 
     public override void PlayDodgeSFX()
     {
         m_audioSource.PlayOneShot(m_dodgeSFX);
+    }
+
+    private ref AudioClip RandomiseSFX( ref AudioClip[] clipArray )
+    {
+        int indexToGet = 0;
+
+        if (clipArray.Length > 1)
+        {
+            indexToGet = Random.Range(0, clipArray.Length);
+        }
+
+        return ref clipArray[indexToGet];
     }
 }
