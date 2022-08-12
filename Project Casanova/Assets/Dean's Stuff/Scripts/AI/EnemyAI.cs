@@ -200,6 +200,7 @@ public class EnemyAI : MonoBehaviour
     private float m_strafeCheckInterval = 2.0f;
     private float m_strafeTimer = 0.0f;
     private bool m_combatOnWake = false;
+    private bool m_attackLocked = false;
 
     // Vision Detection Relevant Variables
     [Header("Player Detection Values")]
@@ -986,6 +987,7 @@ public class EnemyAI : MonoBehaviour
         SetCombatState(CombatState.BackingUp);
         ResetAttackTimer();
         SetStaggerable(true);
+        m_attackLocked = false;
 
         m_navMeshAgent.speed = m_runSpeed;
         m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
@@ -1748,6 +1750,8 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.isStopped = true;
         m_navMeshAgent.updateRotation = false;
         m_lookAtPlayer = false;
+        m_healthManager.SetStaggerable(false);
+        m_attackLocked = true;
     }
 
     public void UnlockAttack()
@@ -1755,6 +1759,8 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.isStopped = false;
         m_navMeshAgent.updateRotation = false;
         m_lookAtPlayer = true;
+        m_healthManager.SetStaggerable(true);
+        m_attackLocked = false;
     }
 
     public EnemyType GetEnemyType()
@@ -1906,6 +1912,11 @@ public class EnemyAI : MonoBehaviour
         }
 
         return attackDamage;
+    }
+
+    public bool IsAttackLocked()
+    {
+        return m_attackLocked;
     }
 
     public void SetAttackingType( AttackingType typeToSet )

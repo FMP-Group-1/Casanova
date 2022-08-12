@@ -43,16 +43,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d245204e1aba002468adf596ebb5908d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_footstepSFX: {fileID: 8300000, guid: 7ac04a21ced726141af07a6bc7c17385, type: 3}
-  m_dodgeSFX: {fileID: 0}
-  m_damageSFX: {fileID: 8300000, guid: 3c0c80497f7e75f4481f16b997515275, type: 3}
-  m_attackGruntSFX: {fileID: 0}
+  m_footstepSFX:
+  - {fileID: 8300000, guid: 7ac04a21ced726141af07a6bc7c17385, type: 3}
+  m_dodgeSFX: []
+  m_damageSFX:
+  - {fileID: 8300000, guid: 3c0c80497f7e75f4481f16b997515275, type: 3}
+  m_attackGruntSFX:
+  - {fileID: 0}
   m_normalAttackSFX: {fileID: 8300000, guid: 266bdac5f21c3fd479e5c97850b20d61, type: 3}
-  m_normalCollisionSFX: {fileID: 8300000, guid: 7daf43914f1190c48a251e2699404f31, type: 3}
+  m_normalCollisionSFX:
+  - {fileID: 8300000, guid: 7daf43914f1190c48a251e2699404f31, type: 3}
   m_heavyAttackSFX: {fileID: 8300000, guid: 266bdac5f21c3fd479e5c97850b20d61, type: 3}
-  m_heavyCollisionSFX: {fileID: 8300000, guid: 7daf43914f1190c48a251e2699404f31, type: 3}
+  m_heavyCollisionSFX:
+  - {fileID: 8300000, guid: 7daf43914f1190c48a251e2699404f31, type: 3}
   m_quickAttackSFX: {fileID: 8300000, guid: 266bdac5f21c3fd479e5c97850b20d61, type: 3}
-  m_quickCollisionSFX: {fileID: 8300000, guid: 7daf43914f1190c48a251e2699404f31, type: 3}
-  m_deathSFX: {fileID: 0}
+  m_quickCollisionSFX:
+  - {fileID: 8300000, guid: 7daf43914f1190c48a251e2699404f31, type: 3}
+  m_deathSFX: []
   m_wakeSFX: {fileID: 0}
-  m_tauntSFX: {fileID: 0}
+  m_tauntSFX: []
