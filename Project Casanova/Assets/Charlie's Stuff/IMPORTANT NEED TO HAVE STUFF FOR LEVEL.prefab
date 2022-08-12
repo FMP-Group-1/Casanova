@@ -361,7 +361,7 @@ MonoBehaviour:
   m_XAxis:
     Value: 0
     m_SpeedMode: 0
-    m_MaxSpeed: 150
+    m_MaxSpeed: 200
     m_AccelTime: 0.1
     m_DecelTime: 0.1
     m_InputAxisName: Mouse X
@@ -391,10 +391,10 @@ MonoBehaviour:
   m_Orbits:
   - m_Height: 6.08
     m_Radius: 2.15
-  - m_Height: 2.73
-    m_Radius: 4.02
-  - m_Height: -0.88
-    m_Radius: 1.97
+  - m_Height: 2.57
+    m_Radius: 4.1
+  - m_Height: -0.66
+    m_Radius: 3.16
   m_LegacyHeadingBias: 3.4028235e+38
   m_Rigs:
   - {fileID: 7025930044556121983}
@@ -429,7 +429,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_CollideAgainst:
     serializedVersion: 2
-    m_Bits: 1
+    m_Bits: 265
   m_IgnoreTag: Player
   m_TransparentLayers:
     serializedVersion: 2
@@ -441,9 +441,9 @@ MonoBehaviour:
   m_CameraRadius: 0.1
   m_Strategy: 0
   m_MaximumEffort: 4
-  m_SmoothingTime: 0.101
-  m_Damping: 0.44
-  m_DampingWhenOccluded: 0.41
+  m_SmoothingTime: 0.01
+  m_Damping: 0.14
+  m_DampingWhenOccluded: 0.15
   m_OptimalTargetDistance: 0
 --- !u!114 &1136421367225666349
 MonoBehaviour:

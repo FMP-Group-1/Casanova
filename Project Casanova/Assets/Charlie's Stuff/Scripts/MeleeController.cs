@@ -29,6 +29,8 @@ public class MeleeController : MonoBehaviour
     [SerializeField]
     private Transform m_sphereColliderTransform;
 
+    [SerializeField]
+    ParticleSystem m_swordTrail;
 
     [SerializeField, Range(0f, 5f)]
     float m_timeToGrow = 1f;
@@ -184,6 +186,16 @@ public class MeleeController : MonoBehaviour
 
     }
 
+
+
+    public void SwapWeapon(GameObject newWeapon)
+	{
+        m_swordTrail = newWeapon.GetComponentInChildren<ParticleSystem>();
+	}
+
+
+
+
     /**************************************************************************************
     * Type: Function
     * 
@@ -197,6 +209,7 @@ public class MeleeController : MonoBehaviour
     **************************************************************************************/
     public void CollisionsStart()
     {
+        m_swordTrail.Play();
         //Set collider sweeper on
         m_colliderSweeper.SetActive( true );
         //You can dodge when the collisions are happening, as then when dodging it will turn off the collider.
@@ -217,6 +230,7 @@ public class MeleeController : MonoBehaviour
     **************************************************************************************/
     public void CollisionsEnd()
     {
+        m_swordTrail.Stop();
         //Set collider sweeper off
         m_colliderSweeper.SetActive( false );
 

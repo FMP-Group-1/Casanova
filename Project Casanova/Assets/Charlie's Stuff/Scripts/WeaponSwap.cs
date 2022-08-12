@@ -29,5 +29,6 @@ public class WeaponSwap : MonoBehaviour
         m_worldSword.SetActive( false );
         //GetComponent<PlayerController>().RegainControl();
 
+        GetComponent<MeleeController>().SwapWeapon( m_swordInHand );
     }
 }
