@@ -54,6 +54,5 @@ public class OpenDoor : Interactable
             transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * m_rotationTime );
             yield return null;
         }
-        //transform.rotation = targetRotation;
     }
 }
