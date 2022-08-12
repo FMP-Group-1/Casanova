@@ -51,6 +51,16 @@ public class PlayerDamageManager : CharacterDamageManager
 
     }
 
+    protected override void PlayDamageSFX()
+    {
+        m_playerController.GetSoundHandler().PlayDamageSFX();
+    }
+
+    protected override void PlayDeathSFX()
+    {
+        m_playerController.GetSoundHandler().PlayDeathSFX();
+    }
+
     protected override void Die()
     {
         base.Die();

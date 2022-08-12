@@ -86,8 +86,11 @@ public class CharacterDamageManager : MonoBehaviour
                 if (m_staggerable)
                 {
                     m_animator.SetTrigger( an_getHitTrigger );
+                    m_staggerable = false;
                 }
                 StartCoroutine( ResetInvulnerable( m_invulnerableTime ) );
+
+                PlayDamageSFX();
             }
 
             UpdateHealthBar();
@@ -97,12 +100,22 @@ public class CharacterDamageManager : MonoBehaviour
 
     }
 
+    protected virtual void PlayDamageSFX()
+    {
+
+    }
+
+    protected virtual void PlayDeathSFX()
+    {
+
+    }
+
     protected virtual void Die()
     {
         m_health = 0.0f;
         m_alive = false;
         m_animator.SetTrigger( an_death );
-
+        PlayDeathSFX();
     }
 
     protected void SetAlive( bool alive )
@@ -129,6 +142,7 @@ public class CharacterDamageManager : MonoBehaviour
 	{
         yield return new WaitForSeconds( timer );
         m_invulnerable = false;
+        m_staggerable = true;
     }
 
 
