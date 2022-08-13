@@ -14,6 +14,7 @@ public class EndGame : MonoBehaviour
 	{
 		if (other.tag == "Player" )
 		{
+			other.gameObject.GetComponent<PlayerController>().LoseControl();
 			CompleteGame();
 		}
 	}
