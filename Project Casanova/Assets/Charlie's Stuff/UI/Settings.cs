@@ -9,6 +9,7 @@ public static class Settings
 	public static bool g_canPause = false;
 
 	public static string g_ControllerTag = "GameController";
+	public static string g_playerTag = "Player";
 
 	public static float g_audioVolume = 1f;
 	public static float g_minCameraSensitiviy = 100f;

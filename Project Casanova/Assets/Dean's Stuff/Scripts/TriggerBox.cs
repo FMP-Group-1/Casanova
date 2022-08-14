@@ -50,7 +50,7 @@ public class TriggerBox : MonoBehaviour
                 }
             }
 
-            GameObject.FindGameObjectWithTag("GameController").GetComponent<GameManager>().EnterRoom(m_roomEntered);
+            GameObject.FindGameObjectWithTag(Settings.g_ControllerTag).GetComponent<GameManager>().EnterRoom(m_roomEntered);
             
 
             gameObject.SetActive(false);

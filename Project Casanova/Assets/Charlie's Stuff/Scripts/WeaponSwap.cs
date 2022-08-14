@@ -10,7 +10,6 @@ public class WeaponSwap : MonoBehaviour
     [SerializeField]
     private GameObject m_swordInHand;
 
-    [SerializeField]
     Rigidbody m_tableLegRB;
 
 	public void DropTableLeg( GameObject worldSword )

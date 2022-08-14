@@ -47,7 +47,7 @@ public class PlayerDamageManager : CharacterDamageManager
         SetAlive( true );
         SetHealth( 100f );
         SetInvulnerable( false );
-        m_animator.SetTrigger( "Respawn" );
+        GetAnimator().SetTrigger( "Respawn" );
 
     }
 

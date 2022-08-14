@@ -20,9 +20,12 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     [Tooltip( "Movement Control Input" )]
     private InputActionReference m_movementControl;
+
+    /*
     [SerializeField]
     [Tooltip( "Jump Control Input" )]
     private InputActionReference m_jumpControl;
+    */
 
     [SerializeField]
     [Tooltip( "Dodge Control Input" )]
@@ -45,10 +48,14 @@ public class PlayerController : MonoBehaviour
     [Tooltip("How fast player runs")]
     [Range( 0.0f, 8.0f )]
     private float m_playerSpeed = 5.0f;
+    
+    /*
     [SerializeField]
     [Tooltip( "Player jump force" ), Range( 1.0f, 15.0f )]
     //How hard they jump
     private float m_jumpForce = 1.0f;
+    */
+
     //gravity
     [SerializeField, Range(0, -15)]
     private float m_gravityValue = -9.81f;
@@ -137,7 +144,7 @@ public class PlayerController : MonoBehaviour
     {
         //Input actions need to be enabled
         m_movementControl.action.Enable();
-        m_jumpControl.action.Enable();
+        //m_jumpControl.action.Enable();
         m_dodgeControl.action.Enable();
     }
 
@@ -156,7 +163,7 @@ public class PlayerController : MonoBehaviour
     {
         //Input actions need to be diabled
         m_movementControl.action.Disable();
-        m_jumpControl.action.Disable();
+        //m_jumpControl.action.Disable();
         m_dodgeControl.action.Disable();
     }
 
@@ -402,7 +409,8 @@ public class PlayerController : MonoBehaviour
             }
         }
         #endregion
-
+        
+        /*
         #region Jumping
         //Jumping
         if ( m_jumpControl.action.triggered && m_isGrounded )
@@ -413,6 +421,7 @@ public class PlayerController : MonoBehaviour
             m_playerVelocity.y = m_jumpForce;
         }
         #endregion
+        */
 
         #region Grounded Check
         //Raycast for the groundpound
@@ -590,6 +599,14 @@ public class PlayerController : MonoBehaviour
 
         transform.rotation = Quaternion.Euler( new Vector3( 0f, targetAngle, 0f ) );
     }
+
+
+    public bool GetGrounded()
+	{
+        return m_isGrounded;
+	}
+
+
     private void ResetDodge()
 	{
 

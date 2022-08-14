@@ -70,7 +70,6 @@ public class GameManager : MonoBehaviour
         m_uiManager.BeginScene();
 
         EventManager.StartSpawnEnemiesEvent( 0 );
-        EventManager.StartSpawnEnemiesEvent( 1 );
     }
 
 	private void Update()

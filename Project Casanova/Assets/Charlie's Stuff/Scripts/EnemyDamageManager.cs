@@ -56,7 +56,7 @@ public class EnemyDamageManager : CharacterDamageManager
                     m_enemyAI.ResetLastUsedAnimTrigger();
                     SetStaggerable( false );
                     ResetStagerable( 6f );
-                    m_enemyAI.SetLastUsedAnimTrigger( an_getHitTrigger );
+                    m_enemyAI.SetLastUsedAnimTrigger( GetStaggerAnimTrigger() );
                 }
                 m_enemyAI.StopNavMesh();
             }

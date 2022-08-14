@@ -1,77 +1,103 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public enum RespawnPoint
-{
-    Cell,
-    Hall,
-    Armory,
-    GuardRoom,
-    Arena
-}
+/**************************************************************************************
+* Type: Class
+* 
+* Name: RespawnManager
+*
+* Author: Charlie Taylor
+*
+* Description: Manage player Respawns
+**************************************************************************************/
 public class RespawnManager : MonoBehaviour
 {
-    [SerializeField]
-    private Transform[] respawnPoints;
+    [SerializeField, Tooltip("The Respawn Points for the player.\nTHE AMOUNT AND THE ORDER ARE IMPORTANT.\nThey must be ordered and have the same amount of entries as the \"Room\" enum! ")]
+    private Transform[] m_respawnPoints;
 
-    private Room currentRespawnPoint;
+    //The room you should respawn in if you were to die right now
+    private Room m_currentRespawnPoint;
 
+    //Reference to the player GO (To get all the different scripts easier)
     private GameObject m_player;
 
+    //Game Manager Script
     private GameManager m_gameManager;
 
-    // Start is called before the first frame update
-    void Start()
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Start
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Populate member variables with the relevant objects
+    **************************************************************************************/
+    private void Start()
     {
-        m_player = GameObject.FindGameObjectWithTag( "Player" );
+        //Use global string for getting the player
+        m_player = GameObject.FindGameObjectWithTag( Settings.g_playerTag );
+        //Game Manager is on the same object as this script
         m_gameManager = gameObject.GetComponent<GameManager>();
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetRespawnPoint
+    * Parameters: Room newRespawnPoint
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Send in a room value to populate the Respawn point for the player
+    **************************************************************************************/
     public void SetRespawnPoint( Room newRespawnPoint )
     {
-        currentRespawnPoint = newRespawnPoint;
-        switch( newRespawnPoint )
-        {
-            case Room.Cell:
-                break;
-        }
+        m_currentRespawnPoint = newRespawnPoint;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: GetRespawnPoint
+    * Parameters: n/a
+    * Return: Room
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Return the current Respawn Point room
+    **************************************************************************************/
     public Room GetRespawnPoint()
 	{
-        return currentRespawnPoint;
+        return m_currentRespawnPoint;
 	}
 
-    // Update is called once per frame
-    void Update()
-    {
-        //Debug.Log( "Current Respawn Point: " + currentRespawnPoint.ToString() );
-    }
-
-
-
-
-
-
-
-
-
-
-
-
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Respawn
+    * Parameters: float delay
+    * Return: IEnumerator
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Wait a set time, then using the current respawn point Room value, cast 
+    *              to an int, and use that int to get the GO of the respawn point from the 
+    *              array of respawn point
+    *              THIS IS WHY THE ORDER AND TOTAL NUMBER OF RESPAWN POINTS IS IMPORTANT
+    **************************************************************************************/
     public IEnumerator Respawn( float delay )
     {
         yield return new WaitForSeconds( delay );
-        //Honestly cannot think of a beter way without a major overhaul that i DO NOT have time for (Made a note in the parent to keep it on order)
-        int enumIntValue = (int)currentRespawnPoint;
 
-        m_player.GetComponent<PlayerDamageManager>().Respawn( respawnPoints[ enumIntValue ].transform );
+        //Pass the transform of the Respawn point game object to the player damage manager, based on the current respawn point room
+        m_player.GetComponent<PlayerDamageManager>().Respawn( m_respawnPoints[ (int)m_currentRespawnPoint ].transform );
 
+        //Game Manager manages most of the respawn stuff, due to it having access to so much stuff
         m_gameManager.ActuallyRespawn();
-        //m_gameManager.CompleteRoom( currentRespawnPoint );
-        //Bring player back to life shit
-
     }
 }
 

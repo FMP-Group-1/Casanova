@@ -89,76 +89,79 @@ public class MeleeController : MonoBehaviour
     **************************************************************************************/
     void Update()
     {
-        if ( !Settings.g_paused ) { 
-        //Light Attack
-        if ( m_playerControls.Combat.LightAtatck.triggered )
-        {
-            m_attackType = Attack.Light;
-        }
-        //Heavy Attack
-        if ( m_playerControls.Combat.HeavyAttack.triggered )
-        {
-            m_attackType = Attack.Heavy;
-        }
-        //Whirlwind Attack
-        //Still in progress, not finished
-        if ( m_playerControls.Combat.HeavyAttack.IsPressed() )
-        {
-            m_animator.SetBool( "whirlwindHeld", true ) ;
-        }
-        else
-		{
-            m_animator.SetBool( "whirlwindHeld", false );
-        }
+        if ( !Settings.g_paused ) 
+        { 
+            //ACTUAL APPLICATION OF AN ATTACK, STUFF LATER IS BASED ON THIS HERE
+            if ( m_playerController.GetGrounded() )
+			{
+                //Light Attack
+                if ( m_playerControls.Combat.LightAtatck.triggered )
+                {
+                    m_attackType = Attack.Light;
+                }
+                //Heavy Attack
+                if ( m_playerControls.Combat.HeavyAttack.triggered )
+                {
+                    m_attackType = Attack.Heavy;
+                }
 
+                if ( m_playerControls.Combat.HeavyAttack.IsPressed() )
+                {
+                    m_animator.SetBool( "whirlwindHeld", true ) ;
+                }
+                else
+		        {
+                    m_animator.SetBool( "whirlwindHeld", false );
+                }
+                //Add a (NON COROUTINE BASED) timer to check if it should be cancelled???? like 1 second
+            }
 
-
-        //Actually begin the attack stuff
-        /* When you click an input, as above, you assign m_attackType to Light, Heavy etc
-         * If you can start an attack (Be it, you going from idle or are available to do so
-         * in a combo), and you are attacking, we can now enter this statement
-         */
-        if ( m_canStartNextAttack && m_attackType != Attack.Nothing )
-        {
-
-            //Stop being able to move or fall or rotate because we are in an attack
-            m_playerController.m_canMove = false;
-            m_playerController.m_canFall = false;
-            m_playerController.m_canRotate = false;
-
-            //We are attacking, so stop being able to again. (It is reset from CollisionsEnd)
-            m_canStartNextAttack = false;
-            m_animator.SetTrigger( "attacked" );
-            //Combo has begun
-            m_animator.SetBool( "comboActive", true );
-
-            //What attack type?
-            switch ( m_attackType )
+            //Actually begin the attack stuff
+            /* When you click an input, as above, you assign m_attackType to Light, Heavy etc
+             * If you can start an attack (Be it, you going from idle or are available to do so
+             * in a combo), and you are attacking, we can now enter this statement
+             */
+            if ( m_canStartNextAttack && m_attackType != Attack.Nothing )
             {
-                case Attack.Light:
 
-                    m_animator.SetTrigger( "light" );
-                    break;
+                //Stop being able to move or fall or rotate because we are in an attack
+                m_playerController.m_canMove = false;
+                m_playerController.m_canFall = false;
+                m_playerController.m_canRotate = false;
 
-                case Attack.Heavy:
+                //We are attacking, so stop being able to again. (It is reset from CollisionsEnd)
+                m_canStartNextAttack = false;
+                m_animator.SetTrigger( "attacked" );
+                //Combo has begun
+                m_animator.SetBool( "comboActive", true );
 
-                    m_animator.SetTrigger( "heavy" );
-					break;
+                //What attack type?
+                switch ( m_attackType )
+                {
+                    case Attack.Light:
 
-				case Attack.Nothing:
-                    Debug.Log( "You've reset the Attack type to nothing before executing the Switch. This should not happen" );
-                    break;
+                        m_animator.SetTrigger( "light" );
+                        break;
 
-			}
-			//Next queued attack is nothing, until we add one in next run of update (If we click something, obviously)
-			m_attackType = Attack.Nothing;
+                    case Attack.Heavy:
+
+                        m_animator.SetTrigger( "heavy" );
+					    break;
+
+				    case Attack.Nothing:
+                        Debug.Log( "You've reset the Attack type to nothing before executing the Switch. This should not happen" );
+                        break;
+
+			    }
+			    //Next queued attack is nothing, until we add one in next run of update (If we click something, obviously)
+			    m_attackType = Attack.Nothing;
 
 
-            //The triggers now affect the animation played
+                //The triggers now affect the animation played
 
 
-            // Dean Note: Adding sound effect to play here, may need changing, let me know
-            m_playerController.GetSoundHandler().PlayNormalAttackSFX();
+                // Dean Note: Adding sound effect to play here, may need changing, let me know
+                m_playerController.GetSoundHandler().PlayNormalAttackSFX();
 
             }
         }
