@@ -43,24 +43,67 @@ public class EnemyDamageManager : CharacterDamageManager
     {
         if ( !GetInvulnerable() )
         {
-            m_enemyAI.ResetLastUsedAnimTrigger();
-            m_enemyAI.StopNavMesh();
-            m_enemyAI.DisableCollision();
-            m_enemyAI.SetLastUsedAnimTrigger( an_getHitTrigger );
-            m_enemyAI.PlayDamageSFX();
-            SetStaggerable(true);
 
+
+            m_enemyAI.DisableCollision();
             //Check base stuff after as that is where it checks for death, where as above, overwrites with get hurt
             base.TakeDamage( othersTransform, damage );
 
+            if ( GetAlive() )
+			{
+                if ( GetStaggerable() )
+                {
+                    m_enemyAI.ResetLastUsedAnimTrigger();
+                    SetStaggerable( false );
+                    ResetStagerable( 6f );
+                    m_enemyAI.SetLastUsedAnimTrigger( GetStaggerAnimTrigger() );
+                }
+                m_enemyAI.StopNavMesh();
+            }
         }
     }
+
+
+    IEnumerator ResetStagerable(float time )
+	{
+        yield return new WaitForSeconds( time );
+        SetStaggerable( true );
+
+    }
+
+
+    protected override void PlayDamageSFX()
+    {
+        m_enemyAI.GetSoundHandler().PlayDamageSFX();
+    }
+
+    protected override void PlayDeathSFX()
+    {
+        m_enemyAI.GetSoundHandler().PlayDeathSFX();
+    }
+
+
+
+    void ResetAllColliders(bool reset)
+    {
+        GetComponent<Collider>().enabled = false;
+
+        Collider[] allColliders = GetComponentsInChildren<Collider>();
+        foreach ( Collider collider in allColliders )
+        {
+            collider.enabled = false;
+        }
+    }
+
+
 
     protected override void Die()
     {
         m_enemyAI.SetAIState( AIState.Dead );
         m_enemyAI.UnregisterAttacker();
-        gameObject.GetComponent<Collider>().enabled = false;
+
+        ResetAllColliders( false );
+
         StartCoroutine( DissolveEnemy( 3f ) );
 
         base.Die();
@@ -107,7 +150,8 @@ public class EnemyDamageManager : CharacterDamageManager
         yield return new WaitForSeconds( 1f );
 
         gameObject.SetActive( false );
-        SetHealth( 100 ); 
+        ResetAllColliders( true );
+        ResetHealth(); 
         ResetShader();
         m_spawnManager.AddToAvailable(gameObject.GetComponent<EnemyAI>());
         SetInvulnerable(false);

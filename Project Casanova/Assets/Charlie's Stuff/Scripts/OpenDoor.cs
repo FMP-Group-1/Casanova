@@ -28,8 +28,7 @@ public class OpenDoor : Interactable
     public override void Interact()
 	{
         base.Interact();
-        //Play door noise?
-        //m_soundHandler.PlayGateOpenSFX();
+
         //Get the angle where your inputs are, relative to camera
         //Pass that into a quaternion
         Quaternion targetRotation = Quaternion.Euler( 0f, m_targetAngle, 0f );
@@ -45,7 +44,9 @@ public class OpenDoor : Interactable
 	{
         yield return new WaitForSeconds( 1.0f );
 
-        
+        //Play door noise
+        m_soundHandler.PlayCellDoorOpenSFX();
+
         float timer = 0f;
         while (timer < m_rotationTime )
 		{
@@ -53,6 +54,5 @@ public class OpenDoor : Interactable
             transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * m_rotationTime );
             yield return null;
         }
-        //transform.rotation = targetRotation;
     }
 }

@@ -12,14 +12,14 @@ public class MeleeController : MonoBehaviour
     private PlayerController m_playerController;
 
     [SerializeField]
+    private SwordCollisionManager m_currentWeaponManager;
+    private Collider m_weaponCollider;
+
+    [SerializeField]
     private bool m_canStartNextAttack = true;
 
     //For box collider rotations
-    [SerializeField]
-    private Transform m_swordTip;
     //Object with the collider that actually rotates
-    [SerializeField]
-    private GameObject m_colliderSweeper;
 
     //How fast the player rotates at begining of an attack
     [SerializeField, Range(0f, 1f)]
@@ -29,7 +29,10 @@ public class MeleeController : MonoBehaviour
     [SerializeField]
     private Transform m_sphereColliderTransform;
 
+    [SerializeField]
+    ParticleSystem m_swordTrail;
 
+    [Header("Ground Pound")]
     [SerializeField, Range(0f, 5f)]
     float m_timeToGrow = 1f;
     [SerializeField, Range(5f, 10f)]
@@ -58,13 +61,16 @@ public class MeleeController : MonoBehaviour
     **************************************************************************************/
     void Start()
     {
+        m_weaponCollider = m_currentWeaponManager.gameObject.GetComponent<Collider>();
+
         m_playerControls = new PlayerControls();
+        m_swordTrail.Stop();
 
         m_playerController = GetComponent<PlayerController>();
 
         m_playerControls.Enable();
         m_animator = GetComponent<Animator>();
-        m_colliderSweeper.SetActive(false);
+        m_weaponCollider.enabled = false;
     }
 
 
@@ -83,105 +89,106 @@ public class MeleeController : MonoBehaviour
     **************************************************************************************/
     void Update()
     {
-        //Light Attack
-        if ( m_playerControls.Combat.LightAtatck.triggered )
-        {
-            m_attackType = Attack.Light;
-        }
-        //Heavy Attack
-        if ( m_playerControls.Combat.HeavyAttack.triggered )
-        {
-            m_attackType = Attack.Heavy;
-        }
-        //Whirlwind Attack
-        //Still in progress, not finished
-        if ( m_playerControls.Combat.HeavyAttack.IsPressed() )
-        {
-            m_animator.SetBool( "whirlwindHeld", true ) ;
-        }
-        else
-		{
-            m_animator.SetBool( "whirlwindHeld", false );
-        }
+        if ( !Settings.g_paused ) 
+        { 
+            //ACTUAL APPLICATION OF AN ATTACK, STUFF LATER IS BASED ON THIS HERE
+            if ( m_playerController.GetGrounded() )
+			{
+                //Light Attack
+                if ( m_playerControls.Combat.LightAtatck.triggered )
+                {
+                    m_attackType = Attack.Light;
+                }
+                //Heavy Attack
+                if ( m_playerControls.Combat.HeavyAttack.triggered )
+                {
+                    m_attackType = Attack.Heavy;
+                }
 
+                if ( m_playerControls.Combat.HeavyAttack.IsPressed() )
+                {
+                    m_animator.SetBool( "whirlwindHeld", true ) ;
+                }
+                else
+		        {
+                    m_animator.SetBool( "whirlwindHeld", false );
+                }
+                //Add a (NON COROUTINE BASED) timer to check if it should be cancelled???? like 1 second
+            }
 
-
-        //Actually begin the attack stuff
-        /* When you click an input, as above, you assign m_attackType to Light, Heavy etc
-         * If you can start an attack (Be it, you going from idle or are available to do so
-         * in a combo), and you are attacking, we can now enter this statement
-         */
-        if ( m_canStartNextAttack && m_attackType != Attack.Nothing )
-        {
-
-            //Stop being able to move or fall or rotate because we are in an attack
-            m_playerController.m_canMove = false;
-            m_playerController.m_canFall = false;
-            m_playerController.m_canRotate = false;
-
-            //We are attacking, so stop being able to again. (It is reset from CollisionsEnd)
-            m_canStartNextAttack = false;
-            m_animator.SetTrigger( "attacked" );
-            //Combo has begun
-            m_animator.SetBool( "comboActive", true );
-
-            //What attack type?
-            switch ( m_attackType )
+            //Actually begin the attack stuff
+            /* When you click an input, as above, you assign m_attackType to Light, Heavy etc
+             * If you can start an attack (Be it, you going from idle or are available to do so
+             * in a combo), and you are attacking, we can now enter this statement
+             */
+            if ( m_canStartNextAttack && m_attackType != Attack.Nothing )
             {
-                case Attack.Light:
 
-                    m_animator.SetTrigger( "light" );
-                    break;
+                //Stop being able to move or fall or rotate because we are in an attack
+                m_playerController.m_canMove = false;
+                m_playerController.m_canFall = false;
+                m_playerController.m_canRotate = false;
 
-                case Attack.Heavy:
+                //We are attacking, so stop being able to again. (It is reset from CollisionsEnd)
+                m_canStartNextAttack = false;
+                m_animator.SetTrigger( "attacked" );
+                //Combo has begun
+                m_animator.SetBool( "comboActive", true );
 
-                    m_animator.SetTrigger( "heavy" );
-					break;
+                //What attack type?
+                switch ( m_attackType )
+                {
+                    case Attack.Light:
 
-				case Attack.Nothing:
-                    Debug.Log( "You've reset the Attack type to nothing before executing the Switch. This should not happen" );
-                    break;
+                        m_animator.SetTrigger( "light" );
+                        break;
 
-			}
-			//Next queued attack is nothing, until we add one in next run of update (If we click something, obviously)
-			m_attackType = Attack.Nothing;
+                    case Attack.Heavy:
+
+                        m_animator.SetTrigger( "heavy" );
+					    break;
+
+				    case Attack.Nothing:
+                        Debug.Log( "You've reset the Attack type to nothing before executing the Switch. This should not happen" );
+                        break;
+
+			    }
+			    //Next queued attack is nothing, until we add one in next run of update (If we click something, obviously)
+			    m_attackType = Attack.Nothing;
 
 
-            //The triggers now affect the animation played
+                //The triggers now affect the animation played
 
 
-            // Dean Note: Adding sound effect to play here, may need changing, let me know
-            m_playerController.GetSoundHandler().PlayNormalAttackSFX();
+                // Dean Note: Adding sound effect to play here, may need changing, let me know
+                m_playerController.GetSoundHandler().PlayNormalAttackSFX();
 
+            }
         }
-
-        //rotate Collider sweeper to angle to the sword (ALL THE TIME)
-        //Verbose for Readability
-        //Rotate From...
-        Vector3 startPosition= transform.position;
-        //... to....
-        Vector3 targetPosition = m_swordTip.position;
-
-        //This is now the angle (between -180 and 180) between origin and target
-        float targetAngle = Mathf.Rad2Deg * ( Mathf.Atan2( targetPosition.x - startPosition.x, targetPosition.z - startPosition.z ) );
-
-  
-
-        //Create a Quaternion, with new angle, to be what we want the new rotation point to be
-        Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
-
-        //Lerp instead of SET it as I believe that will stop issues like frame rate skipping past or soemthing
-        m_colliderSweeper.transform.rotation = Quaternion.Lerp( m_colliderSweeper.transform.rotation, targetRotation, 0.99f );
-
-
-        //Just SET it version
-        ////Create a vector 3, with new angle, to be what we want the new rotation point to be
-        //Vector3 targetRotation = new Vector3 ( 0f, targetAngle, 0f );
-
-        //m_colliderSweeper.transform.rotation = Quaternion.Euler(targetRotation);
-
 
     }
+
+    public void SetCanAttack(bool canAttack)
+	{
+        m_canStartNextAttack |= canAttack;
+	}
+
+    void SetAttackDamage( float damage = 10f )
+	{
+        m_currentWeaponManager.SetDamage( damage );
+
+    }
+
+    public void SwapWeapon(GameObject newWeapon, SwordCollisionManager manager)
+	{
+        m_swordTrail = newWeapon.GetComponentInChildren<ParticleSystem>();
+        m_currentWeaponManager = manager;
+        m_weaponCollider = newWeapon.GetComponent<Collider>();
+
+    }
+
+
+
 
     /**************************************************************************************
     * Type: Function
@@ -196,8 +203,9 @@ public class MeleeController : MonoBehaviour
     **************************************************************************************/
     public void CollisionsStart()
     {
+        m_swordTrail.Play();
         //Set collider sweeper on
-        m_colliderSweeper.SetActive( true );
+        m_weaponCollider.enabled =  true ;
         //You can dodge when the collisions are happening, as then when dodging it will turn off the collider.
         m_playerController.SetDodge( true );
 
@@ -216,8 +224,9 @@ public class MeleeController : MonoBehaviour
     **************************************************************************************/
     public void CollisionsEnd()
     {
+        m_swordTrail.Stop();
         //Set collider sweeper off
-        m_colliderSweeper.SetActive( false );
+        m_weaponCollider.enabled = false;
 
     }
 
@@ -251,8 +260,10 @@ public class MeleeController : MonoBehaviour
     * Description: Called by Animation Events when the attack animation FIRST begins.
     *               Used mainly for rotating the player to the direction they're inputting
     **************************************************************************************/
-    private void AttackBegin()
+    private void AttackBegin(float damage)
 	{
+        //Set Damage based on this attack
+        SetAttackDamage( damage );
         //Prevent dodging so it can't blend and leave the collider on
         m_playerController.SetDodge( false );
 

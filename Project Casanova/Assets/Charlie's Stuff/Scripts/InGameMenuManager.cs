@@ -5,42 +5,11 @@ using UnityEngine.UI;
 
 public class InGameMenuManager : MonoBehaviour
 {
-    GameObject playerGameObject;
-    private Animator m_cinemachineAnimator;
-
-    private GameObject m_gameController;
-    private UIManager m_uiManager;
-
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        m_gameController = GameObject.FindGameObjectWithTag( "GameController" );
-        m_uiManager = m_gameController.GetComponent<UIManager>();
-
-
-        playerGameObject = GameObject.FindGameObjectWithTag( "Player" );
-        m_cinemachineAnimator = GetComponent<Animator>();
-    }
 
     // Update is called once per frame
     void Update()
     {
         
-    }
-
-    public void PlayGame()
-    {
-        //Manage UI Elements
-        m_uiManager.StartGame();
-
-        m_cinemachineAnimator.Play( "Game State" );
-        playerGameObject.GetComponent<Animator>().SetTrigger("WakeUp");
-        playerGameObject.GetComponent<PlayerController>().enabled = true;
-
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.lockState = CursorLockMode.Locked;
-
     }
 
 }

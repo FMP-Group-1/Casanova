@@ -198,4 +198,9 @@ public class SpawnManager : MonoBehaviour
             }
         }
     }
+	private void OnDestroy()
+	{
+
+        EventManager.SpawnEnemiesEvent -= SpawnGroup;
+    }
 }

@@ -46,8 +46,22 @@ public class ZoneHandler
     }
     public void ClearOccupiedZone()
     {
-        m_occupiedAttackZone.EmptyZone();
-        m_occupiedAttackZone = null;
+        if (m_occupiedAttackZone != null)
+        {
+            m_occupiedAttackZone.EmptyZone();
+            m_occupiedAttackZone = null;
+        }
+    }
+
+    public void ClearReservedZone()
+    {
+        if (m_reservedZone != null)
+        {
+            m_reservedZone.EmptyZone();
+            m_reservedZone = null;
+        }
+
+        m_reserveZone = false;
     }
 
     public void OccupyCurrentZone()
@@ -97,7 +111,7 @@ public class ZoneHandler
             // While loop to loop through zones to find the next available zone
             while (!zoneToReturn.IsAvailable())
             {
-                int leftNum = m_closestZoneNum + zoneNumOffset % m_attackZoneManager.GetTotalZonesNum();
+                int leftNum = (m_closestZoneNum + zoneNumOffset) % m_attackZoneManager.GetTotalZonesNum();
                 int rightNum = m_closestZoneNum - zoneNumOffset;
 
                 if (rightNum < 0)
@@ -122,6 +136,7 @@ public class ZoneHandler
                     if (!zoneToReturn.IsAvailable())
                     {
                         zoneToReturn = m_attackZoneManager.GetAttackZoneByNum(leftNum, ZoneType.Passive);
+
                     }
                 }
 
@@ -136,7 +151,7 @@ public class ZoneHandler
 
             while (!zoneToReturn.IsAvailable())
             {
-                int leftNum = m_closestZoneNum + zoneNumOffset % m_attackZoneManager.GetTotalZonesNum();
+                int leftNum = (m_closestZoneNum + zoneNumOffset) % m_attackZoneManager.GetTotalZonesNum();
                 int rightNum = m_closestZoneNum - zoneNumOffset;
 
                 if (rightNum < 0)
@@ -296,13 +311,6 @@ public class ZoneHandler
     public Vector3 GetReservedPos()
     {
         return m_reservedPos;
-    }
-
-    public void UnreserveZone()
-    {
-        m_reservedZone.EmptyZone();
-        m_reservedZone = null;
-        m_reserveZone = false;
     }
 
     public void SetReserveFlag( bool shouldReserve )

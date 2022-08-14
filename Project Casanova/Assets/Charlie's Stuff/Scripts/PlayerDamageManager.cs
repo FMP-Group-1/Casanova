@@ -9,6 +9,8 @@ public class PlayerDamageManager : CharacterDamageManager
 
     GameObject m_gameController;
 
+    private float m_respawnDelay;
+
     protected override void Start()
     {
         base.Start();
@@ -45,8 +47,18 @@ public class PlayerDamageManager : CharacterDamageManager
         SetAlive( true );
         SetHealth( 100f );
         SetInvulnerable( false );
-        m_animator.SetTrigger( "Respawn" );
+        GetAnimator().SetTrigger( "Respawn" );
 
+    }
+
+    protected override void PlayDamageSFX()
+    {
+        m_playerController.GetSoundHandler().PlayDamageSFX();
+    }
+
+    protected override void PlayDeathSFX()
+    {
+        m_playerController.GetSoundHandler().PlayDeathSFX();
     }
 
     protected override void Die()

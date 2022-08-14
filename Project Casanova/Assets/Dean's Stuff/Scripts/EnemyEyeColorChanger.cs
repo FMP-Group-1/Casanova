@@ -19,22 +19,33 @@ public class EnemyEyeColorChanger : MonoBehaviour
     [SerializeField]
     private Color m_neutralColorMax;
     [SerializeField]
-    private Color m_normalAttackColorMin;
+    private Color m_preAttackColorMin;
     [SerializeField]
-    private Color m_normalAttackColorMax;
+    private Color m_preAttackColorMax;
     [SerializeField]
-    private Color m_lightAttackColorMin;    
+    private Color m_attackColorMin;
     [SerializeField]
-    private Color m_lightAttackColorMax;
-    [SerializeField]
-    private Color m_heavyAttackColorMin;
-    [SerializeField]
-    private Color m_heavyAttackColorMax;
+    private Color m_attackColorMax;
+
+    //[SerializeField]
+    //private Color m_normalAttackColorMin;
+    //[SerializeField]
+    //private Color m_normalAttackColorMax;
+    //[SerializeField]
+    //private Color m_lightAttackColorMin;    
+    //[SerializeField]
+    //private Color m_lightAttackColorMax;
+    //[SerializeField]
+    //private Color m_heavyAttackColorMin;
+    //[SerializeField]
+    //private Color m_heavyAttackColorMax;
+
     private ParticleSystem m_particleEye1;
     private ParticleSystem m_particleEye2;
     private ParticleSystem m_particleTrail1;
     private ParticleSystem m_particleTrail2;
     private CombatState m_prevAIState;
+    private bool m_prevAttackLock = false;
 
     void Start()
     {
@@ -72,36 +83,53 @@ public class EnemyEyeColorChanger : MonoBehaviour
     private void UpdateEyes()
     {
         CombatState currentState = m_parentAI.GetCombatState();
+        bool isAttackLocked = m_parentAI.IsAttackLocked();
 
         if (m_prevAIState != currentState)
         {
             if (currentState == CombatState.Attacking)
             {
-                switch (m_parentAI.GetAttackMode())
-                {
-                    case AttackMode.Normal:
-                    {
-                        ChangeEyeColor(m_normalAttackColorMin, m_normalAttackColorMax);
-                        break;
-                    }
-                    case AttackMode.Quick:
-                    {
-                        ChangeEyeColor(m_lightAttackColorMin, m_lightAttackColorMax);
-                        break;
-                    }
-                    case AttackMode.Heavy:
-                    {
-                        ChangeEyeColor(m_heavyAttackColorMin, m_heavyAttackColorMax);
-                        break;
-                    }
-                }
+                // Commented out to make eye color only use 1 color for all attacks
+                // Left commented incase needed in the future
+                //switch (m_parentAI.GetAttackMode())
+                //{
+                //    case AttackMode.Normal:
+                //    {
+                //        ChangeEyeColor(m_normalAttackColorMin, m_normalAttackColorMax);
+                //        break;
+                //    }
+                //    case AttackMode.Quick:
+                //    {
+                //        ChangeEyeColor(m_lightAttackColorMin, m_lightAttackColorMax);
+                //        break;
+                //    }
+                //    case AttackMode.Heavy:
+                //    {
+                //        ChangeEyeColor(m_heavyAttackColorMin, m_heavyAttackColorMax);
+                //        break;
+                //    }
+                //}
+
+                ChangeEyeColor(m_preAttackColorMin, m_preAttackColorMax);
             }
             else if (m_prevAIState == CombatState.Attacking)
             {
                 ChangeEyeColor(m_neutralColorMin, m_neutralColorMax);
             }
         }
+        if (currentState == CombatState.Attacking && m_prevAttackLock != isAttackLocked)
+        {
+            if (isAttackLocked)
+            {
+                ChangeEyeColor(m_attackColorMin, m_attackColorMax);
+            }
+            else
+            {
+                ChangeEyeColor(m_preAttackColorMin, m_preAttackColorMax);
+            }
+        }
 
         m_prevAIState = currentState;
+        m_prevAttackLock = isAttackLocked;
     }
 }

@@ -32,6 +32,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - Texture2D_434b74591a57442db38a6afccb5e63fb:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _AO:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -96,6 +100,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Opacity:
+        m_Texture: {fileID: 2800000, guid: fddfb0b80f0981a4aa9adfd83cb47ea1, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -126,6 +134,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Floats:
     - Vector1_da39f16e6fa1425089db1ac6b3347134: 30
+    - Vector1_e4f290266b074d15a688ed35cfc726b4: 0
     - Vector1_fbc6f6ff6e4a4808988ae73eeb865f87: 0.02
     - _AlphaClip: 0
     - _Blend: 0
@@ -136,6 +145,7 @@ Material:
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
+    - _Dithering: 0
     - _DstBlend: 0
     - _EnvironmentReflections: 1
     - _EyeEmission: 0
@@ -148,6 +158,7 @@ Material:
     - _Metallic: 0
     - _MetallicValue: 0
     - _OcclusionStrength: 1
+    - _Opacity: 1
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1

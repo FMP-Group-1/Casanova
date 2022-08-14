@@ -88,6 +88,12 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     [Tooltip("The run speed of the AI")]
     private float m_runSpeed = 3.0f;
+    [SerializeField]
+    [Tooltip("The speed the AI will rotate when attempting to look at a target")]
+    private float m_turnSpeed = 75.0f;
+    [SerializeField]
+    [Tooltip("The difference from current rotation to target before the AI will lock rotation")]
+    private float m_rotationBuffer = 5.0f;
 
     // Animation Relevant Variables
     private Animator m_animController;
@@ -115,8 +121,8 @@ public class EnemyAI : MonoBehaviour
     private Collider m_playerCollider;
 
     // Combat Relevant Variables
-    [Header("Combat Values")]
     private bool m_lookAtPlayer = false;
+    [Header("Combat Values")]
     [SerializeField]
     [Tooltip("Normal Attack Damage")]
     private float m_normalAttackDmg = 10.0f;
@@ -126,12 +132,7 @@ public class EnemyAI : MonoBehaviour
     [SerializeField]
     [Tooltip("Heavy Attack Damage")]
     private float m_heavyAttackDmg = 15.0f;
-    [SerializeField]
-    [Tooltip("The speed the AI will rotate when attempting to look at a target")]
-    private float m_turnSpeed = 75.0f;
-    [SerializeField]
-    [Tooltip("The difference from current rotation to target before the AI will lock rotation")]
-    private float m_rotationBuffer = 5.0f;
+
     [SerializeField]
     [Tooltip("The distance from the player that the AI will stop")]
     private float m_playerStoppingDistance = 1.75f;
@@ -199,6 +200,7 @@ public class EnemyAI : MonoBehaviour
     private float m_strafeCheckInterval = 2.0f;
     private float m_strafeTimer = 0.0f;
     private bool m_combatOnWake = false;
+    private bool m_attackLocked = false;
 
     // Vision Detection Relevant Variables
     [Header("Player Detection Values")]
@@ -255,8 +257,23 @@ public class EnemyAI : MonoBehaviour
     //Health Manager Component
     private CharacterDamageManager m_healthManager;
 
+    //Charlie being a stinker and messign your stuff up
+    [SerializeField]
+    private GameObject m_masks;
+    private GameObject[] m_masksArray;
+    int maskEquipped;
+
     private void Awake()
     {
+        m_masksArray = new GameObject[ m_masks.transform.childCount ];
+
+        for (int i = 0; i< m_masksArray.Length; i++ )
+		{
+            m_masksArray[i] = m_masks.transform.GetChild(i).gameObject;
+		}
+
+        ResetMasks();
+
         SetupStringToHashes();
 
         m_healthManager = GetComponent<CharacterDamageManager>();
@@ -281,6 +298,18 @@ public class EnemyAI : MonoBehaviour
 
 
         m_lastUsedAnimTrigger = an_triggerNone;
+    }
+
+    private void ResetMasks()
+	{
+        ///////////////////
+        foreach ( GameObject mask in m_masksArray )
+        {
+            mask.SetActive( false );
+        }
+        maskEquipped = Random.Range( 0, m_masksArray.Length );
+        m_masksArray[ maskEquipped ].SetActive( true );
+        ///////////////////
     }
 
     private void Update()
@@ -560,7 +589,7 @@ public class EnemyAI : MonoBehaviour
                 if (HasReachedDestination())
                 {
                     SetCombatState(CombatState.MaintainDist);
-                    m_zoneHandler.UnreserveZone();
+                    m_zoneHandler.ClearReservedZone();
                     m_zoneHandler.OccupyCurrentZone();
                     //Debug.Log("AI: " + name + " reached destination.");
                 }
@@ -572,10 +601,7 @@ public class EnemyAI : MonoBehaviour
                 // Attack hits
                 if (IsAttackCollidingWithPlayer())
                 {
-                    // Todo: Bad place for triggering the sound, should be done directly from player
-                    m_playerController.GetSoundHandler().PlayDamageSFX();
-
-                    m_player.GetComponent<CharacterDamageManager>().TakeDamage(transform);
+                    m_player.GetComponent<CharacterDamageManager>().TakeDamage(transform, GetCurrentAttackDamage());
                     m_soundHandler.PlayNormalCollisionSFX();
                     DisableCollision();
                 }
@@ -988,6 +1014,7 @@ public class EnemyAI : MonoBehaviour
         SetCombatState(CombatState.BackingUp);
         ResetAttackTimer();
         SetStaggerable(true);
+        m_attackLocked = false;
 
         m_navMeshAgent.speed = m_runSpeed;
         m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
@@ -1037,6 +1064,8 @@ public class EnemyAI : MonoBehaviour
     public void UnregisterAttacker()
     {
         m_aiManager.UnregisterAttacker(this);
+        m_zoneHandler.ClearOccupiedZone();
+        m_zoneHandler.ClearReservedZone();
     }
 
     public void ChangeStateFromWake()
@@ -1114,6 +1143,7 @@ public class EnemyAI : MonoBehaviour
 
         SetupPatrolRoutes();
         DisableCollision();
+        ResetMasks();
     }
 
     public void WakeUpAI()
@@ -1748,6 +1778,8 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.isStopped = true;
         m_navMeshAgent.updateRotation = false;
         m_lookAtPlayer = false;
+        m_healthManager.SetStaggerable(false);
+        m_attackLocked = true;
     }
 
     public void UnlockAttack()
@@ -1755,11 +1787,8 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.isStopped = false;
         m_navMeshAgent.updateRotation = false;
         m_lookAtPlayer = true;
-    }
-
-    public void PlayDamageSFX()
-    {
-        m_soundHandler.PlayDamageSFX();
+        m_healthManager.SetStaggerable(true);
+        m_attackLocked = false;
     }
 
     public EnemyType GetEnemyType()
@@ -1911,6 +1940,11 @@ public class EnemyAI : MonoBehaviour
         }
 
         return attackDamage;
+    }
+
+    public bool IsAttackLocked()
+    {
+        return m_attackLocked;
     }
 
     public void SetAttackingType( AttackingType typeToSet )
