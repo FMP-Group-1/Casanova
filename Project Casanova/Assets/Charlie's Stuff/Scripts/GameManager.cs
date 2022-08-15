@@ -53,10 +53,13 @@ public class GameManager : MonoBehaviour
     [SerializeField, Tooltip( "The trigger box outside of the Player's starting Cell" )]
     private GameObject m_cellExitTrigger;
 
-    [Header( "Pause Input" )]
+    [Header( "Pause" )]
     [SerializeField, Tooltip( "Pause Input control" )]
     private InputActionReference m_pauseInput;
 
+    [Header("Respawn")]
+    [SerializeField, Range(0.5f, 4.0f), Tooltip( "How long for screen to fade out when respawning")]
+    private float m_respawnfadeTime = 4.0f;
     //Scene load, for reseting game
     AsyncOperation m_sceneLoad;
 
@@ -106,12 +109,7 @@ public class GameManager : MonoBehaviour
         //Call UI Managers begin scene script to begin showing menu
         m_uiManager.BeginScene();
 
-        //Prep first group of enemies
-        EventManager.StartSpawnEnemiesEvent( 0 );
-        //Spawn group in armory (Patrolling)
-        EventManager.StartSpawnEnemiesEvent( 1 );
-        //Spawn Guards in sleeping state
-        EventManager.StartSpawnEnemiesEvent( 2 );
+        ResetRoom( Room.Cell );
 
     }
 
@@ -362,7 +360,7 @@ public class GameManager : MonoBehaviour
     *
     * Author: Charlie Taylor
     *
-    * Description: Function on the Pause and Death menu to respawn. (Step 1 of many for respawning)
+    * Description: Function on the Pause and Death menu to respawn. (Step 1a for respawning)
     **************************************************************************************/
     public void RespawnFromMenu()
 	{
@@ -379,51 +377,102 @@ public class GameManager : MonoBehaviour
         BeginRespawn();
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: BeginRespawn
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Called by RespawnFromMenu, begin fading out screen in UI, then call respawn
+    *              manager's respawn function. (Step 2 of Respawn)
+    **************************************************************************************/
     private void BeginRespawn()
     {
-
-        //Both these need same value. Value will fade out for that time, and delay the ACTUAL stuff until then
-        float fadeTimeAndDelay = 4.0f;
-        m_uiManager.Respawn( fadeTimeAndDelay );
-        //UI Manager puts an additional 0.5seconds on the clcok so it's fully black when we move eevrything in respawn Manager
-        StartCoroutine( m_respawnManager.Respawn( fadeTimeAndDelay ) );
+        //Both these need same value. Used to fade out for that time, and delay the ACTUAL stuff until that's done
+        m_uiManager.Respawn( m_respawnfadeTime );
+        //UI Manager puts an additional 0.5seconds on the clock so it's fully black when do everything in respawn Manager
+        //This is part 3 of respawn
+        StartCoroutine( m_respawnManager.Respawn( m_respawnfadeTime ) );
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ActuallyRespawn
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: ACTUALLY do respawn stuff. Basically reset everything to make it seem
+    *              like it was when you first progressed to this point
+    *              (Part 4 of Respawn)
+    **************************************************************************************/
     public void ActuallyRespawn()
     {
+        //This deactivates all enemies and returns them to the spawn pool
         m_aiManager.DeactivateActiveEnemies();
 
         Settings.g_paused = false;
         m_playerController.SetMenuLock( false );
         Room respawnPoint = m_respawnManager.GetRespawnPoint();
-        switch ( respawnPoint )
-        {
-            case Room.Cell:
-                EventManager.StartSpawnEnemiesEvent( 0 );
-                EventManager.StartSpawnEnemiesEvent( 1 );
-                m_cellExitTrigger.SetActive( true );
-                break;
-            case Room.Hall:
-                EventManager.StartSpawnEnemiesEvent( 1 );
-                break;
-            case Room.Armory:
 
-                EventManager.StartSpawnEnemiesEvent( 2 );
-                break;
-            case Room.GuardRoom:
-
-                EventManager.StartSpawnEnemiesEvent( 3 );
-                break;
-            case Room.Arena:
-
-                EventManager.StartSpawnEnemiesEvent( 3 );
-                break;
-        }
+        ResetRoom( respawnPoint );
 
         m_gateManager.ResetGate( respawnPoint );
 
         Settings.g_canPause = true;
     }
+
+
+
+
+    private void ResetRoom(Room room )
+	{
+        switch ( room )
+        {
+            case Room.Cell:
+                //Prep group for the NEXT room
+                EventManager.StartSpawnEnemiesEvent( 0 );
+                //Spawn enemies in Prep for the NEXT NEXT room
+                EventManager.StartSpawnEnemiesEvent( 1 );
+                EventManager.StartSpawnEnemiesEvent( 2 );
+
+                //Make sure trigger is active
+                m_cellExitTrigger.SetActive( true );
+                break;
+            case Room.Hall:
+                //Prep group for the NEXT room
+                EventManager.StartSpawnEnemiesEvent( 1 );
+                EventManager.StartSpawnEnemiesEvent( 2 );
+                //Spawn enemies in Prep for the NEXT NEXT room
+                EventManager.StartSpawnEnemiesEvent( 3 );
+                break;
+            case Room.Armory:
+
+                //Prep group for the NEXT room
+                EventManager.StartSpawnEnemiesEvent( 3 );
+                //Spawn enemies in Prep for the NEXT NEXT room
+                EventManager.StartSpawnEnemiesEvent( 4 );
+                break;
+            case Room.GuardRoom:
+                //Prep group for the NEXT room
+                EventManager.StartSpawnEnemiesEvent( 4 );
+                //Spawn enemies in Prep for the NEXT NEXT room
+                EventManager.StartSpawnEnemiesEvent( 5 );
+                break;
+            case Room.Arena:
+
+                //Prep group for the NEXT room
+                EventManager.StartSpawnEnemiesEvent( 5 );
+                break;
+        }
+    }
+
+
 
     public void EnterRoom( Room room )
 	{

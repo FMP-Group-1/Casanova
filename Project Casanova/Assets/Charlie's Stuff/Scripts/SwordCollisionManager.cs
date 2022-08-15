@@ -13,10 +13,10 @@ public class SwordCollisionManager : MonoBehaviour
     // Dean Note: Adding a reference to the sound handler in here for collision SFX
     private PlayerSoundHandler m_soundHandler;
 
-    private void Awake()
+    private void Start()
     {
         // Dean Note: I know this is a hideous line, but I can't think of a better way at this moment
-        m_soundHandler = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().GetSoundHandler();
+        m_soundHandler = GameObject.FindGameObjectWithTag(Settings.g_playerTag).GetComponent<PlayerController>().GetSoundHandler();
     }
 
     string thingCollided;
