@@ -67,6 +67,8 @@ public class Cutscene : MonoBehaviour
         m_currentTrackNum = 0;
         m_interpolateAmount = 0.0f;
         m_cutsceneCam.transform.position = TrackPositions(m_interpolateAmount, m_currentTrackNum);
+
+        EventManager.StartWakeEnemiesEvent(4);
     }
 
     public void EndCutscene()
@@ -74,6 +76,7 @@ public class Cutscene : MonoBehaviour
         m_cutsceneCam.enabled = false;
         m_mainCamera.enabled = true;
         m_isPlaying = false;
+        EventManager.StartAlertEnemiesEvent(4);
     }
 
     private Vector3 TrackPositions( float interpolateValue, int trackNum )
