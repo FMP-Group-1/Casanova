@@ -77,12 +77,6 @@ public class PlayerDamageManager : CharacterDamageManager
         
     }
 
-    public void debugDie()
-	{
-        Die();
-	}
-
-
     //Override exclusive to player
     public override IEnumerator ResetInvulnerable( float timer )
 	{

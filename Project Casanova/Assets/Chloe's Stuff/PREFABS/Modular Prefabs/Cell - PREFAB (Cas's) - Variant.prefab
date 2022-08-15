@@ -242,7 +242,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7133682484995517673, guid: a81c6f226b45238468253cc358b07f91, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.22
+      value: 0.299
       objectReference: {fileID: 0}
     - target: {fileID: 7133682484995517673, guid: a81c6f226b45238468253cc358b07f91, type: 3}
       propertyPath: m_LocalRotation.w
@@ -254,11 +254,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7133682484995517673, guid: a81c6f226b45238468253cc358b07f91, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -1.268
+      value: -1.341
       objectReference: {fileID: 0}
     - target: {fileID: 7133682484995517673, guid: a81c6f226b45238468253cc358b07f91, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 456.524
+      objectReference: {fileID: 0}
+    - target: {fileID: 7133682484995517675, guid: a81c6f226b45238468253cc358b07f91, type: 3}
+      propertyPath: m_text
+      value: Press <sprite name="e"> to Open
       objectReference: {fileID: 0}
     - target: {fileID: 7254794482469885092, guid: a81c6f226b45238468253cc358b07f91, type: 3}
       propertyPath: m_Name

@@ -7,7 +7,7 @@ public class SwordInteract : Interactable
 	[SerializeField]
 	GameObject m_light;
 	[SerializeField]
-	private int m_enemyGroupToSpawn;
+	private int m_enemyGroupToAlert;
 	[SerializeField]
 	Room m_roomToActivate;
 	public override void Interact()
@@ -15,9 +15,8 @@ public class SwordInteract : Interactable
 		base.Interact();
 
 
-		EventManager.StartSpawnEnemiesEvent( m_enemyGroupToSpawn );
-		EventManager.StartAlertEnemiesEvent( m_enemyGroupToSpawn );
-		EventManager.StartSpawnEnemiesEvent( m_enemyGroupToSpawn + 1 );
+		EventManager.StartAlertEnemiesEvent( m_enemyGroupToAlert );
+		EventManager.StartSpawnEnemiesEvent( m_enemyGroupToAlert + 1 );
 
 		GameObject.FindGameObjectWithTag( Settings.g_ControllerTag ).GetComponent<GameManager>().EnterRoom( m_roomToActivate );
 

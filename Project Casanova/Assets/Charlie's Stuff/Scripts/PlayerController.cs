@@ -629,6 +629,7 @@ public class PlayerController : MonoBehaviour
         m_canMove = false;
         m_canDodge = false;
         m_canFall = false;
+        m_meleeController.SetCanAttack( false );
     }
 
     public void RegainControl()

@@ -213,9 +213,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af2af5ec6ee371746859e96c869eab66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_health: 100
+  m_maxHealth: 100
   m_invulnerableTime: 1
   m_healthBarFill: {fileID: 3082630931054363781}
+  m_enemyUI: {fileID: 482413343691573624}
+  m_staggerFreeTime: 8
+  m_dissolveTime: 3
 --- !u!114 &-6179611895213755126
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1070,6 +1073,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b9ab01473b758f34d819a9f448007d36, type: 3}
+--- !u!1 &482413343691573624 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6752581675753654986, guid: b9ab01473b758f34d819a9f448007d36, type: 3}
+  m_PrefabInstance: {fileID: 6558398983683621810}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &482413343691573625 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6752581675753654987, guid: b9ab01473b758f34d819a9f448007d36, type: 3}

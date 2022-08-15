@@ -162,6 +162,9 @@ MonoBehaviour:
   m_maxHealth: 50
   m_invulnerableTime: 1
   m_healthBarFill: {fileID: 1228523770344227552}
+  m_enemyUI: {fileID: 4430068424482770717}
+  m_staggerFreeTime: 8
+  m_dissolveTime: 3
 --- !u!114 &-2094537293748919131
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -445,6 +448,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b9ab01473b758f34d819a9f448007d36, type: 3}
+--- !u!1 &4430068424482770717 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6752581675753654986, guid: b9ab01473b758f34d819a9f448007d36, type: 3}
+  m_PrefabInstance: {fileID: 6975863081656354263}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &4430068424482770716 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6752581675753654987, guid: b9ab01473b758f34d819a9f448007d36, type: 3}

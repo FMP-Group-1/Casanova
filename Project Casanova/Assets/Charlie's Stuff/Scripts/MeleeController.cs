@@ -170,7 +170,7 @@ public class MeleeController : MonoBehaviour
 
     public void SetCanAttack(bool canAttack)
 	{
-        m_canStartNextAttack |= canAttack;
+        m_canStartNextAttack = canAttack;
 	}
 
     void SetAttackDamage( float damage = 10f )

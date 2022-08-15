@@ -27,8 +27,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 48003696075414656}
-  m_LocalRotation: {x: -0.043199383, y: -0.8808897, z: -0.0060390877, w: -0.4713074}
-  m_LocalPosition: {x: 86.130005, y: 10.980011, z: -48.4}
+  m_LocalRotation: {x: -0.09661866, y: -0.9768364, z: 0.052351125, w: -0.18361634}
+  m_LocalPosition: {x: 88.211, y: 12.191986, z: -46.421}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7025930045902955178}
@@ -348,7 +348,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7025930044808556028}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 87.08615, y: 9.492004, z: -55.418}
+  m_LocalPosition: {x: 88.228, y: 9.485992, z: -54.758}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7025930044556121982}
@@ -813,14 +813,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7025930045511116770}
-  m_LocalRotation: {x: -0.043199383, y: -0.8808897, z: -0.0060390877, w: -0.4713074}
-  m_LocalPosition: {x: 86.13, y: 10.98, z: -48.4}
+  m_LocalRotation: {x: -0.09661866, y: -0.9768364, z: 0.052351125, w: -0.18361634}
+  m_LocalPosition: {x: 88.211, y: 12.192, z: -46.421}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 7025930046073512188}
   m_Father: {fileID: 7025930045902955178}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 1.724, y: -236.226, z: 4.694}
+  m_LocalEulerAnglesHint: {x: 7.918, y: -200.608, z: 9.856}
 --- !u!114 &7025930045511116771
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1667,10 +1667,6 @@ PrefabInstance:
     - target: {fileID: 8583892168543589914, guid: 8eb4181955adb5d49bba94276fc823f1, type: 3}
       propertyPath: m_Alpha
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8583892169355850847, guid: 8eb4181955adb5d49bba94276fc823f1, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8583892169982713613, guid: 8eb4181955adb5d49bba94276fc823f1, type: 3}
       propertyPath: m_Name

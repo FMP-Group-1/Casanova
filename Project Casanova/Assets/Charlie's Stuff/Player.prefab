@@ -281,10 +281,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_playerState: 0
   m_movementControl: {fileID: 2691785763913772774, guid: 718be9eb4c7d2ee4198df765b1d66ceb, type: 3}
-  m_jumpControl: {fileID: 7058330660807564182, guid: 718be9eb4c7d2ee4198df765b1d66ceb, type: 3}
   m_dodgeControl: {fileID: 2037604338768725776, guid: 718be9eb4c7d2ee4198df765b1d66ceb, type: 3}
   m_playerSpeed: 5
-  m_jumpForce: 5.16
   m_gravityValue: -9.81
   m_rotationSpeed: 4
   m_playerVelocity: {x: 0, y: 0, z: 0}
@@ -363,9 +361,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efa326271f7d6294cb8ffa256cf847b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_tableLeg: {fileID: 0}
+  m_tableLeg: {fileID: 2798836261362396678}
   m_swordInHand: {fileID: 0}
-  m_tableLegRB: {fileID: 0}
 --- !u!114 &4730243356041363906
 MonoBehaviour:
   m_ObjectHideFlags: 0

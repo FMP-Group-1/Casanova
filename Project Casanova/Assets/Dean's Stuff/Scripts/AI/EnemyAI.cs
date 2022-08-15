@@ -255,7 +255,7 @@ public class EnemyAI : MonoBehaviour
     private int an_weaken;
 
     //Health Manager Component
-    private CharacterDamageManager m_healthManager;
+    private EnemyDamageManager m_healthManager;
 
     //Charlie being a stinker and messign your stuff up
     [SerializeField]
@@ -276,7 +276,7 @@ public class EnemyAI : MonoBehaviour
 
         SetupStringToHashes();
 
-        m_healthManager = GetComponent<CharacterDamageManager>();
+        m_healthManager = GetComponent<EnemyDamageManager>();
 
         m_navMeshAgent = GetComponent<NavMeshAgent>();
         m_animController = GetComponent<Animator>();
@@ -672,6 +672,9 @@ public class EnemyAI : MonoBehaviour
                 SetCombatState(CombatState.MovingToZone);
 
                 ResetAttackTimer();
+
+                //Added to only show health when they enter combat
+                m_healthManager.ShowUI( true );
 
                 m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
 

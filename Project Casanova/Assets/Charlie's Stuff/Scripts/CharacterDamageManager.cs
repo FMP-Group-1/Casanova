@@ -67,38 +67,6 @@ public class CharacterDamageManager : MonoBehaviour
     /**************************************************************************************
     * Type: Function
     * 
-    * Name: GetStaggerAnimTrigger
-    * Parameters: n/a
-    * Return: int
-    *
-    * Author: Charlie Taylor
-    *
-    * Description: Returns the Stagger trigger trigger value. In use in children classes
-    **************************************************************************************/
-    protected int GetStaggerAnimTrigger()
-	{
-        return an_getHitTrigger;
-    }
-
-    /**************************************************************************************
-    * Type: Function
-    * 
-    * Name: SetStaggerable
-    * Parameters: bool shouldStagger
-    * Return: n/a
-    *
-    * Author: Charlie Taylor
-    *
-    * Description: Set the staggerable bool, making this character able, or unable to stagger
-    **************************************************************************************/
-    public void SetStaggerable(bool shouldStagger)
-    {
-        m_staggerable = shouldStagger;
-    }
-
-    /**************************************************************************************
-    * Type: Function
-    * 
     * Name: UpdateHealthBar
     * Parameters: n/a
     * Return: n/a
@@ -187,22 +155,6 @@ public class CharacterDamageManager : MonoBehaviour
     /**************************************************************************************
     * Type: Function
     * 
-    * Name: GetAnimator
-    * Parameters: n/a
-    * Return: Animator
-    *
-    * Author: Charlie Taylor
-    *
-    * Description: Get animator for this game object
-    **************************************************************************************/
-    protected Animator GetAnimator()
-	{
-        return m_animator;
-    }
-
-    /**************************************************************************************
-    * Type: Function
-    * 
     * Name: PlayDamageSFX
     * Parameters: n/a
     * Return: n/a
@@ -250,6 +202,59 @@ public class CharacterDamageManager : MonoBehaviour
     /**************************************************************************************
     * Type: Function
     * 
+    * Name: SetIFrames
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Set invulnerable and start timer to reset it. Seperate from SetInvulnerable
+    *              so as to also call the coroutine, as SetInvulnerable won't always want
+    *              to reset it (So not really a setter)
+    **************************************************************************************/
+    public void SetIFrames()
+    {
+        m_invulnerable = true;
+        StartCoroutine( ResetInvulnerable( m_invulnerableTime ) );
+
+    }
+
+    //Getters/Setters
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: GetStaggerAnimTrigger
+    * Parameters: n/a
+    * Return: int
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Returns the Stagger trigger trigger value. In use in children classes
+    **************************************************************************************/
+    protected int GetStaggerAnimTrigger()
+    {
+        return an_getHitTrigger;
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: GetAnimator
+    * Parameters: n/a
+    * Return: Animator
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Get animator for this game object
+    **************************************************************************************/
+    protected Animator GetAnimator()
+    {
+        return m_animator;
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
     * Name: SetAlive
     * Parameters: bool alive
     * Return: n/a
@@ -282,6 +287,121 @@ public class CharacterDamageManager : MonoBehaviour
     /**************************************************************************************
     * Type: Function
     * 
+    * Name: GetHealth
+    * Parameters: n/a
+    * Return: float
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Return Health value
+    **************************************************************************************/
+    public float GetHealth()
+	{
+        return m_currentHealth;
+	}
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetHealth
+    * Parameters: float health
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Set current health
+    **************************************************************************************/
+    public void SetHealth( float health )
+	{
+        m_currentHealth = health;
+	}
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetStaggerable
+    * Parameters: bool shouldStagger
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Set the staggerable bool, making this character able, or unable to stagger
+    **************************************************************************************/
+    public void SetStaggerable( bool shouldStagger )
+    {
+        m_staggerable = shouldStagger;
+    }
+    
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: GetStaggerable
+    * Parameters: n/a
+    * Return: bool
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Get the staggerable bool, making this character able, or unable to stagger
+    **************************************************************************************/
+    protected bool GetStaggerable()
+	{
+        return m_staggerable;
+
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetInvulnerable
+    * Parameters: bool invulnerable
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Set invulnerable 
+    **************************************************************************************/
+    public void SetInvulnerable( bool invulnerable )
+    {
+        m_invulnerable = invulnerable;
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: GetInvulnerable
+    * Parameters: n/a
+    * Return: bool
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Get invulnerable 
+    **************************************************************************************/
+    public bool GetInvulnerable()
+    {
+        return m_invulnerable;
+    }
+
+    //Resetters
+    /**************************************************************************************
+    * Type: ResetInvulnerable
+    * 
+    * Name: SetHealth
+    * Parameters: float timer
+    * Return: IEnumerator
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: After a set time, reset invulnerable
+    **************************************************************************************/
+    public virtual IEnumerator ResetInvulnerable( float timer )
+    {
+        yield return new WaitForSeconds( timer );
+        m_invulnerable = false;
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
     * Name: ResetHealth
     * Parameters: n/a
     * Return: n/a
@@ -291,49 +411,8 @@ public class CharacterDamageManager : MonoBehaviour
     * Description: Reset health to the max value (Used on respawns, both player and enemy)
     **************************************************************************************/
     protected void ResetHealth()
-	{
+    {
         m_currentHealth = m_maxHealth;
-	}
-
-    public float GetHealth()
-	{
-        return m_currentHealth;
-	}
-
-    public void SetHealth( float health )
-	{
-        m_currentHealth = health;
-	}
-
-    public virtual IEnumerator ResetInvulnerable(float timer)
-	{
-        yield return new WaitForSeconds( timer );
-        m_invulnerable = false;
-        m_staggerable = true;
-    }
-
-
-    protected bool GetStaggerable()
-	{
-        return m_staggerable;
-
-    }
-
-    public void SetIFrames()
-	{
-        m_invulnerable = true;
-        StartCoroutine(ResetInvulnerable( m_invulnerableTime ) );
-
-	}
-
-    public void SetInvulnerable( bool invulnerable )
-    {
-        m_invulnerable = invulnerable;
-    }
-
-    public bool GetInvulnerable()
-    {
-        return m_invulnerable;
     }
 
 }

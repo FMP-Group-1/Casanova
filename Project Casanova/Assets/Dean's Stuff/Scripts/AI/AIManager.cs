@@ -267,6 +267,7 @@ public class AIManager : MonoBehaviour
                 {
                     enemy.SetAIState(AIState.InCombat);
                 }
+                
             }
         }
     }
