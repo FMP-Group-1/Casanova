@@ -9,6 +9,8 @@ public class EventManager : MonoBehaviour
     public static event Action<int> WakeEnemiesEvent;
     public static event Action<int> SpawnEnemiesEvent;
     public static event Action<int> AlertEnemiesEvent;
+    public static event Action WaveSetupEvent;
+    public static event Action SpawnWaveEvent;
 
     // Event functions
     public static void StartWakeEnemiesEvent(int triggerGroup)
@@ -24,5 +26,15 @@ public class EventManager : MonoBehaviour
     public static void StartAlertEnemiesEvent( int triggerGroup )
     {
         AlertEnemiesEvent?.Invoke(triggerGroup);
+    }
+
+    public static void StartWaveSetupEvent()
+    {
+        WaveSetupEvent?.Invoke();
+    }
+
+    public static void StartSpawnWaveEvent()
+    {
+        SpawnWaveEvent?.Invoke();
     }
 }

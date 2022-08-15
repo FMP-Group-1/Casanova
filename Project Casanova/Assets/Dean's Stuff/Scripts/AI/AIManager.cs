@@ -113,6 +113,26 @@ public class AIManager : MonoBehaviour
         //Debug.Log("AIManager: Enemies in list: " + m_enemyList.Count);
     }
 
+    public void RegisterEnemy(GameObject enemy)
+    {
+        EnemyAI enemyScript = enemy.GetComponent<EnemyAI>();
+
+        if (enemyScript != null)
+        {
+            // Adding the enemy into the list
+            m_enemyList.Add(enemyScript);
+
+            // Giving the enemy a reference to the managers
+            enemyScript.SetAIManagerRef(this);
+            enemyScript.SetupZoneHandler(ref m_attackZoneManager);
+        }
+        else
+        {
+            // Notifying user that an enemy has failed to register with the manager
+            Debug.Log("AIManager: Failed to add EnemyAI script of Enemy: " + enemy.name);
+        }
+    }
+
     // Register an enemy as an attacker
     public void RegisterAttacker(EnemyAI enemyToRegister)
     {
@@ -355,6 +375,21 @@ public class AIManager : MonoBehaviour
         for (int i = 0; i < m_enemyList.Count; i++)
         {
             if (m_enemyList[i].GetSpawnGroup() == groupNum && m_enemyList[i].gameObject.activeSelf)
+            {
+                enemiesRemaining++;
+            }
+        }
+
+        return enemiesRemaining;
+    }
+
+    public int RemainingWaveEnemies()
+    {
+        int enemiesRemaining = 0;
+
+        for (int i = 0; i < m_enemyList.Count; i++)
+        {
+            if (m_enemyList[i].IsWaveEnemy() && m_enemyList[i].gameObject.activeSelf)
             {
                 enemiesRemaining++;
             }

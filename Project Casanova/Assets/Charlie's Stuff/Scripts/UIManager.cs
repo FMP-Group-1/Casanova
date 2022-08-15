@@ -369,10 +369,12 @@ public class UIManager : MonoBehaviour
         if (beginCutscene)
         {
             cutsceneScript.StartCutscene();
+            m_gameUIGroup.gameObject.SetActive(false);
         }
         else
         {
             cutsceneScript.EndCutscene();
+            m_gameUIGroup.gameObject.SetActive(true);
         }
 
         StartCoroutine(FadeOut(m_blackScreen, m_uiFadeInTime));

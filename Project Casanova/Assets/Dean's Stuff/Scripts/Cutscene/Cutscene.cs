@@ -55,6 +55,7 @@ public class Cutscene : MonoBehaviour
         if (m_interpolateAmount >= 1.0f && m_currentTrackNum == m_dollyPoint.Length - 1)
         {
             m_uiManager.ReturnFromCutscene(this);
+            m_isPlaying = false;
         }
     }
 
@@ -68,6 +69,7 @@ public class Cutscene : MonoBehaviour
         m_interpolateAmount = 0.0f;
         m_cutsceneCam.transform.position = TrackPositions(m_interpolateAmount, m_currentTrackNum);
 
+        EventManager.StartWaveSetupEvent();
         EventManager.StartWakeEnemiesEvent(4);
     }
 
@@ -77,6 +79,7 @@ public class Cutscene : MonoBehaviour
         m_mainCamera.enabled = true;
         m_isPlaying = false;
         EventManager.StartAlertEnemiesEvent(4);
+        EventManager.StartSpawnWaveEvent();
     }
 
     private Vector3 TrackPositions( float interpolateValue, int trackNum )

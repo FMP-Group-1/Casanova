@@ -201,6 +201,7 @@ public class EnemyAI : MonoBehaviour
     private float m_strafeTimer = 0.0f;
     private bool m_combatOnWake = false;
     private bool m_attackLocked = false;
+    private bool m_isWaveEnemy = false;
 
     // Vision Detection Relevant Variables
     [Header("Player Detection Values")]
@@ -668,12 +669,19 @@ public class EnemyAI : MonoBehaviour
 
                 SetupAttackingType();
                 RandomiseStrafeRange();
-                m_zoneHandler.ReserveClosestZone();
-                SetCombatState(CombatState.MovingToZone);
+                if (m_zoneHandler.AreZonesAvailable())
+                {
+                    m_zoneHandler.ReserveClosestZone();
+                    SetCombatState(CombatState.MovingToZone);
+                }
+                else
+                {
+                    SetCombatState(CombatState.Pursuing);
+                }
 
                 ResetAttackTimer();
 
-                //Added to only show health when they enter combat
+                // Added to only show health when they enter combat
                 m_healthManager.ShowUI( true );
 
                 m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
@@ -1141,8 +1149,11 @@ public class EnemyAI : MonoBehaviour
         m_patrolRoute = null;
 
         m_combatOnWake = false;
+        m_isWaveEnemy = false;
         m_lastUsedAnimTrigger = an_triggerNone;
         m_navMeshAgent.speed = m_walkSpeed;
+
+        m_healthManager.ShowUI(false);
 
         SetupPatrolRoutes();
         DisableCollision();
@@ -1988,5 +1999,15 @@ public class EnemyAI : MonoBehaviour
     public void SetCombatOnWake(bool shouldCombatOnWake)
     {
         m_combatOnWake = shouldCombatOnWake;
+    }
+
+    public void SetWaveEnemy( bool isWaveEnemy )
+    {
+        m_isWaveEnemy = isWaveEnemy;
+    }
+
+    public bool IsWaveEnemy()
+    {
+        return m_isWaveEnemy;
     }
 }

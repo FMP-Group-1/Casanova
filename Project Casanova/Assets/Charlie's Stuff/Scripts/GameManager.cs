@@ -45,6 +45,7 @@ public class GameManager : MonoBehaviour
     private RespawnManager m_respawnManager;
     private GateManager m_gateManager; 
     private AIManager m_aiManager;
+    private SpawnManager m_spawnManager;
 
     //A bool that is updated based on if the room you are in is complete.
     private bool m_roomComplete;
@@ -101,6 +102,7 @@ public class GameManager : MonoBehaviour
         m_respawnManager = GetComponent<RespawnManager>();
         m_gateManager = GetComponent<GateManager>();
         m_aiManager = GetComponent<AIManager>();
+        m_spawnManager = GetComponent<SpawnManager>();
 
         //Always begin in cell
         m_currentRoom = Room.Cell;
@@ -228,25 +230,17 @@ public class GameManager : MonoBehaviour
                     /* Arena will be different if we get waves. For now this shows simple 1 wave, then open exit door,
                      * but we could do 3 tiers or something of this. For now, stick with 1 group
                      */
-                    if ( m_aiManager.RemainingEnemiesInGroup( 4 ) <= 0 )
+                    if ( m_aiManager.RemainingWaveEnemies() <= 0 )
                     {
-                        CompleteRoom( Room.Arena );
-                        //EventManager.StartSpawnEnemiesEvent( 5 );
+                        if (m_spawnManager.GetCurrentWave() < m_spawnManager.GetTotalWaves())
+                        {
+                            EventManager.StartSpawnWaveEvent();
+                        }
+                        else
+                        {
+                            CompleteRoom( Room.Arena );
+                        }
                     }
-                    /*
-                    //DISGUSTING Wave Logic just to show how it COULD exist, just.. gross
-                    if ( m_aiManager.RemainingEnemiesInGroup( 5 ) <= 0 )
-                    {
-                        EventManager.StartSpawnEnemiesEvent( 6 );
-                    }
-                    if ( m_aiManager.RemainingEnemiesInGroup( 6 ) <= 0 )
-                    {
-                        EventManager.StartSpawnEnemiesEvent( 7 );
-                    }
-                    if ( m_aiManager.RemainingEnemiesInGroup( 7 ) <= 0 )
-                    {
-                        //end?
-                    }*/
                     break;
             }
         }

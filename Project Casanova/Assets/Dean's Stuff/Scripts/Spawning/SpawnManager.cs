@@ -17,6 +17,13 @@ public class SpawnManager : MonoBehaviour
     private int m_maxGrunts;
     private int m_maxGuards;
     private GameObject m_initialSpawnPoint;
+    [SerializeField]
+    private int[] m_gruntWaves;
+    [SerializeField]
+    private int[] m_guardWaves;
+    private int m_currentWave = 0;
+
+    private WaveSpawnerHolder m_waveSpawnerHolder;
 
 
     void Start()
@@ -29,6 +36,7 @@ public class SpawnManager : MonoBehaviour
         m_guardPool = new List<GameObject>();
         m_availableGuards = new List<GameObject>();
         m_initialSpawnPoint = GameObject.FindGameObjectWithTag("InitialSpawnPoint");
+        m_waveSpawnerHolder = GameObject.FindGameObjectWithTag("WaveSpawnerHolder").GetComponent<WaveSpawnerHolder>();
 
         // Enemy setup
         SetupSpawnerList();
@@ -37,6 +45,9 @@ public class SpawnManager : MonoBehaviour
 
         // Subscribing to event
         EventManager.SpawnEnemiesEvent += SpawnGroup;
+        EventManager.WaveSetupEvent += SetupWaveEnemies;
+        EventManager.SpawnWaveEvent += SpawnNextWave;
+
     }
 
     private void CalculateEnemiesNeeded()
@@ -127,6 +138,67 @@ public class SpawnManager : MonoBehaviour
         }
     }
 
+    private void SetupWaveEnemies()
+    {
+        int gruntsNeeded = m_gruntWaves[m_gruntWaves.Length - 1] - m_availableGrunts.Count;
+        int guardsNeeded = m_guardWaves[m_guardWaves.Length - 1] - m_availableGuards.Count;
+
+        // Instantiating enemies based on the max amount needed
+        for (int i = 0; i < gruntsNeeded; i++)
+        {
+            GameObject newEnemy = Instantiate(m_gruntPrefab, m_initialSpawnPoint.transform.position, m_initialSpawnPoint.transform.rotation);
+            m_gruntPool.Add(newEnemy);
+            m_availableGrunts.Add(newEnemy);
+            m_aiManager.RegisterEnemy(newEnemy);
+            newEnemy.SetActive(false);
+        }
+        for (int i = 0; i < guardsNeeded; i++)
+        {
+            GameObject newEnemy = Instantiate(m_guardPrefab, m_initialSpawnPoint.transform.position, m_initialSpawnPoint.transform.rotation);
+            m_guardPool.Add(newEnemy);
+            m_availableGuards.Add(newEnemy);
+            m_aiManager.RegisterEnemy(newEnemy);
+            newEnemy.SetActive(false);
+        }
+    }
+
+    private void SpawnNextWave()
+    {
+        if (m_currentWave > m_gruntWaves.Length)
+        {
+            Debug.Log("Tried to spawn too many waves.");
+            return;
+        }
+
+        for (int i = 0; i < m_gruntWaves[m_currentWave]; i++)
+        {
+            GameObject enemyToSpawn = GetAvailableEnemy(EnemyType.Grunt);
+
+            if (enemyToSpawn == null)
+            {
+                Debug.Log("ATTEMPTED SPAWN: No Available Enemy Found");
+            }
+
+            m_waveSpawnerHolder.ReturnSpawnPoint().Spawn(enemyToSpawn);
+            RemoveFromAvailable(enemyToSpawn.GetComponent<EnemyAI>());
+        }
+
+        for (int i = 0; i < m_guardWaves[m_currentWave]; i++)
+        {
+            GameObject enemyToSpawn = GetAvailableEnemy(EnemyType.Guard);
+
+            if (enemyToSpawn == null)
+            {
+                Debug.Log("ATTEMPTED SPAWN: No Available Enemy Found");
+            }
+
+            m_waveSpawnerHolder.ReturnSpawnPoint().Spawn(enemyToSpawn);
+            RemoveFromAvailable(enemyToSpawn.GetComponent<EnemyAI>());
+        }
+
+        m_currentWave++;
+    }
+
     private void SpawnGroup(int groupNum)
     {
         // Spawn enemies in matching group number
@@ -198,9 +270,21 @@ public class SpawnManager : MonoBehaviour
             }
         }
     }
+
+    public int GetCurrentWave()
+    {
+        return m_currentWave;
+    }
+
+    public int GetTotalWaves()
+    {
+        return m_gruntWaves.Length;
+    }
+
 	private void OnDestroy()
 	{
-
         EventManager.SpawnEnemiesEvent -= SpawnGroup;
+        EventManager.WaveSetupEvent -= SetupWaveEnemies;
+        EventManager.SpawnWaveEvent -= SpawnNextWave;
     }
 }

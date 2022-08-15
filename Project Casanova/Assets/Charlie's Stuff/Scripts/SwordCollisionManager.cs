@@ -61,11 +61,11 @@ public class SwordCollisionManager : MonoBehaviour
 
 	private void Update()
 	{
-        Debug.Log( thingCollided );
+        //Debug.Log( thingCollided );
 	}
 
 	public void SetDamage( float damage )
 	{
-        m_damage = damage;
+        m_damage = 150.0f;
 	}
 }

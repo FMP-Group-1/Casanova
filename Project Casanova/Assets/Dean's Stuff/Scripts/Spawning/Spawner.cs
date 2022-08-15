@@ -12,6 +12,8 @@ public class Spawner : MonoBehaviour
     private int m_spawnGroup;
     [SerializeField]
     private GameObject m_patrolRoute;
+    [SerializeField]
+    private bool m_isWaveEnemy = false;
 
 
     public void Spawn(GameObject enemyToSpawn)
@@ -34,6 +36,7 @@ public class Spawner : MonoBehaviour
         enemyToSpawn.SetActive(true);
         enemyScript.SetAIState(m_stateToSpawn);
         enemyScript.SetSpawnGroup(m_spawnGroup);
+        enemyScript.SetWaveEnemy(m_isWaveEnemy);
 
     }
 
