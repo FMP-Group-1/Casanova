@@ -55,9 +55,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Whirlwind"",
+                    ""name"": ""Dodge"",
                     ""type"": ""Button"",
-                    ""id"": ""d42f01d8-adb3-4c47-ac3c-11da4aa2feed"",
+                    ""id"": ""461507ef-9df6-4f8c-aa98-593c7da165b2"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -133,23 +133,23 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""29202c8d-6eac-432f-bf80-caddc0a541bb"",
-                    ""path"": ""<Keyboard>/q"",
+                    ""id"": ""ec7afae0-22c9-4e74-b3b7-fd5b27eafd12"",
+                    ""path"": ""<Keyboard>/shift"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Whirlwind"",
+                    ""action"": ""Dodge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
                 {
                     ""name"": """",
-                    ""id"": ""688a9747-97e7-4b11-b92a-a6e78eb828df"",
-                    ""path"": ""<Gamepad>/rightShoulder"",
-                    ""interactions"": """",
+                    ""id"": ""d9b997a2-87d2-44d5-ae9c-7c7b62cf48cf"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Whirlwind"",
+                    ""action"": ""Dodge"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -343,6 +343,115 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""isPartOfComposite"": false
                 }
             ]
+        },
+        {
+            ""name"": ""Level"",
+            ""id"": ""d50d67e7-3846-4966-8625-a0e44b3ae0e0"",
+            ""actions"": [
+                {
+                    ""name"": ""Reset"",
+                    ""type"": ""Button"",
+                    ""id"": ""f0e927ef-10ab-4133-b5e3-af344c7d2806"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Pause"",
+                    ""type"": ""Button"",
+                    ""id"": ""7ea267d8-806e-43dc-a7c3-7964ef094b29"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""41a2eeda-7355-4acd-b9ff-3e136a33b5eb"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reset"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""646fc97d-3f6e-4435-a4b6-e849a3a7b7ff"",
+                    ""path"": ""<Gamepad>/dpad/up"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Reset"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4342b1ad-f25c-46f1-89f4-ef7660961706"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a05adf92-42cc-44ce-9743-d10dd817a78f"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
+        },
+        {
+            ""name"": ""Other"",
+            ""id"": ""7fb43246-5b17-4a52-a2b7-088b95740a21"",
+            ""actions"": [
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""9d067ed2-c276-4509-8c50-67d171ca31a5"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                }
+            ],
+            ""bindings"": [
+                {
+                    ""name"": """",
+                    ""id"": ""22a1a170-198a-439a-a921-6a880dc0568c"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""cf775b24-de2f-48da-ab49-f50c048b8fc4"",
+                    ""path"": ""<Gamepad>/buttonEast"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                }
+            ]
         }
     ],
     ""controlSchemes"": []
@@ -352,12 +461,19 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         m_Combat_LightAtatck = m_Combat.FindAction("LightAtatck", throwIfNotFound: true);
         m_Combat_HeavyAttack = m_Combat.FindAction("HeavyAttack", throwIfNotFound: true);
         m_Combat_SheatheUnsheathe = m_Combat.FindAction("Sheathe/Unsheathe", throwIfNotFound: true);
-        m_Combat_Whirlwind = m_Combat.FindAction("Whirlwind", throwIfNotFound: true);
+        m_Combat_Dodge = m_Combat.FindAction("Dodge", throwIfNotFound: true);
         // Move
         m_Move = asset.FindActionMap("Move", throwIfNotFound: true);
         m_Move_MouseLook = m_Move.FindAction("MouseLook", throwIfNotFound: true);
         m_Move_Movement = m_Move.FindAction("Movement", throwIfNotFound: true);
         m_Move_Jump = m_Move.FindAction("Jump", throwIfNotFound: true);
+        // Level
+        m_Level = asset.FindActionMap("Level", throwIfNotFound: true);
+        m_Level_Reset = m_Level.FindAction("Reset", throwIfNotFound: true);
+        m_Level_Pause = m_Level.FindAction("Pause", throwIfNotFound: true);
+        // Other
+        m_Other = asset.FindActionMap("Other", throwIfNotFound: true);
+        m_Other_Interact = m_Other.FindAction("Interact", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -420,7 +536,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     private readonly InputAction m_Combat_LightAtatck;
     private readonly InputAction m_Combat_HeavyAttack;
     private readonly InputAction m_Combat_SheatheUnsheathe;
-    private readonly InputAction m_Combat_Whirlwind;
+    private readonly InputAction m_Combat_Dodge;
     public struct CombatActions
     {
         private @PlayerControls m_Wrapper;
@@ -428,7 +544,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         public InputAction @LightAtatck => m_Wrapper.m_Combat_LightAtatck;
         public InputAction @HeavyAttack => m_Wrapper.m_Combat_HeavyAttack;
         public InputAction @SheatheUnsheathe => m_Wrapper.m_Combat_SheatheUnsheathe;
-        public InputAction @Whirlwind => m_Wrapper.m_Combat_Whirlwind;
+        public InputAction @Dodge => m_Wrapper.m_Combat_Dodge;
         public InputActionMap Get() { return m_Wrapper.m_Combat; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -447,9 +563,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @SheatheUnsheathe.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnSheatheUnsheathe;
                 @SheatheUnsheathe.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnSheatheUnsheathe;
                 @SheatheUnsheathe.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnSheatheUnsheathe;
-                @Whirlwind.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnWhirlwind;
-                @Whirlwind.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnWhirlwind;
-                @Whirlwind.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnWhirlwind;
+                @Dodge.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnDodge;
+                @Dodge.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnDodge;
+                @Dodge.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnDodge;
             }
             m_Wrapper.m_CombatActionsCallbackInterface = instance;
             if (instance != null)
@@ -463,9 +579,9 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                 @SheatheUnsheathe.started += instance.OnSheatheUnsheathe;
                 @SheatheUnsheathe.performed += instance.OnSheatheUnsheathe;
                 @SheatheUnsheathe.canceled += instance.OnSheatheUnsheathe;
-                @Whirlwind.started += instance.OnWhirlwind;
-                @Whirlwind.performed += instance.OnWhirlwind;
-                @Whirlwind.canceled += instance.OnWhirlwind;
+                @Dodge.started += instance.OnDodge;
+                @Dodge.performed += instance.OnDodge;
+                @Dodge.canceled += instance.OnDodge;
             }
         }
     }
@@ -519,17 +635,100 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         }
     }
     public MoveActions @Move => new MoveActions(this);
+
+    // Level
+    private readonly InputActionMap m_Level;
+    private ILevelActions m_LevelActionsCallbackInterface;
+    private readonly InputAction m_Level_Reset;
+    private readonly InputAction m_Level_Pause;
+    public struct LevelActions
+    {
+        private @PlayerControls m_Wrapper;
+        public LevelActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Reset => m_Wrapper.m_Level_Reset;
+        public InputAction @Pause => m_Wrapper.m_Level_Pause;
+        public InputActionMap Get() { return m_Wrapper.m_Level; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(LevelActions set) { return set.Get(); }
+        public void SetCallbacks(ILevelActions instance)
+        {
+            if (m_Wrapper.m_LevelActionsCallbackInterface != null)
+            {
+                @Reset.started -= m_Wrapper.m_LevelActionsCallbackInterface.OnReset;
+                @Reset.performed -= m_Wrapper.m_LevelActionsCallbackInterface.OnReset;
+                @Reset.canceled -= m_Wrapper.m_LevelActionsCallbackInterface.OnReset;
+                @Pause.started -= m_Wrapper.m_LevelActionsCallbackInterface.OnPause;
+                @Pause.performed -= m_Wrapper.m_LevelActionsCallbackInterface.OnPause;
+                @Pause.canceled -= m_Wrapper.m_LevelActionsCallbackInterface.OnPause;
+            }
+            m_Wrapper.m_LevelActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Reset.started += instance.OnReset;
+                @Reset.performed += instance.OnReset;
+                @Reset.canceled += instance.OnReset;
+                @Pause.started += instance.OnPause;
+                @Pause.performed += instance.OnPause;
+                @Pause.canceled += instance.OnPause;
+            }
+        }
+    }
+    public LevelActions @Level => new LevelActions(this);
+
+    // Other
+    private readonly InputActionMap m_Other;
+    private IOtherActions m_OtherActionsCallbackInterface;
+    private readonly InputAction m_Other_Interact;
+    public struct OtherActions
+    {
+        private @PlayerControls m_Wrapper;
+        public OtherActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
+        public InputAction @Interact => m_Wrapper.m_Other_Interact;
+        public InputActionMap Get() { return m_Wrapper.m_Other; }
+        public void Enable() { Get().Enable(); }
+        public void Disable() { Get().Disable(); }
+        public bool enabled => Get().enabled;
+        public static implicit operator InputActionMap(OtherActions set) { return set.Get(); }
+        public void SetCallbacks(IOtherActions instance)
+        {
+            if (m_Wrapper.m_OtherActionsCallbackInterface != null)
+            {
+                @Interact.started -= m_Wrapper.m_OtherActionsCallbackInterface.OnInteract;
+                @Interact.performed -= m_Wrapper.m_OtherActionsCallbackInterface.OnInteract;
+                @Interact.canceled -= m_Wrapper.m_OtherActionsCallbackInterface.OnInteract;
+            }
+            m_Wrapper.m_OtherActionsCallbackInterface = instance;
+            if (instance != null)
+            {
+                @Interact.started += instance.OnInteract;
+                @Interact.performed += instance.OnInteract;
+                @Interact.canceled += instance.OnInteract;
+            }
+        }
+    }
+    public OtherActions @Other => new OtherActions(this);
     public interface ICombatActions
     {
         void OnLightAtatck(InputAction.CallbackContext context);
         void OnHeavyAttack(InputAction.CallbackContext context);
         void OnSheatheUnsheathe(InputAction.CallbackContext context);
-        void OnWhirlwind(InputAction.CallbackContext context);
+        void OnDodge(InputAction.CallbackContext context);
     }
     public interface IMoveActions
     {
         void OnMouseLook(InputAction.CallbackContext context);
         void OnMovement(InputAction.CallbackContext context);
         void OnJump(InputAction.CallbackContext context);
+    }
+    public interface ILevelActions
+    {
+        void OnReset(InputAction.CallbackContext context);
+        void OnPause(InputAction.CallbackContext context);
+    }
+    public interface IOtherActions
+    {
+        void OnInteract(InputAction.CallbackContext context);
     }
 }

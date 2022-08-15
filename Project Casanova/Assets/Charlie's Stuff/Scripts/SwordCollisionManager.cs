@@ -4,6 +4,23 @@ using UnityEngine;
 
 public class SwordCollisionManager : MonoBehaviour
 {
+
+    private float m_damage;
+
+    [SerializeField, Range(0.0f, 2.0f)]
+    private float m_damageMultiplier = 1.0f;
+
+    // Dean Note: Adding a reference to the sound handler in here for collision SFX
+    private PlayerSoundHandler m_soundHandler;
+
+    private void Awake()
+    {
+        // Dean Note: I know this is a hideous line, but I can't think of a better way at this moment
+        m_soundHandler = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>().GetSoundHandler();
+    }
+
+    string thingCollided;
+
     /**************************************************************************************
     * Type: Function
     * 
@@ -11,24 +28,44 @@ public class SwordCollisionManager : MonoBehaviour
     * Parameters: Collider other
     * Return: n/a
     *
-    * Author: Charlie Taylor
+    * Author: Dean Pearce
+    *         Charlie Taylor
     *
     * Description: Sword Collision with Enemy
     **************************************************************************************/
     private void OnTriggerEnter( Collider other )
     {
+        thingCollided = other.name;
+        //We've collided, but is it with an enemy?
         if ( other.gameObject.tag == "Enemy" )
         {
+            //Yes? Okay, get the enemy
             EnemyAI enemy = other.GetComponent<EnemyAI>();
 
+            //Asleep? Wake it up
             if ( enemy.GetState() == AIState.Sleeping )
             {
-                enemy.WakeUpAI( WakeTrigger.Attack );
+                enemy.WakeUpAI();
             }
 
-            enemy.TakeDamage( 50f );
+            //Then hurt them
+            if (enemy.GetState() != AIState.Dead )
+			{
+                enemy.GetHealthManager().TakeDamage( transform, m_damage * m_damageMultiplier );
 
-            //m_collider.enabled = false;
+                m_soundHandler.PlayNormalCollisionSFX();
+            }
         }
     }
+
+
+	private void Update()
+	{
+        Debug.Log( thingCollided );
+	}
+
+	public void SetDamage( float damage )
+	{
+        m_damage = damage;
+	}
 }
