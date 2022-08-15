@@ -8,6 +8,8 @@ public static class Settings
 	public static bool g_paused = false;
 	public static bool g_canPause = false;
 
+	public static bool g_pickedUpSword = false;
+
 	public static string g_controllerTag = "GameController";
 	public static string g_playerTag = "Player";
 

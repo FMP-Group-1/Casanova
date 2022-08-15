@@ -463,12 +463,23 @@ public class GameManager : MonoBehaviour
                 //Spawn enemies in Prep for the NEXT NEXT room
                 break;
             case Room.Armory1:
-                //You have defeated the grunts, and picked up the sword/
-                //So we spawn the Guards again, and also alert them, and spawn
-                //Guard Room enemies (As that was done on picking up sword)
+                //You have defeated the grunts, but not picked up the sword
+                //So we wanna spawn the guards again, but not alert them or 
+                //spawn group 3 as sword will do that
                 EventManager.StartSpawnEnemiesEvent( 2 );
-                EventManager.StartAlertEnemiesEvent( 2 );
-                EventManager.StartSpawnEnemiesEvent( 3 );
+
+                if ( Settings.g_pickedUpSword )
+                {
+                    //If we do have the sword already
+                    EventManager.StartAlertEnemiesEvent( 2 );
+                    //We now spawn the next room too
+                    EventManager.StartSpawnEnemiesEvent( 3 );
+                }
+
+
+
+
+                
                 break;
             case Room.Armory2 :
                 EventManager.StartSpawnEnemiesEvent( 3 );
@@ -534,6 +545,7 @@ public class GameManager : MonoBehaviour
                 break;
             case Room.Armory1:
                 m_respawnManager.SetRespawnPoint( Room.Armory1 );
+                m_currentRoom = Room.Armory2;
                 break;
             case Room.Armory2:
                 m_gateManager.OpenArmoryExitGate();

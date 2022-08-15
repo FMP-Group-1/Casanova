@@ -19,7 +19,7 @@ public class SwordInteract : Interactable
 		EventManager.StartSpawnEnemiesEvent( m_enemyGroupToAlert + 1 );
 
 		GameObject.FindGameObjectWithTag( Settings.g_controllerTag ).GetComponent<GameManager>().EnterRoom( m_roomToActivate );
-
+		Settings.g_pickedUpSword = true;
 		m_light.SetActive(false);
 		GetPlayer().GetComponent<WeaponSwap>().DropTableLeg(gameObject);
 	}
