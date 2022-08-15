@@ -349,4 +349,43 @@ public class UIManager : MonoBehaviour
         group.gameObject.SetActive( false );
     }
 
+    // Dean Cutscene Stuff
+    // Copied the FadeIn function and added some cutscene specific stuff to it
+    public IEnumerator FadeInForCutscene( Cutscene cutsceneScript, Image image, bool beginCutscene, float time, float delay = 0.0f )
+    {
+        yield return new WaitForSeconds(delay);
+
+        image.gameObject.SetActive(true);
+        image.color = ChangeImageAlpha(image, 0.0f);
+
+        for (float alpha = 0.0f; alpha < 1.0f; alpha += Time.deltaTime / time)
+        {
+            image.color = ChangeImageAlpha(image, alpha);
+            yield return null;
+        }
+        // Fully Set it
+        image.color = ChangeImageAlpha(image, 1.0f);
+
+        if (beginCutscene)
+        {
+            cutsceneScript.StartCutscene();
+        }
+        else
+        {
+            cutsceneScript.EndCutscene();
+        }
+
+        StartCoroutine(FadeOut(m_blackScreen, m_uiFadeInTime));
+    }
+
+    public void CutsceneHandover( Cutscene cutsceneScript )
+    {
+        StartCoroutine(FadeInForCutscene(cutsceneScript, m_blackScreen, true, m_uiFadeInTime));
+    }
+
+    public void ReturnFromCutscene( Cutscene cutsceneScript )
+    {
+        StartCoroutine(FadeInForCutscene(cutsceneScript, m_blackScreen, false, m_uiFadeInTime));
+    }
+
 }
