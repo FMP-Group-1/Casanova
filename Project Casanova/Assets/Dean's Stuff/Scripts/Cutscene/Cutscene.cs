@@ -19,11 +19,14 @@ public class Cutscene : MonoBehaviour
     private Transform[] m_dollyPoint;
     private bool m_isPlaying = false;
 
+    private PlayerController m_player;
+
     void Start()
     {
         m_uiManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<UIManager>();
         m_cutsceneCam.enabled = false;
         m_dollyPoint = new Transform[transform.GetChild(0).childCount];
+        m_player = GameObject.FindGameObjectWithTag(Settings.g_playerTag).GetComponent<PlayerController>();
 
         for (int i = 0; i < m_dollyPoint.Length; i++)
         {
@@ -68,6 +71,8 @@ public class Cutscene : MonoBehaviour
         m_currentTrackNum = 0;
         m_interpolateAmount = 0.0f;
         m_cutsceneCam.transform.position = TrackPositions(m_interpolateAmount, m_currentTrackNum);
+        m_player.SetMenuLock(true);
+        m_player.LoseControl();
 
         EventManager.StartWaveSetupEvent();
         EventManager.StartWakeEnemiesEvent(4);
@@ -78,6 +83,9 @@ public class Cutscene : MonoBehaviour
         m_cutsceneCam.enabled = false;
         m_mainCamera.enabled = true;
         m_isPlaying = false;
+        m_player.SetMenuLock(false);
+        m_player.RegainControl();
+
         EventManager.StartAlertEnemiesEvent(4);
         EventManager.StartSpawnWaveEvent();
     }
