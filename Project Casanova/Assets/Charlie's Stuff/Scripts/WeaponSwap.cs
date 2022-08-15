@@ -43,7 +43,7 @@ public class WeaponSwap : MonoBehaviour
         m_worldSword.SetActive( false );
         //GetComponent<PlayerController>().RegainControl();
 
-        GetComponent<MeleeController>().SwapWeapon( m_swordInHand, m_swordInHand.GetComponent<SwordCollisionManager>() ) ;
+        GetComponent<MeleeController>().SwapWeapon( m_swordInHand ) ;
         
     }
 

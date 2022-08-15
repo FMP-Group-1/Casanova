@@ -1,44 +1,59 @@
 using System.Collections;
+using UnityEngine.InputSystem;
 using UnityEngine;
 
 public class MeleeController : MonoBehaviour
 {
+    //Components
+    //Animator
     private Animator m_animator;
-
-    //This will be swapped to singular input actions, as the melee script does no need to know about moving
-    private PlayerControls m_playerControls;
-
     //Player Controller Script
     private PlayerController m_playerController;
 
+    [Header("Input Controls")]
+    [SerializeField, Tooltip( "Light Attack Input" )]
+    private InputActionReference m_lightAttackInput;
+    [SerializeField, Tooltip( "Heavy Attack Input" )]
+    private InputActionReference m_heavyAttackInput;
+
+
+    [Header( "Relevant Objects" )]
     [SerializeField]
     private SwordCollisionManager m_currentWeaponManager;
+    [SerializeField, Tooltip("Trail for the player weapon (Default as table leg)")]
+    ParticleSystem m_swordTrail;
     private Collider m_weaponCollider;
 
-    [SerializeField]
     private bool m_canStartNextAttack = true;
 
     //For box collider rotations
     //Object with the collider that actually rotates
 
     //How fast the player rotates at begining of an attack
-    [SerializeField, Range(0f, 1f)]
+    [Header( "Settings" )]
+    [SerializeField, Range(0f, 1f),Tooltip("How fast player rotates on an attack")]
     private float m_rotateSpeed = 0.2f;
 
+    //String to Hashes for animator parameters
+    private int an_attack;
+    private int an_lightAttack;
+    private int an_heavyAttack;
+    private int an_whirlwindHeld;
+    private int an_comboActive;
 
-    [SerializeField]
-    private Transform m_sphereColliderTransform;
+    //Deactivated Air Attacks
+    //[SerializeField]
+    //private Transform m_sphereColliderTransform;
 
-    [SerializeField]
-    ParticleSystem m_swordTrail;
+    //[Header("Ground Pound")]
+    //[SerializeField, Range(0f, 5f)]
+    //float m_timeToGrow = 1f;
+    //[SerializeField, Range(5f, 10f)]
+    //float m_maxSphereSize = 7;
 
-    [Header("Ground Pound")]
-    [SerializeField, Range(0f, 5f)]
-    float m_timeToGrow = 1f;
-    [SerializeField, Range(5f, 10f)]
-    float m_maxSphereSize = 7;
 
-    //Attack Enum
+
+    //Attack Enum, based on 2 attack types, and a nothing value so as to be able to have no attack queued
     private enum Attack
     {
         Nothing,
@@ -48,7 +63,26 @@ public class MeleeController : MonoBehaviour
     //Member version of attack
     private Attack m_attackType;
 
+
     /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: OnEnable
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Enable input actions
+    **************************************************************************************/
+    private void OnEnable()
+	{
+        //Input actions need to be enabled
+        m_lightAttackInput.action.Enable();
+        m_heavyAttackInput.action.Enable();
+    }
+
+	/**************************************************************************************
     * Type: Function
     * 
     * Name: Start
@@ -57,24 +91,121 @@ public class MeleeController : MonoBehaviour
     *
     * Author: Charlie Taylor
     *
-    * Description: Setup any variables or components
+    * Description: Setup components and member vars
     **************************************************************************************/
-    void Start()
+	void Start()
     {
+        //Populate component refs
+        m_playerController = GetComponent<PlayerController>();
+        m_animator = GetComponent<Animator>();
+        //Should be table leg at start
         m_weaponCollider = m_currentWeaponManager.gameObject.GetComponent<Collider>();
-
-        m_playerControls = new PlayerControls();
+        //Stop sword trail playing at launch
         m_swordTrail.Stop();
 
-        m_playerController = GetComponent<PlayerController>();
-
-        m_playerControls.Enable();
-        m_animator = GetComponent<Animator>();
+        //Weapon doesn't collide yet
         m_weaponCollider.enabled = false;
+
+        //populate string to hashes
+        an_attack = Animator.StringToHash( "attacked" );
+        an_lightAttack = Animator.StringToHash( "light" );
+        an_heavyAttack = Animator.StringToHash( "heavy" );
+        an_whirlwindHeld = Animator.StringToHash( "whirlwindHeld" );
+        an_comboActive = Animator.StringToHash( "comboActive" );
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: CheckInputs
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Every frame check player inputs, and update m_attackType
+    **************************************************************************************/
+    private void CheckInputs()
+	{
+        //If the player is grounded (No air attacks, and don't want to queue them when in air)
+        if ( m_playerController.GetGrounded() )
+        {
+            //Light Attack
+            if ( m_lightAttackInput.action.triggered )
+            {
+                m_attackType = Attack.Light;
+            }
+            //Heavy Attack
+            if ( m_heavyAttackInput.action.triggered )
+            {
+                m_attackType = Attack.Heavy;
+            }
 
+            //Heavy will have been triggered anyway, but is it stil pressed?
+            if ( m_heavyAttackInput.action.IsPressed() )
+            {
+                m_animator.SetBool( an_whirlwindHeld, true );
+            }
+            else
+            {
+                m_animator.SetBool( an_whirlwindHeld, false );
+            }
+            //Add a (NON COROUTINE BASED) timer to check if it should be cancelled???? like 1 second
 
+        }
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: PerformAttack
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Based on input and if you can, perform an attack
+    **************************************************************************************/
+    private void PerformAttack()
+	{
+        /* When you click an input, as above, you assign m_attackType to Light or Heavy etc
+         * If you can start an attack (Be it, you going from idle or are available to do so
+         * in a combo), we can now enter this statement
+         */
+        if ( m_canStartNextAttack )
+        {
+            m_playerController.LoseControl();
+            //lose control makes you lose dodge, but I want to be able to
+            m_playerController.SetCanDodge( true );
+
+            //We have attacked, set the trigger and bool
+            m_animator.SetTrigger( an_attack );
+            m_animator.SetBool( an_comboActive, true );
+
+            //What attack type?
+            switch ( m_attackType )
+            {
+                case Attack.Light:
+                    m_animator.SetTrigger( an_lightAttack );
+                    break;
+
+                case Attack.Heavy:
+                    m_animator.SetTrigger( an_heavyAttack );
+                    break;
+
+                case Attack.Nothing:
+                    Debug.Log( "You've reset the Attack type to nothing before executing the Switch. This should not happen" );
+                    break;
+
+            }
+            //Next queued attack is now nothing, until we add one in next run of update
+            m_attackType = Attack.Nothing;
+
+            // Dean Note: Adding sound effect to play here, may need changing, let me know
+            m_playerController.GetSoundHandler().PlayNormalAttackSFX();
+
+        }
+    }
 
     /**************************************************************************************
     * Type: Function
@@ -89,106 +220,83 @@ public class MeleeController : MonoBehaviour
     **************************************************************************************/
     void Update()
     {
-        if ( !Settings.g_paused ) 
-        { 
-            //ACTUAL APPLICATION OF AN ATTACK, STUFF LATER IS BASED ON THIS HERE
-            if ( m_playerController.GetGrounded() )
+        if ( !Settings.g_paused )
+        {
+            /* I wanted to do a version where check inputs returned the Attack value
+             * with no m_attackType member var, but that would have just resulted in
+             * a temporary one being made all the time in the update as I need to compare
+             * the value with Attack.Nothing AND i'd have to pass it into PerformAttack
+             * and then it's 2 function calls or a temp var every frame, so member seemed
+             * better */
+
+            //Update m_attackType in here
+            CheckInputs();
+            //Then compare it to nothing
+            if ( m_attackType != Attack.Nothing )
 			{
-                //Light Attack
-                if ( m_playerControls.Combat.LightAtatck.triggered )
-                {
-                    m_attackType = Attack.Light;
-                }
-                //Heavy Attack
-                if ( m_playerControls.Combat.HeavyAttack.triggered )
-                {
-                    m_attackType = Attack.Heavy;
-                }
-
-                if ( m_playerControls.Combat.HeavyAttack.IsPressed() )
-                {
-                    m_animator.SetBool( "whirlwindHeld", true ) ;
-                }
-                else
-		        {
-                    m_animator.SetBool( "whirlwindHeld", false );
-                }
-                //Add a (NON COROUTINE BASED) timer to check if it should be cancelled???? like 1 second
+                //And if there is an attack queued up
+                PerformAttack();
             }
 
-            //Actually begin the attack stuff
-            /* When you click an input, as above, you assign m_attackType to Light, Heavy etc
-             * If you can start an attack (Be it, you going from idle or are available to do so
-             * in a combo), and you are attacking, we can now enter this statement
-             */
-            if ( m_canStartNextAttack && m_attackType != Attack.Nothing )
-            {
-
-                //Stop being able to move or fall or rotate because we are in an attack
-                m_playerController.m_canMove = false;
-                m_playerController.m_canFall = false;
-                m_playerController.m_canRotate = false;
-
-                //We are attacking, so stop being able to again. (It is reset from CollisionsEnd)
-                m_canStartNextAttack = false;
-                m_animator.SetTrigger( "attacked" );
-                //Combo has begun
-                m_animator.SetBool( "comboActive", true );
-
-                //What attack type?
-                switch ( m_attackType )
-                {
-                    case Attack.Light:
-
-                        m_animator.SetTrigger( "light" );
-                        break;
-
-                    case Attack.Heavy:
-
-                        m_animator.SetTrigger( "heavy" );
-					    break;
-
-				    case Attack.Nothing:
-                        Debug.Log( "You've reset the Attack type to nothing before executing the Switch. This should not happen" );
-                        break;
-
-			    }
-			    //Next queued attack is nothing, until we add one in next run of update (If we click something, obviously)
-			    m_attackType = Attack.Nothing;
-
-
-                //The triggers now affect the animation played
-
-
-                // Dean Note: Adding sound effect to play here, may need changing, let me know
-                m_playerController.GetSoundHandler().PlayNormalAttackSFX();
-
-            }
         }
 
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetCanAttack
+    * Parameters: bool canAttack
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Set can attack bool, which will allow or dissalow combos to happen
+    **************************************************************************************/
     public void SetCanAttack(bool canAttack)
 	{
         m_canStartNextAttack = canAttack;
 	}
 
-    void SetAttackDamage( float damage = 10f )
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetAttackDamage
+    * Parameters: float damage
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Set the damage for this attack, called at the VERY first frame of attack
+    *              in AttackBegin
+    *              Modified by a multiplier in m_currentWeaponManager
+    **************************************************************************************/
+    private void SetAttackDamage( float damage )
 	{
+        //Damage is modified by a multiplier on actual collision
         m_currentWeaponManager.SetDamage( damage );
 
     }
 
-    public void SwapWeapon(GameObject newWeapon, SwordCollisionManager manager)
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SwapWeapon
+    * Parameters: GameObject newWeapon, SwordCollisionManager weaponManager
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: When picking up the sword, we need to swap the sword trail info, 
+    *              what manager is used due to damage multipliers and also the collider
+    **************************************************************************************/
+    public void SwapWeapon( GameObject newWeapon )
 	{
         m_swordTrail = newWeapon.GetComponentInChildren<ParticleSystem>();
-        m_currentWeaponManager = manager;
+        m_currentWeaponManager = newWeapon.GetComponent<SwordCollisionManager>();
         m_weaponCollider = newWeapon.GetComponent<Collider>();
 
     }
-
-
-
 
     /**************************************************************************************
     * Type: Function
@@ -201,13 +309,15 @@ public class MeleeController : MonoBehaviour
     *
     * Description: Called by Animation Events when the attacks collisions should begin
     **************************************************************************************/
-    public void CollisionsStart()
+    private  void CollisionsStart()
     {
         m_swordTrail.Play();
         //Set collider sweeper on
         m_weaponCollider.enabled =  true ;
-        //You can dodge when the collisions are happening, as then when dodging it will turn off the collider.
-        m_playerController.SetDodge( true );
+
+        //You can dodge when the collisions are happening,
+        //If you dodge it will turn off the collider.
+        m_playerController.SetCanDodge( true );
 
     }
 
@@ -220,7 +330,8 @@ public class MeleeController : MonoBehaviour
     *
     * Author: Charlie Taylor
     *
-    * Description: Called by Animation Events when the attacks collisions should end
+    * Description: Called by Animation Events when the attacks collisions should end, and
+    *              by PlayerController.Dodge()
     **************************************************************************************/
     public void CollisionsEnd()
     {
@@ -239,7 +350,7 @@ public class MeleeController : MonoBehaviour
     *
     * Author: Charlie Taylor
     *
-    * Description: Called by Animation Events when the another Attack can begin
+    * Description: Called when another Attack can begin
     **************************************************************************************/
     public void CanStartNextAttack()
     {
@@ -247,48 +358,34 @@ public class MeleeController : MonoBehaviour
         m_canStartNextAttack = true;
     }
 
-
     /**************************************************************************************
     * Type: Function
     * 
     * Name: AttackBegin
-    * Parameters: n/a
+    * Parameters: float damage
     * Return: n/a
     *
     * Author: Charlie Taylor
     *
     * Description: Called by Animation Events when the attack animation FIRST begins.
-    *               Used mainly for rotating the player to the direction they're inputting
+    *              Used mainly for rotating the player to the direction they're inputting
+    *              and also setting Damage
     **************************************************************************************/
-    private void AttackBegin(float damage)
+    private void AttackBegin( float damage )
 	{
-        //Set Damage based on this attack
+        //Set Damage for this attack
         SetAttackDamage( damage );
+
         //Prevent dodging so it can't blend and leave the collider on
-        m_playerController.SetDodge( false );
+        m_playerController.SetCanDodge( false );
 
-        //Current Position value
-        Vector3 startPosition = transform.position;
-
-        //Add the direction to where you are to get the vector
-        Vector3 targetPosition = transform.position + m_playerController.GetMoveDirection();
-
-        //Get target angle in degrees
-        float targetAngle = Mathf.Rad2Deg * ( Mathf.Atan2( targetPosition.x - startPosition.x, targetPosition.z - startPosition.z ) );
-
-        //Debug.Log( targetAngle ); 
-
-        Quaternion targetRotation = Quaternion.Euler( new Vector3 ( 0f, targetAngle, 0f ));
-
-
-        //Only if the there is some level of input
+        //Only bother if the there is some level of input, other wise it's a waste
         if ( m_playerController.GetMoveDirection() != Vector3.zero )
         {
             //Rotate player over a short time, to the place where the player is trying to move to
-            StartCoroutine( RotatePlayer( targetRotation ) );
+            StartCoroutine( RotatePlayer() );
 
         }
-        //otherweise we just attack forwards (Where player is facing)
 
     }
 
@@ -302,18 +399,14 @@ public class MeleeController : MonoBehaviour
     * Author: Charlie Taylor
     *
     * Description: Called by Animation Events when the attack combo ends, at the begining 
-    *               of the leave anim, to reset variables that allow the player to move 
-    *               or fall
+    *              of the leave anim, to reset variables that allow the player to move 
+    *              or fall
     **************************************************************************************/
-    public void EndCombo()
+    private void EndCombo()
     {
-        //Reset velocity to 0 so the player doesn't reach mach 4 in falling
-        //m_playerController.m_playerVelocity.y = -6f; 
         CanStartNextAttack();
-        m_playerController.m_canFall = true;
-        m_playerController.m_canMove = true;
-        m_playerController.m_canRotate = true;
-        m_animator.SetBool( "comboActive", false );
+        m_playerController.RegainControl();
+        m_animator.SetBool( an_comboActive, false );
     }
 
     /**************************************************************************************
@@ -321,70 +414,71 @@ public class MeleeController : MonoBehaviour
     * 
     * Name: RotatePlayer
     * Parameters: Quaternion targetRotation
-    * Return: null
+    * Return: IEnumerator
     *
     * Author: Charlie Taylor
     *
-    * Description: Over a set time, rotate the player to face the new direction
+    * Description: Over a set time, rotate the player to face the inputted direction
     **************************************************************************************/
-    IEnumerator RotatePlayer( Quaternion targetRotation )
+    private IEnumerator RotatePlayer()
     {
+        //Current Position value
+        Vector3 startPosition = transform.position;
+
+        //Add the direction to where you are to get the vector
+        Vector3 targetPosition = transform.position + m_playerController.GetMoveDirection();
+
+        //Get target angle in degrees
+        float targetAngle = Mathf.Rad2Deg * ( Mathf.Atan2( targetPosition.x - startPosition.x, targetPosition.z - startPosition.z ) );
+
+        //Debug.Log( targetAngle ); 
+
+        Quaternion targetRotation = Quaternion.Euler( new Vector3( 0f, targetAngle, 0f ) );
+
         //While time is still less than the rotate time speed thing, rotate to the position
-        for( var t = 0f; t < 1; t += Time.deltaTime / m_rotateSpeed )
+        for ( var elapsedTime = 0f; elapsedTime < 1; elapsedTime += Time.deltaTime / m_rotateSpeed )
         {
-            transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, t );
+            transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, elapsedTime );
             yield return null;
         }
 	}
 
+    //Turned off Air Attacks as they were incomplete, but wanted to leave it here for the future
+ //   private void GroundpoundActivated()
+ //   {
+ //       //m_playerController.m_playerVelocity.y -= Mathf.Sqrt( m_jumpForce * -3.0f * m_gravityValue )
+ //       m_playerController.m_playerVelocity.y = -15f;
+ //       //Begin plumetting to the ground
+
+ //       m_playerController.m_canFall = true;
+
+ //       m_playerController.m_canDodge = false;
+ //   }
+
+ //   private void GrounpoundLanded()
+	//{
+ //       //AoE Attack
+ //       Debug.Log( "Big AoE" );
+ //       StartCoroutine( ExpandGroundpoundSphere() );
+	//}
 
 
+ //   IEnumerator ExpandGroundpoundSphere()
+	//{
+ //       float timer = 0;
+ //       Vector3 MaxSize = new Vector3(m_maxSphereSize, m_maxSphereSize, m_maxSphereSize ); 
 
 
+ //       while( timer < m_timeToGrow )
+	//	{
 
+ //           //Debug.Log( m_sphereColliderTransform.localScale );
+ //           m_sphereColliderTransform.localScale = Vector3.Lerp( m_sphereColliderTransform.localScale, MaxSize, (timer/m_timeToGrow) );
+ //           timer += Time.deltaTime;
 
-
-
-
-
-
-
-
-
-    private void GroundpoundActivated()
-    {
-        //m_playerController.m_playerVelocity.y -= Mathf.Sqrt( m_jumpForce * -3.0f * m_gravityValue )
-        m_playerController.m_playerVelocity.y = -15f;
-        //Begin plumetting to the ground
-
-        m_playerController.m_canFall = true;
-
-        m_playerController.m_canDodge = false;
-    }
-
-    private void GrounpoundLanded()
-	{
-        //AoE Attack
-        Debug.Log( "Big AoE" );
-        StartCoroutine( ExpandGroundpoundSphere() );
-	}
-
-    IEnumerator ExpandGroundpoundSphere()
-	{
-        float timer = 0;
-        Vector3 MaxSize = new Vector3(m_maxSphereSize, m_maxSphereSize, m_maxSphereSize ); 
-
-
-        while( timer < m_timeToGrow )
-		{
-
-            //Debug.Log( m_sphereColliderTransform.localScale );
-            m_sphereColliderTransform.localScale = Vector3.Lerp( m_sphereColliderTransform.localScale, MaxSize, (timer/m_timeToGrow) );
-            timer += Time.deltaTime;
-
-            yield return null;
-        }
+ //           yield return null;
+ //       }
         
-        m_sphereColliderTransform.localScale = new Vector3( 0.5f, 0.5f, 0.5f );
-    }
+ //       m_sphereColliderTransform.localScale = new Vector3( 0.5f, 0.5f, 0.5f );
+ //   }
 }

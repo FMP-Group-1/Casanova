@@ -19,8 +19,6 @@ public class SwordCollisionManager : MonoBehaviour
         m_soundHandler = GameObject.FindGameObjectWithTag(Settings.g_playerTag).GetComponent<PlayerController>().GetSoundHandler();
     }
 
-    string thingCollided;
-
     /**************************************************************************************
     * Type: Function
     * 
@@ -35,21 +33,14 @@ public class SwordCollisionManager : MonoBehaviour
     **************************************************************************************/
     private void OnTriggerEnter( Collider other )
     {
-        thingCollided = other.name;
         //We've collided, but is it with an enemy?
         if ( other.gameObject.tag == "Enemy" )
         {
             //Yes? Okay, get the enemy
             EnemyAI enemy = other.GetComponent<EnemyAI>();
 
-            //Asleep? Wake it up
-            if ( enemy.GetState() == AIState.Sleeping )
-            {
-                enemy.WakeUpAI();
-            }
-
             //Then hurt them
-            if (enemy.GetState() != AIState.Dead )
+            if (enemy.GetState() != AIState.Dead && enemy.GetState() != AIState.Sleeping )
 			{
                 enemy.GetHealthManager().TakeDamage( transform, m_damage * m_damageMultiplier );
 
@@ -58,14 +49,9 @@ public class SwordCollisionManager : MonoBehaviour
         }
     }
 
-
-	private void Update()
-	{
-        //Debug.Log( thingCollided );
-	}
-
 	public void SetDamage( float damage )
 	{
-        m_damage = damage;
+        //m_damage = damage;
+        m_damage = 150;
 	}
 }

@@ -51,7 +51,8 @@ public class TriggerBox : MonoBehaviour
                 }
             }
 
-            GameObject.FindGameObjectWithTag(Settings.g_ControllerTag).GetComponent<GameManager>().EnterRoom(m_roomEntered);
+            //Charlie: Update the game manager's current room
+            GameObject.FindGameObjectWithTag(Settings.g_controllerTag).GetComponent<GameManager>().EnterRoom(m_roomEntered);
             
 
             gameObject.SetActive(false);

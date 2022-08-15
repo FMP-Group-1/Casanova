@@ -52,7 +52,7 @@ public class EnemyDamageManager : CharacterDamageManager
         //Disable UI at spawn
         ShowUI( false );
 
-        m_spawnManager = GameObject.FindGameObjectWithTag( Settings.g_ControllerTag ).GetComponent<SpawnManager>();
+        m_spawnManager = GameObject.FindGameObjectWithTag( Settings.g_controllerTag ).GetComponent<SpawnManager>();
 
         m_enemyAI = GetComponent<EnemyAI>();
 

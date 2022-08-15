@@ -12,7 +12,8 @@ using UnityEngine;
 **************************************************************************************/
 public class RespawnManager : MonoBehaviour
 {
-    [SerializeField, Tooltip("The Respawn Points for the player.\nTHE AMOUNT AND THE ORDER ARE IMPORTANT.\nThey must be ordered and have the same amount of entries as the \"Room\" enum! ")]
+    [SerializeField, Tooltip( "The Respawn Point Parent for the player.\nTHE AMOUNT AND THE ORDER ARE IMPORTANT.\nThey must be ordered in the heirachy and have the same amount of entries as the \"Room\" enum! " )]
+    private Transform m_respawnMarkersParent;
     private Transform[] m_respawnPoints;
 
     //The room you should respawn in if you were to die right now
@@ -41,7 +42,14 @@ public class RespawnManager : MonoBehaviour
         m_player = GameObject.FindGameObjectWithTag( Settings.g_playerTag );
         //Game Manager is on the same object as this script
         m_gameManager = gameObject.GetComponent<GameManager>();
-    }
+
+        m_respawnPoints = new Transform[m_respawnMarkersParent.childCount];
+        for (int i = 0; i < m_respawnPoints.Length; i++ )
+		{
+            m_respawnPoints[i] = m_respawnMarkersParent.GetChild(i).transform;
+		}
+
+}
 
     /**************************************************************************************
     * Type: Function

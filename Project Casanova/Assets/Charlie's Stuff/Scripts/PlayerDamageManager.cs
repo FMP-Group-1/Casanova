@@ -1,79 +1,157 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: PlayerDamageManager
+*
+* Author: Charlie Taylor
+*
+* Description: Child of CharacterDamageManager to affect just the Player object
+**************************************************************************************/
 public class PlayerDamageManager : CharacterDamageManager
 {
+    //Reference to the PlayerContrller script
     private PlayerController m_playerController;
-
-    GameObject m_gameController;
-
-    private float m_respawnDelay;
-
+    //Game Controller
+    private GameObject m_gameController;
+    
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Start
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Call base setup and then fill member vars with components and objects
+    **************************************************************************************/
     protected override void Start()
     {
         base.Start();
         m_playerController = GetComponent<PlayerController>();
-        m_gameController = GameObject.FindGameObjectWithTag( "GameController" );
+        m_gameController = GameObject.FindGameObjectWithTag( Settings.g_controllerTag );
     }
 
-    // Update is called once per frame
-    void Update()
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: TakeDamage
+    * Parameters: Transform othersTransform, float damage
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Take damage from enemies, adding the player exclusive LoseControl()
+    **************************************************************************************/
+    public override void TakeDamage( Transform othersTransform, float damage )
     {
-    }
-
-
-    public override void TakeDamage(Transform othersTransform, float damage = 30f )
-    {
+        //Only run if alive
         if ( GetAlive() )
         {
+            //Only run if not invulnerable
             if ( !GetInvulnerable() )
             {
+                //Player does have staggerable functionality in base, but that is only utilised by enemies for now
                 m_playerController.LoseControl();
 
+                //Only bother calling if this is true as it checks the same stuff
+                base.TakeDamage( othersTransform, damage );
             }
-            base.TakeDamage( othersTransform, damage );
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Respawn
+    * Parameters: Transform spawnPos
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Respawn the player at the set spawn Position fed in by Respawn Manager
+    **************************************************************************************/
     public void Respawn( Transform spawnPos )
 	{
-        //need to test if i actually need to disable controller
-        GetComponent<CharacterController>().enabled = false;
+        //Move
         transform.position = spawnPos.position;
-        GetComponent<CharacterController>().enabled = true;
 
+        //Reset values
         SetAlive( true );
-        SetHealth( 100f );
+        ResetHealth();
         SetInvulnerable( false );
-        GetAnimator().SetTrigger( "Respawn" );
+        //Only place this trigger is used.
+
+        ResetAnimTriggers();
 
     }
 
+    private void ResetAnimTriggers()
+	{
+        GetAnimator().SetTrigger( "Respawn" );
+        
+        GetAnimator().ResetTrigger( "light" );
+        GetAnimator().ResetTrigger( "heavy" );
+        GetAnimator().ResetTrigger( "attacked" );
+        GetAnimator().ResetTrigger( "dodge" );
+        GetAnimator().ResetTrigger( GetStaggerAnimTrigger() );
+        GetAnimator().ResetTrigger( GetDieAnimTrigger() );
+
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: PlayDamageSFX
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Play the player's damage SFX
+    **************************************************************************************/
     protected override void PlayDamageSFX()
     {
         m_playerController.GetSoundHandler().PlayDamageSFX();
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: PlayDeathSFX
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Play thje player#s death SFX
+    **************************************************************************************/
     protected override void PlayDeathSFX()
     {
         m_playerController.GetSoundHandler().PlayDeathSFX();
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Die
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Player exclusive Die override.
+    *              Call Game Manager's die, to prep for respawn
+    **************************************************************************************/
     protected override void Die()
     {
         base.Die();
         m_playerController.LoseControl();
 
         m_gameController.GetComponent<GameManager>().Die();
-        /*
-        m_animator.ResetTrigger( "light" );
-        m_animator.ResetTrigger( "heavy" );
-        m_animator.ResetTrigger( "attacked" );
-        m_animator.ResetTrigger( "dodge" );
-        m_animator.ResetTrigger( an_getHitTrigger );
-        m_animator.ResetTrigger( an_death );*/
         
     }
 

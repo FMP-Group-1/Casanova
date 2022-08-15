@@ -1,56 +1,82 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: OpenDoor
+*
+* Author: Charlie Taylor, Dean Pearce
+*
+* Description: A child of Interactable, this is for opening the cell door, but likely
+*              could be reutilised for other doors if they were added
+**************************************************************************************/
 public class OpenDoor : Interactable
 {
-    [SerializeField]
+    [Header("Door Settings")]
+    [SerializeField,Range(0.0f, 270.0f), Tooltip("The Y angle that the door should rotate to")]
     private float m_targetAngle;
-    
-    [SerializeField, Range(0.0f, 2.0f)]
+    [SerializeField, Range(0.0f, 2.0f), Tooltip("How long to rotate")]
     private float m_rotationTime;
-
+    
+    //Sound for this door opening
     private ObjectSoundHandler m_soundHandler;
 
-    // Start is called before the first frame update
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Start
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Populate sound handler object with component attached
+    **************************************************************************************/
     void Start()
     {
-        //m_targetAngle -= transform.eulerAngles.y;
         m_soundHandler = GetComponent<ObjectSoundHandler>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Interact
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Do the base interact to affect the player, and rotate the door
+    **************************************************************************************/
     public override void Interact()
 	{
         base.Interact();
-
-        //Get the angle where your inputs are, relative to camera
-        //Pass that into a quaternion
-        Quaternion targetRotation = Quaternion.Euler( 0f, m_targetAngle, 0f );
-
-        //gameObject.GetComponent<Collider>().enabled = false;
-        //Rotate to it using rotation speed
-        StartCoroutine(OpenCellDoor(targetRotation));
-
-
+        StartCoroutine(OpenCellDoor());
     }
 
-    private IEnumerator OpenCellDoor(Quaternion targetRotation)
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: OpenCellDoor
+    * Parameters: n/a
+    * Return: IEnumerator
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Rotate door over time
+    **************************************************************************************/
+    private IEnumerator OpenCellDoor()
 	{
         yield return new WaitForSeconds( 1.0f );
+
+        Quaternion targetRotation = Quaternion.Euler( 0f, m_targetAngle, 0f );
 
         //Play door noise
         m_soundHandler.PlayCellDoorOpenSFX();
 
-        float timer = 0f;
-        while (timer < m_rotationTime )
+        for ( var elapsedTime = 0f; elapsedTime < 1; elapsedTime += Time.deltaTime / m_rotationTime )
 		{
-            timer += Time.deltaTime;
             transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * m_rotationTime );
             yield return null;
         }

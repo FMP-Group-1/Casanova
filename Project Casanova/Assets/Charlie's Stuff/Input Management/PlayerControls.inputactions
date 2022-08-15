@@ -6,7 +6,7 @@
             "id": "293d99f3-0121-44ac-9767-de8e4b1ff3fe",
             "actions": [
                 {
-                    "name": "LightAtatck",
+                    "name": "LightAttack",
                     "type": "Button",
                     "id": "af44bd54-638b-4331-8647-69d6a108e183",
                     "expectedControlType": "Button",
@@ -18,15 +18,6 @@
                     "name": "HeavyAttack",
                     "type": "Button",
                     "id": "e6806351-45e6-4f82-ad99-818d2b12d6c6",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Sheathe/Unsheathe",
-                    "type": "Button",
-                    "id": "1659f43b-8b55-42ec-8be8-4b3085bf93be",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -50,7 +41,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "LightAtatck",
+                    "action": "LightAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -61,7 +52,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "LightAtatck",
+                    "action": "LightAttack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -84,28 +75,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "HeavyAttack",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "65eed4d9-3efa-43fe-9fcd-4f101edc6641",
-                    "path": "<Keyboard>/q",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Sheathe/Unsheathe",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "c703df55-b2e0-4d61-9eff-e16dddf1020f",
-                    "path": "<Gamepad>/dpad/up",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Sheathe/Unsheathe",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

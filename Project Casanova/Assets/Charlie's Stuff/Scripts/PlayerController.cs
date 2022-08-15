@@ -1,88 +1,73 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections;
 using UnityEngine.UI;
-
-[RequireComponent( typeof( CharacterController ) )]
-
+/**************************************************************************************
+* Type: Class
+* 
+* Name: PlayerController
+*
+* Author: Charlie Taylor
+*
+* Description: Managing the player's movement, jumping and locking them when they can't
+*              move
+**************************************************************************************/
 public class PlayerController : MonoBehaviour
 {
-    public enum PlayerState
-	{
-        Menu,
-        Game
-	}
-
-    [SerializeField]
-    private PlayerState m_playerState = PlayerState.Menu;
+    //Start in menu state
+    private bool m_inMenu = true;
+    private int an_menuState;
 
     //Input actions
-    [SerializeField]
-    [Tooltip( "Movement Control Input" )]
+    [Header( "Input Controls" )]
+    [SerializeField, Tooltip( "Movement Input" )]
     private InputActionReference m_movementControl;
+    [SerializeField, Tooltip( "Dodge Control Input" )]
+    private InputActionReference m_dodgeControl;
 
-    /*
+    //Jump turned off
     [SerializeField]
     [Tooltip( "Jump Control Input" )]
     private InputActionReference m_jumpControl;
-    */
 
-    [SerializeField]
-    [Tooltip( "Dodge Control Input" )]
-    private InputActionReference m_dodgeControl;
+
 
     //Player Components
-    //Melee Controler
     private MeleeController m_meleeController;
-    //The Animator Component
     private Animator m_animator;
-    //Character Controller
     private CharacterController m_controller;
-
-    //Player Health Thing
     private CharacterDamageManager m_playerHealth;
 
     //Player stats
     //Move Speed
-    [SerializeField]
-    [Tooltip("How fast player runs")]
-    [Range( 0.0f, 8.0f )]
+    [Header( "Player Settings" )]
+    [SerializeField, Range( 0.0f, 8.0f ), Tooltip( "How fast the player runs" )]
     private float m_playerSpeed = 5.0f;
-    
-    /*
-    [SerializeField]
-    [Tooltip( "Player jump force" ), Range( 1.0f, 15.0f )]
-    //How hard they jump
+    [SerializeField, Range( 1.0f, 15.0f ), Tooltip( "Player jump force" )]
     private float m_jumpForce = 1.0f;
-    */
-
-    //gravity
-    [SerializeField, Range(0, -15)]
+    [SerializeField, Range( 0.0f, -15.0f ), Tooltip( "Gravity that affects the player as it does not use physics" )]
     private float m_gravityValue = -9.81f;
-    //How fast the player rotates when moving in a new direction
-    [SerializeField]
-    [Range( 2, 5 )]
+    [SerializeField, Range( 0.0f, -30.0f ), Tooltip( "Player's Terminal Velocity" )]
+    private float m_terminalVelocity = -20.0f;
+    [SerializeField, Range( 2, 5 ), Tooltip( "How fast the player rotates when moving in a new direction" )]
     private float m_rotationSpeed = 4f;
-    //How far to check for the ground
+    [SerializeField, Range( 0.0f, 1.0f ), Tooltip( "How quickly the blend tree animations blend together on a change" )]
+    private float m_dampTime;
 
-    //Being Public is not finalised. This will become a getter/setter (Called in Melee.cs)
-    public Vector3 m_playerVelocity;
-    [SerializeField]
+    //Player's velocity (Only for Y, just easier as a vector 3)
+    private Vector3 m_playerVelocity;
+    //Is the player touching the ground
     private bool m_isGrounded;
     //Camera's transform position, used for directional movmement/attacking
     private Transform m_cameraMainTransform;
 
     //Values that allow player to move or fall or rotate
-    //All of these Being Public is not finalised. They will become getters/setters (Called in Melee.cs)
+    private bool m_canMove = true;
+    private bool m_canFall = true;
+    private bool m_canRotate = true;
+    private bool m_canDodge = true;
 
-    [SerializeField]
-    [Tooltip( "Movement damp time" )]
-    [Range(0,1)]
-    private float m_dampTime;
-    public bool m_canMove = true;
-    public bool m_canFall = true;
-    public bool m_canRotate = true;
-    public bool m_canDodge = true;
+    //When regaining control from an attack, if menu was pressed inbetween, it could allow player to regain control. This stops that
+    private bool m_menuLock = true;
 
     //Normalised float of how much player is moving. Used in 1D Blend Tree
     private float m_moveAmount;
@@ -96,76 +81,14 @@ public class PlayerController : MonoBehaviour
     private int an_beganFalling;
     private int an_yVelocity;
 
-
-
-    [Header("Debug Stuff")]
-
-    [SerializeField]
-    [Tooltip("Input Direction Visualiser")]
-    private LineRenderer m_inputDirectionVisual;
-    private Vector3 m_previousDirection;
-
-    [SerializeField]
-    [Tooltip( "Current Direction Visualiser" )]
-    private LineRenderer m_currentDirectionFaced;
-
-    [SerializeField]
-    private Text m_debugText;
-
-
-
-    [Header("Raycast Shit")]
-    [SerializeField, Range(0, 1)]
-    private float m_sphereRadius;
-    [SerializeField]
+    [Header( "Landing Raycast Values" )]
+    [SerializeField, Range( 0, 1 ), Tooltip( "How big the sphere at the feet of the player should be to detect the floor" )]
+    private float m_raycastDistance;
+    [SerializeField, Tooltip( "Layers that allow the player to land and not stay in fall" )]
     private LayerMask m_landableLayers;
-
-    private Vector3 m_rayOrigin;
-    private Vector3 m_rayDirection;
 
     // Dean Note: Adding sound handler here for player sound
     private PlayerSoundHandler m_soundHandler;
-
-
-    private bool m_menuLock = true;
-
-    /**************************************************************************************
-    * Type: Function
-    * 
-    * Name: OnEnable
-    * Parameters: n/a
-    * Return: n/a
-    *
-    * Author: Charlie Taylor
-    *
-    * Description: Enable input actions
-    **************************************************************************************/
-    private void OnEnable()
-    {
-        //Input actions need to be enabled
-        m_movementControl.action.Enable();
-        //m_jumpControl.action.Enable();
-        m_dodgeControl.action.Enable();
-    }
-
-    /**************************************************************************************
-    * Type: Function
-    * 
-    * Name: OnDisable
-    * Parameters: n/a
-    * Return: n/a
-    *
-    * Author: Charlie Taylor
-    *
-    * Description: Disable input actions
-    **************************************************************************************/
-    private void OnDisable()
-    {
-        //Input actions need to be diabled
-        m_movementControl.action.Disable();
-        //m_jumpControl.action.Disable();
-        m_dodgeControl.action.Disable();
-    }
 
     /**************************************************************************************
     * Type: Function
@@ -176,165 +99,42 @@ public class PlayerController : MonoBehaviour
     *
     * Author: Charlie Taylor
     *
-    * Description: Setup any variables or components
+    * Description: Prep the player for the begining of the game
     **************************************************************************************/
     private void Start()
     {
+        //Input actions need to be enabled
+        m_movementControl.action.Enable();
+        m_jumpControl.action.Enable();
+        m_dodgeControl.action.Enable();
         //Asign stuff with GetComponent instead of in Inspector
         m_meleeController = GetComponent<MeleeController>();
         m_animator = GetComponent<Animator>();
         m_controller = gameObject.GetComponent<CharacterController>();
-        m_cameraMainTransform = Camera.main.transform;
-
         m_playerHealth = gameObject.GetComponent<CharacterDamageManager>();
-
         m_soundHandler = GetComponent<PlayerSoundHandler>();
 
+        //Animation String to hash parameters
         an_movingSpeed = Animator.StringToHash( "movingSpeed" );
         an_inAir = Animator.StringToHash( "inAir" );
         an_jumped = Animator.StringToHash( "jumped" );
         an_dodge = Animator.StringToHash( "dodge" );
         an_beganFalling = Animator.StringToHash( "beganFalling" );
         an_yVelocity = Animator.StringToHash( "yVelocity" );
+        an_menuState = Animator.StringToHash( "MenuState" );
 
-        if (m_playerState == PlayerState.Menu )
-		{
-            m_animator.SetBool( "MenuState", true );
-		}
+        //Get Main Camera
+        m_cameraMainTransform = Camera.main.transform;
+
+        //Start in menu state
+        if ( m_inMenu )
+        {
+            m_animator.SetBool( an_menuState, true );
+        }
         else
-		{
-            m_animator.SetBool( "MenuState", false );
-        }
-    }
-
-    /**************************************************************************************
-    * Type: Function
-    * 
-    * Name: GetPlayerInput
-    * Parameters: n/a
-    * Return: Vector3
-    *
-    * Author: Charlie Taylor
-    *
-    * Description: Return the players input values as a Vector3 direction
-    **************************************************************************************/
-    public Vector3 GetPlayerInput()
-	{
-        //The player inputs are a vector2, but everywhere I used it, it's in relation to a Vector 3, and
-        //The Y value of the Vecrtor2 was always put in the Z and it was kind of confusing, so now it returns
-        //a Vector3, with X and Z being the correct values.
-        
-        //Y always being 0 may be a waste, but it made it far more readable for me
-        return new Vector3( m_movementControl.action.ReadValue<Vector2>().x, 0f, m_movementControl.action.ReadValue<Vector2>().y);
-    }
-
-    /**************************************************************************************
-    * Type: Function
-    * 
-    * Name: GetMoveDirection
-    * Parameters: n/a
-    * Return: Vector3
-    *
-    * Author: Charlie Taylor
-    *
-    * Description: Using player inputs, and the camera direction, get the direction that 
-    *               the player wants to go
-    **************************************************************************************/
-    public Vector3 GetMoveDirection()
-    {
-
-        #region Snapping Movement
-
-        //Only update value when on ground
-        if ( m_canMove )
         {
-
-            //Get the absolute values of movement inputs (0-1) for use in a 1d Blend tree animations
-            m_moveAmount =  Mathf.Clamp01( Mathf.Abs( GetPlayerInput().x ) + Mathf.Abs( GetPlayerInput().z ) ) ;
-
-            //Get the absolut (0 to 1) values and set to the 3 levels of 0.0, 0.5 and 1.0
-            if ( m_moveAmount >= 0.0f && m_moveAmount <= 0.05f )
-            {
-                m_moveAmount = 0.0f;
-            }
-            else if ( m_moveAmount > 0.05f && m_moveAmount < 0.55f )
-            {
-                m_moveAmount = 0.5f;
-            }
-            else if ( m_moveAmount >= 0.55f )
-            {
-                m_moveAmount = 1.0f ;
-            }
-
-            float animatorCurrentMovingSpeed = m_animator.GetFloat( an_movingSpeed );
-
-            //If animator value not already 0 (Dampening down), and no input and but the animator value is NEARLY 0
-            if ( animatorCurrentMovingSpeed != 0 && m_moveAmount <= 0.05f && animatorCurrentMovingSpeed <= 0.005f )
-            {
-                //set exactly to 0
-                m_animator.SetFloat( an_movingSpeed, 0.0f );
-            }
-            else // if not, just do normal damp time stuff
-            {
-                //Animator variable set to move amount
-                m_animator.SetFloat( an_movingSpeed, m_moveAmount, m_dampTime, Time.deltaTime );
-            }
-
-            //If we are in the air, set the animator value to 0. May just overwrite all above but better than MANY else ifs? Right?
-            if ( !m_isGrounded )
-            { 
-                m_animator.SetFloat( an_movingSpeed, 0.0f );
-            }
+            m_animator.SetBool( an_menuState, false );
         }
-        else //We CAN'T move - lost control of some kind, or in combat anim
-        {
-            m_animator.SetFloat( an_movingSpeed, 0.0f );
-        }
-
-
-
-
-        #endregion
-
-        //Move Direction based on the camera angle
-        Vector3 moveDirection = m_cameraMainTransform.forward * GetPlayerInput().z + m_cameraMainTransform.right * GetPlayerInput().x;
-        //No move via Y. That's a jumping thing
-        moveDirection.y = 0f;
-
-        moveDirection.Normalize();
-
-        //Debug.Log( moveDirection );
-        // Debug.Log( moveDirection );
-        //moveDirection is now the direction I want to go
-        return moveDirection;
-    }
-
-
-
-
-    private void Activate()
-	{
-        m_playerState = PlayerState.Game;
-        //m_animator.SetTrigger( "WakeUp" );
-
-        m_animator.SetBool( "MenuState", false );
-
-        gameObject.GetComponent<MeleeController>().enabled = true;
-
-        gameObject.GetComponent<CharacterController>().enabled = true;
-        gameObject.GetComponent<PlayerDamageManager>().enabled = true;
-    }
-
-
-
-    private void OnDrawGizmos()
-    {
-        Gizmos.color = Color.red;
-        Vector3 newVector = m_rayOrigin;
-        newVector.y = m_rayOrigin.y - m_sphereRadius;
-        Debug.DrawRay( m_rayOrigin, m_rayDirection * m_sphereRadius, Color.yellow );//* m_fallCheckRange );
-        Gizmos.DrawSphere( m_rayOrigin + m_rayDirection * m_sphereRadius, m_sphereRadius );
-
     }
 
     /**************************************************************************************
@@ -350,41 +150,156 @@ public class PlayerController : MonoBehaviour
     **************************************************************************************/
     void Update()
     {
-        switch ( m_playerState )
-		{
-            case PlayerState.Menu:
+        if ( !m_inMenu )
+        {
+            //Velocity gets modified in jump check and what not, but i need to know what it was last time
+            float yVelocityLastFrame = m_playerVelocity.y;
 
-                break;
-            case PlayerState.Game:
-                PlayerGameUpdate();
-                break;
+            MovePlayer();
+            JumpCheck();
+            GroundedCheck();
+            LandCheck( yVelocityLastFrame );
+            DodgeCheck();
 
+            m_animator.SetFloat( an_yVelocity, m_playerVelocity.y );
         }
-	}
-
+    }
 
     /**************************************************************************************
     * Type: Function
     * 
-    * Name: PlayerGameUpdate
+    * Name: GetPlayerInput
+    * Parameters: n/a
+    * Return: Vector3
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Return the players input values as a Vector3 direction
+    **************************************************************************************/
+    private Vector3 GetPlayerInput()
+    {
+        /* The player inputs are a vector2, but everywhere I used it,
+         * it's in relation to a Vector 3, and the Y value of the Vector2 
+         * was always put in the Z and it was kind of confusing, so now it returns
+         * a Vector3, with X and Z being the correct values.*/
+
+        //Y always being 0 may be a waste, but it made it far more readable for me
+        return new Vector3( m_movementControl.action.ReadValue<Vector2>().x, 0f, m_movementControl.action.ReadValue<Vector2>().y );
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: GetMoveDirection
+    * Parameters: n/a
+    * Return: Vector3
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Using player inputs, and the camera direction, get the direction that 
+    *               the player wants to go. Used in here and MeleeController
+    **************************************************************************************/
+    public Vector3 GetMoveDirection()
+    {
+        //Snap inputs 
+        InputSnapping();
+
+        //Move Direction based on the camera angle
+        Vector3 moveDirection = m_cameraMainTransform.forward * GetPlayerInput().z + m_cameraMainTransform.right * GetPlayerInput().x;
+        //No move via Y. That's a jumping thing
+        moveDirection.y = 0f;
+        moveDirection.Normalize();
+
+        //moveDirection is now the direction I want to go
+        return moveDirection;
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: InputSnapping
     * Parameters: n/a
     * Return: n/a
     *
     * Author: Charlie Taylor
     *
-    * Description: Update everything for the player during GAME PLAY (so not menu)
+    * Description: Snap speed and animations for moving to be 0, 0.5 or 1
     **************************************************************************************/
-    private void PlayerGameUpdate()
+    private void InputSnapping()
+    {
+        //Only update value if you can move
+        if ( m_canMove && m_isGrounded )
+        {
+            //Get the absolute values of movement inputs (0-1) for use in a 1d Blend tree animations
+            m_moveAmount = Mathf.Clamp01( Mathf.Abs( GetPlayerInput().x ) + Mathf.Abs( GetPlayerInput().z ) );
+
+            //Get the absolute (0 to 1) values and set to the 3 levels of 0.0, 0.5 and 1.0
+            // This is how most games do it, rather than moving and animating at the 0.75 mark
+            if ( m_moveAmount >= 0.0f && m_moveAmount <= 0.05f )
+            {
+                m_moveAmount = 0.0f;
+            }
+            else if ( m_moveAmount > 0.05f && m_moveAmount < 0.55f )
+            {
+                m_moveAmount = 0.5f;
+            }
+            else if ( m_moveAmount >= 0.55f )
+            {
+                m_moveAmount = 1.0f;
+            }
+            //Temp float for updating JUST the animator's move amount
+            float animatorCurrentMovingSpeed = m_animator.GetFloat( an_movingSpeed );
+
+            //If animator value not already 0 (Dampening down), and no input and but the animator value is NEARLY 0
+            if ( animatorCurrentMovingSpeed != 0 && m_moveAmount <= 0.05f && animatorCurrentMovingSpeed <= 0.01f )
+            {
+                //set exactly to 0
+                m_animator.SetFloat( an_movingSpeed, 0.0f );
+            }
+            else // if not, just do normal damp time stuff
+            {
+                //Animator variable set to move amount
+                m_animator.SetFloat( an_movingSpeed, m_moveAmount, m_dampTime, Time.deltaTime );
+            }
+        }
+        else //We don't want to update that value, so can't move or in air
+        {
+            m_animator.SetFloat( an_movingSpeed, 0.0f );
+        }
+
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Activate
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Activate player after they stand up
+    *              Called by Sit to Stand animation 
+    **************************************************************************************/
+    private void Activate()
+    {
+        m_inMenu = false;
+        m_animator.SetBool( an_menuState, false );
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: MovePlayer
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Move player based on inputs and camera direction
+    **************************************************************************************/
+    private void MovePlayer()
 	{
-
-
-        //1st line of update for info if it is needed
-        float yVelocityLastFrame = m_playerVelocity.y;
-
-        m_animator.SetFloat( an_yVelocity, m_playerVelocity.y );
-
-        #region Moving
-        // MOVE FIRST
         //If you're even touching Inputs at all
         if ( GetMoveDirection() != Vector3.zero )
         {
@@ -392,7 +307,7 @@ public class PlayerController : MonoBehaviour
             {
                 //We are touching inputs AND we can move so, move
                 //Multiply the move direction by  (speed * move amount) rather than just speed, and do it all before delta time
-                m_controller.Move( ( GetMoveDirection() * ( m_playerSpeed * m_moveAmount ) ) * Time.deltaTime );
+                m_controller.Move( GetMoveDirection() * ( m_playerSpeed * m_moveAmount ) * Time.deltaTime );
             }
 
             //Rotate player when moving, not when Idle
@@ -403,109 +318,115 @@ public class PlayerController : MonoBehaviour
                 //Pass that into a quaternion
                 Quaternion targetRotation = Quaternion.Euler( 0f, targetAngle, 0f );
 
-
                 //Rotate to it using rotation speed
                 transform.rotation = Quaternion.Lerp( transform.rotation, targetRotation, Time.deltaTime * m_rotationSpeed );
             }
         }
-        #endregion
-        
-        /*
-        #region Jumping
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: JumpCheck
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Check if Jump pressed
+    **************************************************************************************/
+    private void JumpCheck()
+	{
         //Jumping
         if ( m_jumpControl.action.triggered && m_isGrounded )
         {
-            //Jumped
-            Debug.Log( "Jumped" );
             m_animator.SetTrigger( an_jumped );
             m_playerVelocity.y = m_jumpForce;
         }
-        #endregion
-        */
+    }
 
-        #region Grounded Check
-        //Raycast for the groundpound
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: GroundedCheck
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Check if you are jsut on the ground
+    **************************************************************************************/
+    private void GroundedCheck()
+	{
+        //Raycast informations
         RaycastHit hit;
 
-        //lil but up 
-        m_rayOrigin = transform.position - m_rayDirection * 0.1f;
-        m_rayDirection = Vector3.down;
+        Vector3 rayDirection = Vector3.down;
+        //raise the raycast a little bit up 
+        Vector3 rayOrigin = transform.position - rayDirection * 0.1f;
 
-        Debug.DrawRay( m_rayOrigin, m_rayDirection * m_sphereRadius, Color.yellow );//* m_fallCheckRange );
 
-		//If the raycast hits something below you
-		//AND going DOWN, or just Flat walkin ( So it don't trigger on a jump)
-		//if ( Physics.SphereCast( m_rayOrigin, m_sphereRadius, m_rayDirection, out hit, m_sphereRadius, m_landableLayers ) )
-		//{
-		if ( Physics.Raycast( m_rayOrigin, m_rayDirection, out hit, m_sphereRadius, m_landableLayers )
-            && ( m_playerVelocity.y <= 0f ))
+        //If the raycast hits something below you AND going DOWN/or just Flat walkin ( So it don't trigger on a jump)
+        if ( Physics.Raycast( rayOrigin, rayDirection, out hit, m_raycastDistance, m_landableLayers )
+            && ( m_playerVelocity.y <= 0f ) )
         {
-		    Debug.DrawLine( hit.point, hit.point + Vector3.right );
-            Debug.DrawLine( hit.point, hit.point + Vector3.back ); 
+            //WE ARE CLOSE ENOUGH TO BE GROUNDED
+            //Just like, GO DOWN and hit ground and stop. setting transform doesn't work
             
-            
-            m_debugText.text = "RAYCAST HIT";
-            
+            transform.position = hit.point;
 
-                //m_debugText.text += "\nPlayer Velocity <= 0, so Grounded";
+            //m_controller.Move( Vector3.down );
 
-
-            m_controller.Move( Vector3.down );
-
-
-
-            // transform.position = hit.point;
             m_isGrounded = true;
-            m_canDodge = true;
             m_canFall = false;
-            //Debug.Log( "Grounded" );
-            //m_debugText.text += "\nLine 365 / Land";
+            m_canDodge = true;
+
             m_playerVelocity.y = 0;
             m_animator.SetBool( an_inAir, false );
         }
         else // If raycast does not hit ground or velocity is not DOWN
         {
-            //Can't dodge in air
-            m_canDodge = false;
-            //m_debugText.text = "RAYCAST FAIL";
             m_canFall = true;
             m_isGrounded = false;
+            //Can't dodge in air
+            m_canDodge = false;
             m_animator.SetBool( an_inAir, true );
         }
+    }
 
-        /*
-        if( m_controller.isGrounded )
-		{
-            m_isGrounded = true;
-		}*/
-
-        #endregion
-
-
-
-
-        //Debug.Log( "Velocity Last Frame: " + yVelocityLastFrame + "\nCurrent Velocity:   " + m_playerVelocity.y );
-        #region Falling
-
-        //If "CAN'T" fall (eg. Attacking in air)
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: LandCheck
+    * Parameters: float yVelocityLastFrame
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Check if JUST landed
+    **************************************************************************************/
+    private void LandCheck( float yVelocityLastFrame )
+	{
+        //If "CAN'T" fall
         if ( !m_canFall )
         {
             //Velocity is 0
             m_playerVelocity.y = 0f;
         }
         //If you are falling, but not at terminal velocity, 
-        else if ( m_playerVelocity.y > -20 && m_canFall )
+        else if ( m_playerVelocity.y > m_terminalVelocity && m_canFall )
         {
             //Accelerate
             m_playerVelocity.y += m_gravityValue * Time.deltaTime;
 
             //if the addition goes UNDER -20, set it to it, and now you'll never come back into this section
-            if ( m_playerVelocity.y < -20 )
+            if ( m_playerVelocity.y < m_terminalVelocity )
             {
-                m_playerVelocity.y = -20;
+                m_playerVelocity.y = m_terminalVelocity;
             }
         }
 
+        //Seperated from above as we wanna call this even if 2nd statement above is called
         //And if you can fall, move that way.
         if ( m_canFall )
         {
@@ -513,63 +434,65 @@ public class PlayerController : MonoBehaviour
             m_controller.Move( m_playerVelocity * Time.deltaTime );
         }
 
-        //You were stationary or going up (You can go from Up 1 to Down -1 in a single frame)
-        if ( ( yVelocityLastFrame >= 0f && m_playerVelocity.y < 0f ) /*&& !m_isGrounded*/ )
+        //You were stationary or going up last frame (You can go from Positvie to negative (skipping 0) in a single frame)
+        if ( ( yVelocityLastFrame >= 0f && m_playerVelocity.y < 0f ) )
         {
-            //m_debugText.text += "\nBEGIN FALL";
             BeginFalling();
         }
+    }
 
-
-        #endregion
-
-        //Dodging
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: DodgeCheck
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Check if we clicked dodge
+    **************************************************************************************/
+    private void DodgeCheck()
+    {
         if ( m_dodgeControl.action.triggered && m_canDodge )
         {
             Dodge();
         }
+    }
 
-
-
-        /*
-		/////////////
-		/// Debug ///
-		/////////////
-		#region Directional Line Renderers
-		//Rotate the Current Direction line renderer
-		m_currentDirectionFaced.SetPosition( 0, transform.position );
-        Vector3 facedDirection = transform.position + transform.forward;
-        m_currentDirectionFaced.SetPosition( 1, facedDirection );
-
-        //If there is a movement direction (So there's input)
-        if ( GetMoveDirection() != Vector3.zero )
-        {
-            //Set vector3 for the line renderer
-            m_previousDirection = GetMoveDirection();
-        }
-        //If no input, it will just use the last 
-
-        //Set input direction Visualisers
-        m_inputDirectionVisual.SetPosition( 0, transform.position );
-        Vector3 inputDirection = transform.position + m_previousDirection;
-        m_inputDirectionVisual.SetPosition( 1, inputDirection );
-		#endregion
-        */
-	}
-
-    
-	private void BeginFalling() 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: BeginFalling
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Handles anything for the BEGINING of a fall
+    **************************************************************************************/
+    private void BeginFalling() 
     { 
         m_animator.SetTrigger( an_beganFalling );
     }
 
-
-
-
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Dodge
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Dodge, rolling out of the way of an attack
+    **************************************************************************************/
     private void Dodge()
 	{
-       // Debug.Log( "Dodge" );
+        //Trigger will play the animation
         m_animator.SetTrigger( an_dodge );
+        //Lock controls 
+        LoseControl();
         m_canMove = false;
         m_canRotate = false;
         m_canDodge = false;
@@ -584,8 +507,7 @@ public class PlayerController : MonoBehaviour
         if ( GetPlayerInput() == Vector3.zero )
         {
             //Add the direction to where you are to get the vector
-            targetPosition = transform.position + m_cameraMainTransform.forward*-1;
-
+            targetPosition = transform.position + m_cameraMainTransform.forward * -1;
         }
         else
         {
@@ -595,36 +517,57 @@ public class PlayerController : MonoBehaviour
         //Get target angle in degrees
         float targetAngle = Mathf.Rad2Deg * ( Mathf.Atan2( targetPosition.x - startPosition.x, targetPosition.z - startPosition.z ) );
 
-        //Debug.Log( targetAngle ); 
-
         transform.rotation = Quaternion.Euler( new Vector3( 0f, targetAngle, 0f ) );
     }
 
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: GetGrounded
+    * Parameters: n/a
+    * Return: bool
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Return if the player is grounded
+    **************************************************************************************/
     public bool GetGrounded()
 	{
         return m_isGrounded;
 	}
 
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ResetDodge
+    * Parameters: n/a
+    * Return: n/a
+    * 
+    * Author: Charlie Taylor
+    *
+    * Description: Regain control of the player after a dodge (Called in animation events)
+    **************************************************************************************/
     private void ResetDodge()
 	{
-
-        m_canRotate = true;
-        m_canMove = true;
-        m_canDodge = true;
-        m_canFall = true;
-        m_meleeController.CanStartNextAttack();
+        //Just calls regain control (so just a dupe, but easier for readability in the animation events)
+        RegainControl();
 	}
 
-    public void SetMenuLock(bool locked)
-	{
-        m_menuLock = locked;
-    }
-
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: LoseControl
+    * Parameters: n/a
+    * Return: n/a
+    * 
+    * Author: Charlie Taylor
+    *
+    * Description: Make the player lose control of the character, for various reasons
+    **************************************************************************************/
     public void LoseControl()
     {
-        //m_animator.SetFloat( an_movingSpeed, 0.0f );
         m_canRotate = false;
         m_canMove = false;
         m_canDodge = false;
@@ -632,6 +575,18 @@ public class PlayerController : MonoBehaviour
         m_meleeController.SetCanAttack( false );
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Regain
+    * Parameters: n/a
+    * Return: n/a
+    * 
+    * Author: Charlie Taylor
+    *
+    * Description: Make the player regain control, as long as not menu locked
+    *              See SetMenuLock()
+    **************************************************************************************/
     public void RegainControl()
 	{
         if ( !m_menuLock )
@@ -646,15 +601,55 @@ public class PlayerController : MonoBehaviour
 
 
     //PUT ALL YOUR GETTERS HERE, LET'S GET CLEAN
-    public void SetDodge( bool canDodge )
+
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetMenuLock
+    * Parameters: bool locked
+    * Return: n/a
+    * 
+    * Author: Charlie Taylor
+    *
+    * Description: Attacks have RegainControl built into anim events
+    *              This means that if you were to start an attack, then pause, and click
+    *              respawn, the respawn function would make the player lose control, but
+    *              then the animation even will return it. This bool will stop that
+    **************************************************************************************/
+    public void SetMenuLock( bool locked )
+    {
+        m_menuLock = locked;
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetCanDodge
+    * Parameters: bool canDodge
+    * Return: n/a
+    * 
+    * Author: Charlie Taylor
+    *
+    * Description: Sets the ability to dodge (Not making the player dodge, just letting them)
+    **************************************************************************************/
+    public void SetCanDodge( bool canDodge )
 	{
         m_canDodge = canDodge;
 	}
-    public bool GetDodge()
-	{
-        return m_canDodge;
-	}
 
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: GetSoundHandler
+    * Parameters: n/a
+    * Return: ref PlayerSoundHandler
+    * 
+    * Author: Dean Pearce
+    *
+    * Description: Returns a reference to the sound handler for the Player
+    **************************************************************************************/
     public ref PlayerSoundHandler GetSoundHandler()
     {
         return ref m_soundHandler;

@@ -28,7 +28,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
             ""id"": ""293d99f3-0121-44ac-9767-de8e4b1ff3fe"",
             ""actions"": [
                 {
-                    ""name"": ""LightAtatck"",
+                    ""name"": ""LightAttack"",
                     ""type"": ""Button"",
                     ""id"": ""af44bd54-638b-4331-8647-69d6a108e183"",
                     ""expectedControlType"": ""Button"",
@@ -40,15 +40,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""name"": ""HeavyAttack"",
                     ""type"": ""Button"",
                     ""id"": ""e6806351-45e6-4f82-ad99-818d2b12d6c6"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Sheathe/Unsheathe"",
-                    ""type"": ""Button"",
-                    ""id"": ""1659f43b-8b55-42ec-8be8-4b3085bf93be"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """",
@@ -72,7 +63,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""LightAtatck"",
+                    ""action"": ""LightAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -83,7 +74,7 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""LightAtatck"",
+                    ""action"": ""LightAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -106,28 +97,6 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""HeavyAttack"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""65eed4d9-3efa-43fe-9fcd-4f101edc6641"",
-                    ""path"": ""<Keyboard>/q"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Sheathe/Unsheathe"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""c703df55-b2e0-4d61-9eff-e16dddf1020f"",
-                    ""path"": ""<Gamepad>/dpad/up"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Sheathe/Unsheathe"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 },
@@ -458,9 +427,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
 }");
         // Combat
         m_Combat = asset.FindActionMap("Combat", throwIfNotFound: true);
-        m_Combat_LightAtatck = m_Combat.FindAction("LightAtatck", throwIfNotFound: true);
+        m_Combat_LightAttack = m_Combat.FindAction("LightAttack", throwIfNotFound: true);
         m_Combat_HeavyAttack = m_Combat.FindAction("HeavyAttack", throwIfNotFound: true);
-        m_Combat_SheatheUnsheathe = m_Combat.FindAction("Sheathe/Unsheathe", throwIfNotFound: true);
         m_Combat_Dodge = m_Combat.FindAction("Dodge", throwIfNotFound: true);
         // Move
         m_Move = asset.FindActionMap("Move", throwIfNotFound: true);
@@ -533,17 +501,15 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     // Combat
     private readonly InputActionMap m_Combat;
     private ICombatActions m_CombatActionsCallbackInterface;
-    private readonly InputAction m_Combat_LightAtatck;
+    private readonly InputAction m_Combat_LightAttack;
     private readonly InputAction m_Combat_HeavyAttack;
-    private readonly InputAction m_Combat_SheatheUnsheathe;
     private readonly InputAction m_Combat_Dodge;
     public struct CombatActions
     {
         private @PlayerControls m_Wrapper;
         public CombatActions(@PlayerControls wrapper) { m_Wrapper = wrapper; }
-        public InputAction @LightAtatck => m_Wrapper.m_Combat_LightAtatck;
+        public InputAction @LightAttack => m_Wrapper.m_Combat_LightAttack;
         public InputAction @HeavyAttack => m_Wrapper.m_Combat_HeavyAttack;
-        public InputAction @SheatheUnsheathe => m_Wrapper.m_Combat_SheatheUnsheathe;
         public InputAction @Dodge => m_Wrapper.m_Combat_Dodge;
         public InputActionMap Get() { return m_Wrapper.m_Combat; }
         public void Enable() { Get().Enable(); }
@@ -554,15 +520,12 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
         {
             if (m_Wrapper.m_CombatActionsCallbackInterface != null)
             {
-                @LightAtatck.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnLightAtatck;
-                @LightAtatck.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnLightAtatck;
-                @LightAtatck.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnLightAtatck;
+                @LightAttack.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnLightAttack;
+                @LightAttack.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnLightAttack;
+                @LightAttack.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnLightAttack;
                 @HeavyAttack.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnHeavyAttack;
                 @HeavyAttack.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnHeavyAttack;
                 @HeavyAttack.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnHeavyAttack;
-                @SheatheUnsheathe.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnSheatheUnsheathe;
-                @SheatheUnsheathe.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnSheatheUnsheathe;
-                @SheatheUnsheathe.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnSheatheUnsheathe;
                 @Dodge.started -= m_Wrapper.m_CombatActionsCallbackInterface.OnDodge;
                 @Dodge.performed -= m_Wrapper.m_CombatActionsCallbackInterface.OnDodge;
                 @Dodge.canceled -= m_Wrapper.m_CombatActionsCallbackInterface.OnDodge;
@@ -570,15 +533,12 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
             m_Wrapper.m_CombatActionsCallbackInterface = instance;
             if (instance != null)
             {
-                @LightAtatck.started += instance.OnLightAtatck;
-                @LightAtatck.performed += instance.OnLightAtatck;
-                @LightAtatck.canceled += instance.OnLightAtatck;
+                @LightAttack.started += instance.OnLightAttack;
+                @LightAttack.performed += instance.OnLightAttack;
+                @LightAttack.canceled += instance.OnLightAttack;
                 @HeavyAttack.started += instance.OnHeavyAttack;
                 @HeavyAttack.performed += instance.OnHeavyAttack;
                 @HeavyAttack.canceled += instance.OnHeavyAttack;
-                @SheatheUnsheathe.started += instance.OnSheatheUnsheathe;
-                @SheatheUnsheathe.performed += instance.OnSheatheUnsheathe;
-                @SheatheUnsheathe.canceled += instance.OnSheatheUnsheathe;
                 @Dodge.started += instance.OnDodge;
                 @Dodge.performed += instance.OnDodge;
                 @Dodge.canceled += instance.OnDodge;
@@ -711,9 +671,8 @@ public partial class @PlayerControls : IInputActionCollection2, IDisposable
     public OtherActions @Other => new OtherActions(this);
     public interface ICombatActions
     {
-        void OnLightAtatck(InputAction.CallbackContext context);
+        void OnLightAttack(InputAction.CallbackContext context);
         void OnHeavyAttack(InputAction.CallbackContext context);
-        void OnSheatheUnsheathe(InputAction.CallbackContext context);
         void OnDodge(InputAction.CallbackContext context);
     }
     public interface IMoveActions

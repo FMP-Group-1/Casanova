@@ -239,6 +239,22 @@ public class CharacterDamageManager : MonoBehaviour
     /**************************************************************************************
     * Type: Function
     * 
+    * Name: GetDieAnimTrigger
+    * Parameters: n/a
+    * Return: int
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Returns the Die trigger trigger value. In use in children classes
+    **************************************************************************************/
+    protected int GetDieAnimTrigger()
+    {
+        return an_deathTrigger;
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
     * Name: GetAnimator
     * Parameters: n/a
     * Return: Animator

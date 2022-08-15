@@ -24,6 +24,6 @@ public class EndGame : MonoBehaviour
 		Settings.g_canPause = false;
 		Cursor.visible = true;
 		Cursor.lockState = CursorLockMode.None;
-		GameObject.FindGameObjectWithTag( Settings.g_ControllerTag ).GetComponent<UIManager>().CompleteGame();
+		GameObject.FindGameObjectWithTag( Settings.g_controllerTag ).GetComponent<UIManager>().CompleteGame();
 	}
 }

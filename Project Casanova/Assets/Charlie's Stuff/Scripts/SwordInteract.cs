@@ -18,9 +18,9 @@ public class SwordInteract : Interactable
 		EventManager.StartAlertEnemiesEvent( m_enemyGroupToAlert );
 		EventManager.StartSpawnEnemiesEvent( m_enemyGroupToAlert + 1 );
 
-		GameObject.FindGameObjectWithTag( Settings.g_ControllerTag ).GetComponent<GameManager>().EnterRoom( m_roomToActivate );
+		GameObject.FindGameObjectWithTag( Settings.g_controllerTag ).GetComponent<GameManager>().EnterRoom( m_roomToActivate );
 
 		m_light.SetActive(false);
-		m_player.GetComponent<WeaponSwap>().DropTableLeg(gameObject);
+		GetPlayer().GetComponent<WeaponSwap>().DropTableLeg(gameObject);
 	}
 }

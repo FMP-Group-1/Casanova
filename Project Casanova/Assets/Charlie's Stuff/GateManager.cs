@@ -22,7 +22,10 @@ public class GateManager : MonoBehaviour
             case Room.Hall:
                 m_cellsExit.ResetGate();
                 break;
-            case Room.Armory:
+            case Room.Armory1:
+                //We respawn inside the armoury, trapped
+                break;
+            case Room.Armory2:
                 m_armoryExit.ResetGate();
                 m_guardRoomEntrance.ResetGate();
                 break;

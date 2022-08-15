@@ -11,7 +11,8 @@ public enum Room
 {
     Cell,
     Hall,
-    Armory,
+    Armory1,
+    Armory2,
     GuardRoom,
     Arena
 }
@@ -111,7 +112,7 @@ public class GameManager : MonoBehaviour
         //Call UI Managers begin scene script to begin showing menu
         m_uiManager.BeginScene();
 
-        ResetRoom( Room.Cell );
+        ResetRoomEnemies( Room.Cell );
 
     }
 
@@ -211,25 +212,29 @@ public class GameManager : MonoBehaviour
                     if ( m_aiManager.RemainingEnemiesInGroup( 0 ) <= 0 )
                     {
                         //If so, complete the room
-                        CompleteRoom( Room.Hall );
+                        CompleteRoom( m_currentRoom );
                     }
                     break;
-                case Room.Armory:
+                case Room.Armory1:
+                    if ( m_aiManager.RemainingEnemiesInGroup( 1 ) <= 0 )
+                    {
+                        CompleteRoom( m_currentRoom );
+                    }
+					break;
+				case Room.Armory2:
                     if ( m_aiManager.RemainingEnemiesInGroup( 2 ) <= 0 )
                     {
-                        CompleteRoom( Room.Armory );
+                        CompleteRoom( m_currentRoom );
                     }
                     break;
-                case Room.GuardRoom:
+				case Room.GuardRoom:
                     if ( m_aiManager.RemainingEnemiesInGroup( 3 ) <= 0 )
                     {
-                        CompleteRoom( Room.GuardRoom );
+                        CompleteRoom( m_currentRoom );
                     }
                     break;
                 case Room.Arena:
-                    /* Arena will be different if we get waves. For now this shows simple 1 wave, then open exit door,
-                     * but we could do 3 tiers or something of this. For now, stick with 1 group
-                     */
+
                     if ( m_aiManager.RemainingWaveEnemies() <= 0 )
                     {
                         if (m_spawnManager.GetCurrentWave() < m_spawnManager.GetTotalWaves())
@@ -238,7 +243,7 @@ public class GameManager : MonoBehaviour
                         }
                         else
                         {
-                            CompleteRoom( Room.Arena );
+                            CompleteRoom( m_currentRoom );
                         }
                     }
                     break;
@@ -409,45 +414,63 @@ public class GameManager : MonoBehaviour
     {
         //This deactivates all enemies and returns them to the spawn pool
         m_aiManager.DeactivateActiveEnemies();
-
+        //If it was paused, 100% not anymore
         Settings.g_paused = false;
+        //Unlock player from RegainControl lock from menus
         m_playerController.SetMenuLock( false );
+        //Set a room for the respawn location
         Room respawnPoint = m_respawnManager.GetRespawnPoint();
-
-        ResetRoom( respawnPoint );
-
+        //Based on room, load enemies correctly
+        ResetRoomEnemies( respawnPoint );
+        //Just reset the gate for relative room
         m_gateManager.ResetGate( respawnPoint );
 
         Settings.g_canPause = true;
     }
 
-
-
-
-    private void ResetRoom(Room room )
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ResetRoomEnemies
+    * Parameters: Room room 
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Based on room you are respawning into, reset enemy groups
+    *              I know it is disgusting and not good. Oh Well
+    **************************************************************************************/
+    private void ResetRoomEnemies( Room room )
 	{
         switch ( room )
         {
             case Room.Cell:
-                //Prep group for the NEXT room
+                //Spawn Hall Enemies
                 EventManager.StartSpawnEnemiesEvent( 0 );
-                //Spawn enemies in Prep for the NEXT NEXT room
+                //Spawn Grunts
                 EventManager.StartSpawnEnemiesEvent( 1 );
+                //AND guards
                 EventManager.StartSpawnEnemiesEvent( 2 );
 
                 //Make sure trigger is active
                 m_cellExitTrigger.SetActive( true );
                 break;
             case Room.Hall:
-                //Prep group for the NEXT room
+                //We don't need to respawn hall enemies
+                //But we do need Armory's grunts and guards
                 EventManager.StartSpawnEnemiesEvent( 1 );
                 EventManager.StartSpawnEnemiesEvent( 2 );
                 //Spawn enemies in Prep for the NEXT NEXT room
+                break;
+            case Room.Armory1:
+                //You have defeated the grunts, and picked up the sword/
+                //So we spawn the Guards again, and also alert them, and spawn
+                //Guard Room enemies (As that was done on picking up sword)
+                EventManager.StartSpawnEnemiesEvent( 2 );
+                EventManager.StartAlertEnemiesEvent( 2 );
                 EventManager.StartSpawnEnemiesEvent( 3 );
                 break;
-            case Room.Armory:
-
-                //Prep group for the NEXT room
+            case Room.Armory2 :
                 EventManager.StartSpawnEnemiesEvent( 3 );
                 //Spawn enemies in Prep for the NEXT NEXT room
                 EventManager.StartSpawnEnemiesEvent( 4 );
@@ -466,29 +489,55 @@ public class GameManager : MonoBehaviour
         }
     }
 
-
-
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: EnterRoom
+    * Parameters: Room room 
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Enter a room, updating the current room, and setting it to incomplete
+    *              immediately
+    **************************************************************************************/
     public void EnterRoom( Room room )
 	{
         m_roomComplete = false;
         m_currentRoom = room;
-        Debug.Log( m_currentRoom );
 	}
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: CompleteRoom
+    * Parameters: Room room 
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: When all enemies are defeated, and you want the gate to open, call this
+    **************************************************************************************/
     public void CompleteRoom( Room room )
     {
+        //Room complete (Basically to stop checking if they're all dead)
         m_roomComplete = true;
         switch( room )
         {
             case Room.Cell:
+                //Never anything in here
                 break;
             case Room.Hall:
+                //Complete the cell hallway, so open exit and reset respawn
                 m_gateManager.OpenCellHallExitGate();
                 m_respawnManager.SetRespawnPoint( Room.Hall );
                 break;
-            case Room.Armory:
+            case Room.Armory1:
+                m_respawnManager.SetRespawnPoint( Room.Armory1 );
+                break;
+            case Room.Armory2:
                 m_gateManager.OpenArmoryExitGate();
-                m_respawnManager.SetRespawnPoint( Room.Armory );
+                m_respawnManager.SetRespawnPoint( Room.Armory2 );
                 break;
             case Room.GuardRoom:
                 m_gateManager.OpenGuardRoomExitGate();
@@ -496,7 +545,7 @@ public class GameManager : MonoBehaviour
                 break;
             case Room.Arena:
                 //Entering Arena sets Arena respawn point
-                //no respawn, you can't die now
+                //no new respawn point, you can't die now, and if you somehow did, or respawn via menu, re do the arena
                 m_gateManager.OpenArenaExitGate();
                 break;
         }

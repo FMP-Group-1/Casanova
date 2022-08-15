@@ -8,7 +8,7 @@ public class CameraSensitivityManager : MonoBehaviour
 {
 	public void SetSensitivity()
     {
-        Vector2 newSensitivity = GameObject.FindGameObjectWithTag( Settings.g_ControllerTag ).GetComponent<OptionsManager>().GetSensitivity();
+        Vector2 newSensitivity = GameObject.FindGameObjectWithTag( Settings.g_controllerTag ).GetComponent<OptionsManager>().GetSensitivity();
         Settings.g_currentXCameraSensitiviy = newSensitivity.x;
         Settings.g_currentYCameraSensitiviy = newSensitivity.y;
         GetComponent<CinemachineFreeLook>().m_YAxis.m_MaxSpeed = Settings.g_currentYCameraSensitiviy;
