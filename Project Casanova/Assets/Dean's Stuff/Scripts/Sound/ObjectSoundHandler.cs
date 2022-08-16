@@ -1,5 +1,14 @@
 using UnityEngine;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: ObjectSoundHandler
+*
+* Author: Dean Pearce
+*
+* Description: Derives from SoundHandler. Used by environment objects which need to emit sound.
+**************************************************************************************/
 public class ObjectSoundHandler : SoundHandler
 {
     private EnvironmentSoundbank m_enviroSoundbank;
@@ -7,6 +16,8 @@ public class ObjectSoundHandler : SoundHandler
     protected override void Awake()
     {
         base.Awake();
+
+        // Get relevant soundbank
         m_enviroSoundbank = GameObject.FindGameObjectWithTag("EnvironmentSoundbank").GetComponent<EnvironmentSoundbank>();
     }
 

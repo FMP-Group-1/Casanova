@@ -2,6 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: GuardHandTrails
+*
+* Author: Dean Pearce
+*
+* Description: Class specifically for the Guard to enable/disable the hand trail effects
+*              during attacks.
+**************************************************************************************/
 public class GuardHandTrails : MonoBehaviour
 {
     EnemyAI m_parentAI;
@@ -35,7 +45,17 @@ public class GuardHandTrails : MonoBehaviour
         UpdateTrails();
     }
 
-
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: UpdateTrails
+	* Parameters: n/a
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Update function to determine when to enable/disable hand trails.
+	**************************************************************************************/
     private void UpdateTrails()
     {
         CombatState currentState = m_parentAI.GetCombatState();
@@ -55,6 +75,17 @@ public class GuardHandTrails : MonoBehaviour
         m_prevAIState = currentState;
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: TrailsEnabled
+	* Parameters: bool shouldEnable
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Function to enable/disable hand trails based on the bool parameter.
+	**************************************************************************************/
     private void TrailsEnabled( bool shouldEnable)
     {
         foreach (ParticleSystem handTrail in m_handParticleList)

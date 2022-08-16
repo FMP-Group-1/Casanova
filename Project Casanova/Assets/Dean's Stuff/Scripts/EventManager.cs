@@ -3,6 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: EventManager
+*
+* Author: Dean Pearce
+*
+* Description: EventManager class for triggering events.
+**************************************************************************************/
 public class EventManager : MonoBehaviour
 {
     // Setting up events

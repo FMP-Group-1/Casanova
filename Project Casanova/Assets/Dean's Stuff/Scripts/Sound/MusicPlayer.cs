@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: MusicPlayer
+*
+* Author: Dean Pearce
+*
+* Description: Class for handling the music of the game.
+**************************************************************************************/
 public class MusicPlayer : MonoBehaviour
 {
     private AIManager m_aiManager;
@@ -21,7 +30,7 @@ public class MusicPlayer : MonoBehaviour
 
     void Start()
     {
-        m_aiManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<AIManager>();
+        m_aiManager = GameObject.FindGameObjectWithTag(Settings.g_controllerTag).GetComponent<AIManager>();
         m_audioSource = GetComponent<AudioSource>();
 
         m_audioSource.clip = m_bgMusic;
@@ -34,6 +43,17 @@ public class MusicPlayer : MonoBehaviour
         MusicUpdate();
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: MusicUpdate
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for tracking and swapping music tracks based on what's happening in game.
+    **************************************************************************************/
     private void MusicUpdate()
     {
         bool currentlyInCombat = m_aiManager.IsCombatActive();

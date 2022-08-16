@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-//*******************************************
-// Author: Dean Pearce
-// Class: EnemyAI
-// Description: Base enemy AI class which handles navigation, behaviour, and animation
-//*******************************************
-
 public enum EnemyType
 {
     Grunt,
@@ -68,6 +62,15 @@ public enum StrafeDir
     Right
 }
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: EnemyAI
+*
+* Author: Dean Pearce
+*
+* Description: Base EnemyAI class which handles navigation, behaviour, and animation.
+**************************************************************************************/
 public class EnemyAI : MonoBehaviour
 {
     private AIManager m_aiManager;
@@ -234,7 +237,7 @@ public class EnemyAI : MonoBehaviour
     [Tooltip("The layer mask for AI")]
     private LayerMask m_aiMask;
 
-    //String to Hash stuff
+    // String to Hash stuff
     private int an_triggerNone = 0;
     private int an_walk;
     private int an_walkBack;
@@ -246,19 +249,15 @@ public class EnemyAI : MonoBehaviour
     private int an_attack;
     private int an_quickAttack;
     private int an_heavyAttack;
-    //private int an_dodge0;
-    //private int an_dodge1;
-    //private int an_sleepToWake0;
-    //private int an_sleepToWake1;
     private int an_sleep;
     private int an_death;
     private int an_takeHit;
     private int an_weaken;
 
-    //Health Manager Component
+    // Health Manager Component
     private EnemyDamageManager m_healthManager;
 
-    //Charlie being a stinker and messign your stuff up
+    // Mask Stuff added by Charlie
     [SerializeField]
     private GameObject m_masks;
     private GameObject[] m_masksArray;
@@ -266,6 +265,7 @@ public class EnemyAI : MonoBehaviour
 
     private void Awake()
     {
+        // Randomising the mask to use
         m_masksArray = new GameObject[ m_masks.transform.childCount ];
 
         for (int i = 0; i< m_masksArray.Length; i++ )
@@ -275,46 +275,61 @@ public class EnemyAI : MonoBehaviour
 
         ResetMasks();
 
+        // Setup the animation trigger hashes
         SetupStringToHashes();
 
+        // Getting required components
         m_healthManager = GetComponent<EnemyDamageManager>();
-
         m_navMeshAgent = GetComponent<NavMeshAgent>();
         m_animController = GetComponent<Animator>();
         m_soundHandler = GetComponent<EnemySoundHandler>();
 
         m_navMeshAgent.speed = m_walkSpeed;
 
+        // Setup the patrol route if any
         SetupPatrolRoutes();
 
+        // More required components
         m_player = GameObject.FindGameObjectWithTag("Player");
         m_playerController = m_player.GetComponent<PlayerController>();
         m_playerCollider = m_player.GetComponent<Collider>();
         m_primaryWeaponCollider = m_primaryWeapon.GetComponent<BoxCollider>();
         m_secondaryWeaponCollider = m_secondaryWeapon.GetComponent<BoxCollider>();
 
+        // Disable weapon collision
         DisableCollision();
 
+        // Set AI state from inspector
         SetAIState(m_mainState);
 
-
+        // Make sure last used trigger is clear at start
         m_lastUsedAnimTrigger = an_triggerNone;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ResetMasks
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Disables all masks, then picks a mask at random to enable
+    **************************************************************************************/
     private void ResetMasks()
 	{
-        ///////////////////
         foreach ( GameObject mask in m_masksArray )
         {
             mask.SetActive( false );
         }
         maskEquipped = Random.Range( 0, m_masksArray.Length );
         m_masksArray[ maskEquipped ].SetActive( true );
-        ///////////////////
     }
 
     private void Update()
     {
+        // Should the AI be looking at the player
         if (m_lookAtPlayer)
         {
             TurnToLookAt(m_player.gameObject);
@@ -327,7 +342,7 @@ public class EnemyAI : MonoBehaviour
             {
                 if (IsPlayerVisible())
                 {
-                    //SetAIState(AIState.InCombat);
+                    SetAIState(AIState.InCombat);
                 }
                 break;
             }
@@ -370,12 +385,24 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: PatrolUpdate
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for handling logic during Patrol State
+    **************************************************************************************/
     private void PatrolUpdate()
     {
+        // If somehow reached here with no patrol route, just go back to Idle
         if (m_patrolRoute == null)
         {
-            //Debug.Log("There is no patrol route attached to the AI. Please attach one.");
             SetAIState(AIState.Idle);
+            return;
         }
 
         switch (m_patrolState)
@@ -437,12 +464,24 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: CombatUpdate
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for handling logic during Combat State
+    **************************************************************************************/
     private void CombatUpdate()
     {
         // Update zone handler to track status of zones
         m_zoneHandler.Update();
 
         // Condition to help space out attacks a bit more
+        // If AIManager says can attack, and AI is not pursuing and IS an active attacker, then increments the attack timer
         if (m_aiManager.CanAttack() && m_combatState != CombatState.Pursuing && m_currentAttackingType == AttackingType.Active)
         {
             m_timeSinceLastAttack += Time.deltaTime;
@@ -466,6 +505,7 @@ public class EnemyAI : MonoBehaviour
                 // Checking if they've reached the strafe range yet
                 if (IsInStrafeRange() && m_currentAttackingType != AttackingType.Unassigned)
                 {
+                    // If there's no zones available, just maintain distance
                     if (!m_zoneHandler.AreZonesAvailable())
                     {
                         SetCombatState(CombatState.MaintainDist);
@@ -480,7 +520,7 @@ public class EnemyAI : MonoBehaviour
 
                         m_zoneHandler.OccupyCurrentZone();
                     }
-                    // Carry on radial running to a zone
+                    // Start radial running to a zone
                     else
                     {
                         SetCombatState(CombatState.RadialRunToZone);
@@ -611,6 +651,17 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetAIState
+    * Parameters: AIState stateToSet
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Clean way of setting the AI's main state
+    **************************************************************************************/
     public void SetAIState( AIState stateToSet )
     {
         // If changing FROM patrol state, store the last position in the patrol route
@@ -665,15 +716,17 @@ public class EnemyAI : MonoBehaviour
             {
                 // Registering the enemy as an attacker with the manager
                 m_aiManager.RegisterAttacker(this);
-                //SetCombatState(CombatState.Pursuing);
 
                 SetupAttackingType();
                 RandomiseStrafeRange();
+
+                // If there's zones available, try to reserve one
                 if (m_zoneHandler.AreZonesAvailable())
                 {
                     m_zoneHandler.ReserveClosestZone();
                     SetCombatState(CombatState.MovingToZone);
                 }
+                // Otherwise just pursue
                 else
                 {
                     SetCombatState(CombatState.Pursuing);
@@ -681,7 +734,7 @@ public class EnemyAI : MonoBehaviour
 
                 ResetAttackTimer();
 
-                // Added to only show health when they enter combat
+                // Charlie: Added to only show health when they enter combat
                 m_healthManager.ShowUI( true );
 
                 m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
@@ -697,6 +750,17 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetPatrolState
+    * Parameters: PatrolState stateToSet
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Clean way of setting the AI's patrol state
+    **************************************************************************************/
     private void SetPatrolState( PatrolState stateToSet )
     {
         m_patrolState = stateToSet;
@@ -726,6 +790,17 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SSetCombatState
+    * Parameters: CombatState stateToSet
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Clean way of setting the AI's combat state
+    **************************************************************************************/
     public void SetCombatState( CombatState stateToSet )
     {
         m_combatState = stateToSet;
@@ -790,6 +865,8 @@ public class EnemyAI : MonoBehaviour
             case CombatState.MovingToAttack:
             {
                 m_navMeshAgent.destination = m_player.transform.position;
+
+                // Randomise type of attack
                 m_attackMode = (AttackMode)Random.Range(0, m_attackNum);
 
                 switch(m_attackMode)
@@ -831,13 +908,17 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    //********
-    // Function:SetupStringToHashes
-    // Author: Charlie Taylor
-    // Description: Sets up variables for string to int hashes used by the animation controller
-    // Parameters: None
-    // Returns: None
-    //********
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetupStringToHashes
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Sets up variables for string to int hashes used by the animation controller
+    **************************************************************************************/
     private void SetupStringToHashes()
     {
         an_dodgeHashes = new int[m_dodgeAnimNum];
@@ -853,7 +934,6 @@ public class EnemyAI : MonoBehaviour
             an_sleepToWakeHashes[i] = Animator.StringToHash("SleepToWake" + i);
         }
 
-        //an_triggerNone = Animator.StringToHash( "None" );
         an_walk = Animator.StringToHash("Walk");
         an_walkBack = Animator.StringToHash("WalkBack");
         an_strafeRight = Animator.StringToHash("StrafeRight");
@@ -864,16 +944,24 @@ public class EnemyAI : MonoBehaviour
         an_attack = Animator.StringToHash("Attack");
         an_quickAttack = Animator.StringToHash("QuickAttack");
         an_heavyAttack = Animator.StringToHash("HeavyAttack");
-        //an_dodge0 = Animator.StringToHash("Dodge0");
-        //an_dodge1 = Animator.StringToHash("Dodge1");
-        //an_sleepToWake0 = Animator.StringToHash("SleepToWake0");
-        //an_sleepToWake1 = Animator.StringToHash("SleepToWake1");
         an_sleep = Animator.StringToHash("Sleep");
         an_death = Animator.StringToHash("Death");
         an_takeHit = Animator.StringToHash("TakeHit");
         an_weaken = Animator.StringToHash("Weaken");
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetupAttackingType
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Sets the attacking type for this AI. If there's an active slot open,
+    *              becomes active, otherwise becomes passive.
+    **************************************************************************************/
     private void SetupAttackingType()
     {
         // If there's space for active attackers, become active
@@ -890,14 +978,27 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetupPatrolRoutes
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for setting up the patrol routes. Clears at the start since this
+    *              is also used in a reset function.
+    **************************************************************************************/
     private void SetupPatrolRoutes()
     {
+        // Clear to make sure we don't add to an outdated list
         if (m_patrolRoutePoints.Count > 0)
         {
             m_patrolRoutePoints.Clear();
         }
 
-        // Adding patrol points to a list that the ai can use to follow
+        // Adding patrol points to a list that the AI can use to follow
         if (m_patrolRoute != null)
         {
             for (int i = 0; i < m_patrolRoute.transform.childCount; i++)
@@ -914,6 +1015,17 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetupZoneHandler
+    * Parameters: ref AttackZoneManager attackZoneManager
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Sets up the zone handler object. Hands through a reference to the attack zone manager.
+    **************************************************************************************/
     public void SetupZoneHandler( ref AttackZoneManager attackZoneManager )
     {
         EnemyAI thisEnemy = this;
@@ -930,13 +1042,24 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.isStopped = true;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: TurnToLookAt
+    * Parameters: GameObject targetObj
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for slowly rotating the enemy towards a target so they don't snap turn.
+    **************************************************************************************/
     private void TurnToLookAt(GameObject targetObj)
     {
         // Getting dir from enemy to player
         Vector3 dirToPlayer = (m_player.transform.position - transform.position).normalized;
         float angleFrom = Vector3.SignedAngle(dirToPlayer, transform.forward, Vector3.down);
 
-
+        // If the angle difference is greater than the buffer, slow turn
         if (Mathf.Abs(angleFrom) > m_rotationBuffer)
         {
             Vector3 currentEulerAngles = transform.eulerAngles;
@@ -953,12 +1076,24 @@ public class EnemyAI : MonoBehaviour
 
             transform.eulerAngles = currentEulerAngles;
         }
+        // If the angle difference is less than the buffer, lock into LookAt
         else
         {
             transform.LookAt(new Vector3(targetObj.transform.position.x, transform.position.y, targetObj.transform.position.z));
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: RadialRun
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for running around the player.
+    **************************************************************************************/
     private void RadialRun()
     {
         Vector3 offset;
@@ -976,6 +1111,17 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.SetDestination(transform.position + dir);
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Strafe
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for strafing around the player.
+    **************************************************************************************/
     private void Strafe()
     {
         Vector3 offset;
@@ -992,12 +1138,34 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.SetDestination(transform.position + dir);
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: BackUp
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for backing away from the player.
+    **************************************************************************************/
     private void BackUp()
     {
         Vector3 dir = (transform.position - m_player.transform.position).normalized;
         m_navMeshAgent.SetDestination(transform.position + (dir * 2.0f));
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Attack
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for starting the AI's attack.
+    **************************************************************************************/
     private void Attack()
     {
         switch (m_attackMode)
@@ -1020,8 +1188,20 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: EndAttack
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for ending the AI's attack. Used in animation events.
+    **************************************************************************************/
     private void EndAttack()
     {
+        // Start backing up, then reset necessary values.
         SetCombatState(CombatState.BackingUp);
         ResetAttackTimer();
         SetStaggerable(true);
@@ -1031,47 +1211,52 @@ public class EnemyAI : MonoBehaviour
         m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ResetAttackTimer
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Resets the attack timer so attacks can be spaced out.
+    **************************************************************************************/
     private void ResetAttackTimer()
     {
         m_attackTimer = Random.Range(m_minAttackTime, m_maxAttackTime);
         m_timeSinceLastAttack = 0.0f;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: RecoverFromHit
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to recover after being staggered by the player. 
+    *              Used in animation events.
+    **************************************************************************************/
     private void RecoverFromHit()
     {
         SetCombatState(CombatState.Pursuing);
         SetStaggerable(true);
     }
 
-    /*
-    public void TakeDamage( float damageToTake )
-    {
-        if (m_mainState != AIState.Dead)
-        {
-            m_health -= damageToTake;
-
-            if (m_mainState != AIState.Sleeping)
-            {
-                ResetLastUsedAnimTrigger();
-                //PlayDamageAnim();
-            }
-
-            if (m_health <= 0.0f)
-            {
-                Die();
-            }
-        }
-    }*/
-
-    /*
-    private void Die()
-    {
-        m_health = 0.0f;
-        SetAIState(AIState.Dead);
-        m_aiManager.UnregisterAttacker(this);
-    }
-    */
-
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: UnregisterAttacker
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for removing the AI from combat. Used on death.
+    **************************************************************************************/
     public void UnregisterAttacker()
     {
         m_aiManager.UnregisterAttacker(this);
@@ -1079,8 +1264,21 @@ public class EnemyAI : MonoBehaviour
         m_zoneHandler.ClearReservedZone();
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ChangeStateFromWake
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for changing from waking animation into a normal state.
+    *              Used in animation events.
+    **************************************************************************************/
     public void ChangeStateFromWake()
     {
+        // If the AI has been set to combat on wake, will enter combat state
         if (m_combatOnWake)
         {
             SetAIState(AIState.InCombat);
@@ -1104,6 +1302,17 @@ public class EnemyAI : MonoBehaviour
         m_healthManager.SetInvulnerable(false);
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ResetLastUsedAnimTrigger
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Clear the last anim trigger.
+    **************************************************************************************/
     public void ResetLastUsedAnimTrigger()
     {
         if (m_lastUsedAnimTrigger != an_triggerNone)
@@ -1112,6 +1321,17 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ResetAllAnimTriggers
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Clear all anim triggers
+    **************************************************************************************/
     private void ResetAllAnimTriggers()
     {
         m_animController.ResetTrigger(an_walk);
@@ -1120,8 +1340,6 @@ public class EnemyAI : MonoBehaviour
         m_animController.ResetTrigger(an_quickAttack);
         m_animController.ResetTrigger(an_heavyAttack);
         m_animController.ResetTrigger(an_run);
-        //m_animController.ResetTrigger(an_sleepToWake0);
-        //m_animController.ResetTrigger(an_sleepToWake1);
         m_animController.ResetTrigger(an_sleep);
         m_animController.ResetTrigger(an_takeHit);
         m_animController.ResetTrigger(an_strafeLeft);
@@ -1130,8 +1348,6 @@ public class EnemyAI : MonoBehaviour
         m_animController.ResetTrigger(an_walkBack);
         m_animController.ResetTrigger(an_death);
         m_animController.ResetTrigger(an_weaken);
-        //m_animController.ResetTrigger(an_dodge0);
-        //m_animController.ResetTrigger(an_dodge1);
 
         foreach(int trigger in an_dodgeHashes)
         {
@@ -1144,6 +1360,17 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ResetToSpawn
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Used to reset necessary values on respawn.
+    **************************************************************************************/
     public void ResetToSpawn()
     {
         m_patrolRoute = null;
@@ -1160,30 +1387,85 @@ public class EnemyAI : MonoBehaviour
         ResetMasks();
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: WakeUpAI
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Start waking the AI.
+    **************************************************************************************/
     public void WakeUpAI()
     {
         SetAIState(AIState.Waking);
         StartSleepToWakeAnim();
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: LookAtPlayerOnWake
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to tell the enemy to look at the player during wake animation.
+    *              Used in animation events.
+    **************************************************************************************/
     public void LookAtPlayerOnWake()
     {
         m_lookAtPlayer = true;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: DisableCollision
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Disables the weapon collision.
+    **************************************************************************************/
     public void DisableCollision()
     {
         m_primaryWeaponCollider.enabled = false;
         m_secondaryWeaponCollider.enabled = false;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: EnableCollision
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Enables weapon collision. Used in animation events.
+    **************************************************************************************/
     private void EnableCollision()
     {
         m_primaryWeaponCollider.enabled = true;
         m_secondaryWeaponCollider.enabled = true;
     }
 
-    // Using string as a parameter so it can be called from animation events
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: EnableCollision
+    * Parameters: string colliderToEnable
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Enables weapon collision based on given string. Used in animation events.
+    **************************************************************************************/
     private void EnableCollision( string colliderToEnable )
     {
         switch (colliderToEnable)
@@ -1210,6 +1492,18 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: AiToPlayerRangeCheck
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for checking the distance from the AI to the player in various
+    *              situations.
+    **************************************************************************************/
     private void AiToPlayerRangeCheck()
     {
         float maxStrafeRange = 0.0f;
@@ -1253,6 +1547,17 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: AttackCheck
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for deciding when to attack.
+    **************************************************************************************/
     private void AttackCheck()
     {
         // Checking if it's been long enough to attack, if the current AI is an active attacker, and checking with the AI manager if attacking is allowed currently
@@ -1262,6 +1567,18 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: StrafeOrMaintain
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for deciding whether the AI should maintain distance, or strafe
+    *              to a new zone.
+    **************************************************************************************/
     private void StrafeOrMaintain()
     {
         // Decide whether to strafe or maintain distance based on whether the zone is the currently occupied zone
@@ -1277,6 +1594,18 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: RandomiseStrafeRange
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Randomise the range the AI should maintain from the player based
+    *              on their attacker type.
+    **************************************************************************************/
     private void RandomiseStrafeRange()
     {
         // Randomise the range for the AI to maintain based on attacker type
@@ -1290,11 +1619,21 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: HasReachedDestination
+    * Parameters: n/a
+    * Return: bool
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to check if the NavMeshAgent has reached the destination.
+    **************************************************************************************/
     private bool HasReachedDestination()
     {
         bool destinationReached = false;
 
-        // Just using detection based on distance for now, will need better logic for broken nav paths
         if (!m_navMeshAgent.pathPending)
         {
             if (m_navMeshAgent.remainingDistance < m_navMeshAgent.stoppingDistance)
@@ -1303,28 +1642,36 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
-        // Very basic detection for reaching destination, will need to be expanded upon
-        // i.e. in case of path being blocked
-        // Logic from https://answers.unity.com/questions/324589/how-can-i-tell-when-a-navmesh-has-reached-its-dest.html
-        //if (!m_navMeshAgent.pathPending)
-        //{
-        //    if (m_navMeshAgent.remainingDistance <= m_navMeshAgent.stoppingDistance)
-        //    {
-        //        if (!m_navMeshAgent.hasPath || m_navMeshAgent.velocity.sqrMagnitude == 0f)
-        //        {
-        //            destinationReached = true;
-        //        }
-        //    }
-        //}
-
         return destinationReached;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: IsInStrafeRange
+    * Parameters: n/a
+    * Return: bool
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to check if the AI is in strafe range of the player.
+    **************************************************************************************/
     private bool IsInStrafeRange()
     {
         return DistanceSqrCheck(m_player, m_strafeDist);
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: IsAttackCollidingWithPlayer
+    * Parameters: n/a
+    * Return: bool
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to check if the AI's attack is colliding with the player.
+    **************************************************************************************/
     public bool IsAttackCollidingWithPlayer()
     {
         bool isColliding = false;
@@ -1338,8 +1685,20 @@ public class EnemyAI : MonoBehaviour
         return isColliding;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: TimedZoneCheck
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to check for an available zone based on a timer.
+    **************************************************************************************/
     private void TimedZoneCheck()
     {
+        // If no zones available, just return from the function
         if (!m_zoneHandler.AreZonesAvailable())
         {
             return;
@@ -1391,7 +1750,17 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // Function to check if AI should start strafing to mimic more lifelike behaviour
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: TimedBeginStrafeCheck
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to make the AI start strafing after a certain amount of time.
+    **************************************************************************************/
     private void TimedBeginStrafeCheck()
     {
         if (m_zoneHandler.AreZonesAvailable())
@@ -1406,10 +1775,20 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // Check while strafing whether to occupy current zone
-    // Based on a timer to allow variation on when the AI stops
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: StrafeZoneCheck
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to check for an open zone while strafing.
+    **************************************************************************************/
     private void StrafeZoneCheck()
     {
+        // If no zone available, just return from the function
         if (!m_zoneHandler.AreZonesAvailable())
         {
             return;
@@ -1429,7 +1808,17 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // Checking for obstructions during strafing/radial running
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: RadialObstructionCheck
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to check if another AI is in the way whilst strafing.
+    **************************************************************************************/
     private void RadialObstructionCheck()
     {
         Vector3 dir = transform.forward;
@@ -1500,7 +1889,17 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-    // Checking if zone is available to occupy whilst radial running
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: RadialZoneCheck
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to check if zone is available whilst radial running.
+    **************************************************************************************/
     private void RadialZoneCheck()
     {
         if (m_zoneHandler.IsZoneAvailable())
@@ -1511,12 +1910,24 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: FindClosestEnemy
+    * Parameters: n/a
+    * Return: EnemyAI
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for finding the closest enemy.
+    **************************************************************************************/
     private EnemyAI FindClosestEnemy()
     {
         EnemyAI closestEnemy = this;
 
         foreach (EnemyAI enemy in m_aiManager.GetEnemyList())
         {
+            // If enemy is not this one, is active, and is in combat
             if (enemy != this && enemy.gameObject.activeSelf && enemy.GetState() == AIState.InCombat)
             {
                 if (DistanceSqrValue(enemy.gameObject) < DistanceSqrValue(closestEnemy.gameObject))
@@ -1529,7 +1940,20 @@ public class EnemyAI : MonoBehaviour
         return closestEnemy;
     }
 
+    // DISCLAIMER:
     // DirFromAngle() and IsPlayerVisible() functions use logic from https://www.youtube.com/watch?v=rQG9aUWarwE
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: DirFromAngle
+    * Parameters: float angleInDegrees, bool angleIsGlobal
+    * Return: Vector3
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Returns a direction from a given angle.
+    **************************************************************************************/
     public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal )
     {
         if (!angleIsGlobal)
@@ -1540,7 +1964,18 @@ public class EnemyAI : MonoBehaviour
         return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
 
-    // Overloaded DirFromAngle to allow getting the direction from a specified object's position
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: DirFromAngle
+    * Parameters: float angleInDegrees, bool angleIsGlobal, GameObject dirFromObject
+    * Return: Vector3
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Overloaded DirFromAngle to allow getting the direction from
+    *              a specified object's position.
+    **************************************************************************************/
     public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject dirFromObject )
     {
         if (!angleIsGlobal)
@@ -1551,6 +1986,17 @@ public class EnemyAI : MonoBehaviour
         return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: IsPlayerVisible
+    * Parameters: n/a
+    * Return: bool
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for allowing the AI to determine whether the player is visible to them.
+    **************************************************************************************/
     public bool IsPlayerVisible()
     {
         bool playerIsVisible = false;
@@ -1584,7 +2030,18 @@ public class EnemyAI : MonoBehaviour
         return playerIsVisible;
     }
 
-    // Function for optimally checking a target is within a given distance
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: DistanceSqrCheck
+    * Parameters: GameObject targetToCheck, float distanceToCheck
+    * Return: bool
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for checking if an object is within a specified distance.
+    *              More optimal than using Vector3.Distance
+    **************************************************************************************/
     private bool DistanceSqrCheck( GameObject targetToCheck, float distanceToCheck )
     {
         bool isInRange = false;
@@ -1601,11 +2058,24 @@ public class EnemyAI : MonoBehaviour
         return isInRange;
     }
 
-    // Function for returning distance in float between target
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: DistanceSqrValue
+    * Parameters: GameObject targetToCheck
+    * Return: float
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for returning the distance to an object.
+    **************************************************************************************/
     private float DistanceSqrValue( GameObject targetToCheck )
     {
         return (transform.position - targetToCheck.transform.position).sqrMagnitude;
     }
+
+    // Start of Anim functions
+    // These functions are mostly the same and are used to trigger various animations
 
     private void StartWalkAnim()
     {
@@ -1765,28 +2235,20 @@ public class EnemyAI : MonoBehaviour
         m_lastUsedAnimTrigger = an_death;
     }
 
-    /*
-    public void StartDamageAnim()
-    {
-        m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(animTrigger);
-        DisableCollision();
-        m_lastUsedAnimTrigger = animTrigger;
-    }
-    */
+    // End of Anim functions
 
-    // Can possibly remove these pause and resume functions, but leave for now
-    private void PauseAnimation()
-    {
-        m_prevAnimSpeed = m_animController.speed;
-        m_animController.speed = 0.0f;
-    }
-
-    private void ResumeAnimation()
-    {
-        m_animController.speed = m_prevAnimSpeed;
-    }
-
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: LockAttack
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for locking the enemy into an attack so they don't track the player
+    *              as the attack lands. Used in animation events.
+    **************************************************************************************/
     public void LockAttack()
     {
         m_navMeshAgent.isStopped = true;
@@ -1796,6 +2258,17 @@ public class EnemyAI : MonoBehaviour
         m_attackLocked = true;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: UnlockAttack
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for undoing LockAttack. Used in animation events.
+    **************************************************************************************/
     public void UnlockAttack()
     {
         m_navMeshAgent.isStopped = false;
@@ -1804,6 +2277,8 @@ public class EnemyAI : MonoBehaviour
         m_healthManager.SetStaggerable(true);
         m_attackLocked = false;
     }
+
+    // Start of getters & setters
 
     public EnemyType GetEnemyType()
     {
@@ -1822,7 +2297,6 @@ public class EnemyAI : MonoBehaviour
         }
         else
         {
-            //Debug.Log("Error: Unassigned AI trying to find ZoneType");
             return ZoneType.None;
         }
     }
@@ -1865,12 +2339,6 @@ public class EnemyAI : MonoBehaviour
         return transform.eulerAngles.y;
     }
 
-    /*
-    public float GetHealth()
-    {
-        return m_health;
-    }
-    */
     public float GetStrafeDist()
     {
         return m_strafeDist;
@@ -1911,7 +2379,6 @@ public class EnemyAI : MonoBehaviour
         m_healthManager.SetStaggerable(isStaggerable);
     }
 
-    // Fixed set for anim events
     public void SetUnstaggerable()
     {
         m_healthManager.SetStaggerable(false);

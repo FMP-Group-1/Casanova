@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: ZoneHandler
+*
+* Author: Dean Pearce
+*
+* Description: Class for handling zone information on behalf of the EnemyAI.
+**************************************************************************************/
 public class ZoneHandler
 {
     private EnemyAI m_parentAI;
@@ -14,12 +23,35 @@ public class ZoneHandler
     private float m_targetAngle;
     private int m_closestZoneNum = 0;
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Init
+    * Parameters: ref EnemyAI enemyAI, ref AttackZoneManager attackZoneManager
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for initialising the required values for the ZoneHandler.
+    **************************************************************************************/
     public void Init(ref EnemyAI enemyAI, ref AttackZoneManager attackZoneManager)
     {
         m_parentAI = enemyAI;
         m_attackZoneManager = attackZoneManager;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Update
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Custom update function for the EnemyAI to call since ZoneHandler 
+    *              doesn't use MonoBehaviour.
+    **************************************************************************************/
     public void Update()
     {
         m_currentAttackZone = m_attackZoneManager.FindAttackZone(m_parentAI);
@@ -32,11 +64,34 @@ public class ZoneHandler
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: UpdateReservedPos
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to keep the reserved position of a zone updated since
+    *              the zones move with the player.
+    **************************************************************************************/
     private void UpdateReservedPos()
     {
         m_reservedPos = m_attackZoneManager.GetSpecifiedPos(m_targetAngle, m_parentAI.GetStrafeDist());
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: OccupiedZoneCheck
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Check to make sure this object isn't occupying a zone when it shouldn't.
+    **************************************************************************************/
     private void OccupiedZoneCheck()
     {
         if (!m_reserveZone && m_occupiedAttackZone != null && !IsInOccupiedZone())
@@ -44,6 +99,18 @@ public class ZoneHandler
             ClearOccupiedZone();
         }
     }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ClearOccupiedZone
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Clear the zone currently being occupied.
+    **************************************************************************************/
     public void ClearOccupiedZone()
     {
         if (m_occupiedAttackZone != null)
@@ -53,6 +120,17 @@ public class ZoneHandler
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ClearReservedZone
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Clear the zone currently being reserved.
+    **************************************************************************************/
     public void ClearReservedZone()
     {
         if (m_reservedZone != null)
@@ -64,12 +142,34 @@ public class ZoneHandler
         m_reserveZone = false;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: OccupyCurrentZone
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to occupy the zone which the EnemyAI is currently inside.
+    **************************************************************************************/
     public void OccupyCurrentZone()
     {
         m_occupiedAttackZone = m_currentAttackZone;
         m_occupiedAttackZone.SetOccupant(m_parentAI);
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: TakeOverOccupiedZone
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to remove an AI from the zone the parent AI is in, and then occupy it.
+    **************************************************************************************/
     public void TakeOverOccupiedZone()
     {
         EnemyAI currentOccupant = m_currentAttackZone.GetOccupant();
@@ -79,6 +179,17 @@ public class ZoneHandler
         OccupyCurrentZone();
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: FindClosestZone
+    * Parameters: n/a
+    * Return: AttackZone
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Finds and returns the closest zone to the EnemyAI.
+    **************************************************************************************/
     private AttackZone FindClosestZone()
     {
         m_closestZoneNum = m_attackZoneManager.GetZoneNumByAngle(m_parentAI);
@@ -93,6 +204,17 @@ public class ZoneHandler
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: FindClosestAvailableZone
+    * Parameters: n/a
+    * Return: AttackZone
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Finds and returns the closest available zone to the EnemyAI.
+    **************************************************************************************/
     private AttackZone FindClosestAvailableZone()
     {
         m_closestZoneNum = m_attackZoneManager.GetZoneNumByAngle(m_parentAI);
@@ -185,6 +307,17 @@ public class ZoneHandler
         return zoneToReturn;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ReserveZone
+    * Parameters: AttackZone zoneToReserve
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Reserves the specified zone for the AI.
+    **************************************************************************************/
     public void ReserveZone(AttackZone zoneToReserve)
     {
         m_reserveZone = true;
@@ -194,54 +327,33 @@ public class ZoneHandler
         m_reservedZone.SetOccupant(m_parentAI);
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ReserveClosestZone
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Uses ReserveZone to reserve the closest available zone for the AI.
+    **************************************************************************************/
     public void ReserveClosestZone()
     {
         ReserveZone(FindClosestAvailableZone());
     }
 
-    private bool AdjacentZoneIsAvailable()
-    {
-        bool zoneAvailable = false;
-        int nextZoneNum;
-
-        // Getting num of the next zone based on strafe dir
-        if (m_parentAI.GetStrafeDir() == StrafeDir.Left)
-        {
-            nextZoneNum = m_currentAttackZone.GetZoneNum() + 1 % m_attackZoneManager.GetTotalZonesNum();
-        }
-        else
-        {
-            nextZoneNum = m_currentAttackZone.GetZoneNum() - 1;
-
-            if (nextZoneNum < 0)
-            {
-                nextZoneNum = m_attackZoneManager.GetTotalZonesNum() - 1;
-            }
-        }
-
-        // Checking if target zone is available
-        if (m_parentAI.GetAttackingType() == AttackingType.Passive)
-        {
-            if (!m_attackZoneManager.GetAttackZoneByNum(nextZoneNum, ZoneType.Passive).IsObstructed() &&
-                !m_attackZoneManager.GetAttackZoneByNum(nextZoneNum, ZoneType.Passive).IsOccupied())
-            {
-                zoneAvailable = true;
-            }
-
-        }
-        else
-        {
-            if (!m_attackZoneManager.GetAttackZoneByNum(nextZoneNum, ZoneType.Active).IsObstructed() &&
-                !m_attackZoneManager.GetAttackZoneByNum(nextZoneNum, ZoneType.Active).IsOccupied())
-            {
-                zoneAvailable = true;
-            }
-
-        }
-
-        return zoneAvailable;
-    }
-
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: IsInOccupiedZone
+    * Parameters: n/a
+    * Return: bool
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Checks whether the occupied zone is the one the AI is currently in. 
+    **************************************************************************************/
     public bool IsInOccupiedZone()
     {
         if (IsInValidZone())
@@ -254,6 +366,17 @@ public class ZoneHandler
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: IsZoneAvailablel
+    * Parameters: n/a
+    * Return: bool
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Checks if the zone the AI is currently in is available. 
+    **************************************************************************************/
     public bool IsZoneAvailable()
     {
         if (IsInValidZone())
@@ -266,11 +389,33 @@ public class ZoneHandler
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: IsInValidZone
+    * Parameters: n/a
+    * Return: bool
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Checks if the enemy is in a valid AttackZone 
+    **************************************************************************************/
     public bool IsInValidZone()
     {
         return m_currentAttackZone != null;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: IsInMatchingZone
+    * Parameters: n/a
+    * Return: bool
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Checks if the enemy is in the correct zone type. 
+    **************************************************************************************/
     public bool IsInMatchingZone()
     {
         if (IsInValidZone())
@@ -283,10 +428,23 @@ public class ZoneHandler
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: AreZonesAvailable
+    * Parameters: n/a
+    * Return: bool
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Checks from the AttackZoneManager if any zones are available. 
+    **************************************************************************************/
     public bool AreZonesAvailable()
     {
         return m_attackZoneManager.AreZonesAvailable(m_parentAI.GetZoneTypeFromAttackType());
     }
+
+    // Start of getters & setters
 
     public ref AttackZone GetCurrentAttackZone()
     {

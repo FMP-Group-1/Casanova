@@ -3,6 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: Cutscene
+*
+* Author: Dean Pearce
+*
+* Description: Class for running a short cutscene which also sets up wave logic. 
+*              Some of the logic has been re-used & adapted from my module 56 project.
+**************************************************************************************/
 public class Cutscene : MonoBehaviour
 {
     private UIManager m_uiManager;
@@ -23,7 +33,7 @@ public class Cutscene : MonoBehaviour
 
     void Start()
     {
-        m_uiManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<UIManager>();
+        m_uiManager = GameObject.FindGameObjectWithTag(Settings.g_controllerTag).GetComponent<UIManager>();
         m_cutsceneCam.enabled = false;
         m_dollyPoint = new Transform[transform.GetChild(0).childCount];
         m_player = GameObject.FindGameObjectWithTag(Settings.g_playerTag).GetComponent<PlayerController>();
@@ -44,6 +54,17 @@ public class Cutscene : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: MoveCamera
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Moves the cutscene camera along the track positions.
+    **************************************************************************************/
     private void MoveCamera()
     {
         m_interpolateAmount += (m_flySpeed * Time.deltaTime);
@@ -62,6 +83,18 @@ public class Cutscene : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: StartCutscene
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Takes control away from the player and starts the cutscene
+    *              by enabling the cutscene camera. Also sets up the the wave enemies.
+    **************************************************************************************/
     public void StartCutscene()
     {
         m_mainCamera = Camera.main;
@@ -78,6 +111,18 @@ public class Cutscene : MonoBehaviour
         EventManager.StartWakeEnemiesEvent(4);
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: EndCutscene
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Hands control back to the player, and disables the cutscene camera. Also
+    *              begins wave spawning.
+    **************************************************************************************/
     public void EndCutscene()
     {
         m_cutsceneCam.enabled = false;
@@ -90,6 +135,18 @@ public class Cutscene : MonoBehaviour
         EventManager.StartSpawnWaveEvent();
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: TrackPositions
+    * Parameters: float interpolateValue, int trackNum
+    * Return: Vector3
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Returns a position on the track based on interpolation.
+    *              Adapted module 56 code.
+    **************************************************************************************/
     private Vector3 TrackPositions( float interpolateValue, int trackNum )
     {
         Vector3 trackPos = new Vector3(0, 0, 0);
@@ -110,6 +167,18 @@ public class Cutscene : MonoBehaviour
         return trackPos;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: QuadraticLerp
+    * Parameters: Vector3 pointA, Vector3 pointB, Vector3 pointC, float interpolateValue
+    * Return: Vector3
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for lerping between 3 points based on an interpolation value.
+    *              Original logic from https://www.youtube.com/watch?v=7j_BNf9s0jM
+    **************************************************************************************/
     private Vector3 QuadraticLerp( Vector3 pointA, Vector3 pointB, Vector3 pointC, float interpolateValue )
     {
         Vector3 lerpedVector;
@@ -120,6 +189,18 @@ public class Cutscene : MonoBehaviour
         return lerpedVector;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: CubicLerp
+    * Parameters: Vector3 pointA, Vector3 pointB, Vector3 pointC, Vector3 pointD, float interpolateValue
+    * Return: Vector3
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for lerping between 4 points based on an interpolation value.
+    *              Original logic from https://www.youtube.com/watch?v=7j_BNf9s0jM
+    **************************************************************************************/
     private Vector3 CubicLerp( Vector3 pointA, Vector3 pointB, Vector3 pointC, Vector3 pointD, float interpolateValue )
     {
         Vector3 lerpedVector;

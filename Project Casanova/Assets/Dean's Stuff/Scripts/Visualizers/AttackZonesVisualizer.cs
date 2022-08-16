@@ -5,21 +5,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-//*******************************************
-// Author: Dean Pearce
-// Class: AttackZonesVisualizer
-// Description: Script for visualizing the available zones for AI attackers in the Editor
-// Logic from https://www.youtube.com/watch?v=rQG9aUWarwE
-//*******************************************
-
+/**************************************************************************************
+* Type: Class
+* 
+* Name: AttackZonesVisualizer
+*
+* Author: Dean Pearce
+*
+* Description: Script for visualizing the available zones for AI attackers in the Editor
+*              Logic from https://www.youtube.com/watch?v=rQG9aUWarwE
+**************************************************************************************/
 [CustomEditor(typeof(AIManager))]
 public class AttackZonesVisualizer : Editor
 {
     void OnSceneGUI()
     {
         // Setting object refs
-        AIManager aiManager = GameObject.FindGameObjectWithTag("GameController").GetComponent<AIManager>();
-        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        AIManager aiManager = GameObject.FindGameObjectWithTag(Settings.g_controllerTag).GetComponent<AIManager>();
+        GameObject player = GameObject.FindGameObjectWithTag(Settings.g_playerTag);
 
         if (EditorApplication.isPlaying)
         {
@@ -52,6 +55,17 @@ public class AttackZonesVisualizer : Editor
         }
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: DrawSolidZones
+	* Parameters: AIManager aiManager, GameObject player
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Colours in the AttackZones to help visualize their status.
+	**************************************************************************************/
     private void DrawSolidZones( AIManager aiManager, GameObject player )
     {
         Color transRed = new Color(255, 0, 0, 0.1f);
@@ -100,6 +114,18 @@ public class AttackZonesVisualizer : Editor
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: DirFromAngle
+    * Parameters: float angleInDegrees, bool angleIsGlobal, GameObject gameObject
+    * Return: Vector3
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to allow getting the direction from
+    *              a specified object's position.
+    **************************************************************************************/
     public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject gameObject )
     {
         if (!angleIsGlobal)

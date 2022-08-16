@@ -2,12 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//*******************************************
-// Author: Dean Pearce
-// Class: AttackZoneManager
-// Description: Class for managing the attack zone objects which hold information about the attack zones
-// around the player
-//*******************************************
+/**************************************************************************************
+* Type: Class
+* 
+* Name: AttackZoneManager
+*
+* Author: Dean Pearce
+*
+* Description: Class for managing the attack zone objects which hold information about the attack zones
+*              around the player.
+**************************************************************************************/
 public class AttackZoneManager
 {
     private AIManager m_aiManager;
@@ -21,41 +25,47 @@ public class AttackZoneManager
 
     private int m_currentZoneNumToCheck = 0;
 
-    private GameObject m_obsCheckDebug;
-    private List<GameObject> m_obsCheckChildArray = new List<GameObject>();
-
     public AttackZoneManager(AIManager aiManager)
     {
         m_aiManager = aiManager;
-        m_player = GameObject.FindGameObjectWithTag("Player");
+        m_player = GameObject.FindGameObjectWithTag(Settings.g_playerTag);
 
         // Could possibly refactor this to use it's own variable, but for now it's set by the AIManager because it can be set in inspector
         m_attackZonesNum = m_aiManager.GetAttackZonesNum();
 
         SetupAttackZones();
-
-        // Setting the debug object from the AI as it's set in inspector
-        // Only using temporarily to get base logic working
-        if ( m_aiManager.GetObsCheckDebug() != null)
-        {
-            m_obsCheckDebug = m_aiManager.GetObsCheckDebug();
-
-            // Adding the debug objects to the list
-            for (int i = 0; i < m_obsCheckDebug.transform.childCount; i++)
-            {
-                m_obsCheckChildArray.Add(m_obsCheckDebug.transform.GetChild(i).gameObject);
-            }
-        }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Update
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Custom update to be used by the AIManager since this class doesn't
+    *              make use of MonoBehaviour.
+    **************************************************************************************/
     public void Update()
     {
         ObsCheckUpdate();
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ObsCheckUpdate
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Update function to sequentially check for obstructions on attack zones.
+    **************************************************************************************/
     private void ObsCheckUpdate()
     {
-        // Using this update function to sequentially check for obstruction in zones
         m_activeAttackZones[m_currentZoneNumToCheck].CheckForObstruction();
         m_passiveAttackZones[m_currentZoneNumToCheck].CheckForObstruction();
 
@@ -66,6 +76,17 @@ public class AttackZoneManager
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetupAttackZones
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Setup the attack zone objects and give them the necessary values.
+    **************************************************************************************/
     private void SetupAttackZones()
     {
         // Setting up attack zone objects, and giving them their initial data
@@ -81,7 +102,17 @@ public class AttackZoneManager
         }
     }
 
-    // Function for finding the attack zone that the given enemy is in
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: FindAttackZone
+    * Parameters: EnemyAI enemyToCheck
+    * Return: AttackZone
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for finding and returning the AttackZone a specified enemy is in.
+    **************************************************************************************/
     public AttackZone FindAttackZone( EnemyAI enemyToCheck )
     {
         AttackZone returnZone = null;
@@ -125,7 +156,17 @@ public class AttackZoneManager
         return returnZone;
     }
 
-    // Getting position for an enemy by a specified zone and distance
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: GetSpecifiedPos
+    * Parameters: float angle, float dist
+    * Return: Vector3
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Return a position from a given angle and distance.
+    **************************************************************************************/
     public Vector3 GetSpecifiedPos( float angle, float dist )
     {
         Vector3 dirToPos = DirFromAngle(angle - m_sectionHalfAngle, true, m_player);
@@ -133,7 +174,17 @@ public class AttackZoneManager
         return m_player.transform.position + (dirToPos * dist);
     }
 
-    // Return the number of the zone the specified enemy is in
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: GetZoneNumByAngle
+    * Parameters: EnemyAI enemy
+    * Return: int
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Return the number of zone a specified enemy is in.
+    **************************************************************************************/
     public int GetZoneNumByAngle( EnemyAI enemy )
     {
         // Getting positions
@@ -160,7 +211,18 @@ public class AttackZoneManager
         return (int)(angle / m_anglePerSection);
     }
 
-    // Function for optimally checking two targets are within a given distance of each other
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: DistanceSqrCheck
+    * Parameters: GameObject targetToCheck, float distanceToCheck
+    * Return: bool
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for checking if an object is within a specified distance.
+    *              More optimal than using Vector3.Distance
+    **************************************************************************************/
     private bool DistanceSqrCheck( GameObject firstTarget, GameObject secondTarget, float distanceToCheck )
     {
         bool isInRange = false;
@@ -177,6 +239,17 @@ public class AttackZoneManager
         return isInRange;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: AreZonesAvailable
+    * Parameters: ZoneType typeToCheck
+    * Return: bool
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Checks if any zones of the specified zone type are available.
+    **************************************************************************************/
     public bool AreZonesAvailable(ZoneType typeToCheck)
     {
         if( typeToCheck == ZoneType.Active)
@@ -203,6 +276,17 @@ public class AttackZoneManager
         return false;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ClearZones
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Clears all zones of any EnemyAI's that might be occupying them.
+    **************************************************************************************/
     public void ClearZones()
     {
         foreach(AttackZone attackZone in m_activeAttackZones)
@@ -215,6 +299,18 @@ public class AttackZoneManager
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: DirFromAngle
+    * Parameters: float angleInDegrees, bool angleIsGlobal, GameObject dirFromObject
+    * Return: Vector3
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to allow getting the direction from
+    *              a specified object's position.
+    **************************************************************************************/
     public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject gameObject )
     {
         if (!angleIsGlobal)
@@ -224,6 +320,8 @@ public class AttackZoneManager
 
         return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
+
+    // Start of getters & setters
 
     public AttackZone GetAttackZoneByNum( int num, ZoneType zoneType )
     {

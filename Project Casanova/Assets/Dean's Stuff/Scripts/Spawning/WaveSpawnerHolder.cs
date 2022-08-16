@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: WaveSpawnerHolder
+*
+* Author: Dean Pearce
+*
+* Description: Class for holding and returning WaveSpawners.
+**************************************************************************************/
 public class WaveSpawnerHolder : MonoBehaviour
 {
     [SerializeField]
@@ -17,6 +26,18 @@ public class WaveSpawnerHolder : MonoBehaviour
     private int m_lastReturnedM = 0;
     private int m_lastReturnedR = 0;
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: ReturnSpawnPoint
+	* Parameters: n/a
+	* Return: WaveSpawner
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Returns a WaveSpawner, then increments through the groups and spawners returned
+	*              in order to spread out the spawns.
+	**************************************************************************************/
     public WaveSpawner ReturnSpawnPoint()
     {
         WaveSpawner pointToReturn = null;

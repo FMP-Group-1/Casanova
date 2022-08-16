@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: Spawner
+*
+* Author: Dean Pearce
+*
+* Description: Class to be used by the SpawnManager for spawning an enemy on a specific point.
+**************************************************************************************/
 public class Spawner : MonoBehaviour
 {
     [SerializeField]
@@ -15,7 +24,17 @@ public class Spawner : MonoBehaviour
     [SerializeField]
     private bool m_isWaveEnemy = false;
 
-
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: Spawn
+	* Parameters: GameObject enemyToSpawn
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Spawns the specified enemy on the attached object's position.
+	**************************************************************************************/
     public void Spawn(GameObject enemyToSpawn)
     {
         EnemyAI enemyScript = enemyToSpawn.GetComponent<EnemyAI>();
@@ -39,6 +58,8 @@ public class Spawner : MonoBehaviour
         enemyScript.SetWaveEnemy(m_isWaveEnemy);
 
     }
+
+    // Start of getters & setters
 
     public EnemyType GetSpawnType()
     {

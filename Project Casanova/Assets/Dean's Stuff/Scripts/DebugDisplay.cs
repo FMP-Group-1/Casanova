@@ -4,12 +4,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 
-//*******************************************
-// Author: Dean Pearce
-// Class: DebugDisplay
-// Description: Handles the UI element which is used for displaying debug information on a specific zone or AI
-//*******************************************
-
 public enum DebugType
 {
     AI,
@@ -17,6 +11,15 @@ public enum DebugType
     None
 }
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: DebugDisplay
+*
+* Author: Dean Pearce
+*
+* Description: Handles the UI element which is used for displaying debug information on a specific zone or AI.
+**************************************************************************************/
 public class DebugDisplay : MonoBehaviour
 {
     private DebugType m_debugType = DebugType.None;
@@ -40,7 +43,6 @@ public class DebugDisplay : MonoBehaviour
     private Text m_aiNameText;
     private Text m_aiStateText;
     private Text m_aiSubstateText;
-    private Text m_aiHealth;
     private Text m_playerDetectedText;
     private Text m_strafeAtDistText;
     private Text m_attackZoneText;
@@ -104,12 +106,22 @@ public class DebugDisplay : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: SetupAIDebugDisplay
+	* Parameters: n/a
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Sets up all the relevant components for AI debug text.
+	**************************************************************************************/
     private void SetupAIDebugDisplay()
     {
         m_aiNameText = GameObject.Find("AINameText").GetComponent<Text>();
         m_aiStateText = GameObject.Find("AIStateText").GetComponent<Text>();
         m_aiSubstateText = GameObject.Find("AISubstateText").GetComponent<Text>();
-        m_aiHealth = GameObject.Find("AIHealthText").GetComponent<Text>();
         m_playerDetectedText = GameObject.Find("PlayerDetectText").GetComponent<Text>();
         m_strafeAtDistText = GameObject.Find("StrafeDistText").GetComponent<Text>();
         m_attackZoneText = GameObject.Find("AttackZoneText").GetComponent<Text>();
@@ -125,6 +137,17 @@ public class DebugDisplay : MonoBehaviour
         SetAIDebugTarget(m_currentAiNum);
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: SetupZoneDebugDisplay
+	* Parameters: n/a
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Sets up all the relevant components for Zone debug text.
+	**************************************************************************************/
     private void SetupZoneDebugDisplay()
     {
         m_zoneNameText = GameObject.Find("ZoneNameText").GetComponent<Text>();
@@ -140,14 +163,23 @@ public class DebugDisplay : MonoBehaviour
         SetZoneTarget(m_currentAttackZoneNum);
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: AIDebugTextUpdate
+	* Parameters: n/a
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Updates the AI debug text components.
+	**************************************************************************************/
     private void AIDebugTextUpdate()
     {
         AIState currentAIState = m_targetAI.GetState();
 
         m_aiStateText.text = "AI State: " + currentAIState;
-        //m_aiHealth.text = "AI Health: " + m_targetAI.GetHealth();
-        //m_playerDetectedText.text = "Player Detected: " + m_targetAI.IsPlayerVisible();
-        m_playerDetectedText.text = "Player Distance: " + Vector3.Distance(m_targetAI.gameObject.transform.position, m_player.transform.position);
+        m_playerDetectedText.text = "Player Detected: " + m_targetAI.IsPlayerVisible();
         m_strafeAtDistText.text = "Strafe Distance: " + m_targetAI.GetStrafeDist();
 
         if (m_targetAI.GetZoneHandler().GetCurrentAttackZone() != null)
@@ -187,6 +219,17 @@ public class DebugDisplay : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: ZoneDebugUpdate
+	* Parameters: n/a
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Updates the Zone debug text components.
+	**************************************************************************************/
     private void ZoneDebugUpdate()
     {
         m_zoneNameText.text = "Zone: " + m_targetZoneType + " " + m_targetZone.GetZoneNum();
@@ -204,6 +247,17 @@ public class DebugDisplay : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: ChangeZoneTarget
+	* Parameters: n/a
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Changes which zone's info is displayed based on input.
+	**************************************************************************************/
     private void ChangeZoneTarget()
     {
         // Inputs for cycling debug target, could use a refactor
@@ -238,6 +292,17 @@ public class DebugDisplay : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: SetZoneTarget
+	* Parameters: int targetNum
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Sets which zone's info is displayed by the specified number.
+	**************************************************************************************/
     private void SetZoneTarget(int targetNum)
     {
         if (m_targetZoneType == AttackingType.Passive)
@@ -252,6 +317,17 @@ public class DebugDisplay : MonoBehaviour
         m_zoneNameText.text = "Zone: " + m_targetZoneType + " " + m_targetZone.GetZoneNum();
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: ChangeAITarget
+	* Parameters: n/a
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Changes which AI's info is displayed based on input.
+	**************************************************************************************/
     private void ChangeAITarget()
     {
         // Inputs for cycling debug target, could use a refactor
@@ -273,12 +349,34 @@ public class DebugDisplay : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: SetAIDebugTarget
+	* Parameters: int targetNum
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Sets which AI's info is displayed by the specified number.
+	**************************************************************************************/
     private void SetAIDebugTarget(int targetNum)
     {
         m_targetAI = m_aiList[targetNum].GetComponent<EnemyAI>();
         m_aiNameText.text = "AI: " + m_aiList[targetNum].name;
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: SetDebugType
+	* Parameters: DebugType typeToSet
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Sets which debug information is displayed.
+	**************************************************************************************/
     private void SetDebugType(DebugType typeToSet)
     {
         switch (typeToSet)
@@ -307,6 +405,17 @@ public class DebugDisplay : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: ToggleDebugType
+	* Parameters: n/a
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Cycles through the debug info types based on input.
+	**************************************************************************************/
     private void ToggleDebugType()
     {
         if (m_f12Pressed.action.triggered)

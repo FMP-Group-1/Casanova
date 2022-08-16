@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: EnemySoundbank
+*
+* Author: Dean Pearce
+*
+* Description: Class for holding audio files related to the enemies.
+**************************************************************************************/
 public class EnemySoundbank : MonoBehaviour
 {
     [SerializeField]
@@ -141,6 +150,18 @@ public class EnemySoundbank : MonoBehaviour
         return ref m_tauntSFX[index];
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: RandomiseSFX
+    * Parameters: ref AudioClip[] clipArray
+    * Return: ref AudioClip
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Returns a AudioClip randomised from a specified array. Used to make sounds
+    *              more varied and immersive.
+    **************************************************************************************/
     private ref AudioClip RandomiseSFX(ref AudioClip[] clipArray)
     {
         int indexToGet = 0;

@@ -5,13 +5,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-//*******************************************
-// Author: Dean Pearce
-// Class: ConeDetectionVisualizer
-// Description: Script for visualizing the AI's FOV in the Editor
-// Logic from https://www.youtube.com/watch?v=rQG9aUWarwE
-//*******************************************
-
+/**************************************************************************************
+* Type: Class
+* 
+* Name: ConeDetectionVisualizer
+*
+* Author: Dean Pearce
+*
+* Description: Script for visualizing the AI's FOV in the Editor
+*              Logic from https://www.youtube.com/watch?v=rQG9aUWarwE
+**************************************************************************************/
 [CustomEditor(typeof(EnemyAI))]
 public class ConeDetectionVisualizer : Editor
 {
@@ -25,6 +28,17 @@ public class ConeDetectionVisualizer : Editor
         DrawAIDetectionCone(targetEnemy);
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: DrawPlayerDetectionCone
+	* Parameters: GameObject player, EnemyAI targetEnemy
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Draws lines to help visualize where the EnemyAI can see.
+	**************************************************************************************/
     private void DrawPlayerDetectionCone( GameObject player, EnemyAI targetEnemy )
     {
         // Setting line color, drawing the initial arc, then getting the angles for the fov lines with DirFromAngle
@@ -45,6 +59,17 @@ public class ConeDetectionVisualizer : Editor
         }
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: DrawAIDetectionCone
+	* Parameters: EnemyAI targetEnemy
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Draws lines to help visualize where the EnemyAI is checking for other AI as obstructions.
+	**************************************************************************************/
     private void DrawAIDetectionCone( EnemyAI targetEnemy )
     {
         // Setting line color, drawing the initial arc, then getting the angles for the fov lines with DirFromAngle

@@ -2,6 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: PlayerSoundHandler
+*
+* Author: Dean Pearce
+*
+* Description: Class which derives from CharacterSoundHandler. Since there's only one player, 
+*              this class doesn't make use of a soundbank as opposed to the EnemySoundHandler.
+**************************************************************************************/
 public class PlayerSoundHandler : CharacterSoundHandler
 {
     [SerializeField]
@@ -73,6 +83,18 @@ public class PlayerSoundHandler : CharacterSoundHandler
         m_audioSource.PlayOneShot(m_dodgeSFX);
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: RandomiseSFX
+    * Parameters: ref AudioClip[] clipArray
+    * Return: ref AudioClip
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Returns a AudioClip randomised from a specified array. Used to make sounds
+    *              more varied and immersive.
+    **************************************************************************************/
     private ref AudioClip RandomiseSFX( ref AudioClip[] clipArray )
     {
         int indexToGet = 0;

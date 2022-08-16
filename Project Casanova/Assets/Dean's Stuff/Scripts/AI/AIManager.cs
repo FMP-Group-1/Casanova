@@ -2,11 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//*******************************************
-// Author: Dean Pearce
-// Class: AIManager
-// Description: Manages the EnemyAI objects in the game
-//*******************************************
+/**************************************************************************************
+* Type: Class
+* 
+* Name: AIManager
+*
+* Author: Dean Pearce
+*
+* Description: Manages the AI enemy objects in the game.
+**************************************************************************************/
 
 public class AIManager : MonoBehaviour
 {
@@ -44,21 +48,9 @@ public class AIManager : MonoBehaviour
     [SerializeField]
     private GameObject m_obsCheckDebug;
 
-    //Input System
-    private DeanControls m_inputs;
-    [SerializeField]
-    private bool m_debugInputsActive = false;
-
     private void Awake()
     {
-        // Create the control input
-        m_inputs = new DeanControls();
         m_attackZoneManager = new AttackZoneManager(this);
-    }
-
-    private void OnEnable()
-    {
-        m_inputs.Enable();
     }
 
     void Start()
@@ -77,9 +69,6 @@ public class AIManager : MonoBehaviour
 
     void Update()
     {
-        // Function for reading the test inputs
-        TestingInputs();
-
         m_attackZoneManager.Update();
         ActiveAttackerCount();
 
@@ -87,6 +76,17 @@ public class AIManager : MonoBehaviour
         m_canAttack = TotalEnemiesAttacking() < m_maxSimultaneousAttacks;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: RegisterEnemies
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Register any enemies in the scene into the AIManager.
+    **************************************************************************************/
     public void RegisterEnemies()
     {
         foreach (GameObject enemy in GameObject.FindGameObjectsWithTag("Enemy"))
@@ -96,7 +96,10 @@ public class AIManager : MonoBehaviour
             if (enemyScript != null)
             {
                 // Adding the enemy into the list
-                m_enemyList.Add(enemyScript);
+                if (!m_enemyList.Contains(enemyScript))
+                {
+                    m_enemyList.Add(enemyScript);
+                }
 
                 // Giving the enemy a reference to the managers
                 enemyScript.SetAIManagerRef(this);
@@ -109,10 +112,19 @@ public class AIManager : MonoBehaviour
             }
 
         }
-
-        //Debug.Log("AIManager: Enemies in list: " + m_enemyList.Count);
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: RegisterEnemy
+    * Parameters: GameObject enemy
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Register a specific enemy into the AIManager.
+    **************************************************************************************/
     public void RegisterEnemy(GameObject enemy)
     {
         EnemyAI enemyScript = enemy.GetComponent<EnemyAI>();
@@ -133,7 +145,18 @@ public class AIManager : MonoBehaviour
         }
     }
 
-    // Register an enemy as an attacker
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: RegisterAttacker
+    * Parameters: EnemyAI enemyToRegister
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function which the EnemyAI uses upon entering combat. Allows the AIManager
+    *              to track and manage enemies in combat.
+    **************************************************************************************/
     public void RegisterAttacker(EnemyAI enemyToRegister)
     {
         if (!m_unassignedAttackers.Contains(enemyToRegister))
@@ -141,25 +164,20 @@ public class AIManager : MonoBehaviour
             m_unassignedAttackers.Add(enemyToRegister);
             enemyToRegister.SetAttackingType(AttackingType.Unassigned);
         }
-
-        // Check to make sure enemy isn't already in list
-        //if (!m_activeAttackers.Contains(enemyToRegister) && !m_passiveAttackers.Contains(enemyToRegister))
-        //{
-        //    // If active attackers isn't at max, add to active attackers, otherwise add to the passive attackers
-        //    if (m_activeAttackers.Count < m_maxActiveAttackers)
-        //    {
-        //        m_activeAttackers.Add(enemyToRegister);
-        //        enemyToRegister.SetAttackingType(AttackingType.Active);
-        //    }
-        //    else
-        //    {
-        //        m_passiveAttackers.Add(enemyToRegister);
-        //        enemyToRegister.SetAttackingType(AttackingType.Passive);
-        //    }
-        //}
     }
 
-        // Unregister enemy from attacker lists
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: UnregisterAttacker
+    * Parameters: EnemyAI enemyToUnregister
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to unregister the enemy from the attacker lists so they can be
+    *              properly removed from combat.
+    **************************************************************************************/
     public void UnregisterAttacker(EnemyAI enemyToUnregister)
     {
         if (m_activeAttackers.Contains(enemyToUnregister))
@@ -176,7 +194,17 @@ public class AIManager : MonoBehaviour
         }
     }
 
-    // Adds specified enemy to active attacker list, and makes sure they're removed from passive list
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: MakeActiveAttacker
+    * Parameters: EnemyAI enemy
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to switch the specified enemy to an active attacker.
+    **************************************************************************************/
     public void MakeActiveAttacker(EnemyAI enemy)
     {
         if (m_passiveAttackers.Contains(enemy))
@@ -195,7 +223,17 @@ public class AIManager : MonoBehaviour
         enemy.SetAttackingType(AttackingType.Active);
     }
 
-    // Adds specified enemy to passive attacker list, and makes sure they're removed from active list
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: MakePassiveAttacker
+    * Parameters: EnemyAI enemy
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to switch the specified enemy to an passive attacker.
+    **************************************************************************************/
     public void MakePassiveAttacker(EnemyAI enemy)
     {
         if (m_activeAttackers.Contains(enemy))
@@ -214,6 +252,17 @@ public class AIManager : MonoBehaviour
         enemy.SetAttackingType(AttackingType.Passive);
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: MakeUnassignedAttacker
+    * Parameters: EnemyAI enemy
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to switch the specified enemy to an unassigned attacker.
+    **************************************************************************************/
     public void MakeUnasssignedAttacker( EnemyAI enemy )
     {
         if (m_activeAttackers.Contains(enemy))
@@ -232,12 +281,25 @@ public class AIManager : MonoBehaviour
         enemy.SetAttackingType(AttackingType.Unassigned);
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: DeactivateActiveEnemies
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Deactivates all active enemies in the scene. Useful for respawn logic.
+    **************************************************************************************/
     public void DeactivateActiveEnemies()
     {
         foreach (EnemyAI enemy in m_enemyList)
         {
             if (enemy.gameObject.activeSelf)
             {
+                // Unregister from attackers, add to the available enemy pool,
+                // then deactivate and reset the health manager
                 UnregisterAttacker(enemy);
                 m_spawnManager.AddToAvailable( enemy );
                 enemy.gameObject.SetActive(false);
@@ -245,10 +307,22 @@ public class AIManager : MonoBehaviour
             }
         }
 
+        // Clear any of the attack zones that might not have been cleared
         m_attackZoneManager.ClearZones();
     }
 
-    // Function for ensuring the active attacker count is always correct
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ActiveAttackerCount
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for making sure active attackers don't go over the limit, and assigning passive
+    *              attackers to active when possible
+    **************************************************************************************/
     private void ActiveAttackerCount()
     {
         if (m_activeAttackers.Count > m_maxActiveAttackers)
@@ -261,6 +335,18 @@ public class AIManager : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: WakeGroup
+    * Parameters: int groupToWake
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to wake up a specified group of enemies. Used via the EventManager
+    *              for the purpose of progression.
+    **************************************************************************************/
     private void WakeGroup(int groupToWake)
     {
         foreach(EnemyAI enemy in m_enemyList)
@@ -272,6 +358,18 @@ public class AIManager : MonoBehaviour
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: AlertGroup
+    * Parameters: int groupToWake
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to alert a specified group of enemies. Used via the EventManager
+    *              for the purpose of progression.
+    **************************************************************************************/
     private void AlertGroup(int groupToAlert)
     {
         foreach (EnemyAI enemy in m_enemyList)
@@ -292,7 +390,18 @@ public class AIManager : MonoBehaviour
         }
     }
 
-    // Function for finding the furthest active attacker from the player
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: FindFurthestActiveAttacker
+    * Parameters: n/a
+    * Return: EnemyAI
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to find the furthest active attacker from the player.
+    *              Useful for figuring out which enemy should be turned passive.
+    **************************************************************************************/
     private EnemyAI FindFurthestActiveAttacker()
     {
         // Setting the first index as the default
@@ -310,7 +419,18 @@ public class AIManager : MonoBehaviour
         return furthestEnemy;
     }
 
-    // Function for finding the closest passive attacker to the player
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: FindClosestPassiveAttacker
+    * Parameters: n/a
+    * Return: EnemyAI
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to find the closest passive attacker from the player.
+    *              Useful for figuring out which enemy should be turned active.
+    **************************************************************************************/
     private EnemyAI FindClosestPassiveAttacker()
     {
         // Setting the first index as the default
@@ -328,35 +448,81 @@ public class AIManager : MonoBehaviour
         return closestEnemy;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ActiveSlotsOpen
+    * Parameters: n/a
+    * Return: bool
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to quickly check if the active attackers is at the max limit.
+    **************************************************************************************/
     public bool ActiveSlotsOpen()
     {
         return m_activeAttackers.Count < m_maxActiveAttackers;
     }
 
-    // Function for getting the square distance for more optimal comparison checks
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: GetSqrDistance
+    * Parameters: GameObject firstTarget, GameObject secondTarget
+    * Return: float
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to return the distance between two GameObjects as a float.
+    *              Quicker than using Vector3.Distance
+    **************************************************************************************/
     private float GetSqrDistance( GameObject firstTarget, GameObject secondTarget )
     {
         return (firstTarget.transform.position - secondTarget.transform.position).sqrMagnitude;
     }
 
-    // Function for passive attacker to call when they've gotten too close to the player
-    // Makes the passive attacker an active attacker and vice versa
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SwapPassiveWithActive
+    * Parameters: EnemyAI enemyToSwap
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to swap a specified passive enemy with an active enemy based on the
+    *              furthest active attacker.
+    **************************************************************************************/
     public void SwapPassiveWithActive( EnemyAI enemyToSwap )
     {
         EnemyAI furthestActive = FindFurthestActiveAttacker();
         MakeActiveAttacker(enemyToSwap);
         MakePassiveAttacker(furthestActive);
 
+        // If attacking, let them finish attack, otherwise start backing up
         if (furthestActive.GetCombatState() != CombatState.Attacking)
         {
             furthestActive.SetCombatState(CombatState.BackingUp);
         }
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: TotalEnemiesAttacking
+    * Parameters: n/a
+    * Return: int
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function which returns the amount of enemies currently making an attack.
+    *              Useful for limiting max simultaneous attacks.
+    **************************************************************************************/
     public int TotalEnemiesAttacking()
     {
         int total = 0;
 
+        // Only check active attackers since they're the only ones which should be attacking
         foreach (EnemyAI enemy in m_activeAttackers)
         {
             if (enemy.GetCombatState() == CombatState.Attacking || enemy.GetCombatState() == CombatState.MovingToAttack)
@@ -368,6 +534,17 @@ public class AIManager : MonoBehaviour
         return total;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: RemainingEnemiesInGroup
+    * Parameters: int groupNum
+    * Return: int
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for returning the remaining active enemies in the specified group.
+    **************************************************************************************/
     public int RemainingEnemiesInGroup(int groupNum)
     {
         int enemiesRemaining = 0;
@@ -383,6 +560,18 @@ public class AIManager : MonoBehaviour
         return enemiesRemaining;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: RemainingWaveEnemies
+    * Parameters: n/a
+    * Return: int
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for returning the remaining active wave enemies.
+    *              Useful for the final arena where wave logic is used.
+    **************************************************************************************/
     public int RemainingWaveEnemies()
     {
         int enemiesRemaining = 0;
@@ -398,6 +587,17 @@ public class AIManager : MonoBehaviour
         return enemiesRemaining;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: IsCombatActive
+    * Parameters: n/a
+    * Return: bool
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for checking if any active enemies are currently in combat.
+    **************************************************************************************/
     public bool IsCombatActive()
     {
         foreach (EnemyAI enemy in m_enemyList)
@@ -410,6 +610,8 @@ public class AIManager : MonoBehaviour
 
         return false;
     }
+
+    // Start of getters & setters
 
     public AttackZoneManager GetAttackZoneManager()
     {
@@ -461,38 +663,9 @@ public class AIManager : MonoBehaviour
         return m_enemyList;
     }
 
-    // Function for reading inputs for purposes of debugging
-    private void TestingInputs()
-    {
-        if (m_debugInputsActive)
-        {
-            // Start Patrolling Test Input
-            if (m_inputs.Debug.AI_Move.triggered)
-            {
-                foreach (EnemyAI enemy in m_enemyList)
-                {
-                    enemy.SetAIState(AIState.Patrolling);
-                }
-            }
-
-            // Start Pursuing Test Input
-            if (m_inputs.Debug.AI_Combat.triggered)
-            {
-                foreach (EnemyAI enemy in m_enemyList)
-                {
-                    if (enemy.GetState() != AIState.Dead)
-                    {
-                        enemy.SetAIState(AIState.InCombat);
-                        m_canAttack = true;
-                    }
-                }
-            }
-        }
-    }
-
+    // Unsubscribe from the EventManager on destroy
 	private void OnDestroy()
 	{
-
         EventManager.WakeEnemiesEvent -= WakeGroup;
         EventManager.AlertEnemiesEvent -= AlertGroup;
     }

@@ -3,11 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-//*******************************************
-// Author: Dean Pearce
-// Class: AttackZone
-// Description: Class for tracking combat zones around the player
-//*******************************************
 public enum ZoneType
 {
     None,
@@ -15,6 +10,15 @@ public enum ZoneType
     Active
 }
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: AttackZone
+*
+* Author: Dean Pearce
+*
+* Description: AttackZone class which holds information for the attack zone.
+**************************************************************************************/
 public class AttackZone
 {
     private bool m_isOccupied = false;
@@ -34,7 +38,7 @@ public class AttackZone
 
     private Vector3[] m_obstPointArray = new Vector3[5];
 
-    public AttackZone(bool isOccupied, ZoneType zoneType, int zoneNum)
+    public AttackZone( bool isOccupied, ZoneType zoneType, int zoneNum )
     {
         m_isOccupied = isOccupied;
         m_zoneType = zoneType;
@@ -42,7 +46,18 @@ public class AttackZone
         m_player = GameObject.FindGameObjectWithTag("Player");
     }
 
-    public void SetBounds( float angleStart, float angleEnd, float startDist, float endDist, float angleSize)
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetBounds
+    * Parameters: float angleStart, float angleEnd, float startDist, float endDist, float angleSize
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for setting the bounds of this attack zone.
+    **************************************************************************************/
+    public void SetBounds( float angleStart, float angleEnd, float startDist, float endDist, float angleSize )
     {
         m_zoneAngleStart = angleStart;
         m_zoneAngleEnd = angleEnd;
@@ -50,6 +65,67 @@ public class AttackZone
         m_zoneDistEnd = endDist;
         m_zoneAngleSize = angleSize;
     }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: CheckForObstruction
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Checks if this AttackZone is obstructed by the environment.
+    **************************************************************************************/
+    public void CheckForObstruction()
+    {
+        m_isObstructed = false;
+
+        // Setting the points that should be checking the nav mesh
+        // Setting them to the corners of the zone - the buffer values
+        m_obstPointArray[0] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
+        m_obstPointArray[1] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
+        m_obstPointArray[2] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
+        m_obstPointArray[3] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
+
+        // Center point
+        m_obstPointArray[4] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - (m_zoneAngleSize * 0.5f), true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
+
+        for (int i = 0; i < m_obstPointArray.Length; i++)
+        {
+            // SamplePosition to check whether the position is currently on the navmesh
+            if (!NavMesh.SamplePosition(m_obstPointArray[i], out NavMeshHit hit, m_navMeshCheckDist, NavMesh.AllAreas))
+            {
+                // If point is not valid on navmesh
+                m_isObstructed = true;
+                return;
+            }
+        }
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: DirFromAngle
+    * Parameters: float angleInDegrees, bool angleIsGlobal, GameObject dirFromObject
+    * Return: Vector3
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function to allow getting the direction from
+    *              a specified object's position.
+    **************************************************************************************/
+    public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject dirFromObject )
+    {
+        if (!angleIsGlobal)
+        {
+            angleInDegrees += dirFromObject.transform.eulerAngles.y;
+        }
+
+        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
+    }
+
+    // Start of getters & setters
 
     public bool IsOccupied()
     {
@@ -126,80 +202,5 @@ public class AttackZone
     public float GetEndDist()
     {
         return m_zoneDistEnd;
-    }
-
-    public void CheckForObstruction()
-    {
-        m_isObstructed = false;
-
-        // Setting the points that should be checking the nav mesh
-        // Setting them to the corners of the zone - the buffer values
-        m_obstPointArray[0] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
-        m_obstPointArray[1] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
-        m_obstPointArray[2] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
-        m_obstPointArray[3] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
-
-        // Center point
-        m_obstPointArray[4] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - (m_zoneAngleSize * 0.5f), true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
-
-        for (int i = 0; i < m_obstPointArray.Length; i++)
-        {
-            // SamplePosition to check whether the position is currently on the navmesh
-            if (!NavMesh.SamplePosition(m_obstPointArray[i], out NavMeshHit hit, m_navMeshCheckDist, NavMesh.AllAreas))
-            {
-                // If point is not valid on navmesh
-                m_isObstructed = true;
-                return;
-            }
-        }
-    }
-
-    // Purely for visualizing the obs point check, will need removing
-    public void CheckForObstruction(List<GameObject> objectArray )
-    {
-        m_isObstructed = false;
-
-        // Setting the points that should be checking the nav mesh
-        // Setting them to the corners of the zone - the buffer values
-        m_obstPointArray[0] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
-        m_obstPointArray[1] = m_player.transform.position + DirFromAngle(m_zoneAngleStart + m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
-        m_obstPointArray[2] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistStart + m_obstructionDistBuffer);
-        m_obstPointArray[3] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - m_obstructionAngBuffer, true, m_player) * (m_zoneDistEnd - m_obstructionDistBuffer);
-
-        // Center point
-        m_obstPointArray[4] = m_player.transform.position + DirFromAngle(m_zoneAngleEnd - (m_zoneAngleSize * 0.5f), true, m_player) * (m_zoneDistStart + ((m_zoneDistEnd - m_zoneDistStart) * 0.5f));
-
-        // Using this function to set the position of the debug objects as a way to visualize where these points are
-        ObsCheckPoints(m_obstPointArray, objectArray);
-
-        for (int i = 0; i < m_obstPointArray.Length; i++)
-        {
-            // SamplePosition to check whether the position is currently on the navmesh
-            if (!NavMesh.SamplePosition(m_obstPointArray[i], out NavMeshHit hit, m_navMeshCheckDist, NavMesh.AllAreas))
-            {
-                // If point is not valid on navmesh
-                m_isObstructed = true;
-                return;
-            }
-        }
-    }
-
-    private void ObsCheckPoints(Vector3[] positionArray, List<GameObject> objectArray)
-    {
-        // Setting position of given objects in an array to the positions of an array of positions, used above for debug visualization
-        for (int i = 0; i < positionArray.Length; i++)
-        {
-            objectArray[i].transform.position = positionArray[i];
-        }
-    }
-
-    public Vector3 DirFromAngle( float angleInDegrees, bool angleIsGlobal, GameObject dirFromObject )
-    {
-        if (!angleIsGlobal)
-        {
-            angleInDegrees += dirFromObject.transform.eulerAngles.y;
-        }
-
-        return new Vector3(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
 }

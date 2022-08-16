@@ -10,6 +10,16 @@ public enum TriggerType
     Alert
 }
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: TriggerBox
+*
+* Author: Dean Pearce
+*
+* Description: Class for attaching to a trigger box for the purpose of spawning, waking,
+*              and alerting enemies via event manager calls.
+**************************************************************************************/
 public class TriggerBox : MonoBehaviour
 {
     [SerializeField]
@@ -51,7 +61,7 @@ public class TriggerBox : MonoBehaviour
                 }
             }
 
-            //Charlie: Update the game manager's current room
+            // Charlie: Update the game manager's current room
             GameObject.FindGameObjectWithTag(Settings.g_controllerTag).GetComponent<GameManager>().EnterRoom(m_roomEntered);
             
 

@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: CutsceneTriggerBox
+*
+* Author: Dean Pearce
+*
+* Description: Class for attaching to a trigger box that on enter will trigger a cutscene.
+**************************************************************************************/
 public class CutsceneTriggerBox : MonoBehaviour
 {
     [SerializeField]

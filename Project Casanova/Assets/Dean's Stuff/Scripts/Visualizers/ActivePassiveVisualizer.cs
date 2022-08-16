@@ -1,14 +1,17 @@
-#if (UNITY_EDITOR) 
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-//*******************************************
-// Author: Dean Pearce
-// Class: ActivePassiveVisualizer
-// Description: Visualizer for showing a colored orb above enemies head to easily determine whether they are an active or passive attacker
-//*******************************************
-
+/**************************************************************************************
+* Type: Class
+* 
+* Name: ActivePassiveVisualizer
+*
+* Author: Dean Pearce
+*
+* Description: Visualizer for showing a colored orb above enemies head to easily determine whether they are an active or passive attacker
+*              No longer used.
+**************************************************************************************/
 public class ActivePassiveVisualizer : MonoBehaviour
 {
     [SerializeField]
@@ -52,7 +55,17 @@ public class ActivePassiveVisualizer : MonoBehaviour
         }
     }
 
-    // Matching the visualizer position to be slightly above the AI
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: MatchParentPos
+	* Parameters: n/a
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Matching the visualizer position to be slightly above the AI.
+	**************************************************************************************/
     private void MatchParentPos()
     {
         Vector3 tempPos = m_parentAI.transform.position;
@@ -60,6 +73,17 @@ public class ActivePassiveVisualizer : MonoBehaviour
         transform.position = tempPos;
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: ColorCheck
+	* Parameters: n/a
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Setting the color of the orb visualizers.
+	**************************************************************************************/
     private void ColorCheck()
     {
         // Checking if the attacker type and the color match, and if not, then setting the color
@@ -77,4 +101,3 @@ public class ActivePassiveVisualizer : MonoBehaviour
         }
     }
 }
-#endif

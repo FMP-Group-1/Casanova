@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: EnemySoundHandler
+*
+* Author: Dean Pearce
+*
+* Description: Derives from CharacterSoundHandler. Uses a soundbank to get references to AudioClips.
+**************************************************************************************/
 public class EnemySoundHandler : CharacterSoundHandler
 {
     private EnemySoundbank m_soundbank;
@@ -10,6 +19,7 @@ public class EnemySoundHandler : CharacterSoundHandler
     {
         base.Awake();
 
+        // Determining which soundbank to use
         if (gameObject.GetComponent<EnemyAI>().GetEnemyType() == EnemyType.Grunt)
         {
             m_soundbank = GameObject.FindGameObjectWithTag("GruntSoundbank").GetComponent<EnemySoundbank>();

@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: EnemyEyeColorChanger
+*
+* Author: Dean Pearce
+*
+* Description: Class to change the eye color of the enemy based on their attack state.
+**************************************************************************************/
 public class EnemyEyeColorChanger : MonoBehaviour
 {
     private EnemyAI m_parentAI;
@@ -27,19 +36,6 @@ public class EnemyEyeColorChanger : MonoBehaviour
     [SerializeField]
     private Color m_attackColorMax;
 
-    //[SerializeField]
-    //private Color m_normalAttackColorMin;
-    //[SerializeField]
-    //private Color m_normalAttackColorMax;
-    //[SerializeField]
-    //private Color m_lightAttackColorMin;    
-    //[SerializeField]
-    //private Color m_lightAttackColorMax;
-    //[SerializeField]
-    //private Color m_heavyAttackColorMin;
-    //[SerializeField]
-    //private Color m_heavyAttackColorMax;
-
     private ParticleSystem m_particleEye1;
     private ParticleSystem m_particleEye2;
     private ParticleSystem m_particleTrail1;
@@ -63,6 +59,17 @@ public class EnemyEyeColorChanger : MonoBehaviour
         UpdateEyes();
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: ChangeEyeColor
+	* Parameters: Color min, Color max
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Changes the eye colors based on the colors specified in the parameter.
+	**************************************************************************************/
     private void ChangeEyeColor(Color min, Color max)
     {
         //ParticleSystem.MinMaxGradient grad = new ParticleSystem.MinMaxGradient(min, max);
@@ -80,6 +87,17 @@ public class EnemyEyeColorChanger : MonoBehaviour
         trailCol2.color = grad;
     }
 
+    /**************************************************************************************
+	* Type: Function
+	* 
+	* Name: UpdateEyes
+	* Parameters: n/a
+	* Return: n/a
+	*
+	* Author: Dean Pearce
+	*
+	* Description: Update logic to track when the eyes should change color based on attack state.
+	**************************************************************************************/
     private void UpdateEyes()
     {
         CombatState currentState = m_parentAI.GetCombatState();
@@ -89,27 +107,6 @@ public class EnemyEyeColorChanger : MonoBehaviour
         {
             if (currentState == CombatState.Attacking)
             {
-                // Commented out to make eye color only use 1 color for all attacks
-                // Left commented incase needed in the future
-                //switch (m_parentAI.GetAttackMode())
-                //{
-                //    case AttackMode.Normal:
-                //    {
-                //        ChangeEyeColor(m_normalAttackColorMin, m_normalAttackColorMax);
-                //        break;
-                //    }
-                //    case AttackMode.Quick:
-                //    {
-                //        ChangeEyeColor(m_lightAttackColorMin, m_lightAttackColorMax);
-                //        break;
-                //    }
-                //    case AttackMode.Heavy:
-                //    {
-                //        ChangeEyeColor(m_heavyAttackColorMin, m_heavyAttackColorMax);
-                //        break;
-                //    }
-                //}
-
                 ChangeEyeColor(m_preAttackColorMin, m_preAttackColorMax);
             }
             else if (m_prevAIState == CombatState.Attacking)

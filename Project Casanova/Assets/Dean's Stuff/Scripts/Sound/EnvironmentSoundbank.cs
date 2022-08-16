@@ -2,6 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: EnvironmentSoundbank
+*
+* Author: Dean Pearce
+*
+* Description: Class for holding audio files related to the environment.
+**************************************************************************************/
 public class EnvironmentSoundbank : MonoBehaviour
 {
     [SerializeField]
