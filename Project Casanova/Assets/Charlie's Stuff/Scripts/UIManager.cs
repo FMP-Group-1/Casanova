@@ -581,8 +581,8 @@ public class UIManager : MonoBehaviour
 
         if (beginCutscene)
         {
-            cutsceneScript.StartCutscene();
             m_gameUIGroup.gameObject.SetActive(false);
+            cutsceneScript.StartCutscene();
         }
         else
         {

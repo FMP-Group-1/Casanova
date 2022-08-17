@@ -20,6 +20,8 @@ public class EventManager : MonoBehaviour
     public static event Action<int> AlertEnemiesEvent;
     public static event Action WaveSetupEvent;
     public static event Action SpawnWaveEvent;
+    public static event Action CutsceneBeginEvent;
+    public static event Action<bool> CutsceneEndEvent;
 
     // Event functions
     public static void StartWakeEnemiesEvent(int triggerGroup)
@@ -45,5 +47,15 @@ public class EventManager : MonoBehaviour
     public static void StartSpawnWaveEvent()
     {
         SpawnWaveEvent?.Invoke();
+    }
+
+    public static void StartCutsceneBeginEvent()
+    {
+        CutsceneBeginEvent?.Invoke();
+    }
+
+    public static void StartCutsceneEndEvent(bool enterCombat)
+    {
+        CutsceneEndEvent?.Invoke(enterCombat);
     }
 }

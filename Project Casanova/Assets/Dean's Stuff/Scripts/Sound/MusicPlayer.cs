@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 /**************************************************************************************
 * Type: Class
@@ -18,6 +19,8 @@ public class MusicPlayer : MonoBehaviour
     private AudioClip m_bgMusic;
     [SerializeField]
     private AudioClip m_combatMusic;
+    [SerializeField]
+    private AudioClip m_cutsceneMusic;
     private AudioSource m_audioSource;
     [SerializeField]
     [Range(0.0f, 1.0f)]
@@ -25,6 +28,16 @@ public class MusicPlayer : MonoBehaviour
     [SerializeField]
     [Range(0.0f, 1.0f)]
     private float m_combatMusicVolume = 1.0f;
+    [SerializeField]
+    [Range(0.0f, 1.0f)]
+    private float m_cutsceneMusicVolume = 1.0f;
+    private AudioMixer m_audioMixer;
+    private string m_musicVolString = "MusicVol";
+    [SerializeField]
+    private float m_fadeTime = 1.5f;
+    private float m_minMixerVol = -80.0f;
+    private bool m_fadeFinished = false;
+
 
     private bool m_prevInCombat = false;
 
@@ -32,10 +45,14 @@ public class MusicPlayer : MonoBehaviour
     {
         m_aiManager = GameObject.FindGameObjectWithTag(Settings.g_controllerTag).GetComponent<AIManager>();
         m_audioSource = GetComponent<AudioSource>();
+        m_audioMixer = m_audioSource.outputAudioMixerGroup.audioMixer;
 
         m_audioSource.clip = m_bgMusic;
         m_audioSource.volume = m_bgMusicVolume;
         m_audioSource.Play();
+
+        EventManager.CutsceneBeginEvent += StartCutsceneMusic;
+        EventManager.CutsceneEndEvent += EndCutsceneMusic;
     }
 
     void Update()
@@ -63,19 +80,102 @@ public class MusicPlayer : MonoBehaviour
             if (currentlyInCombat == true)
             {
                 // Entered combat
-                m_audioSource.clip = m_combatMusic;
-                m_audioSource.volume = m_combatMusicVolume;
-                m_audioSource.Play();
+                StartCoroutine(SwitchTrack(m_combatMusic, m_combatMusicVolume, false));
             }
             else
             {
                 // Exited combat
-                m_audioSource.clip = m_bgMusic;
-                m_audioSource.volume = m_bgMusicVolume;
-                m_audioSource.Play();
+                StartCoroutine(SwitchTrack(m_bgMusic, m_bgMusicVolume, true));
+
             }
         }
 
         m_prevInCombat = currentlyInCombat;
+    }
+
+    private void StartCutsceneMusic()
+    {
+        StartCoroutine(SwitchTrack(m_cutsceneMusic, m_cutsceneMusicVolume, false));
+    }
+
+    private void EndCutsceneMusic(bool enterCombat)
+    {
+        if (enterCombat)
+        {
+            StartCoroutine(SwitchTrack(m_combatMusic, m_combatMusicVolume, true));
+        }
+        else
+        {
+            StartCoroutine(SwitchTrack(m_bgMusic, m_bgMusicVolume, true));
+        }
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SwitchTrack
+    * Parameters: AudioClip trackToSwitchTo, float vol, bool shouldFade
+    * Return: IEnumerator
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for switching music tracks
+    **************************************************************************************/
+    private IEnumerator SwitchTrack(AudioClip trackToSwitchTo, float vol, bool shouldFade)
+    {
+        if (shouldFade)
+        {
+            // Start the fade coroutine, then wait until it's done
+            StartCoroutine(StartFade(m_audioMixer, m_musicVolString, m_fadeTime, m_minMixerVol));
+            yield return new WaitUntil(() => m_fadeFinished);
+        }
+
+        // Switching the tracks
+        m_audioSource.clip = trackToSwitchTo;
+        m_audioSource.volume = vol;
+        m_audioSource.Play();
+
+        // Reset the mixer volume
+        m_audioMixer.SetFloat(m_musicVolString, 0.0f);
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: StartFade
+    * Parameters: AudioMixer audioMixer, string exposedParam, float duration, float targetVolume
+    * Return: IEnumerator
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Function for fading audio to make music switching seem more natural.
+    *              Logic from https://johnleonardfrench.com/how-to-fade-audio-in-unity-i-tested-every-method-this-ones-the-best/
+    **************************************************************************************/
+    private IEnumerator StartFade( AudioMixer audioMixer, string exposedParam, float duration, float targetVolume )
+    {
+        m_fadeFinished = false;
+
+        float currentTime = 0;
+        float currentVol;
+        audioMixer.GetFloat(exposedParam, out currentVol);
+        currentVol = Mathf.Pow(10, currentVol / 20);
+        float targetValue = Mathf.Clamp(targetVolume, 0.0001f, 1);
+        while (currentTime < duration)
+        {
+            currentTime += Time.deltaTime;
+            float newVol = Mathf.Lerp(currentVol, targetValue, currentTime / duration);
+            audioMixer.SetFloat(exposedParam, Mathf.Log10(newVol) * 20);
+            yield return null;
+        }
+
+        m_fadeFinished = true;
+
+        yield break;
+    }
+
+    private void OnDestroy()
+    {
+        EventManager.CutsceneBeginEvent -= StartCutsceneMusic;
+        EventManager.CutsceneEndEvent -= EndCutsceneMusic;
     }
 }
