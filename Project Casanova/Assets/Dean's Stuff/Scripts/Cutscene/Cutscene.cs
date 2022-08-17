@@ -133,6 +133,9 @@ public class Cutscene : MonoBehaviour
 
         EventManager.StartAlertEnemiesEvent(4);
         EventManager.StartSpawnWaveEvent();
+
+        //Charlie: Set the respawn point to be the arena now.
+        GameObject.FindGameObjectWithTag(Settings.g_controllerTag).GetComponent<RespawnManager>().SetRespawnPoint( Room.Arena );
     }
 
     /**************************************************************************************

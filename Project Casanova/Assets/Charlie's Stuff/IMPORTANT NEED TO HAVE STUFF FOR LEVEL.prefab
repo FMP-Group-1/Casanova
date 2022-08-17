@@ -1488,10 +1488,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1859848252222178546}
     - target: {fileID: 3140287031547603235, guid: 8eb4181955adb5d49bba94276fc823f1, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: DisplayPauseScreen
-      objectReference: {fileID: 0}
-    - target: {fileID: 3140287031547603235, guid: 8eb4181955adb5d49bba94276fc823f1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: UIManager, Assembly-CSharp
       objectReference: {fileID: 0}
@@ -1608,16 +1604,8 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1859848252222178546}
     - target: {fileID: 7683292731329985283, guid: 8eb4181955adb5d49bba94276fc823f1, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
-      value: DisplayPauseScreen
-      objectReference: {fileID: 0}
-    - target: {fileID: 7683292731329985283, guid: 8eb4181955adb5d49bba94276fc823f1, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: UIManager, Assembly-CSharp
-      objectReference: {fileID: 0}
-    - target: {fileID: 7683292731329985283, guid: 8eb4181955adb5d49bba94276fc823f1, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_StringArgument
-      value: Options
       objectReference: {fileID: 0}
     - target: {fileID: 7735327105633417232, guid: 8eb4181955adb5d49bba94276fc823f1, type: 3}
       propertyPath: m_AnchorMax.y

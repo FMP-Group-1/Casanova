@@ -77,6 +77,7 @@ public class PlayerDamageManager : CharacterDamageManager
     public void Respawn( Transform spawnPos )
 	{
         //Move
+        //This works as in the project settings > Physics, I enabled sync transforms
         transform.position = spawnPos.position;
 
         //Reset values
@@ -89,6 +90,17 @@ public class PlayerDamageManager : CharacterDamageManager
 
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ResetAnimTriggers
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Reset animation triggers for player if any were active
+    **************************************************************************************/
     private void ResetAnimTriggers()
 	{
         GetAnimator().SetTrigger( "Respawn" );
@@ -99,6 +111,7 @@ public class PlayerDamageManager : CharacterDamageManager
         GetAnimator().ResetTrigger( "dodge" );
         GetAnimator().ResetTrigger( GetStaggerAnimTrigger() );
         GetAnimator().ResetTrigger( GetDieAnimTrigger() );
+        GetAnimator().SetBool( "comboActive", false );
 
     }
 
@@ -155,6 +168,17 @@ public class PlayerDamageManager : CharacterDamageManager
         
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ResetInvulnerable
+    * Parameters: float timer
+    * Return: IEnumerator
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Wait a set time and then reset invulnerable
+    **************************************************************************************/
     //Override exclusive to player
     public override IEnumerator ResetInvulnerable( float timer )
 	{

@@ -136,6 +136,37 @@ public class GameManager : MonoBehaviour
 
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: PlayGame
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Called by Play Game button in Main Menu, this does all the relevant stuff
+    *              to begin the game
+    **************************************************************************************/
+    public void PlayGame()
+    {
+        //Manage UI Elements
+        m_uiManager.StartGame();
+        //Unlock player menu lock  
+        m_playerController.SetMenuLock( false );
+        //Name of Cinemachine animator's game state. Not a variable as this is the ONLY place it is used, which makes it equal to a variable in time written
+        m_cinemachineAnimator.Play( "Game State" );
+        //Wake up player via animation. Not a variable as this is the ONLY place it is used, which makes it equal to a variable in time written
+        m_playerController.gameObject.GetComponent<Animator>().SetTrigger( "WakeUp" );
+        //Melee controller is disabled by default as clicking play will queue up attacks and it's just easier this way
+        m_playerController.GetComponent<MeleeController>().enabled = true;
+
+        //Hide cursor
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = true;
+
+    }
 
     /**************************************************************************************
     * Type: Function
@@ -176,7 +207,7 @@ public class GameManager : MonoBehaviour
                     Cursor.lockState = CursorLockMode.None;
                 }
                 //Hide or display pause UI based on if we jsut paused or not
-                m_uiManager.PauseMenu( Settings.g_paused );
+                m_uiManager.DisplayPauseMenu( Settings.g_paused );
             }
         }
     }
@@ -211,7 +242,7 @@ public class GameManager : MonoBehaviour
                     //Check if this specific group is all dead
                     if ( m_aiManager.RemainingEnemiesInGroup( 0 ) <= 0 )
                     {
-                        //If so, complete the room
+                        //If so, complete the room (Case room)
                         CompleteRoom( m_currentRoom );
                     }
                     break;
@@ -254,38 +285,6 @@ public class GameManager : MonoBehaviour
     /**************************************************************************************
     * Type: Function
     * 
-    * Name: PlayGame
-    * Parameters: n/a
-    * Return: n/a
-    *
-    * Author: Charlie Taylor
-    *
-    * Description: Called by Play Game button in Main Menu, this does all the relevant stuff
-    *              to begin the game
-    **************************************************************************************/
-    public void PlayGame()
-    {
-        //Manage UI Elements
-        m_uiManager.StartGame();
-        //Unlock player menu lock  
-        m_playerController.SetMenuLock( false );
-        //Name of Cinemachine animator's game state. Not a variable as this is the ONLY place it is used, which makes it equal to a variable in time written
-        m_cinemachineAnimator.Play( "Game State" );
-        //Wake up player via animation. Not a variable as this is the ONLY place it is used, which makes it equal to a variable in time written
-        m_playerController.gameObject.GetComponent<Animator>().SetTrigger( "WakeUp" );
-        //Melee controller is disabled by default as clicking play will queue up attacks and it's just easier this way
-        m_playerController.GetComponent<MeleeController>().enabled = true;
-
-        //Hide cursor
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = true;
-
-    }
-
-    /**************************************************************************************
-    * Type: Function
-    * 
     * Name: ReturnToMenu
     * Parameters: n/a
     * Return: n/a
@@ -322,12 +321,13 @@ public class GameManager : MonoBehaviour
         float respawnFadeTime = 2.0f;
         m_uiManager.ReturnToMenu( respawnFadeTime );
         yield return new WaitForSeconds( respawnFadeTime + 0.1f );
-
         m_sceneLoad = SceneManager.LoadSceneAsync( SceneManager.GetActiveScene().name );
         while ( !m_sceneLoad.isDone )
         {
             yield return null;
         }
+        //Set static bool for picked up sword back to false
+        Settings.g_pickedUpSword = false;
     }
 
     /**************************************************************************************
@@ -487,15 +487,16 @@ public class GameManager : MonoBehaviour
                 EventManager.StartSpawnEnemiesEvent( 4 );
                 break;
             case Room.GuardRoom:
-                //Prep group for the NEXT room
+                //Seems redundant, but if you CHOOSE to respawn after defeating the guard room, respawn in there
+                //But once you go through the gate, you're now in there
+
                 EventManager.StartSpawnEnemiesEvent( 4 );
-                //Spawn enemies in Prep for the NEXT NEXT room
-                EventManager.StartSpawnEnemiesEvent( 5 );
                 break;
             case Room.Arena:
-
-                //Prep group for the NEXT room
-                EventManager.StartSpawnEnemiesEvent( 5 );
+                //Reprepping the arena. Restart all waves. Would be nice to save the wave you were on but.. no
+                EventManager.StartSpawnEnemiesEvent( 4 );
+                EventManager.StartAlertEnemiesEvent( 4 );
+                EventManager.StartSpawnWaveEvent();
                 break;
         }
     }

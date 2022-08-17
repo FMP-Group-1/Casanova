@@ -29,7 +29,27 @@ public class GateMover : MonoBehaviour
     //Y Value when closed
     private float m_closedY = 0.0f;
 
+    //Bool, based on if the gate closer script should be active
+    private bool m_gateTriggerActive;
+
     /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Start
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Populate gate trigger checker, to stop gates that shouldn't have active
+    *              triggers
+    **************************************************************************************/
+    private void Start()
+	{
+        m_gateTriggerActive = m_gateTrigger.activeSelf;
+
+    }
+	/**************************************************************************************
     * Type: Function
     * 
     * Name: ResetGate
@@ -40,10 +60,13 @@ public class GateMover : MonoBehaviour
     *
     * Description: Used when Respawning, reset gate to be open and reactivate trigger
     **************************************************************************************/
-    public void ResetGate()
+	public void ResetGate()
 	{
         OpenGate();
-        m_gateTrigger.SetActive(true);
+        if ( m_gateTriggerActive )
+        {
+            m_gateTrigger.SetActive( true );
+        }
     }
 
     /**************************************************************************************

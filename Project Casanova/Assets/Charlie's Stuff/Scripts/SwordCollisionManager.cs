@@ -1,18 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
+/**************************************************************************************
+* Type: Class
+* 
+* Name: SwordCollisionManager
+*
+* Author: Charlie Taylor
+*
+* Description: Manages collisions for the weapon (Sword and table leg)
+**************************************************************************************/
 public class SwordCollisionManager : MonoBehaviour
 {
-
+    //The damage that the wepaon will do at any given time
     private float m_damage;
 
-    [SerializeField, Range(0.0f, 2.0f)]
+    [SerializeField, Range(0.0f, 2.0f), Tooltip("Animation events will provide a base damage, but should this weapon do more or less than the base?")]
     private float m_damageMultiplier = 1.0f;
 
     // Dean Note: Adding a reference to the sound handler in here for collision SFX
     private PlayerSoundHandler m_soundHandler;
-
+    
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: Start
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: fill sound handler object reference
+    **************************************************************************************/
     private void Start()
     {
         // Dean Note: I know this is a hideous line, but I can't think of a better way at this moment
@@ -49,9 +67,21 @@ public class SwordCollisionManager : MonoBehaviour
         }
     }
 
-	public void SetDamage( float damage )
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: SetDamage
+    * Parameters: float damage
+    * Return: n/a
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Set the damage from very begining of attack, so this damage will be
+    *              used in collision with enemy and sent to them
+    **************************************************************************************/
+    public void SetDamage( float damage )
 	{
-        //m_damage = damage;
-        m_damage = 150;
+        m_damage = damage;
+        m_damage = 300f;
 	}
 }
