@@ -186,6 +186,9 @@ public class UIManager : MonoBehaviour
 		{
             //Unpause
             m_pauseScreen.gameObject.SetActive( false );
+            m_optionsUIGroup.gameObject.SetActive( false );
+            m_controlsUIGroup.gameObject.SetActive( false );
+            m_pauseBackButton.gameObject.SetActive( false );
             m_gameUIGroup.gameObject.SetActive( true );
             EventManager.StartUnpauseGameEvent();
         }
