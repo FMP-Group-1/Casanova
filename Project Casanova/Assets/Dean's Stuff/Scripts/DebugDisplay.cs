@@ -28,7 +28,6 @@ public class DebugDisplay : MonoBehaviour
 
     private List<GameObject> m_aiList = new List<GameObject>();
     private EnemyAI m_targetAI;
-    private GameObject m_player;
 
     private int m_currentAiNum = 0;
 
@@ -77,7 +76,6 @@ public class DebugDisplay : MonoBehaviour
     {
         m_aiDebugHolder = GameObject.Find("AIDebugHolder");
         m_zoneDebugHolder = GameObject.Find("ZoneDebugHolder");
-        m_player = GameObject.Find("Player");
         SetupAIDebugDisplay();
         SetupZoneDebugDisplay();
 
