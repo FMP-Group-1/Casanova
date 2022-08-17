@@ -140,7 +140,7 @@ public class PlayerDamageManager : CharacterDamageManager
     *
     * Author: Dean Pearce
     *
-    * Description: Play thje player#s death SFX
+    * Description: Play the player's death SFX
     **************************************************************************************/
     protected override void PlayDeathSFX()
     {

@@ -274,8 +274,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_damageSFX:
   - {fileID: 8300000, guid: e6d3ebb194cacf441814323c17eb669e, type: 3}
+  - {fileID: 8300000, guid: d7e58b66c63cd774d910644024d15f9b, type: 3}
+  - {fileID: 8300000, guid: df62645227cf01b46933c39f5998aab3, type: 3}
   m_attackGruntSFX:
   - {fileID: 8300000, guid: baed7e43d6190fd479eec98864e8a547, type: 3}
+  - {fileID: 8300000, guid: 9b527f0a3daa3b54e952d96845eeccc3, type: 3}
+  - {fileID: 8300000, guid: 6bbf40cead75dc44186246a2f002af88, type: 3}
   m_normalAttackSFX:
   - {fileID: 8300000, guid: fca0b63074cc89f40840c0a5b940a82e, type: 3}
   - {fileID: 8300000, guid: 511ae60f36d65d54593e7bcf2c84f00e, type: 3}
@@ -298,7 +302,7 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 94b7b4088a685d3408a89b46f4534bd6, type: 3}
   m_dodgeSFX: {fileID: 8300000, guid: b19e6dbff8b355046a4e70f69711fefb, type: 3}
   m_deathSFX:
-  - {fileID: 0}
+  - {fileID: 8300000, guid: 3f4a4a9bc1f08184ab7a66e58d8a97f2, type: 3}
 --- !u!82 &3344496978549854983
 AudioSource:
   m_ObjectHideFlags: 0
