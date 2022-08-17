@@ -6,6 +6,7 @@ using UnityEngine;
 * Name: SwordCollisionManager
 *
 * Author: Charlie Taylor
+*         Dean Pearce
 *
 * Description: Manages collisions for the weapon (Sword and table leg)
 **************************************************************************************/

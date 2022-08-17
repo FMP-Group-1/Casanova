@@ -2596,7 +2596,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8960071943846169560
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2739,8 +2739,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -22.412, y: -4.9861}
-  m_SizeDelta: {x: 443.97, y: 514.1193}
+  m_AnchoredPosition: {x: 0, y: -4.9861}
+  m_SizeDelta: {x: 1338.849, y: 514.119}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3363857297117652078
 CanvasRenderer:
@@ -2770,21 +2770,14 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Abbie
-
-    Charlie
-
-    Dean
-
-    Chloe
-
-    Soph
-
-    Louise
-
-    Aine
-
-'
+  m_text: "<color=#FEDB79>Charlie Taylor<color=\"white\">\nGameplay, Animation and
+    UI Programming/Technical Designer/Project Director\r\n<color=#FEDB79>Dean Pearce<color=\"white\">\nAI,
+    AI Tools and Audio Programmer/Technical Designer\n<color=#FEDB79>Aine Keohane<color=\"white\">\nConcept
+    Artist/3D Character Artist\n<color=#FEDB79>Sophie Mian<color=\"white\">\n3D Character
+    Artist/Character Texture Artist/UI artist\r\n<color=#FEDB79>Louise Ordanez<color=\"white\">\n3D
+    Character Technical Artist/Animator\r\n<color=#FEDB79>Chloe Tong<color=\"white\">\n3D
+    Environment Artist/Environment Texture Artist/Lighting Artist/Art Director \r\n<color=#FEDB79>Abbie
+    Woodhead<color=\"white\">\n3D Character & Environment Prop Artist\r"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2a11ea405def7b14e813d209086ed93e, type: 2}
   m_sharedMaterial: {fileID: -9115770256606269218, guid: 2a11ea405def7b14e813d209086ed93e, type: 2}
@@ -2793,8 +2786,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4294967295
-  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+    rgba: 4290361785
+  m_fontColor: {r: 0.7264151, g: 0.7264151, b: 0.7264151, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -2811,8 +2804,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 69.1
-  m_fontSizeBase: 69.1
+  m_fontSize: 52.8
+  m_fontSizeBase: 52.8
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -5089,7 +5082,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4093507472491125419
 RectTransform:
   m_ObjectHideFlags: 0
