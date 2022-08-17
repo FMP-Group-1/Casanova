@@ -155,8 +155,11 @@ public class ZoneHandler
     **************************************************************************************/
     public void OccupyCurrentZone()
     {
-        m_occupiedAttackZone = m_currentAttackZone;
-        m_occupiedAttackZone.SetOccupant(m_parentAI);
+        if (m_currentAttackZone != null)
+        {
+            m_occupiedAttackZone = m_currentAttackZone;
+            m_occupiedAttackZone.SetOccupant(m_parentAI);
+        }
     }
 
     /**************************************************************************************

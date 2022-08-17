@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
 /**************************************************************************************
 * Type: Class
@@ -68,6 +69,9 @@ public class UIManager : MonoBehaviour
     [Header( "Fade Settings" )]
     [SerializeField, Range( 0.1f, 2.0f ), Tooltip( "How fast menu screens swap" )]
     private float m_menuSwapSpeed = 0.25f;
+
+    [SerializeField]
+    private AudioMixer m_audioMixer;
 
     /**************************************************************************************
     * Type: Function
@@ -581,8 +585,8 @@ public class UIManager : MonoBehaviour
 
         if (beginCutscene)
         {
-            cutsceneScript.StartCutscene();
             m_gameUIGroup.gameObject.SetActive(false);
+            cutsceneScript.StartCutscene();
         }
         else
         {

@@ -28,6 +28,8 @@ public class Cutscene : MonoBehaviour
     private Transform m_camLookTarget;
     private Transform[] m_dollyPoint;
     private bool m_isPlaying = false;
+    [SerializeField]
+    private bool m_combatOnCutsceneEnd = false;
 
     private PlayerController m_player;
 
@@ -97,6 +99,9 @@ public class Cutscene : MonoBehaviour
     **************************************************************************************/
     public void StartCutscene()
     {
+        EventManager.StartWaveSetupEvent();
+        EventManager.StartWakeEnemiesEvent(4);
+
         m_mainCamera = Camera.main;
         m_mainCamera.enabled = false;
         m_cutsceneCam.enabled = true;
@@ -107,8 +112,7 @@ public class Cutscene : MonoBehaviour
         m_player.SetMenuLock(true);
         m_player.LoseControl();
 
-        EventManager.StartWaveSetupEvent();
-        EventManager.StartWakeEnemiesEvent(4);
+        EventManager.StartCutsceneBeginEvent();
     }
 
     /**************************************************************************************
@@ -133,6 +137,7 @@ public class Cutscene : MonoBehaviour
 
         EventManager.StartAlertEnemiesEvent(4);
         EventManager.StartSpawnWaveEvent();
+        EventManager.StartCutsceneEndEvent(m_combatOnCutsceneEnd);
 
         //Charlie: Set the respawn point to be the arena now.
         GameObject.FindGameObjectWithTag(Settings.g_controllerTag).GetComponent<RespawnManager>().SetRespawnPoint( Room.Arena );

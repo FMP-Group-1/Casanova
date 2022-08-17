@@ -46,8 +46,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_bgMusic: {fileID: 8300000, guid: c8c3e5c756e378746a719bd7a841439a, type: 3}
   m_combatMusic: {fileID: 8300000, guid: 790b5cfa898cc004c86ee8c2570405ca, type: 3}
+  m_cutsceneMusic: {fileID: 8300000, guid: 590ff3319ca053741890ece9cad5bfb9, type: 3}
   m_bgMusicVolume: 0.2
   m_combatMusicVolume: 0.2
+  m_cutsceneMusicVolume: 0.2
+  m_fadeTime: 1.5
 --- !u!82 &6799565949116237870
 AudioSource:
   m_ObjectHideFlags: 0
@@ -57,7 +60,7 @@ AudioSource:
   m_GameObject: {fileID: 6799565949116237840}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: -6182170131061373417, guid: 7d2a13a048f80ac4eba1241ec060636a, type: 2}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 1
