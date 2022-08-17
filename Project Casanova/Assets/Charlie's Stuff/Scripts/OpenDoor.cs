@@ -6,7 +6,7 @@ using UnityEngine;
 * 
 * Name: OpenDoor
 *
-* Author: Charlie Taylor, Dean Pearce
+* Author: Charlie Taylor
 *
 * Description: A child of Interactable, this is for opening the cell door, but likely
 *              could be reutilised for other doors if they were added
