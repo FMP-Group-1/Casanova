@@ -268,8 +268,9 @@ public class UIManager : MonoBehaviour
     * Description: Fade out and back in for respawning
     **************************************************************************************/
     public void Respawn( float howLongFade )
-	{
-        m_pauseScreen.gameObject.SetActive ( false );
+    {
+        m_pauseScreen.gameObject.SetActive( false );
+        m_background.gameObject.SetActive( false );
         //Fade Black Screen in
         StartCoroutine( FadeIn( m_blackScreen, howLongFade ) );
 
@@ -285,7 +286,7 @@ public class UIManager : MonoBehaviour
     /**************************************************************************************
     * Type: Function
     * 
-    * Name: Respawn
+    * Name: ReturnToMenu
     * Parameters: float howLongFade 
     * Return: n/a
     *
