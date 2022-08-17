@@ -32,6 +32,8 @@ public class GateMover : MonoBehaviour
     //Bool, based on if the gate closer script should be active
     private bool m_gateTriggerActive;
 
+    private ObjectSoundHandler m_soundHandler;
+
     /**************************************************************************************
     * Type: Function
     * 
@@ -48,6 +50,7 @@ public class GateMover : MonoBehaviour
 	{
         m_gateTriggerActive = m_gateTrigger.activeSelf;
 
+        m_soundHandler = GetComponent<ObjectSoundHandler>();
     }
 	/**************************************************************************************
     * Type: Function
@@ -96,6 +99,8 @@ public class GateMover : MonoBehaviour
 
         //Begin actually moving gate over time
         StartCoroutine( MoveGate( m_openYTarget, m_gateOpenTime ) );
+
+        m_soundHandler.PlayGateOpenSFX();
     }
 
     /**************************************************************************************
@@ -118,6 +123,8 @@ public class GateMover : MonoBehaviour
 
         //Move the gate
         StartCoroutine( MoveGate( m_closedY, m_gateCloseTime) );
+
+        m_soundHandler.PlayGateCloseSFX();
     }
 
     /**************************************************************************************

@@ -200,10 +200,6 @@ public class MeleeController : MonoBehaviour
             }
             //Next queued attack is now nothing, until we add one in next run of update
             m_attackType = Attack.Nothing;
-
-            // Dean Note: Adding sound effect to play here, may need changing, let me know
-            m_playerController.GetSoundHandler().PlayNormalAttackSFX();
-
         }
     }
 

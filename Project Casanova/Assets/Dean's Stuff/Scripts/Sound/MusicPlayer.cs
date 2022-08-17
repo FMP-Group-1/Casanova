@@ -201,20 +201,23 @@ public class MusicPlayer : MonoBehaviour
     **************************************************************************************/
     private IEnumerator SwitchTrack(AudioClip trackToSwitchTo, float vol, bool shouldFade)
     {
-        if (shouldFade)
+        if (m_audioSource.clip != trackToSwitchTo)
         {
-            // Start the fade coroutine, then wait until it's done
-            StartCoroutine(StartFade(m_audioMixer, m_musicVolString, m_fadeTime, m_minMixerVol));
-            yield return new WaitUntil(() => m_fadeFinished);
+            if (shouldFade)
+            {
+                // Start the fade coroutine, then wait until it's done
+                StartCoroutine(StartFade(m_audioMixer, m_musicVolString, m_fadeTime, m_minMixerVol));
+                yield return new WaitUntil(() => m_fadeFinished);
+            }
+
+            // Switching the tracks
+            m_audioSource.clip = trackToSwitchTo;
+            m_audioSource.volume = vol;
+            m_audioSource.Play();
+
+            // Reset the mixer volume
+            m_audioMixer.SetFloat(m_musicVolString, 0.0f);
         }
-
-        // Switching the tracks
-        m_audioSource.clip = trackToSwitchTo;
-        m_audioSource.volume = vol;
-        m_audioSource.Play();
-
-        // Reset the mixer volume
-        m_audioMixer.SetFloat(m_musicVolString, 0.0f);
     }
 
     /**************************************************************************************

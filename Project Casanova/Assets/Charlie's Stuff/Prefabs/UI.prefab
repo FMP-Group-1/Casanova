@@ -180,12 +180,12 @@ MonoBehaviour:
   m_text: " <sprite name=\"xb_leftStick\"> / <sprite name=\"ps_leftStick\"> / <sprite
     name=\"w\"><sprite name=\"a\"><sprite name=\"s\"><sprite name=\"d\">\n <sprite
     name=\"xb_rightStick\"> / <sprite name=\"ps_rightStick\"> / <sprite name=\"mouse\">
-    \n <sprite name=\"xb_a\"> / <sprite name=\"ps_cross\"> / <sprite name=\"space1\">\n
-    <sprite name=\"xb_x\"> / <sprite name=\"ps_square\"> / <sprite name=\"mouse_lmb\">\n
-    <sprite name=\"xb_y\"> / <sprite name=\"ps_triangle\"> / <sprite name=\"mouse_rmb\">\n
-    <sprite name=\"xb_b\"> / <sprite name=\"ps_circle\"> / <sprite name=\"e\">\n
-    <sprite name=\"xb_rt\"> / <sprite name=\"ps_r2\"> / <sprite name=\"shift1\">\n
-    <sprite name=\"xb_start\"> / <sprite name=\"ps_options\"> / <sprite name=\"esc1\">"
+    \n <sprite name=\"xb_a\"> / <sprite name=\"ps_cross\"> / <sprite name=\"space1\">\n<sprite
+    name=\"xb_x\"> / <sprite name=\"ps_square\"> / <sprite name=\"mouse_lmb\">\n<sprite
+    name=\"xb_y\"> / <sprite name=\"ps_triangle\"> / <sprite name=\"mouse_rmb\">\n<sprite
+    name=\"xb_b\"> / <sprite name=\"ps_circle\"> / <sprite name=\"e\">\n<sprite name=\"xb_rt\">
+    / <sprite name=\"ps_r2\"> / <sprite name=\"shift1\">\n<sprite name=\"xb_start\">
+    / <sprite name=\"ps_options\"> / <sprite name=\"esc1\">"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2a11ea405def7b14e813d209086ed93e, type: 2}
   m_sharedMaterial: {fileID: -9115770256606269218, guid: 2a11ea405def7b14e813d209086ed93e, type: 2}
@@ -827,6 +827,18 @@ MonoBehaviour:
           m_StringArgument: Main
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UISoundHandler, Assembly-CSharp
+        m_MethodName: PlayUIClickSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &481898988665700821
 GameObject:
   m_ObjectHideFlags: 0
@@ -1303,6 +1315,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Main
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UISoundHandler, Assembly-CSharp
+        m_MethodName: PlayUIClickSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &1124935154319302591
@@ -1830,6 +1854,18 @@ MonoBehaviour:
           m_StringArgument: Main
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UISoundHandler, Assembly-CSharp
+        m_MethodName: PlayUIClickSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &2650562958887040573
 GameObject:
   m_ObjectHideFlags: 0
@@ -2036,6 +2072,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Main
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UISoundHandler, Assembly-CSharp
+        m_MethodName: PlayUIClickSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &2874638220861314099
@@ -3245,6 +3293,18 @@ MonoBehaviour:
           m_StringArgument: Main
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UISoundHandler, Assembly-CSharp
+        m_MethodName: PlayUIClickSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &4503213718678512316
 GameObject:
   m_ObjectHideFlags: 0
@@ -3918,6 +3978,18 @@ MonoBehaviour:
           m_StringArgument: Controls
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UISoundHandler, Assembly-CSharp
+        m_MethodName: PlayUIClickSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5533334740839631399
 GameObject:
   m_ObjectHideFlags: 0
@@ -4128,6 +4200,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Main
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UISoundHandler, Assembly-CSharp
+        m_MethodName: PlayUIClickSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &5927015786726259300
@@ -4892,6 +4976,18 @@ MonoBehaviour:
           m_StringArgument: Main
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UISoundHandler, Assembly-CSharp
+        m_MethodName: PlayUIClickSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6681646783934385884
 GameObject:
   m_ObjectHideFlags: 0
@@ -5250,6 +5346,18 @@ MonoBehaviour:
           m_StringArgument: Options
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UISoundHandler, Assembly-CSharp
+        m_MethodName: PlayUIClickSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &6940551598898453818
 GameObject:
   m_ObjectHideFlags: 0
@@ -5574,6 +5682,18 @@ MonoBehaviour:
           m_StringArgument: Main
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UISoundHandler, Assembly-CSharp
+        m_MethodName: PlayUIClickSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7419580384932624614
 GameObject:
   m_ObjectHideFlags: 0
@@ -5838,6 +5958,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Options
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UISoundHandler, Assembly-CSharp
+        m_MethodName: PlayUIClickSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &7641766387793696481
@@ -6434,6 +6566,18 @@ MonoBehaviour:
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: InGameMenuManager, Assembly-CSharp
         m_MethodName: PlayGame
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UISoundHandler, Assembly-CSharp
+        m_MethodName: PlayUIClickSFX
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -7307,6 +7451,18 @@ MonoBehaviour:
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: Credits
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: UISoundHandler, Assembly-CSharp
+        m_MethodName: PlayUIClickSFX
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!1 &9126411304789157055
