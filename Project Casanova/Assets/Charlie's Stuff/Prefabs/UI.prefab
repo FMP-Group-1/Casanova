@@ -180,12 +180,12 @@ MonoBehaviour:
   m_text: " <sprite name=\"xb_leftStick\"> / <sprite name=\"ps_leftStick\"> / <sprite
     name=\"w\"><sprite name=\"a\"><sprite name=\"s\"><sprite name=\"d\">\n <sprite
     name=\"xb_rightStick\"> / <sprite name=\"ps_rightStick\"> / <sprite name=\"mouse\">
-    \n <sprite name=\"xb_a\"> / <sprite name=\"ps_cross\"> / <sprite name=\"space1\"><sprite
-    name=\"space2\">\n <sprite name=\"xb_x\"> / <sprite name=\"ps_square\"> / <sprite
-    name=\"mouse_lmb\">\n <sprite name=\"xb_y\"> / <sprite name=\"ps_triangle\">
-    / <sprite name=\"mouse_rmb\">\n <sprite name=\"xb_b\"> / <sprite name=\"ps_circle\">
-    / <sprite name=\"e\">\n <sprite name=\"xb_rt\"> / <sprite name=\"ps_r2\"> / <sprite
-    name=\"shift1\"><sprite name=\"shift2\">"
+    \n <sprite name=\"xb_a\"> / <sprite name=\"ps_cross\"> / <sprite name=\"space1\">\n
+    <sprite name=\"xb_x\"> / <sprite name=\"ps_square\"> / <sprite name=\"mouse_lmb\">\n
+    <sprite name=\"xb_y\"> / <sprite name=\"ps_triangle\"> / <sprite name=\"mouse_rmb\">\n
+    <sprite name=\"xb_b\"> / <sprite name=\"ps_circle\"> / <sprite name=\"e\">\n
+    <sprite name=\"xb_rt\"> / <sprite name=\"ps_r2\"> / <sprite name=\"shift1\">\n
+    <sprite name=\"xb_start\"> / <sprite name=\"ps_options\"> / <sprite name=\"esc1\">"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2a11ea405def7b14e813d209086ed93e, type: 2}
   m_sharedMaterial: {fileID: -9115770256606269218, guid: 2a11ea405def7b14e813d209086ed93e, type: 2}
@@ -3395,16 +3395,16 @@ MonoBehaviour:
 
     Jump -
 
-    Dodge -
-
     Light Attack -
 
-    Heavy
-    Attack -
+    Heavy Attack
+    -
 
     Interact -
 
-'
+    Dodge -
+
+    Pause -'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2a11ea405def7b14e813d209086ed93e, type: 2}
   m_sharedMaterial: {fileID: -9115770256606269218, guid: 2a11ea405def7b14e813d209086ed93e, type: 2}
