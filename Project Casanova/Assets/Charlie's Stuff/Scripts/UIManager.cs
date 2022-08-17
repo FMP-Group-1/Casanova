@@ -180,6 +180,8 @@ public class UIManager : MonoBehaviour
             GetComponent<OptionsManager>().RefreshSliders();
             m_pauseScreen.gameObject.SetActive( true );
             m_gameUIGroup.gameObject.SetActive( false );
+            m_background.gameObject.SetActive( true );
+            m_background.color = ChangeImageAlpha(m_background, 0.6f);
             EventManager.StartPauseGameEvent();
         }
 		else
@@ -189,6 +191,7 @@ public class UIManager : MonoBehaviour
             m_optionsUIGroup.gameObject.SetActive( false );
             m_controlsUIGroup.gameObject.SetActive( false );
             m_pauseBackButton.gameObject.SetActive( false );
+            m_background.gameObject.SetActive( false );
             m_gameUIGroup.gameObject.SetActive( true );
             EventManager.StartUnpauseGameEvent();
         }
