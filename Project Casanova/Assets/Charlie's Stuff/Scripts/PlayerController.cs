@@ -11,6 +11,14 @@ using UnityEngine.UI;
 * Description: Managing the player's movement, jumping and locking them when they can't
 *              move
 **************************************************************************************/
+
+public enum  MovementAnim
+{
+    Standing,
+    Walking,
+    Running
+}
+
 public class PlayerController : MonoBehaviour
 {
     //Start in menu state
@@ -89,6 +97,7 @@ public class PlayerController : MonoBehaviour
 
     // Dean Note: Adding sound handler here for player sound
     private PlayerSoundHandler m_soundHandler;
+    private MovementAnim m_movementAnimState = MovementAnim.Standing;
 
     /**************************************************************************************
     * Type: Function
@@ -235,17 +244,22 @@ public class PlayerController : MonoBehaviour
 
             //Get the absolute (0 to 1) values and set to the 3 levels of 0.0, 0.5 and 1.0
             // This is how most games do it, rather than moving and animating at the 0.75 mark
+            // Dean: I've added a set for m_movementAnimState in each of these conditions to be
+            // used by the ControlledFootstep function for preventing double footstep sounds
             if ( m_moveAmount >= 0.0f && m_moveAmount <= 0.05f )
             {
                 m_moveAmount = 0.0f;
+                m_movementAnimState = MovementAnim.Standing;
             }
             else if ( m_moveAmount > 0.05f && m_moveAmount < 0.55f )
             {
                 m_moveAmount = 0.5f;
+                m_movementAnimState = MovementAnim.Walking;
             }
             else if ( m_moveAmount >= 0.55f )
             {
                 m_moveAmount = 1.0f;
+                m_movementAnimState = MovementAnim.Running;
             }
             //Temp float for updating JUST the animator's move amount
             float animatorCurrentMovingSpeed = m_animator.GetFloat( an_movingSpeed );
@@ -457,6 +471,41 @@ public class PlayerController : MonoBehaviour
         if ( m_dodgeControl.action.triggered && m_canDodge )
         {
             Dodge();
+        }
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: ControlledFootstep
+    * Parameters: string walkingType
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Kind of a hacky function to prevent double footstep sounds. Using string for
+    *              animation event usage.
+    **************************************************************************************/
+    private void ControlledFootstep( string movingType )
+    {
+        switch (movingType)
+        {
+            case "Walking":
+            {
+                if (m_movementAnimState == MovementAnim.Walking)
+                {
+                    m_soundHandler.PlayFootstepSFX();
+                }
+                break;
+            }
+            case "Running":
+            {
+                if (m_movementAnimState == MovementAnim.Running)
+                {
+                    m_soundHandler.PlayFootstepSFX();
+                }
+                break;
+            }
         }
     }
 

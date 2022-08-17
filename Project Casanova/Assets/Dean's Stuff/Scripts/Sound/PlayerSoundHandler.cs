@@ -19,11 +19,11 @@ public class PlayerSoundHandler : CharacterSoundHandler
     [SerializeField]
     private AudioClip[] m_attackGruntSFX;
     [SerializeField]
-    private AudioClip m_normalAttackSFX;
+    private AudioClip[] m_normalAttackSFX;
     [SerializeField]
     private AudioClip[] m_normalCollisionSFX;
     [SerializeField]
-    private AudioClip m_heavyAttackSFX;
+    private AudioClip[] m_heavyAttackSFX;
     [SerializeField]
     private AudioClip[] m_heavyCollisionSFX;
     [SerializeField]
@@ -50,7 +50,7 @@ public class PlayerSoundHandler : CharacterSoundHandler
 
     public override void PlayNormalAttackSFX()
     {
-        m_audioSource.PlayOneShot(m_normalAttackSFX);
+        m_audioSource.PlayOneShot(RandomiseSFX(ref m_normalAttackSFX));
     }
 
     public override void PlayNormalCollisionSFX()
@@ -60,7 +60,7 @@ public class PlayerSoundHandler : CharacterSoundHandler
 
     public override void PlayHeavyAttackSFX()
     {
-        m_audioSource.PlayOneShot(m_heavyAttackSFX);
+        m_audioSource.PlayOneShot(RandomiseSFX(ref m_heavyAttackSFX));
     }
 
     public override void PlayHeavyCollisionSFX()

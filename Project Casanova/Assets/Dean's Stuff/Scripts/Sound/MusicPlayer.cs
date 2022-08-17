@@ -16,12 +16,17 @@ public class MusicPlayer : MonoBehaviour
 {
     private AIManager m_aiManager;
     [SerializeField]
+    private AudioClip m_menuMusic;
+    [SerializeField]
     private AudioClip m_bgMusic;
     [SerializeField]
     private AudioClip m_combatMusic;
     [SerializeField]
     private AudioClip m_cutsceneMusic;
     private AudioSource m_audioSource;
+    [SerializeField]
+    [Range(0.0f, 1.0f)]
+    private float m_menuMusicVolume = 1.0f;
     [SerializeField]
     [Range(0.0f, 1.0f)]
     private float m_bgMusicVolume = 1.0f;
@@ -47,12 +52,15 @@ public class MusicPlayer : MonoBehaviour
         m_audioSource = GetComponent<AudioSource>();
         m_audioMixer = m_audioSource.outputAudioMixerGroup.audioMixer;
 
-        m_audioSource.clip = m_bgMusic;
-        m_audioSource.volume = m_bgMusicVolume;
+        m_audioSource.clip = m_menuMusic;
+        m_audioSource.volume = m_menuMusicVolume;
         m_audioSource.Play();
 
         EventManager.CutsceneBeginEvent += StartCutsceneMusic;
         EventManager.CutsceneEndEvent += EndCutsceneMusic;
+        EventManager.GameBeginEvent += StartGameMusic;
+        EventManager.PauseGameEvent += OnPauseMenu;
+        EventManager.UnpauseGameEvent += OnUnpause;
     }
 
     void Update()
@@ -93,11 +101,33 @@ public class MusicPlayer : MonoBehaviour
         m_prevInCombat = currentlyInCombat;
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: StartCutsceneMusic
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Starts the cutscene music. Called by EventManager.
+    **************************************************************************************/
     private void StartCutsceneMusic()
     {
         StartCoroutine(SwitchTrack(m_cutsceneMusic, m_cutsceneMusicVolume, false));
     }
 
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: EndCutsceneMusic
+    * Parameters: bool enterCombat
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Ends the cutscene music and starts playing game music. Called by EventManager.
+    **************************************************************************************/
     private void EndCutsceneMusic(bool enterCombat)
     {
         if (enterCombat)
@@ -108,6 +138,54 @@ public class MusicPlayer : MonoBehaviour
         {
             StartCoroutine(SwitchTrack(m_bgMusic, m_bgMusicVolume, true));
         }
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: StartGameMusic
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Starts the game music. Called by EventManager.
+    **************************************************************************************/
+    private void StartGameMusic()
+    {
+        StartCoroutine(SwitchTrack(m_bgMusic, m_bgMusicVolume, true));
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: OnPauseMenu
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Pauses the music when the pause menu is opened. Called by EventManager.
+    **************************************************************************************/
+    private void OnPauseMenu()
+    {
+        m_audioSource.Pause();
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
+    * Name: OnUnpause
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Resumes the music when the pause menu is closed. Called by EventManager.
+    **************************************************************************************/
+    private void OnUnpause()
+    {
+        m_audioSource.Play();
     }
 
     /**************************************************************************************
@@ -177,5 +255,8 @@ public class MusicPlayer : MonoBehaviour
     {
         EventManager.CutsceneBeginEvent -= StartCutsceneMusic;
         EventManager.CutsceneEndEvent -= EndCutsceneMusic;
+        EventManager.GameBeginEvent -= StartGameMusic;
+        EventManager.PauseGameEvent -= OnPauseMenu;
+        EventManager.UnpauseGameEvent -= OnUnpause;
     }
 }

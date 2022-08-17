@@ -241,6 +241,9 @@ public class EnemyDamageManager : CharacterDamageManager
         {
             mat.SetFloat( m_shaderStartTime, Time.time );
         }
+
+        m_enemyAI.GetSoundHandler().PlayDeathFizzSFX();
+
         StartCoroutine(ResetEnemy());
     }
 

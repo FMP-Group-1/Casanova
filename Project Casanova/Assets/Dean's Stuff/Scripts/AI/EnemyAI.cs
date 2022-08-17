@@ -1207,7 +1207,7 @@ public class EnemyAI : MonoBehaviour
         SetStaggerable(true);
         m_attackLocked = false;
 
-        m_navMeshAgent.speed = m_runSpeed;
+        m_navMeshAgent.speed = m_walkSpeed;
         m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
     }
 

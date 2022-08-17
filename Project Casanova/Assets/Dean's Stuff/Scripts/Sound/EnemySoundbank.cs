@@ -22,19 +22,21 @@ public class EnemySoundbank : MonoBehaviour
     [SerializeField]
     private AudioClip[] m_attackGruntSFX;
     [SerializeField]
-    private AudioClip m_normalAttackSFX;
+    private AudioClip[] m_normalAttackSFX;
     [SerializeField]
     private AudioClip[] m_normalCollisionSFX;
     [SerializeField]
-    private AudioClip m_heavyAttackSFX;
+    private AudioClip[] m_heavyAttackSFX;
     [SerializeField]
     private AudioClip[] m_heavyCollisionSFX;
     [SerializeField]
-    private AudioClip m_quickAttackSFX;
+    private AudioClip[] m_quickAttackSFX;
     [SerializeField]
     private AudioClip[] m_quickCollisionSFX;
     [SerializeField]
     private AudioClip[] m_deathSFX;
+    [SerializeField]
+    private AudioClip[] m_deathFizzSFX;
     [SerializeField]
     private AudioClip m_wakeSFX;
     [SerializeField]
@@ -82,7 +84,7 @@ public class EnemySoundbank : MonoBehaviour
 
     public ref AudioClip GetNormalAttackSFX()
     {
-        return ref m_normalAttackSFX;
+        return ref RandomiseSFX(ref m_normalAttackSFX);
     }
 
     public ref AudioClip GetNormalCollisionSFX()
@@ -97,7 +99,7 @@ public class EnemySoundbank : MonoBehaviour
 
     public ref AudioClip GetHeavyAttackSFX()
     {
-        return ref m_heavyAttackSFX;
+        return ref RandomiseSFX(ref m_heavyAttackSFX);
     }
 
     public ref AudioClip GetHeavyCollisionSFX()
@@ -112,7 +114,7 @@ public class EnemySoundbank : MonoBehaviour
 
     public ref AudioClip GetQuickAttackSFX()
     {
-        return ref m_quickAttackSFX;
+        return ref RandomiseSFX(ref m_quickAttackSFX);
     }
 
     public ref AudioClip GetQuickCollisionSFX()
@@ -133,6 +135,11 @@ public class EnemySoundbank : MonoBehaviour
     public ref AudioClip GetDeathSFX(int index)
     {
         return ref m_deathSFX[index];
+    }
+
+    public ref AudioClip GetDeathFizzSFX()
+    {
+        return ref RandomiseSFX(ref m_deathFizzSFX);
     }
 
     public ref AudioClip GetWakeSFX()

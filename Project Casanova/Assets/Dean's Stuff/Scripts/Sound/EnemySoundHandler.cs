@@ -85,6 +85,11 @@ public class EnemySoundHandler : CharacterSoundHandler
         m_audioSource.PlayOneShot(m_soundbank.GetDeathSFX());
     }
 
+    public virtual void PlayDeathFizzSFX()
+    {
+        m_audioSource.PlayOneShot(m_soundbank.GetDeathFizzSFX());
+    }
+
     public void PlayWakeSFX()
     {
         m_audioSource.PlayOneShot(m_soundbank.GetWakeSFX());

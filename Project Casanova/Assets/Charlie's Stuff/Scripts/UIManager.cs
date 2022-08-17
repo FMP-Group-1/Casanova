@@ -180,12 +180,14 @@ public class UIManager : MonoBehaviour
             GetComponent<OptionsManager>().RefreshSliders();
             m_pauseScreen.gameObject.SetActive( true );
             m_gameUIGroup.gameObject.SetActive( false );
+            EventManager.StartPauseGameEvent();
         }
 		else
 		{
             //Unpause
             m_pauseScreen.gameObject.SetActive( false );
             m_gameUIGroup.gameObject.SetActive( true );
+            EventManager.StartUnpauseGameEvent();
         }
 
     }
@@ -391,6 +393,7 @@ public class UIManager : MonoBehaviour
 
         Settings.g_canPause = true;
 
+        EventManager.StartGameBeginEvent();
     }
 
     /**************************************************************************************
