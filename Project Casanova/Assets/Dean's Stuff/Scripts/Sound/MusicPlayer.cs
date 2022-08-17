@@ -32,7 +32,7 @@ public class MusicPlayer : MonoBehaviour
     [Range(0.0f, 1.0f)]
     private float m_cutsceneMusicVolume = 1.0f;
     private AudioMixer m_audioMixer;
-    private string m_musicVolString = "MusicVol";
+    private string m_musicVolString = "MusicFaderVol";
     [SerializeField]
     private float m_fadeTime = 1.5f;
     private float m_minMixerVol = -80.0f;
