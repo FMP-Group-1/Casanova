@@ -83,6 +83,7 @@ public class SwordCollisionManager : MonoBehaviour
     public void SetDamage( float damage )
 	{
         m_damage = damage;
-        m_damage = 300f;
+        //Swap to make 1 hit for speed
+        //m_damage = 300f;
 	}
 }
