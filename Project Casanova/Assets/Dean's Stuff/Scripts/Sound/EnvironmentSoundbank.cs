@@ -24,7 +24,7 @@ public class EnvironmentSoundbank : MonoBehaviour
 
     public ref AudioClip GetCellDoorOpenSFX()
     {
-        return ref m_gateOpenSFX;
+        return ref m_cellDoorOpenSFX;
     }
 
     public ref AudioClip GetGateOpenSFX()

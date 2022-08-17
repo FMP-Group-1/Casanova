@@ -273,30 +273,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_damageSFX:
-  - {fileID: 8300000, guid: e0d1a361c659f5646a470c49d691d778, type: 3}
+  - {fileID: 8300000, guid: e6d3ebb194cacf441814323c17eb669e, type: 3}
   m_attackGruntSFX:
-  - {fileID: 8300000, guid: 730b80b8a538bff4690d7fcc333c2204, type: 3}
+  - {fileID: 8300000, guid: baed7e43d6190fd479eec98864e8a547, type: 3}
   m_normalAttackSFX:
-  - {fileID: 8300000, guid: 8e2a5f9c90b51fc40ab2495c565c4a6d, type: 3}
+  - {fileID: 8300000, guid: fca0b63074cc89f40840c0a5b940a82e, type: 3}
   - {fileID: 8300000, guid: 511ae60f36d65d54593e7bcf2c84f00e, type: 3}
   - {fileID: 8300000, guid: ec867c8a67617ee439d098f33f8a69b1, type: 3}
   m_normalCollisionSFX:
-  - {fileID: 8300000, guid: 67c3b5911b38add44aaef4265d495f1d, type: 3}
+  - {fileID: 8300000, guid: 300144b56aae91e44a743196835517a2, type: 3}
   - {fileID: 8300000, guid: ebb15315fdb18924f94e5710858ffe2e, type: 3}
   - {fileID: 8300000, guid: da84cbe26e77cd34f94d8ac798489c67, type: 3}
   m_heavyAttackSFX:
-  - {fileID: 8300000, guid: 8e2a5f9c90b51fc40ab2495c565c4a6d, type: 3}
+  - {fileID: 8300000, guid: fca0b63074cc89f40840c0a5b940a82e, type: 3}
   - {fileID: 8300000, guid: 511ae60f36d65d54593e7bcf2c84f00e, type: 3}
   - {fileID: 8300000, guid: ec867c8a67617ee439d098f33f8a69b1, type: 3}
   m_heavyCollisionSFX:
-  - {fileID: 8300000, guid: 67c3b5911b38add44aaef4265d495f1d, type: 3}
+  - {fileID: 8300000, guid: 300144b56aae91e44a743196835517a2, type: 3}
   - {fileID: 8300000, guid: ebb15315fdb18924f94e5710858ffe2e, type: 3}
   - {fileID: 8300000, guid: da84cbe26e77cd34f94d8ac798489c67, type: 3}
   m_footstepSFX:
-  - {fileID: 8300000, guid: ffdf4fb257ec9e8449881bc6ddbe8958, type: 3}
+  - {fileID: 8300000, guid: ce94780f44a96be46b30d486f792548b, type: 3}
   - {fileID: 8300000, guid: 667fb8a4adeef4947a0445d0ba53fa60, type: 3}
   - {fileID: 8300000, guid: 94b7b4088a685d3408a89b46f4534bd6, type: 3}
-  m_dodgeSFX: {fileID: 8300000, guid: 06e8fc9a8e896b44892246a871ee2eed, type: 3}
+  m_dodgeSFX: {fileID: 8300000, guid: b19e6dbff8b355046a4e70f69711fefb, type: 3}
   m_deathSFX:
   - {fileID: 0}
 --- !u!82 &3344496978549854983
@@ -355,7 +355,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
