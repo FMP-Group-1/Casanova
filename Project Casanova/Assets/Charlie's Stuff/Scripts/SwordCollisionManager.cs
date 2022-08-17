@@ -83,6 +83,5 @@ public class SwordCollisionManager : MonoBehaviour
     public void SetDamage( float damage )
 	{
         m_damage = damage;
-        m_damage = 300f;
 	}
 }
