@@ -133,9 +133,9 @@ MonoBehaviour:
   m_rotationBuffer: 5
   m_patrolRoute: {fileID: 0}
   m_patrolStoppingDistance: 1.5
-  m_normalAttackDmg: 18
-  m_quickAttackDmg: 9
-  m_heavyAttackDmg: 20
+  m_normalAttackDmg: 20
+  m_quickAttackDmg: 10
+  m_heavyAttackDmg: 25
   m_playerStoppingDistance: 1.75
   m_normalAttkStoppingDistance: 1.75
   m_quickAttkStoppingDistance: 1.75
@@ -148,8 +148,8 @@ MonoBehaviour:
   m_AIAvoidanceDist: 1.5
   m_zoneTakeoverChance: 25
   m_attackEnabled: 1
-  m_minAttackTime: 3.5
-  m_maxAttackTime: 7.5
+  m_minAttackTime: 1.75
+  m_maxAttackTime: 5.5
   m_attackNum: 3
   m_primaryWeapon: {fileID: 663292989179951268}
   m_secondaryWeapon: {fileID: 2670251469373841590}

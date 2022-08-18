@@ -73,8 +73,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_enemyType: 0
   m_mainState: 0
-  m_walkSpeed: 1.5
-  m_runSpeed: 3
+  m_walkSpeed: 1.4
+  m_runSpeed: 2.8
   m_turnSpeed: 200
   m_rotationBuffer: 5
   m_patrolRoute: {fileID: 0}
@@ -86,16 +86,16 @@ MonoBehaviour:
   m_normalAttkStoppingDistance: 1.75
   m_quickAttkStoppingDistance: 1.75
   m_heavyAttkStoppingDistance: 2.1
-  m_minDelayBeforeStrafe: 6
-  m_maxDelayBeforeStrafe: 10
+  m_minDelayBeforeStrafe: 3
+  m_maxDelayBeforeStrafe: 7
   m_strafeSpeed: 1.5
   m_checkForAIDist: 2
   m_checkForAIAngles: 45
   m_AIAvoidanceDist: 1.5
   m_zoneTakeoverChance: 25
   m_attackEnabled: 1
-  m_minAttackTime: 3.5
-  m_maxAttackTime: 7.5
+  m_minAttackTime: 2.5
+  m_maxAttackTime: 6.5
   m_attackNum: 3
   m_primaryWeapon: {fileID: 8990604848482145002}
   m_secondaryWeapon: {fileID: 1483708983603244654}
