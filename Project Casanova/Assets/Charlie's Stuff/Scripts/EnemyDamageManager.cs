@@ -37,6 +37,25 @@ public class EnemyDamageManager : CharacterDamageManager
     /**************************************************************************************
     * Type: Function
     * 
+    * Name: Awake
+    * Parameters: n/a
+    * Return: n/a
+    *
+    * Author: Dean Pearce
+    *
+    * Description: Added awake for the purpose of re-ordering the ShowUI(false) call. Being
+    *              called on start messed with health bars not showing up on newly instantiated
+    *              enemies during the wave phase.
+    **************************************************************************************/
+    private void Awake()
+    {
+        //Disable UI at spawn
+        ShowUI(false);
+    }
+
+    /**************************************************************************************
+    * Type: Function
+    * 
     * Name: Start
     * Parameters: n/a
     * Return: n/a
@@ -48,9 +67,6 @@ public class EnemyDamageManager : CharacterDamageManager
     protected override void Start()
     {
         base.Start();
-
-        //Disable UI at spawn
-        ShowUI( false );
 
         m_spawnManager = GameObject.FindGameObjectWithTag( Settings.g_controllerTag ).GetComponent<SpawnManager>();
 

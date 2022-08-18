@@ -717,6 +717,9 @@ public class EnemyAI : MonoBehaviour
                 // Registering the enemy as an attacker with the manager
                 m_aiManager.RegisterAttacker(this);
 
+                // Charlie: Added to only show health when they enter combat
+                m_healthManager.ShowUI(true);
+
                 SetupAttackingType();
                 RandomiseStrafeRange();
 
@@ -733,9 +736,6 @@ public class EnemyAI : MonoBehaviour
                 }
 
                 ResetAttackTimer();
-
-                // Charlie: Added to only show health when they enter combat
-                m_healthManager.ShowUI( true );
 
                 m_navMeshAgent.stoppingDistance = m_playerStoppingDistance;
 
@@ -1379,8 +1379,6 @@ public class EnemyAI : MonoBehaviour
         m_isWaveEnemy = false;
         m_lastUsedAnimTrigger = an_triggerNone;
         m_navMeshAgent.speed = m_walkSpeed;
-
-        m_healthManager.ShowUI(false);
 
         SetupPatrolRoutes();
         DisableCollision();
