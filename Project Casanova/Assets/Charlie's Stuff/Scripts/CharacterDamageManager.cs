@@ -77,7 +77,7 @@ public class CharacterDamageManager : MonoBehaviour
     **************************************************************************************/
     protected void UpdateHealthBar()
     {
-        m_healthBarFill.fillAmount = GetHealth() / m_maxHealth; ;
+        m_healthBarFill.fillAmount = GetHealth() / m_maxHealth;
     }
 
     /**************************************************************************************

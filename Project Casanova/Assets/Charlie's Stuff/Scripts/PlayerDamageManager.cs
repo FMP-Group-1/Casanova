@@ -84,6 +84,7 @@ public class PlayerDamageManager : CharacterDamageManager
         SetAlive( true );
         ResetHealth();
         SetInvulnerable( false );
+        UpdateHealthBar();
         //Only place this trigger is used.
 
         ResetAnimTriggers();

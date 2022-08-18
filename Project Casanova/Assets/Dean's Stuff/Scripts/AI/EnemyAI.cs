@@ -100,7 +100,6 @@ public class EnemyAI : MonoBehaviour
 
     // Animation Relevant Variables
     private Animator m_animController;
-    private float m_prevAnimSpeed;
 
     // Patrol Relevant Variables
     [Header("Patrol Values")]
@@ -744,6 +743,7 @@ public class EnemyAI : MonoBehaviour
             // Death State
             case AIState.Dead:
             {
+                m_lookAtPlayer = false;
                 StartDeathAnim();
                 break;
             }
@@ -1379,6 +1379,7 @@ public class EnemyAI : MonoBehaviour
         m_isWaveEnemy = false;
         m_lastUsedAnimTrigger = an_triggerNone;
         m_navMeshAgent.speed = m_walkSpeed;
+        m_healthManager.SetStaggerable(true);
 
         SetupPatrolRoutes();
         DisableCollision();
@@ -2078,11 +2079,10 @@ public class EnemyAI : MonoBehaviour
     private void StartWalkAnim()
     {
         m_navMeshAgent.isStopped = false;
-        m_animController.SetTrigger(an_walk);
+        SetAnimTrigger(an_walk);
         m_navMeshAgent.speed = m_walkSpeed;
         m_navMeshAgent.updateRotation = true;
         m_lookAtPlayer = false;
-        m_lastUsedAnimTrigger = an_walk;
     }
 
     private void StartStrafeAnim( StrafeDir dirToStrafe )
@@ -2111,84 +2111,77 @@ public class EnemyAI : MonoBehaviour
             {
                 animTrigger = an_strafeLeft;
 
-                m_animController.SetTrigger(animTrigger);
+                SetAnimTrigger(animTrigger);
                 break;
             }
             case StrafeDir.Right:
             {
                 animTrigger = an_strafeRight;
 
-                m_animController.SetTrigger(animTrigger);
+                SetAnimTrigger(animTrigger);
                 break;
             }
         }
-
-        m_lastUsedAnimTrigger = animTrigger;
     }
 
     private void StartWalkBackAnim()
     {
         m_navMeshAgent.isStopped = false;
-        m_animController.SetTrigger(an_walkBack);
+        SetAnimTrigger(an_walkBack);
         m_navMeshAgent.speed = m_walkSpeed;
         m_navMeshAgent.updateRotation = false;
         m_lookAtPlayer = true;
-        m_lastUsedAnimTrigger = an_walkBack;
+
     }
 
     private void StartRunAnim()
     {
         m_navMeshAgent.isStopped = false;
-        m_animController.SetTrigger(an_run);
+        SetAnimTrigger(an_run);
         m_navMeshAgent.speed = m_runSpeed;
         m_navMeshAgent.updateRotation = true;
         m_lookAtPlayer = false;
-        m_lastUsedAnimTrigger = an_run;
+
     }
 
     private void StartIdleAnim()
     {
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(an_idle);
+        SetAnimTrigger(an_idle);
         m_navMeshAgent.updateRotation = true;
         m_lookAtPlayer = false;
-        m_lastUsedAnimTrigger = an_idle;
     }
 
     private void StartCombatIdleAnim()
     {
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(an_combatIdle);
+        SetAnimTrigger(an_combatIdle);
         m_navMeshAgent.updateRotation = false;
         m_lookAtPlayer = true;
-        m_lastUsedAnimTrigger = an_combatIdle;
     }
 
     private void StartAttackAnim()
     {
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(an_attack);
+        SetAnimTrigger(an_attack);
         m_navMeshAgent.updateRotation = false;
         m_lookAtPlayer = true;
-        m_lastUsedAnimTrigger = an_attack;
     }
 
     private void StartQuickAttackAnim()
     {
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(an_quickAttack);
+        SetAnimTrigger(an_quickAttack);
         m_navMeshAgent.updateRotation = false;
         m_lookAtPlayer = true;
-        m_lastUsedAnimTrigger = an_quickAttack;
     }
 
     private void StartHeavyAttackAnim()
     {
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(an_heavyAttack);
+        SetAnimTrigger(an_heavyAttack);
         m_navMeshAgent.updateRotation = false;
         m_lookAtPlayer = true;
-        m_lastUsedAnimTrigger = an_heavyAttack;
     }
 
     private void StartDodgeAnim()
@@ -2197,10 +2190,9 @@ public class EnemyAI : MonoBehaviour
         int animTrigger = an_dodgeHashes[animNum];
 
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(animTrigger);
+        SetAnimTrigger(animTrigger);
         m_navMeshAgent.updateRotation = false;
         m_lookAtPlayer = true;
-        m_lastUsedAnimTrigger = animTrigger;
     }
 
     private void StartSleepToWakeAnim()
@@ -2209,28 +2201,37 @@ public class EnemyAI : MonoBehaviour
         int animTrigger = an_sleepToWakeHashes[animNum];
 
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(animTrigger);
+        SetAnimTrigger(animTrigger);
         m_navMeshAgent.updateRotation = false;
         m_lookAtPlayer = false;
-        m_lastUsedAnimTrigger = animTrigger;
     }
 
     private void SetToPlayDeadAnim()
     {
         m_navMeshAgent.isStopped = true;
-        m_animController.SetTrigger(an_sleep);
+        SetAnimTrigger(an_sleep);
         m_navMeshAgent.updateRotation = false;
         m_lookAtPlayer = false;
-        m_lastUsedAnimTrigger = an_sleep;
     }
 
     private void StartDeathAnim()
     {
         m_navMeshAgent.isStopped = true;
-        //m_animController.SetTrigger(an_death);
         m_navMeshAgent.updateRotation = false;
         m_lookAtPlayer = false;
+
+        // Commented out due to EnemyDamageManager effectively controlling it
+        //m_animController.SetTrigger(an_death);
         m_lastUsedAnimTrigger = an_death;
+    }
+
+    private void SetAnimTrigger(int animTrigger)
+    {
+        if (m_mainState != AIState.Dead)
+        {
+            m_animController.SetTrigger(animTrigger);
+            m_lastUsedAnimTrigger = animTrigger;
+        }
     }
 
     // End of Anim functions

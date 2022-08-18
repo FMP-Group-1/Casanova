@@ -280,7 +280,7 @@ public class EnemyDamageManager : CharacterDamageManager
         {
             mat.SetFloat( m_shaderStartTime, float.MaxValue );
             //Need to force them visible again which is weird but ah well
-            mat.SetInt( m_shaderForceVisible, 1 );
+            mat.SetInt( m_shaderForceVisible, 0 );
         }
     }
 
