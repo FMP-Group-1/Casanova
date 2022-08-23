@@ -3,16 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-/**************************************************************************************
-* Type: Class
-* 
-* Name: Cutscene
-*
-* Author: Dean Pearce
-*
-* Description: Class for running a short cutscene which also sets up wave logic. 
-*              Some of the logic has been re-used & adapted from my module 56 project.
-**************************************************************************************/
 public class CinematicCamera : MonoBehaviour
 {
     [SerializeField]
@@ -97,14 +87,23 @@ public class CinematicCamera : MonoBehaviour
                 m_isFading = false;
                 FadeFromBlack();
             }
+
+            CinematicEventManager.StartCameraTrackEvent(m_currentTrackNum);
         }
         if (m_interpolateAmount >= 1.0f && m_currentTrackNum == m_dollyPoint.Length - 1)
         {
-            m_isPlaying = false;
+            m_currentTrackNum = 0;
+            m_interpolateAmount = 0f;
+            m_camLookTarget = m_lookTargets.GetChild(m_currentTrackNum);
+
             if (m_fadeBetweenTransitions)
             {
+                m_isFading = false;
                 FadeFromBlack();
             }
+
+            CinematicEventManager.StartCameraTrackEvent(0);
+            CinematicEventManager.StartCameraTrackEndEvent();
         }
     }
 
