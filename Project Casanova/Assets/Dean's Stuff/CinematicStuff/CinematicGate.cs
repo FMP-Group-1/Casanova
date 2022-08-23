@@ -6,27 +6,26 @@ public class CinematicGate : MonoBehaviour
     [Header("Gate Settings")]
     [SerializeField, Range(0.0f, 5.0f), Tooltip("How long it takes to Open the gate")]
     float m_gateOpenTime = 3f;
-    [SerializeField, Range(0.0f, 5.0f), Tooltip("How long it takes to Close the gate")]
-    float m_gateCloseTime = 1f;
     [SerializeField, Tooltip("What Y value should the gate rise to")]
     private float m_openYTarget = 5.0f;
-
-    //Y Value when closed
-    private float m_closedY = 0.0f;
 
     [SerializeField]
     private float m_distanceFromCamToOpen = 5.0f;
     [SerializeField]
     private int m_camTrackToOpenOn = 0;
 
-    private bool m_gateIsOpen = false;
+    private bool m_isOpen = false;
 
     private int m_currentCamTrack = 0;
+
+    private Vector3 m_defaultPos;
 
     private void Start()
     {
         CinematicEventManager.CameraTrackEndEvent += CloseGate;
         CinematicEventManager.CameraTrackEvent += SetCamTrack;
+
+        m_defaultPos = transform.position;
     }
 
     private void Update()
@@ -37,18 +36,18 @@ public class CinematicGate : MonoBehaviour
     public void OpenGate()
     {
         StartCoroutine(MoveGate(m_openYTarget, m_gateOpenTime));
-        m_gateIsOpen = true;
+        m_isOpen = true;
     }
 
     public void CloseGate()
     {
-        StartCoroutine(MoveGate(m_closedY, m_gateCloseTime));
-        m_gateIsOpen = false;
+        transform.position = m_defaultPos;
+        m_isOpen = false;
     }
 
     private void CamDistanceCheck()
     {
-        if (DistanceSqrCheck(Camera.main.gameObject, m_distanceFromCamToOpen) && !m_gateIsOpen && m_currentCamTrack == m_camTrackToOpenOn)
+        if (DistanceSqrCheck(Camera.main.gameObject, m_distanceFromCamToOpen) && !m_isOpen && m_currentCamTrack == m_camTrackToOpenOn)
         {
             OpenGate();
         }

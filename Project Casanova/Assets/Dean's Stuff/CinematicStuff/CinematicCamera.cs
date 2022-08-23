@@ -54,6 +54,9 @@ public class CinematicCamera : MonoBehaviour
             m_blackScreen.canvasRenderer.SetAlpha(1.0f);
             FadeFromBlack();
         }
+
+        CinematicEventManager.CameraPauseEvent += PauseUnpauseCutscene;
+        CinematicEventManager.CameraResetEvent += ResetCutscene;
     }
 
     void Update()
@@ -114,9 +117,23 @@ public class CinematicCamera : MonoBehaviour
         m_interpolateAmount = 0.0f;
     }
 
-    public void EndCutscene()
+    public void PauseUnpauseCutscene()
     {
-        m_isPlaying = false;
+        if (m_isPlaying)
+        {
+            m_isPlaying = false;
+        }
+        else
+        {
+            m_isPlaying = true;
+        }
+    }
+
+    public void ResetCutscene()
+    {
+        m_isPlaying = true;
+        m_currentTrackNum = 0;
+        m_interpolateAmount = 0.0f;
     }
 
     public void FadeToBlack()
@@ -186,5 +203,11 @@ public class CinematicCamera : MonoBehaviour
     public GameObject GetLookTargetPrefab()
     {
         return m_lookTargetPrefab;
+    }
+
+    private void OnDestroy()
+    {
+        CinematicEventManager.CameraPauseEvent -= PauseUnpauseCutscene;
+        CinematicEventManager.CameraResetEvent -= ResetCutscene;
     }
 }
