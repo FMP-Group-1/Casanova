@@ -246,6 +246,8 @@ MonoBehaviour:
   m_maxHealth: 100
   m_invulnerableTime: 1
   m_healthBarFill: {fileID: 0}
+  m_regenTimerMax: 0
+  m_regenRate: 0
 --- !u!114 &7215116252869855177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10405,26 +10407,6 @@ PrefabInstance:
     - target: {fileID: 2024529860070362947, guid: 9714b11dd8efd10489b157f98e77ef91, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 3611929190794163853, guid: 9714b11dd8efd10489b157f98e77ef91, type: 3}
-      propertyPath: m_Size.z
-      value: 0.31136423
-      objectReference: {fileID: 0}
-    - target: {fileID: 3611929190794163853, guid: 9714b11dd8efd10489b157f98e77ef91, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3611929190794163853, guid: 9714b11dd8efd10489b157f98e77ef91, type: 3}
-      propertyPath: m_Center.x
-      value: -0.003399574
-      objectReference: {fileID: 0}
-    - target: {fileID: 3611929190794163853, guid: 9714b11dd8efd10489b157f98e77ef91, type: 3}
-      propertyPath: m_Center.y
-      value: 1.04
-      objectReference: {fileID: 0}
-    - target: {fileID: 3611929190794163853, guid: 9714b11dd8efd10489b157f98e77ef91, type: 3}
-      propertyPath: m_Center.z
-      value: 0.0015392206
       objectReference: {fileID: 0}
     - target: {fileID: 8748807104103803625, guid: 9714b11dd8efd10489b157f98e77ef91, type: 3}
       propertyPath: m_Name

@@ -44,6 +44,9 @@ public class UIManager : MonoBehaviour
     [SerializeField, Tooltip( "Back button used to return to main menu canvas group" )]
     private CanvasGroup m_backButton;
 
+    [SerializeField, Tooltip( "Plot summary Canvas Group" )]
+    private CanvasGroup m_plotUIGroup;
+
     [Header("Pause Menu Canvas Groups")]
     [SerializeField, Tooltip( "Main Pause Screen Menu" )]
     private CanvasGroup m_pauseScreen;
@@ -340,6 +343,7 @@ public class UIManager : MonoBehaviour
         m_pauseScreen.gameObject.SetActive( false );
         m_pauseBackButton.gameObject.SetActive( false );
         m_deadUIGroup.gameObject.SetActive( false );
+        m_plotUIGroup.gameObject.SetActive( false );
 
         m_blackScreen.gameObject.SetActive( true );
 
@@ -372,6 +376,20 @@ public class UIManager : MonoBehaviour
 
     }
 
+
+
+
+
+
+    public void ShowPlotUI()
+	{
+        StartCoroutine( FadeOutGroup( m_mainMenu, m_uiFadeInTime ) );
+        StartCoroutine( FadeInGroup( m_plotUIGroup, m_uiFadeInTime, m_uiFadeInTime / 2 ) );
+    }
+
+
+
+
     /**************************************************************************************
     * Type: Function
     * 
@@ -386,7 +404,7 @@ public class UIManager : MonoBehaviour
     public void StartGame()
 	{
 
-        StartCoroutine( FadeOutGroup( m_mainMenu, m_uiFadeInTime ) );
+        StartCoroutine( FadeOutGroup( m_plotUIGroup, m_uiFadeInTime ) );
         StartCoroutine( FadeOut( m_background, m_uiFadeInTime ) );
         //Make Game UI fade in delay same as menu fade out to make it look like it was queued up
         StartCoroutine( FadeInGroup( m_gameUIGroup, m_uiFadeInTime, m_uiFadeInTime / 2 ) );

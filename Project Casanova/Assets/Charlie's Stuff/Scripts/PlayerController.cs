@@ -22,7 +22,6 @@ public enum  MovementAnim
 public class PlayerController : MonoBehaviour
 {
     //Start in menu state
-    private bool m_inMenu = true;
     private int an_menuState;
 
     //Input actions
@@ -80,6 +79,8 @@ public class PlayerController : MonoBehaviour
     //Normalised float of how much player is moving. Used in 1D Blend Tree
     private float m_moveAmount;
 
+    //to stop moving while standing up
+    private bool m_stoodUp = false;
 
     //Animator Parameters
     private int an_movingSpeed;
@@ -136,7 +137,7 @@ public class PlayerController : MonoBehaviour
         m_cameraMainTransform = Camera.main.transform;
 
         //Start in menu state
-        if ( m_inMenu )
+        if ( Settings.g_inMenu )
         {
             m_animator.SetBool( an_menuState, true );
         }
@@ -159,7 +160,7 @@ public class PlayerController : MonoBehaviour
     **************************************************************************************/
     void Update()
     {
-        if ( !m_inMenu )
+        if ( !Settings.g_inMenu && m_stoodUp )
         {
             //Velocity gets modified in jump check and what not, but i need to know what it was last time
             float yVelocityLastFrame = m_playerVelocity.y;
@@ -297,7 +298,8 @@ public class PlayerController : MonoBehaviour
     **************************************************************************************/
     private void Activate()
     {
-        m_inMenu = false;
+        m_stoodUp = true;
+        Settings.g_inMenu = false;
         m_animator.SetBool( an_menuState, false );
     }
 

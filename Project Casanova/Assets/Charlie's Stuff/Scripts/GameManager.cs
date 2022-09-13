@@ -34,9 +34,9 @@ public class GameManager : MonoBehaviour
 
     [Header( "Player" )]
     [SerializeField, Tooltip("The Player's Controller script")]
-    PlayerController m_playerController;
+    private PlayerController m_playerController;
     [SerializeField, Tooltip( "The Player's Damage Manager script" )]
-    PlayerDamageManager m_playerHealthManager;
+    private PlayerDamageManager m_playerHealthManager;
 
     //The room the player is currently in (Based on room completion, not physical location)
     private Room m_currentRoom;
@@ -64,6 +64,10 @@ public class GameManager : MonoBehaviour
     private float m_respawnfadeTime = 4.0f;
     //Scene load, for reseting game
     AsyncOperation m_sceneLoad;
+
+    [Header("Cursor Stuff")]
+    [SerializeField]
+    private GameObject m_cursorSprite;
 
     /**************************************************************************************
     * Type: Function
@@ -95,6 +99,7 @@ public class GameManager : MonoBehaviour
     **************************************************************************************/
     private void Start()
     {
+        Settings.g_inMenu = true;
         //Very Begining of Game
         Settings.g_canPause = false;
         Settings.g_paused = false;
@@ -113,6 +118,7 @@ public class GameManager : MonoBehaviour
         m_uiManager.BeginScene();
 
         ResetRoomEnemies( Room.Cell );
+
 
     }
 
@@ -135,6 +141,13 @@ public class GameManager : MonoBehaviour
         RoomCompleteCheck();
 
     }
+
+
+    public void ShowPlot()
+	{
+        m_uiManager.ShowPlotUI();
+	}
+
 
     /**************************************************************************************
     * Type: Function
@@ -162,9 +175,12 @@ public class GameManager : MonoBehaviour
         m_playerController.GetComponent<MeleeController>().enabled = true;
 
         //Hide cursor
+
+        Settings.g_inMenu = false;
         Cursor.lockState = CursorLockMode.None;
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Confined;
+        Cursor.visible = false;
+        m_cursorSprite.SetActive( false );
 
     }
 
@@ -196,15 +212,17 @@ public class GameManager : MonoBehaviour
                     Settings.g_paused = false;
                     //Hide cursor and lock it
                     Cursor.visible = false;
-                    Cursor.lockState = CursorLockMode.Locked;
+
+                    Settings.g_inMenu = false;
+                    m_cursorSprite.SetActive( false );
                 }
                 else //Pause
                 {
                     Time.timeScale = 0;
                     Settings.g_paused = true;
                     //Show cursor on pause screen
-                    Cursor.visible = true;
-                    Cursor.lockState = CursorLockMode.None;
+                    Settings.g_inMenu = true;
+                    m_cursorSprite.SetActive( true );
                 }
                 //Hide or display pause UI based on if we jsut paused or not
                 m_uiManager.DisplayPauseMenu( Settings.g_paused );
@@ -344,9 +362,9 @@ public class GameManager : MonoBehaviour
     public void Die()
 	{
         Settings.g_canPause = false;
-        Cursor.lockState = CursorLockMode.None;
+        m_cursorSprite.SetActive( true );
 
-        Cursor.visible = true;
+        Settings.g_inMenu = true;
         m_uiManager.DisplayDeathUI();
     }
 
@@ -374,6 +392,8 @@ public class GameManager : MonoBehaviour
         m_playerHealthManager.SetInvulnerable( true );
         //BEGIN respawning
         BeginRespawn();
+        Settings.g_inMenu = false;
+        m_cursorSprite.SetActive( false );
     }
 
     /**************************************************************************************
@@ -425,6 +445,7 @@ public class GameManager : MonoBehaviour
         //Just reset the gate for relative room
         m_gateManager.ResetGate( respawnPoint );
 
+        Settings.g_inMenu = false;
         Settings.g_canPause = true;
     }
 

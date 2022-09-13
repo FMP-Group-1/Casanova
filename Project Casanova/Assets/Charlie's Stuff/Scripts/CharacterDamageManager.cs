@@ -319,6 +319,23 @@ public class CharacterDamageManager : MonoBehaviour
     /**************************************************************************************
     * Type: Function
     * 
+    * Name: GetMaxHealth
+    * Parameters: n/a
+    * Return: float
+    *
+    * Author: Charlie Taylor
+    *
+    * Description: Return Max Health value
+    **************************************************************************************/
+    protected float GetMaxHealth()
+	{
+        return m_maxHealth;
+	}
+
+
+    /**************************************************************************************
+    * Type: Function
+    * 
     * Name: SetHealth
     * Parameters: float health
     * Return: n/a
@@ -328,8 +345,12 @@ public class CharacterDamageManager : MonoBehaviour
     * Description: Set current health
     **************************************************************************************/
     public void SetHealth( float health )
-	{
+    {
         m_currentHealth = health;
+        if ( m_currentHealth > m_maxHealth )
+		{
+            m_currentHealth = m_maxHealth;
+		}
 	}
 
     /**************************************************************************************

@@ -301,8 +301,7 @@ public class AIManager : MonoBehaviour
                 // Unregister from attackers, add to the available enemy pool,
                 // then deactivate and reset the health manager
                 UnregisterAttacker(enemy);
-                m_spawnManager.AddToAvailable( enemy );
-                enemy.gameObject.SetActive(false);
+                //m_spawnManager.AddToAvailable( enemy );
                 enemy.gameObject.GetComponent<EnemyDamageManager>().ResetEnemy();
             }
         }

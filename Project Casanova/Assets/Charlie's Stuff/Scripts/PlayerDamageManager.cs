@@ -16,6 +16,18 @@ public class PlayerDamageManager : CharacterDamageManager
     private PlayerController m_playerController;
     //Game Controller
     private GameObject m_gameController;
+
+    //Can regen when not received damage for a bit
+    private bool m_canRegen = false;
+
+    [Header("Health Regen")]
+    [SerializeField, Range( 5f, 10f ), Tooltip("How long without taking damage, until you start regening health")]
+    private float m_regenTimerMax;
+    //Actual timer
+    private float m_regenCounter;
+
+    [SerializeField, Range( 1f, 10f ), Tooltip( "How much Health per Second you regen" )]
+    private float m_regenRate;
     
     /**************************************************************************************
     * Type: Function
@@ -35,7 +47,44 @@ public class PlayerDamageManager : CharacterDamageManager
         m_gameController = GameObject.FindGameObjectWithTag( Settings.g_controllerTag );
     }
 
-    /**************************************************************************************
+
+
+
+
+
+
+	private void Update()
+	{
+        //If you can't regen, but your health is not max
+		if (!m_canRegen && (GetHealth() < GetMaxHealth() ))
+        {
+            Debug.Log( "You are hurt but we're waiting to regen" );
+            m_regenCounter -= Time.deltaTime;
+		}
+
+        if ( !m_canRegen && m_regenCounter <= 0.0f )
+        {
+            Debug.Log( "You CAN now regen" );
+            m_regenCounter = m_regenTimerMax;
+            m_canRegen = true;
+		}
+
+        if ( GetHealth() >= GetMaxHealth() )
+		{
+            SetHealth( GetMaxHealth() );
+            m_canRegen = false;
+		}
+
+        if ( m_canRegen )
+		{
+            Debug.Log( "You are now regenning" );
+            SetHealth( GetHealth() + (m_regenRate * Time.deltaTime) );
+
+            UpdateHealthBar();
+        }
+	}
+
+	/**************************************************************************************
     * Type: Function
     * 
     * Name: TakeDamage
@@ -46,7 +95,7 @@ public class PlayerDamageManager : CharacterDamageManager
     *
     * Description: Take damage from enemies, adding the player exclusive LoseControl()
     **************************************************************************************/
-    public override void TakeDamage( Transform othersTransform, float damage )
+	public override void TakeDamage( Transform othersTransform, float damage )
     {
         //Only run if alive
         if ( GetAlive() )
@@ -54,6 +103,8 @@ public class PlayerDamageManager : CharacterDamageManager
             //Only run if not invulnerable
             if ( !GetInvulnerable() )
             {
+                m_regenCounter = m_regenTimerMax;
+                m_canRegen = false;
                 //Player does have staggerable functionality in base, but that is only utilised by enemies for now
                 m_playerController.LoseControl();
 

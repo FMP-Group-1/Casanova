@@ -72,7 +72,8 @@ GameObject:
   - component: {fileID: 7133682484995517676}
   - component: {fileID: 7133682484995517675}
   - component: {fileID: 7828510368173873731}
-  m_Layer: 0
+  - component: {fileID: 1124672209161206350}
+  m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -243,6 +244,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f7a4d56e81da1747b9e53adbc40a24e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1124672209161206350
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7133682484995517672}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 084ce685c46e25547bedd1c3f431c5b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text1: Press
+  text2: to Pick Up
 --- !u!1 &7254794482469885092
 GameObject:
   m_ObjectHideFlags: 0

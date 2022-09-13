@@ -25,7 +25,19 @@ public static class Settings
 	//Camera Sensitivity
 	public static float g_minCameraSensitiviy = 100f;
 	public static float g_maxCameraSensitiviy = 300f;
-	public static float g_currentXCameraSensitiviy = 200f;
-	public static float g_currentYCameraSensitiviy = 2f;
+	public static float g_currentXCameraSensitiviy = 100f;
+	public static float g_currentYCameraSensitiviy = 1f;
+
+
+	public static string g_gamepadScheme = "Gamepad";
+	public static string g_mouseScheme = "Keyboard&Mouse";
+	public static string g_currentControlScheme;
+
+
+	public static string g_eIcon = "<sprite name=\"e\">";
+
+	public static string g_bIcon = "<sprite name=\"xb_b\">";
+
+	public static bool g_inMenu = true;
 
 }

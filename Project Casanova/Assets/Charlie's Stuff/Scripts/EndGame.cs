@@ -11,7 +11,13 @@ using UnityEngine;
 **************************************************************************************/
 public class EndGame : MonoBehaviour
 {
-	/**************************************************************************************
+    [Header( "Cursor Stuff" )]
+    [SerializeField]
+    private GameObject m_cursorController;
+    [SerializeField]
+    private GameObject m_cursorSprite;
+
+    /**************************************************************************************
     * Type: Function
     * 
     * Name: OnTriggerEnter
@@ -22,7 +28,7 @@ public class EndGame : MonoBehaviour
     *
     * Description: When the playe enters this object, end the game
     **************************************************************************************/
-	private void OnTriggerEnter( Collider other )
+    private void OnTriggerEnter( Collider other )
 	{
 		if (other.tag == Settings.g_playerTag )
 		{
@@ -46,10 +52,12 @@ public class EndGame : MonoBehaviour
     * Description: Display "you win" UI and set game settings for ending game
     **************************************************************************************/
 	private void CompleteGame()
-	{
-		Settings.g_canPause = false;
-		Cursor.visible = true;
-		Cursor.lockState = CursorLockMode.None;
-		GameObject.FindGameObjectWithTag( Settings.g_controllerTag ).GetComponent<UIManager>().CompleteGame();
+    {
+        Settings.g_inMenu = true;
+        Settings.g_canPause = false;
+        Cursor.visible = false;
+        m_cursorController.SetActive( true );
+        m_cursorSprite.SetActive( true );
+        GameObject.FindGameObjectWithTag( Settings.g_controllerTag ).GetComponent<UIManager>().CompleteGame();
 	}
 }

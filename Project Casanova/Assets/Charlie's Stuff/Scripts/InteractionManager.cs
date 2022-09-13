@@ -74,14 +74,18 @@ public class InteractionManager : MonoBehaviour
         //would trigger all interactables at once. Need to make sure it's only THIS one
         if ( m_isInteractive )
         {
-            //Pressed
-            if ( m_interact.action.triggered )
+            if ( !Settings.g_inMenu )
             {
-                //Activate
-                ActivateInteractable();
-                //Parent of this game object is the whole interaction prefab which is now redundant
-                transform.parent.gameObject.SetActive( false );
+                //Pressed
+                if ( m_interact.action.triggered )
+                {
+                    //Activate
+                    ActivateInteractable();
+                    //Parent of this game object is the whole interaction prefab which is now redundant
+                    transform.parent.gameObject.SetActive( false );
+                }
             }
+            
         }
     }
 
