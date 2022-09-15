@@ -585,4 +585,20 @@ public class GameManager : MonoBehaviour
         }
 	}
 
+
+    private void DisplayCursors()
+	{
+        if (Settings.g_currentControlScheme == Settings.g_gamepadScheme )
+		{
+            m_cursorSprite.SetActive( true );
+            Cursor.visible = false;
+        }
+		else
+        {
+            m_cursorSprite.SetActive( false );
+            Cursor.visible = true;
+        }
+	}
+
+
 }
