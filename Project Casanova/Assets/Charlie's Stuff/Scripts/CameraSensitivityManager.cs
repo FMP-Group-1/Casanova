@@ -33,5 +33,8 @@ public class CameraSensitivityManager : MonoBehaviour
         //Set actual camera values to sensitivity
         GetComponent<CinemachineFreeLook>().m_YAxis.m_MaxSpeed = Settings.g_currentYCameraSensitiviy;
         GetComponent<CinemachineFreeLook>().m_XAxis.m_MaxSpeed = Settings.g_currentXCameraSensitiviy;
+
+
+        GameObject.FindGameObjectWithTag( Settings.g_controllerTag ).GetComponent<UIManager>().SwapMenus("Main");
     }
 }

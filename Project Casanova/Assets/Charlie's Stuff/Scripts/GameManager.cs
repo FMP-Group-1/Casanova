@@ -69,6 +69,10 @@ public class GameManager : MonoBehaviour
     [SerializeField]
     private GameObject m_cursorSprite;
 
+
+    [SerializeField, Tooltip( "THE SWORD TABLE INTERACTION PREFAB" )]
+    private GameObject m_swordTableInteractionPrefab;
+
     /**************************************************************************************
     * Type: Function
     * 
@@ -176,11 +180,10 @@ public class GameManager : MonoBehaviour
 
         //Hide cursor
 
-        Settings.g_inMenu = false;
         Cursor.lockState = CursorLockMode.None;
         Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = false;
-        m_cursorSprite.SetActive( false );
+
+        EnterAMenu( false );
 
     }
 
@@ -210,19 +213,15 @@ public class GameManager : MonoBehaviour
                     //Time scale isn't the BEST but it works
                     Time.timeScale = 1;
                     Settings.g_paused = false;
-                    //Hide cursor and lock it
-                    Cursor.visible = false;
 
-                    Settings.g_inMenu = false;
-                    m_cursorSprite.SetActive( false );
+                    EnterAMenu( false );
                 }
                 else //Pause
                 {
                     Time.timeScale = 0;
                     Settings.g_paused = true;
                     //Show cursor on pause screen
-                    Settings.g_inMenu = true;
-                    m_cursorSprite.SetActive( true );
+                    EnterAMenu( true );
                 }
                 //Hide or display pause UI based on if we jsut paused or not
                 m_uiManager.DisplayPauseMenu( Settings.g_paused );
@@ -268,6 +267,8 @@ public class GameManager : MonoBehaviour
                     if ( m_aiManager.RemainingEnemiesInGroup( 1 ) <= 0 )
                     {
                         CompleteRoom( m_currentRoom );
+                        //Make Sword Grabable
+                        m_swordTableInteractionPrefab.SetActive(true);
                     }
 					break;
 				case Room.Armory2:
@@ -362,9 +363,8 @@ public class GameManager : MonoBehaviour
     public void Die()
 	{
         Settings.g_canPause = false;
-        m_cursorSprite.SetActive( true );
 
-        Settings.g_inMenu = true;
+        EnterAMenu( true );
         m_uiManager.DisplayDeathUI();
     }
 
@@ -392,8 +392,7 @@ public class GameManager : MonoBehaviour
         m_playerHealthManager.SetInvulnerable( true );
         //BEGIN respawning
         BeginRespawn();
-        Settings.g_inMenu = false;
-        m_cursorSprite.SetActive( false );
+        EnterAMenu( true );
     }
 
     /**************************************************************************************
@@ -586,19 +585,31 @@ public class GameManager : MonoBehaviour
 	}
 
 
-    private void DisplayCursors()
+    private void EnterAMenu(bool inMenu)
 	{
-        if (Settings.g_currentControlScheme == Settings.g_gamepadScheme )
+        Settings.g_inMenu = inMenu;
+
+        if ( inMenu )
 		{
-            m_cursorSprite.SetActive( true );
-            Cursor.visible = false;
+
+            if (Settings.g_currentControlScheme == Settings.g_gamepadScheme )
+		    {
+                m_cursorSprite.SetActive( true );
+                Cursor.visible = false;
+            }
+		    else
+            {
+                m_cursorSprite.SetActive( false );
+                Cursor.visible = true;
+            }
         }
 		else
-        {
+		{
             m_cursorSprite.SetActive( false );
-            Cursor.visible = true;
+            Cursor.visible = false;
+            
         }
-	}
+    }
 
 
 }
