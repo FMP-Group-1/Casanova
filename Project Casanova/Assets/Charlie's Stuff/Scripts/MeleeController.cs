@@ -1,7 +1,18 @@
 using System.Collections;
 using UnityEngine.InputSystem;
 using UnityEngine;
+using System.Collections.Generic;
 
+public enum AttackID
+{
+    light1 = 0,
+    light2 = 1,
+    light3 = 2,
+    heavy1 = 3,
+    heavy2 = 4,
+    whirlwind = 5,
+    earlyWhirl = 6
+}
 public class MeleeController : MonoBehaviour
 {
     //Components
@@ -51,6 +62,25 @@ public class MeleeController : MonoBehaviour
     //[SerializeField, Range(5f, 10f)]
     //float m_maxSphereSize = 7;
 
+
+    //Damage Information
+    [Header("Damage Settings")]
+    [SerializeField, Range(0.0f, 20.0f), Tooltip("Light 1 Damage")]
+    private float m_light1Damage = 10.0f;
+    [SerializeField, Range(0.0f, 20.0f), Tooltip("Light 2 Damage")]
+    private float m_light2Damage = 13.0f;
+    [SerializeField, Range(0.0f, 20.0f), Tooltip("Light 3 Damage")]
+    private float m_light3Damage = 15.0f;
+    [SerializeField, Range(0.0f, 50.0f), Tooltip("Heavy 1 Damage")]
+    private float m_heavy1Damage = 20.0f;
+    [SerializeField, Range(0.0f, 50.0f), Tooltip("Heavy 2 Damage")]
+    private float m_heavy2Damage = 22.0f;
+    [SerializeField, Range(0.0f, 20.0f), Tooltip("Whirlwind Damage")]
+    private float m_whirlwindDamage = 15.0f;
+    [SerializeField, Range(0.0f, 50.0f), Tooltip("Whirlwind Early Damage")]
+    private float m_whirlwindEarlyDamage = 25.0f;
+
+    private Dictionary<int, float> m_damageValuesToID = new Dictionary<int, float>();
 
 
     //Attack Enum, based on 2 attack types, and a nothing value so as to be able to have no attack queued
@@ -112,6 +142,15 @@ public class MeleeController : MonoBehaviour
         an_heavyAttack = Animator.StringToHash( "heavy" );
         an_whirlwindHeld = Animator.StringToHash( "whirlwindHeld" );
         an_comboActive = Animator.StringToHash( "comboActive" );
+
+
+        m_damageValuesToID[(int)AttackID.light1] = m_light1Damage;
+        m_damageValuesToID[(int)AttackID.light2] = m_light2Damage;
+        m_damageValuesToID[(int)AttackID.light3] = m_light3Damage;
+        m_damageValuesToID[(int)AttackID.heavy1] = m_heavy1Damage;
+        m_damageValuesToID[(int)AttackID.heavy2] = m_heavy2Damage;
+        m_damageValuesToID[(int)AttackID.whirlwind] = m_whirlwindDamage;
+        m_damageValuesToID[(int)AttackID.earlyWhirl] = m_whirlwindEarlyDamage;
     }
 
     /**************************************************************************************
@@ -367,10 +406,10 @@ public class MeleeController : MonoBehaviour
     *              Used mainly for rotating the player to the direction they're inputting
     *              and also setting Damage
     **************************************************************************************/
-    private void AttackBegin( float damage )
-	{
+    private void AttackBegin(int id)
+    {
         //Set Damage for this attack
-        SetAttackDamage( damage );
+        SetAttackDamage(m_damageValuesToID[id]);
 
         //Prevent dodging so it can't blend and leave the collider on
         m_playerController.SetCanDodge( false );
