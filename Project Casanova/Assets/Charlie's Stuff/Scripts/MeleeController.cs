@@ -80,6 +80,7 @@ public class MeleeController : MonoBehaviour
     [SerializeField, Range(0.0f, 50.0f), Tooltip("Whirlwind Early Damage")]
     private float m_whirlwindEarlyDamage = 25.0f;
 
+    private float[] m_damageValues = new float[7];
     private Dictionary<int, float> m_damageValuesToID = new Dictionary<int, float>();
 
 
@@ -143,14 +144,13 @@ public class MeleeController : MonoBehaviour
         an_whirlwindHeld = Animator.StringToHash( "whirlwindHeld" );
         an_comboActive = Animator.StringToHash( "comboActive" );
 
-
-        m_damageValuesToID[(int)AttackID.light1] = m_light1Damage;
-        m_damageValuesToID[(int)AttackID.light2] = m_light2Damage;
-        m_damageValuesToID[(int)AttackID.light3] = m_light3Damage;
-        m_damageValuesToID[(int)AttackID.heavy1] = m_heavy1Damage;
-        m_damageValuesToID[(int)AttackID.heavy2] = m_heavy2Damage;
-        m_damageValuesToID[(int)AttackID.whirlwind] = m_whirlwindDamage;
-        m_damageValuesToID[(int)AttackID.earlyWhirl] = m_whirlwindEarlyDamage;
+        m_damageValues[0] = m_light1Damage;
+        m_damageValues[1] = m_light2Damage;
+        m_damageValues[2] = m_light3Damage;
+        m_damageValues[3] = m_heavy1Damage;
+        m_damageValues[4] = m_heavy2Damage;
+        m_damageValues[5] = m_whirlwindDamage;
+        m_damageValues[6] = m_whirlwindEarlyDamage;
     }
 
     /**************************************************************************************
@@ -409,7 +409,7 @@ public class MeleeController : MonoBehaviour
     private void AttackBegin(int id)
     {
         //Set Damage for this attack
-        SetAttackDamage(m_damageValuesToID[id]);
+        SetAttackDamage(m_damageValues[id]);
 
         //Prevent dodging so it can't blend and leave the collider on
         m_playerController.SetCanDodge( false );
